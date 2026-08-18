@@ -3,9 +3,16 @@
 
 <head>
 
-  <!-- ========================================
-       Basic
-  ========================================= -->
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-QS9HSHCY33"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-QS9HSHCY33');
+  </script>
+
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
 
@@ -1506,6 +1513,20 @@
 
 </footer>
 
+<script>
+  document.querySelectorAll('a[data-contact-location]').forEach(function(link) {
+    link.addEventListener('click', function() {
+
+      gtag('event', 'contact_click', {
+        contact_location: this.dataset.contactLocation,
+        link_url: this.href,
+        link_text: this.textContent.trim()
+      });
+
+    });
+  });
+</script>
 
 </body>
 </html>
+
