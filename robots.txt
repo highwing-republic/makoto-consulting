@@ -1,4 +1,6 @@
+```text
 User-agent: *
 Allow: /
 
 Sitemap: https://lab.ugatta-llc.com/sitemap.xml
+```
