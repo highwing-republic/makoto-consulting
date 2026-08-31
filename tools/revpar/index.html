@@ -25,11 +25,11 @@
 
   <meta
     name="keywords"
-    content="RevPAR計算,RevPAR,レブパー,客室平均単価,宿泊DX,旅館DX,ホテルDX,データ活用,客室売上,販売可能客室数,誠コンサルティング"
+    content="RevPAR計算,RevPAR,レブパー,客室平均単価,宿泊DX,旅館DX,ホテルDX,データ活用,客室売上,販売可能客室数,宿泊DXラボ"
   >
 
   <meta name="robots" content="index,follow">
-  <meta name="author" content="誠コンサルティング">
+  <meta name="author" content="宿泊DXラボ">
 
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="../../favicon.png">
@@ -490,10 +490,17 @@
       margin-top: 6px;
     }
 
+    .table-responsive {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      margin-top: 15px;
+    }
+
     .table-style {
       width: 100%;
+      min-width: 500px;
       border-collapse: collapse;
-      margin-top: 15px;
       font-size: 0.78rem;
     }
 
@@ -718,8 +725,8 @@
 <header>
   <div class="container nav">
     <a href="../../index.html" class="brand">
-      <span class="brand-main">誠コンサルティング</span>
-      <span class="brand-sub">宿泊・観光のDX伴走パートナー</span>
+      <span class="brand-main">宿泊DXラボ</span>
+      <span class="brand-sub">宿泊施設向けDX支援・便利ツール</span>
     </a>
 
     <nav class="navlinks">
@@ -853,6 +860,7 @@
               class="form-control" 
               placeholder="例: 100" 
               min="1" 
+              step="1"
               required
               inputmode="numeric"
             >
@@ -922,42 +930,44 @@
           例えば、総客室数が100室のホテルで、ある日の実績が以下のようになった場合を考えてみましょう。
         </p>
 
-        <table class="table-style">
-          <thead>
-            <tr>
-              <th>項目</th>
-              <th>ホテルA（高単価・低稼働）</th>
-              <th>ホテルB（低単価・高稼働）</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <th>販売可能客室数</th>
-              <td>100室</td>
-              <td>100室</td>
-            </tr>
-            <tr>
-              <th>販売（提供）客室数</th>
-              <td>40室（稼働率 40%）</td>
-              <td>80室（稼働率 80%）</td>
-            </tr>
-            <tr>
-              <th>客室平均単価 (ADR)</th>
-              <td><strong>20,000円</strong></td>
-              <td>10,000円</td>
-            </tr>
-            <tr>
-              <th>客室売上</th>
-              <td>800,000円</td>
-              <td>800,000円</td>
-            </tr>
-            <tr style="background-color: var(--cream);">
-              <th>RevPAR（計算結果）</th>
-              <td><strong>8,000円</strong><br><small>(20,000円 × 40%)</small></td>
-              <td><strong>8,000円</strong><br><small>(10,000円 × 80%)</small></td>
-            </tr>
-          </tbody>
-        </table>
+        <div class="table-responsive">
+          <table class="table-style">
+            <thead>
+              <tr>
+                <th>項目</th>
+                <th>ホテルA（高単価・低稼働）</th>
+                <th>ホテルB（低単価・高稼働）</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th>販売可能客室数</th>
+                <td>100室</td>
+                <td>100室</td>
+              </tr>
+              <tr>
+                <th>販売（提供）客室数</th>
+                <td>40室（稼働率 40%）</td>
+                <td>80室（稼働率 80%）</td>
+              </tr>
+              <tr>
+                <th>客室平均単価 (ADR)</th>
+                <td><strong>20,000円</strong></td>
+                <td>10,000円</td>
+              </tr>
+              <tr>
+                <th>客室売上</th>
+                <td>800,000円</td>
+                <td>800,000円</td>
+              </tr>
+              <tr style="background-color: var(--cream);">
+                <th>RevPAR（計算結果）</th>
+                <td><strong>8,000円</strong><br><small>(20,000円 × 40%)</small></td>
+                <td><strong>8,000円</strong><br><small>(10,000円 × 80%)</small></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
 
         <p style="margin-top: 15px;">
           このように、平均単価(ADR)や稼働率(OCC)が異なっていても、客室売上と販売可能客室数が同じであればRevPARは<strong>8,000円</strong>と同じになります。売上最大化を目指すうえで、単価を上げるべきか、稼働を上げるべきかを多角的に分析するための重要な基準値となります。
@@ -976,7 +986,7 @@
 <section class="contact-sub">
   <div class="container">
     <h2>まずはお気軽にご相談ください</h2>
-    <p>宿泊データの分析、経営ダッシュボードの作成、業務改善など、小さく誠実に伴走支援いたします。</p>
+    <p>宿泊データの分析、経営ダッシュボードの作成、業務改善など、宿泊施設のデータ活用・DXを支援いたします。</p>
     <a
       class="btn"
       href="https://forms.gle/9Ae3mSqKB2Vnztks7"
@@ -995,8 +1005,8 @@
   <div class="container">
     <div class="footer-top">
       <a href="../../index.html" class="brand">
-        <span class="brand-main">誠コンサルティング</span>
-        <span class="brand-sub">宿泊・観光のDX伴走パートナー</span>
+        <span class="brand-main">宿泊DXラボ</span>
+        <span class="brand-sub">宿泊施設向けDX支援・便利ツール</span>
       </a>
 
       <nav class="footer-nav">
@@ -1027,7 +1037,7 @@
     </div>
 
     <div class="copy">
-      © 2026 誠コンサルティング All Rights Reserved.
+      © 2026 宿泊DXラボ All Rights Reserved.
     </div>
   </div>
 </footer>
@@ -1101,8 +1111,8 @@
       return;
     }
 
-    if (roomsValStr === '' || isNaN(rooms) || rooms <= 0) {
-      showError('販売可能客室数には1以上の正しい数値を入力してください。0室やマイナスの場合は計算できません。');
+    if (roomsValStr === '' || isNaN(rooms) || rooms < 1 || !Number.isInteger(rooms)) {
+      showError('販売可能客室数には1以上の整数（小数不可）を入力してください。0室やマイナスの値、小数の場合は計算できません。');
       return;
     }
 
