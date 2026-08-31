@@ -1,0 +1,1155 @@
+<!doctype html>
+<html lang="ja">
+
+<head>
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-QS9HSHCY33"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-QS9HSHCY33');
+  </script>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  <title>RevPAR（販売可能客室数当たり売上）計算ツール｜宿泊DXラボ</title>
+
+  <meta
+    name="description"
+    content="宿泊施設の客室売上と販売可能客室数から、重要な経営指標であるRevPAR（販売可能客室数当たり客室売上）を簡単に計算できる無料ツールです。スマートフォンでも使いやすく、図解による説明も掲載。"
+  >
+
+  <meta
+    name="keywords"
+    content="RevPAR計算,RevPAR,レブパー,客室平均単価,宿泊DX,旅館DX,ホテルDX,データ活用,客室売上,販売可能客室数,宿泊DXラボ"
+  >
+
+  <meta name="robots" content="index,follow">
+  <meta name="author" content="宿泊DXラボ">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="../../favicon.png">
+
+  <style>
+    :root {
+      --green: #214c39;
+      --green2: #163a2c;
+      --gold: #b8934d;
+      --cream: #f6f5ef;
+      --text: #26352e;
+      --muted: #66736c;
+      --line: #e4e7e2;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      color: var(--text);
+      font-family: "Noto Sans JP", "Yu Gothic", Meiryo, sans-serif;
+      line-height: 1.8;
+      background-color: #fafaf7;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .container {
+      width: min(1120px, 92%);
+      margin: auto;
+    }
+
+    /* Header */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(255, 255, 255, .96);
+      border-bottom: 1px solid #eee;
+      backdrop-filter: blur(10px);
+    }
+
+    .nav {
+      height: 78px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.2;
+    }
+
+    .brand-main {
+      font-family: "Yu Mincho", "Hiragino Mincho ProN", serif;
+      color: var(--green);
+      font-size: 1.28rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+    }
+
+    .brand-sub {
+      font-size: .61rem;
+      color: #77817c;
+      letter-spacing: .12em;
+      margin-top: 4px;
+    }
+
+    .navlinks {
+      display: flex;
+      gap: 27px;
+      font-size: .78rem;
+      align-items: center;
+    }
+
+    .navlinks a {
+      padding: 28px 0;
+      position: relative;
+    }
+
+    .navlinks a:hover {
+      color: var(--green);
+    }
+
+    .menu {
+      display: none;
+      border: 0;
+      background: none;
+      font-size: 1.5rem;
+      color: var(--green);
+      cursor: pointer;
+    }
+
+    /* Breadcrumb */
+    .breadcrumb-wrapper {
+      background-color: #ffffff;
+      border-bottom: 1px solid var(--line);
+      padding: 12px 0;
+    }
+
+    .breadcrumb {
+      font-size: 0.75rem;
+      color: var(--muted);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .breadcrumb a:hover {
+      text-decoration: underline;
+      color: var(--green);
+    }
+
+    .breadcrumb-separator {
+      color: #aeb8b2;
+      font-weight: normal;
+    }
+
+    /* Main Area Layout */
+    .main-layout {
+      padding: 45px 0 70px;
+    }
+
+    .page-header {
+      text-align: center;
+      margin-bottom: 35px;
+    }
+
+    .page-eyebrow {
+      color: var(--gold);
+      font-size: .7rem;
+      letter-spacing: .22em;
+      font-weight: 700;
+      text-transform: uppercase;
+      margin-bottom: 5px;
+    }
+
+    .page-title {
+      margin: 0 0 10px;
+      font-family: "Yu Mincho", serif;
+      color: var(--green);
+      font-size: clamp(1.6rem, 4.5vw, 2.2rem);
+      font-weight: 700;
+    }
+
+    .page-lead {
+      color: var(--muted);
+      font-size: 0.88rem;
+      max-width: 650px;
+      margin: 0 auto;
+    }
+
+    .calculator-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 30px;
+      align-items: start;
+    }
+
+    /* Calculator Box Styles */
+    .calc-container {
+      background: #ffffff;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 8px 24px rgba(32, 60, 48, 0.04);
+    }
+
+    .calc-title {
+      font-family: "Yu Mincho", serif;
+      color: var(--green);
+      font-size: 1.35rem;
+      font-weight: 700;
+      margin-top: 0;
+      margin-bottom: 25px;
+      border-bottom: 2px solid var(--gold);
+      padding-bottom: 10px;
+    }
+
+    .form-group {
+      margin-bottom: 25px;
+    }
+
+    .form-label {
+      display: block;
+      font-weight: 700;
+      color: var(--text);
+      font-size: 0.92rem;
+      margin-bottom: 10px;
+    }
+
+    .form-label span {
+      color: #ffffff;
+      font-size: 0.68rem;
+      background: #c29f5f;
+      padding: 2px 6px;
+      border-radius: 3px;
+      margin-left: 8px;
+      vertical-align: middle;
+      font-weight: normal;
+    }
+
+    .input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 14px 45px 14px 18px;
+      font-size: 1.2rem;
+      border: 2px solid var(--line);
+      border-radius: 6px;
+      color: var(--text);
+      background-color: #fcfcf9;
+      transition: border-color 0.2s, background-color 0.2s;
+      font-weight: 600;
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: var(--green);
+      background-color: #ffffff;
+      box-shadow: 0 0 0 3px rgba(33, 76, 87, 0.08);
+    }
+
+    /* Clean input styles on mobile, remove spin buttons */
+    .form-control::-webkit-outer-spin-button,
+    .form-control::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    .form-control[type=number] {
+      -moz-appearance: textfield;
+    }
+
+    .input-unit {
+      position: absolute;
+      right: 18px;
+      font-weight: 700;
+      color: var(--muted);
+      font-size: 1rem;
+      pointer-events: none;
+    }
+
+    .form-help {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-top: 6px;
+      line-height: 1.4;
+    }
+
+    .calc-actions {
+      display: flex;
+      gap: 15px;
+      margin-top: 30px;
+    }
+
+    .btn-calc {
+      flex: 2;
+      padding: 15px 30px;
+      font-size: 1.05rem;
+      font-weight: 700;
+      background-color: var(--green);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 5px 14px rgba(33, 76, 57, 0.18);
+      transition: background-color 0.2s, transform 0.1s;
+    }
+
+    .btn-calc:hover {
+      background-color: var(--green2);
+    }
+
+    .btn-calc:active {
+      transform: translateY(1px);
+    }
+
+    .btn-reset {
+      flex: 1;
+      padding: 15px 20px;
+      font-size: 1.05rem;
+      font-weight: 700;
+      background-color: #f4f6f2;
+      color: var(--muted);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      cursor: pointer;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      transition: background-color 0.2s, color 0.2s;
+    }
+
+    .btn-reset:hover {
+      background-color: var(--line);
+      color: var(--text);
+    }
+
+    /* Result Area styling */
+    .result-section {
+      margin-top: 30px;
+      padding: 25px;
+      border-radius: 8px;
+      background-color: var(--cream);
+      border: 2px dashed var(--gold);
+      display: none;
+      animation: fadeIn 0.35s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .result-header {
+      font-size: 0.82rem;
+      color: var(--muted);
+      text-align: center;
+      margin-bottom: 5px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+
+    .result-value {
+      font-size: clamp(2.4rem, 6vw, 3.5rem);
+      font-weight: 800;
+      color: var(--green);
+      text-align: center;
+      line-height: 1.1;
+      margin-bottom: 12px;
+      font-family: "Yu Mincho", serif;
+    }
+
+    .result-value span {
+      font-size: 1.35rem;
+      font-weight: 700;
+      margin-left: 5px;
+      color: var(--text);
+    }
+
+    .result-desc {
+      font-size: 0.82rem;
+      color: var(--text);
+      line-height: 1.6;
+      border-top: 1px solid var(--line);
+      padding-top: 15px;
+      margin-top: 15px;
+    }
+
+    .error-box {
+      margin-top: 25px;
+      padding: 15px 20px;
+      background-color: #fff5f5;
+      border-left: 4px solid #e53e3e;
+      border-radius: 4px;
+      color: #c53030;
+      font-size: 0.85rem;
+      display: none;
+      line-height: 1.5;
+    }
+
+    /* Explanation Area Styles */
+    .explanation-container {
+      display: flex;
+      flex-direction: column;
+      gap: 25px;
+    }
+
+    .explanation-section {
+      background: #ffffff;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 8px 24px rgba(32, 60, 48, 0.03);
+    }
+
+    .explanation-section h3 {
+      font-family: "Yu Mincho", serif;
+      color: var(--green);
+      font-size: 1.2rem;
+      margin-top: 0;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 700;
+    }
+
+    .explanation-section h3::before {
+      content: "";
+      display: inline-block;
+      width: 5px;
+      height: 1.25rem;
+      background-color: var(--gold);
+      border-radius: 3px;
+    }
+
+    .explanation-section p {
+      font-size: 0.82rem;
+      color: #435149;
+      line-height: 1.7;
+      margin-top: 0;
+      margin-bottom: 15px;
+    }
+
+    .explanation-section p:last-child {
+      margin-bottom: 0;
+    }
+
+    .formula-box {
+      background: var(--cream);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 18px;
+      text-align: center;
+      margin: 15px 0;
+    }
+
+    .formula-title {
+      font-size: 0.72rem;
+      color: var(--gold);
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+    }
+
+    .formula-expr {
+      font-size: clamp(1.05rem, 3vw, 1.35rem);
+      font-weight: 700;
+      color: var(--green);
+      font-family: "Yu Mincho", serif;
+      line-height: 1.4;
+    }
+
+    .formula-note {
+      font-size: 0.72rem;
+      color: var(--muted);
+      margin-top: 6px;
+    }
+
+    .table-responsive {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      margin-top: 15px;
+    }
+
+    .table-style {
+      width: 100%;
+      min-width: 500px;
+      border-collapse: collapse;
+      font-size: 0.78rem;
+    }
+
+    .table-style th, .table-style td {
+      border: 1px solid var(--line);
+      padding: 10px 12px;
+      text-align: left;
+      line-height: 1.5;
+    }
+
+    .table-style th {
+      background-color: #f7f7f3;
+      color: var(--green);
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .table-style td strong {
+      color: var(--green);
+    }
+
+    /* Mobile Drawer Menu (Pure CSS or Simple JS) */
+    .mobile-menu-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(18, 58, 43, 0.6);
+      z-index: 100;
+      display: none;
+      backdrop-filter: blur(4px);
+    }
+
+    .mobile-menu-content {
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 280px;
+      background: white;
+      z-index: 101;
+      transform: translateX(100%);
+      transition: transform 0.3s ease-out;
+      padding: 30px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      box-shadow: -5px 0 25px rgba(0,0,0,0.15);
+    }
+
+    .mobile-menu-open .mobile-menu-overlay {
+      display: block;
+    }
+
+    .mobile-menu-open .mobile-menu-content {
+      transform: translateX(0);
+    }
+
+    .mobile-menu-close {
+      align-self: flex-end;
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      color: var(--muted);
+      cursor: pointer;
+      padding: 5px;
+    }
+
+    .mobile-navlinks {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      margin-top: 15px;
+    }
+
+    .mobile-navlinks a {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text);
+      padding: 8px 0;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .mobile-navlinks a:hover {
+      color: var(--green);
+    }
+
+    /* Contact Section in Subpage */
+    .contact-sub {
+      position: relative;
+      padding: 50px 0;
+      background: linear-gradient(rgba(18, 58, 43, .85), rgba(18, 58, 43, .85)), url("../../images/hero.jpg") center/cover no-repeat;
+      color: white;
+      text-align: center;
+    }
+
+    .contact-sub h2 {
+      margin: 0 0 10px;
+      font-family: "Yu Mincho", serif;
+      font-size: 1.5rem;
+    }
+
+    .contact-sub p {
+      margin: 0 0 20px;
+      font-size: .82rem;
+      color: #e2e8e5;
+    }
+
+    .contact-sub .btn {
+      background: white;
+      color: var(--green);
+      font-weight: 700;
+    }
+
+    .contact-sub .btn:hover {
+      background: #f0f2ed;
+    }
+
+    .btn {
+      display: inline-flex;
+      padding: 11px 25px;
+      border-radius: 4px;
+      background: var(--green);
+      color: white;
+      font-size: .82rem;
+      letter-spacing: .05em;
+      box-shadow: 0 5px 14px rgba(33, 76, 57, .18);
+    }
+
+    /* Footer */
+    footer {
+      padding: 28px 0 20px;
+      border-top: 1px solid #eee;
+      background: #ffffff;
+    }
+
+    .footer-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 30px;
+    }
+
+    .footer-nav {
+      display: flex;
+      gap: 22px;
+      flex-wrap: wrap;
+      font-size: .72rem;
+      color: #58645e;
+    }
+
+    .footer-nav a:hover {
+      color: var(--green);
+    }
+
+    .policy {
+      text-align: right;
+      margin-top: 15px;
+      font-size: .67rem;
+      color: #8a938e;
+    }
+
+    .copy {
+      text-align: center;
+      margin-top: 18px;
+      color: #9aa29e;
+      font-size: .65rem;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 900px) {
+      .navlinks {
+        display: none;
+      }
+
+      .menu {
+        display: block;
+      }
+
+      .calculator-grid {
+        grid-template-columns: 1fr;
+        gap: 35px;
+      }
+
+      .footer-top {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .main-layout {
+        padding: 30px 0 55px;
+      }
+
+      .calc-container {
+        padding: 20px;
+      }
+
+      .explanation-section {
+        padding: 20px;
+      }
+
+      .calc-actions {
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .btn-calc, .btn-reset {
+        width: 100%;
+      }
+
+      .btn-reset {
+        order: 2; /* Put reset button below on mobile */
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- ========================================
+     Header
+========================================= -->
+<header>
+  <div class="container nav">
+    <a href="../../index.html" class="brand">
+      <span class="brand-main">宿泊DXラボ</span>
+      <span class="brand-sub">宿泊施設向けDX支援・便利ツール</span>
+    </a>
+
+    <nav class="navlinks">
+      <a href="../../index.html">ホーム</a>
+      <a href="../../index.html#services">サービス</a>
+      <a
+        href="https://shukuhaku-dx-lab-kph7lrfzyapp4sfvjycyfpa.streamlit.app/"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        宿泊DXラボ
+      </a>
+      <a href="../../index.html#flow">支援の進め方</a>
+      <a href="../../index.html#philosophy">私たちの想い</a>
+      <a href="../../index.html#faq">よくある質問</a>
+      <a
+        href="https://forms.gle/9Ae3mSqKB2Vnztks7"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        お問い合わせ
+      </a>
+    </nav>
+
+    <button
+      class="menu"
+      aria-label="メニュー"
+      id="menu-toggle-btn"
+    >
+      ☰
+    </button>
+  </div>
+</header>
+
+<!-- ========================================
+     Mobile Navigation Drawer
+========================================= -->
+<div class="mobile-menu-overlay" id="mobile-menu-overlay"></div>
+<div class="mobile-menu-content" id="mobile-menu-content">
+  <button class="mobile-menu-close" id="menu-close-btn" aria-label="閉じる">×</button>
+  <div class="mobile-navlinks">
+    <a href="../../index.html">ホーム</a>
+    <a href="../../index.html#services">サービス</a>
+    <a
+      href="https://shukuhaku-dx-lab-kph7lrfzyapp4sfvjycyfpa.streamlit.app/"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      宿泊DXラボ
+    </a>
+    <a href="../../index.html#flow">支援の進め方</a>
+    <a href="../../index.html#philosophy">私たちの想い</a>
+    <a href="../../index.html#faq">よくある質問</a>
+    <a
+      href="https://forms.gle/9Ae3mSqKB2Vnztks7"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      お問い合わせ
+    </a>
+  </div>
+</div>
+
+<!-- ========================================
+     Breadcrumb
+========================================= -->
+<div class="breadcrumb-wrapper">
+  <div class="container breadcrumb">
+    <a href="../../index.html">ホーム</a>
+    <span class="breadcrumb-separator">&gt;</span>
+    <span style="color: var(--muted)">宿泊DXラボ</span>
+    <span class="breadcrumb-separator">&gt;</span>
+    <span style="color: var(--text); font-weight: bold;">RevPAR（販売可能客室数当たり売上）計算ツール</span>
+  </div>
+</div>
+
+<!-- ========================================
+     Main Layout
+========================================= -->
+<main class="container main-layout">
+  
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="page-eyebrow">Lodging DX Lab Tool</div>
+    <h1 class="page-title">RevPAR計算ツール</h1>
+    <p class="page-lead">
+      宿泊施設の経営状態を表す最重要指標「RevPAR（レブパー）」を簡単に算出します。<br>
+      客室売上と販売可能客室数を入力するだけで、1室あたりの売上効率を視覚的に把握できます。
+    </p>
+  </div>
+
+  <div class="calculator-grid">
+    
+    <!-- Left: Calculator Box -->
+    <div class="calc-container">
+      <h2 class="calc-title">RevPARを計算する</h2>
+      
+      <form id="calc-form" novalidate>
+        
+        <!-- Input 1: 客室売上 -->
+        <div class="form-group">
+          <label class="form-label" for="revenue">
+            客室売上（期間合計）<span>必須</span>
+          </label>
+          <div class="input-wrapper">
+            <input 
+              type="number" 
+              id="revenue" 
+              class="form-control" 
+              placeholder="例: 1500000" 
+              min="0" 
+              required
+              inputmode="numeric"
+            >
+            <span class="input-unit">円</span>
+          </div>
+          <div class="form-help">
+            計算対象期間（1日、1ヶ月、1年など）の宿泊料金のみの売上総額を入力します（飲食代や売店売上などは除きます）。
+          </div>
+        </div>
+
+        <!-- Input 2: 販売可能客室数 -->
+        <div class="form-group">
+          <label class="form-label" for="rooms">
+            販売可能客室数（期間累計）<span>必須</span>
+          </label>
+          <div class="input-wrapper">
+            <input 
+              type="number" 
+              id="rooms" 
+              class="form-control" 
+              placeholder="例: 100" 
+              min="1" 
+              step="1"
+              required
+              inputmode="numeric"
+            >
+            <span class="input-unit">室</span>
+          </div>
+          <div class="form-help">
+            対象期間中に販売することができた総客室数を入力します。<br>
+            ※例：客室数30室の旅館で「1日分」を計算する場合は<strong>30室</strong>、1ヶ月（30日間）分を計算する場合は「30室 × 30日」で<strong>900室</strong>となります。
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="calc-actions">
+          <button type="button" class="btn-reset" id="reset-btn">リセット</button>
+          <button type="submit" class="btn-calc">計算する ›</button>
+        </div>
+
+      </form>
+
+      <!-- Error Message Box -->
+      <div id="error-box" class="error-box"></div>
+
+      <!-- Result Section -->
+      <div id="result-box" class="result-section">
+        <div class="result-header">計算結果（RevPAR）</div>
+        <div class="result-value"><span style="font-size: 1.8rem; vertical-align: middle; margin-right: 4px; color: var(--gold);">¥</span><span id="revpar-result">0</span><span>（円／室）</span></div>
+        <div id="calc-details" class="result-desc"></div>
+      </div>
+
+    </div>
+
+    <!-- Right: Explanations -->
+    <div class="explanation-container">
+      
+      <!-- Section 1: What is RevPAR -->
+      <section class="explanation-section">
+        <h3>RevPAR（レブパー）とは？</h3>
+        <p>
+          <strong>RevPAR</strong>（Revenue Per Available Room）とは、「販売可能客室数当たり客室売上」のことです。宿泊施設が「保有しているすべての客室をどれだけ効率よく売上に結びつけられているか」を測るための最重要KPI（主要業績評価指標）です。
+        </p>
+        <p>
+          よく使われる指標に「客室平均単価（ADR）」がありますが、ADRは「売れた客室のみ」を対象とするため、どれだけ空室が多くても売れた数室の単価が高ければ数値が上がってしまいます。
+        </p>
+        <p>
+          一方、RevPARは「空室（売れ残った部屋）」も分母に含めて計算するため、<strong>「稼働率（OCC）」と「平均単価（ADR）」の双方を反映した、真の販売効率</strong>を表すことができます。
+        </p>
+      </section>
+
+      <!-- Section 2: Formula and Calculation -->
+      <section class="explanation-section">
+        <h3>RevPARの計算式</h3>
+        <p>
+          RevPARは、以下の2通りの方法で算出できます。どちらで計算しても結果は同じになります。
+        </p>
+
+        <div class="formula-box">
+          <div class="formula-title">基本的な計算方法（本ツールで使用）</div>
+          <div class="formula-expr">RevPAR = 客室売上 ÷ 販売可能客室数</div>
+        </div>
+
+        <div class="formula-box">
+          <div class="formula-title">稼働率と客室平均単価（ADR）を用いた計算方法</div>
+          <div class="formula-expr">RevPAR = 客室平均単価（ADR） × 客室稼働率（OCC）</div>
+        </div>
+
+        <p>
+          例えば、総客室数が100室のホテルで、ある日の実績が以下のようになった場合を考えてみましょう。
+        </p>
+
+        <div class="table-responsive">
+          <table class="table-style">
+            <thead>
+              <tr>
+                <th>項目</th>
+                <th>ホテルA（高単価・低稼働）</th>
+                <th>ホテルB（低単価・高稼働）</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th>販売可能客室数</th>
+                <td>100室</td>
+                <td>100室</td>
+              </tr>
+              <tr>
+                <th>販売（提供）客室数</th>
+                <td>40室（稼働率 40%）</td>
+                <td>80室（稼働率 80%）</td>
+              </tr>
+              <tr>
+                <th>客室平均単価 (ADR)</th>
+                <td><strong>20,000円</strong></td>
+                <td>10,000円</td>
+              </tr>
+              <tr>
+                <th>客室売上</th>
+                <td>800,000円</td>
+                <td>800,000円</td>
+              </tr>
+              <tr style="background-color: var(--cream);">
+                <th>RevPAR（計算結果）</th>
+                <td><strong>8,000円</strong><br><small>(20,000円 × 40%)</small></td>
+                <td><strong>8,000円</strong><br><small>(10,000円 × 80%)</small></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p style="margin-top: 15px;">
+          このように、平均単価(ADR)や稼働率(OCC)が異なっていても、客室売上と販売可能客室数が同じであればRevPARは<strong>8,000円</strong>と同じになります。売上最大化を目指すうえで、単価を上げるべきか、稼働を上げるべきかを多角的に分析するための重要な基準値となります。
+        </p>
+      </section>
+
+    </div>
+
+  </div>
+
+</main>
+
+<!-- ========================================
+     Contact Section
+========================================= -->
+<section class="contact-sub">
+  <div class="container">
+    <h2>まずはお気軽にご相談ください</h2>
+    <p>宿泊データの分析、経営ダッシュボードの作成、業務改善など、宿泊施設のデータ活用・DXを支援いたします。</p>
+    <a
+      class="btn"
+      href="https://forms.gle/9Ae3mSqKB2Vnztks7"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      ✉　ご相談・お問い合わせはこちら　›
+    </a>
+  </div>
+</section>
+
+<!-- ========================================
+     Footer
+========================================= -->
+<footer>
+  <div class="container">
+    <div class="footer-top">
+      <a href="../../index.html" class="brand">
+        <span class="brand-main">宿泊DXラボ</span>
+        <span class="brand-sub">宿泊施設向けDX支援・便利ツール</span>
+      </a>
+
+      <nav class="footer-nav">
+        <a href="../../index.html">ホーム</a>
+        <a href="../../index.html#services">サービス</a>
+        <a
+          href="https://shukuhaku-dx-lab-kph7lrfzyapp4sfvjycyfpa.streamlit.app/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          宿泊DXラボ
+        </a>
+        <a href="../../index.html#flow">支援の進め方</a>
+        <a href="../../index.html#philosophy">私たちの想い</a>
+        <a href="../../index.html#faq">よくある質問</a>
+        <a
+          href="https://forms.gle/9Ae3mSqKB2Vnztks7"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          お問い合わせ
+        </a>
+      </nav>
+    </div>
+
+    <div class="policy">
+      プライバシーポリシー　｜　特定商取引法に基づく表記
+    </div>
+
+    <div class="copy">
+      © 2026 宿泊DXラボ All Rights Reserved.
+    </div>
+  </div>
+</footer>
+
+<!-- ========================================
+     Scripts
+========================================= -->
+<script>
+  // Mobile Menu Toggling
+  const menuToggleBtn = document.getElementById('menu-toggle-btn');
+  const menuCloseBtn = document.getElementById('menu-close-btn');
+  const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
+  const bodyElement = document.body;
+
+  function openMobileMenu() {
+    bodyElement.classList.add('mobile-menu-open');
+  }
+
+  function closeMobileMenu() {
+    bodyElement.classList.remove('mobile-menu-open');
+  }
+
+  menuToggleBtn.addEventListener('click', openMobileMenu);
+  menuCloseBtn.addEventListener('click', closeMobileMenu);
+  mobileMenuOverlay.addEventListener('click', closeMobileMenu);
+
+  // Close menu on link click
+  document.querySelectorAll('.mobile-navlinks a').forEach(link => {
+    link.addEventListener('click', closeMobileMenu);
+  });
+
+  // RevPAR Calculation Logic
+  document.getElementById('calc-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    calculateRevPAR();
+  });
+
+  document.getElementById('reset-btn').addEventListener('click', function() {
+    document.getElementById('calc-form').reset();
+    document.getElementById('result-box').style.display = 'none';
+    document.getElementById('error-box').style.display = 'none';
+    
+    // Scroll back to form top smoothly
+    document.getElementById('calc-form').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  });
+
+  function calculateRevPAR() {
+    const revenueInput = document.getElementById('revenue');
+    const roomsInput = document.getElementById('rooms');
+    const resultBox = document.getElementById('result-box');
+    const errorBox = document.getElementById('error-box');
+
+    // Clean inputs (convert 2-byte numbers to 1-byte, etc.)
+    let revenueValStr = revenueInput.value.trim().replace(/[０-９]/g, function(s) {
+      return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
+    });
+    let roomsValStr = roomsInput.value.trim().replace(/[０-９]/g, function(s) {
+      return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
+    });
+
+    const revenue = parseFloat(revenueValStr);
+    const rooms = parseFloat(roomsValStr);
+
+    // Reset visibility
+    resultBox.style.display = 'none';
+    errorBox.style.display = 'none';
+
+    // Validation
+    if (revenueValStr === '' || isNaN(revenue) || revenue < 0) {
+      showError('客室売上には0以上の正しい数値を入力してください。');
+      return;
+    }
+
+    if (roomsValStr === '' || isNaN(rooms) || rooms < 1 || !Number.isInteger(rooms)) {
+      showError('販売可能客室数には1以上の整数（小数不可）を入力してください。0室やマイナスの値、小数の場合は計算できません。');
+      return;
+    }
+
+    // Calculation (round to nearest yen)
+    const revpar = Math.round(revenue / rooms);
+
+    // Formatted output
+    document.getElementById('revpar-result').textContent = revpar.toLocaleString();
+    
+    // Detailed description update
+    document.getElementById('calc-details').innerHTML = `
+      客室売上 <strong>${Math.round(revenue).toLocaleString()}円</strong> ÷ 
+      販売可能客室数 <strong>${Math.round(rooms).toLocaleString()}室</strong> = 
+      RevPAR <strong>${revpar.toLocaleString()}円</strong><br>
+      <span style="font-size: 0.76rem; color: var(--muted); display: block; margin-top: 8px; line-height: 1.4;">
+        ※これは、提供された全客室（販売可能客室）の1室あたりが対象期間中に <strong>${revpar.toLocaleString()}円</strong> の宿泊売上を生み出したことを意味します。
+      </span>
+    `;
+
+    resultBox.style.display = 'block';
+    
+    // Smooth scroll to results
+    setTimeout(() => {
+      resultBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }, 100);
+  }
+
+  function showError(msg) {
+    const errorBox = document.getElementById('error-box');
+    errorBox.textContent = msg;
+    errorBox.style.display = 'block';
+    
+    setTimeout(() => {
+      errorBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }, 100);
+  }
+</script>
+
+</body>
+</html>
