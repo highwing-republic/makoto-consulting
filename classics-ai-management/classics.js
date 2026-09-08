@@ -1,37 +1,4 @@
 document.addEventListener('DOMContentLoaded', function () {
-  const toggle = document.querySelector('[data-menu-toggle]');
-  const nav = document.querySelector('[data-nav]');
-
-  if (toggle && nav) {
-    const closeMenu = function () {
-      toggle.setAttribute('aria-expanded', 'false');
-      toggle.setAttribute('aria-label', 'メニューを開く');
-      nav.classList.remove('is-open');
-      document.body.classList.remove('nav-open');
-    };
-    toggle.addEventListener('click', function () {
-      const open = toggle.getAttribute('aria-expanded') === 'true';
-      toggle.setAttribute('aria-expanded', String(!open));
-      toggle.setAttribute('aria-label', open ? 'メニューを開く' : 'メニューを閉じる');
-      nav.classList.toggle('is-open', !open);
-      document.body.classList.toggle('nav-open', !open);
-    });
-    nav.querySelectorAll('a').forEach(function (link) { link.addEventListener('click', closeMenu); });
-    document.addEventListener('keydown', function (event) { if (event.key === 'Escape') closeMenu(); });
-  }
-
-  document.querySelectorAll('[data-analytics-event]').forEach(function (element) {
-    element.addEventListener('click', function () {
-      if (typeof window.gtag === 'function') {
-        window.gtag('event', element.dataset.analyticsEvent, {
-          link_url: element.href || '',
-          article_slug: element.dataset.articleSlug || '',
-          page_location: window.location.href
-        });
-      }
-    });
-  });
-
   const featuredRoot = document.querySelector('[data-featured-articles]');
   const articleRoot = document.querySelector('[data-article-list]');
   if (featuredRoot && articleRoot) initializeDirectory(featuredRoot, articleRoot);
@@ -45,34 +12,12 @@ async function initializeDirectory(featuredRoot, articleRoot) {
     const response = await fetch('/classics-ai-management/data/articles.json');
     if (!response.ok) throw new Error('記事データを読み込めませんでした。');
     const articles = await response.json();
-    featuredRoot.replaceChildren(...articles.filter(function (article) { return article.featured; }).map(createArticleCard));
-
     const published = articles.filter(function (article) { return article.status === 'published'; });
-    const search = document.querySelector('[data-article-search]');
-    const filters = document.querySelectorAll('[data-theme-filter]');
+    const coming = articles.filter(function (article) { return article.status === 'coming'; });
+    featuredRoot.replaceChildren(...published.map(createArticleCard));
     const empty = document.querySelector('[data-empty-results]');
-    let activeTheme = 'すべて';
-
-    const render = function () {
-      const term = search ? search.value.trim().toLowerCase() : '';
-      const results = published.filter(function (article) {
-        const searchable = [article.chapter_title, article.article_title, article.summary, article.category].concat(article.themes).join(' ').toLowerCase();
-        const themeMatch = activeTheme === 'すべて' || article.category === activeTheme || article.themes.includes(activeTheme);
-        return themeMatch && (!term || searchable.includes(term));
-      });
-      articleRoot.replaceChildren(...results.map(createArticleCard));
-      empty.classList.toggle('is-visible', results.length === 0);
-    };
-
-    if (search) search.addEventListener('input', render);
-    filters.forEach(function (button) {
-      button.addEventListener('click', function () {
-        activeTheme = button.dataset.themeFilter;
-        filters.forEach(function (item) { item.setAttribute('aria-pressed', String(item === button)); });
-        render();
-      });
-    });
-    render();
+    articleRoot.replaceChildren(...coming.map(createArticleCard));
+    if (empty) empty.classList.toggle('is-visible', coming.length === 0);
   } catch (error) {
     featuredRoot.innerHTML = '<p class="empty-results is-visible">記事一覧を読み込めませんでした。時間をおいて再度お試しください。</p>';
     articleRoot.innerHTML = '<p class="empty-results is-visible">記事一覧を読み込めませんでした。</p>';

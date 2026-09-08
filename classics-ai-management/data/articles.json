@@ -1,20 +1,20 @@
 [
   {
-    "slug":"shudo","chapter_id":5,"chapter_title":"主道","article_title":"AIに任せても、経営者に残る仕事",
-    "summary":"AIが提案をつくる時代に、経営者は何を握り、何を手放すべきか。「無為」と責任の所在から考えます。",
-    "themes":["意思決定","役割分担","AI活用"],"category":"意思決定","status":"published","published_at":"2026-09-08","updated_at":"2026-09-08","featured":true,
+    "slug":"shudo","chapter_id":5,"chapter_title":"主道","article_title":"ホテルのAI活用で経営者が担う役割",
+    "summary":"AI・担当者・責任者の役割と、宿泊プランを公開する前の確認項目を「主道」から考えます。",
+    "themes":["意思決定","役割分担","AI活用"],"category":"意思決定","status":"published","published_at":"2026-09-08","updated_at":"2026-09-09","featured":true,
     "url":"/classics-ai-management/hanfeizi/shudo/"
   },
   {
-    "slug":"yudo","chapter_id":6,"chapter_title":"有度","article_title":"AI活用を個人技で終わらせない",
-    "summary":"得意な人だけが使う状態から、組織として安全に使える状態へ。ルールと運用の関係を読み解きます。",
-    "themes":["ガバナンス","標準化","業務改善"],"category":"AIガバナンス","status":"published","published_at":"2026-09-08","updated_at":"2026-09-08","featured":true,
+    "slug":"yudo","chapter_id":6,"chapter_title":"有度","article_title":"旅館・ホテルのAI利用ルールをつくる",
+    "summary":"入力禁止情報、公開前の確認、責任者への相談条件を決め、組織として安全にAIを使う方法を考えます。",
+    "themes":["ガバナンス","標準化","業務改善"],"category":"AIガバナンス","status":"published","published_at":"2026-09-08","updated_at":"2026-09-09","featured":true,
     "url":"/classics-ai-management/hanfeizi/yudo/"
   },
   {
-    "slug":"nangen","chapter_id":3,"chapter_title":"難言","article_title":"悪い情報が上がってくる組織か",
-    "summary":"上司が聞きたい報告だけが集まると、経営判断は遅れます。反対意見と現場の異変を受け取る仕組みを考えます。",
-    "themes":["情報共有","心理的安全性","リスク管理"],"category":"情報とデータ","status":"published","published_at":"2026-09-08","updated_at":"2026-09-08","featured":true,
+    "slug":"nangen","chapter_id":3,"chapter_title":"難言","article_title":"ホテルの現場情報を経営に届ける",
+    "summary":"清掃遅延などの現場情報を、言い方の評価で退けず経営判断へ届ける仕組みを考えます。",
+    "themes":["情報共有","心理的安全性","リスク管理"],"category":"情報とデータ","status":"published","published_at":"2026-09-08","updated_at":"2026-09-09","featured":true,
     "url":"/classics-ai-management/hanfeizi/nangen/"
   },
   {
