@@ -101,6 +101,7 @@
 
     byId('selected-area-name').textContent = area;
     byId('kpi-total').textContent = formatNumber(record.foreign_guest_nights);
+    byId('kpi-total-unit').textContent = '人泊';
     byId('kpi-national-share').textContent = area === '全国' ? '100.0%' : formatPercent(nationalShare);
     byId('kpi-share-note').textContent = area === '全国' ? '分析対象の全国計' : '全国値に占める割合';
     byId('kpi-largest-market').textContent = largest ? largest.name : '—';
@@ -331,17 +332,37 @@
 
   function showError(error) {
     console.error(error);
+    const errorPanel = byId('data-error');
+    const title = document.createElement('strong');
+    const message = document.createElement('p');
+    const retry = document.createElement('button');
+    title.textContent = '現在、最新統計を取得できません';
+    message.textContent = '時間をおいて再度お試しください。統計を取得できない場合は数値を表示しません。';
+    retry.className = 'button button--outline';
+    retry.type = 'button';
+    retry.textContent = '再読み込みする';
+    retry.addEventListener('click', loadData);
+    errorPanel.replaceChildren(title, message, retry);
     byId('data-loading').hidden = true;
     byId('analysis-dashboard').hidden = true;
-    byId('data-error').hidden = false;
+    byId('analysis-dashboard').inert = true;
+    byId('analysis-dashboard').setAttribute('aria-hidden', 'true');
+    errorPanel.hidden = false;
     byId('analysis-period').textContent = '最新統計を取得できません';
     byId('prefecture-select').disabled = true;
+    byId('tool').setAttribute('aria-busy', 'false');
   }
 
   function loadData() {
-    byId('data-error').hidden = true;
+    const errorPanel = byId('data-error');
+    errorPanel.hidden = true;
+    errorPanel.replaceChildren();
     byId('data-loading').hidden = false;
     byId('analysis-dashboard').hidden = true;
+    byId('analysis-dashboard').inert = true;
+    byId('analysis-dashboard').setAttribute('aria-hidden', 'true');
+    byId('analysis-period').textContent = '';
+    byId('tool').setAttribute('aria-busy', 'true');
     return fetch('data/inbound/latest.json', { cache: 'no-store' })
       .then(function (response) {
         if (!response.ok) throw new Error('統計JSONの取得に失敗しました。');
@@ -356,6 +377,9 @@
         renderArea(selectedArea, false);
         byId('data-loading').hidden = true;
         byId('analysis-dashboard').hidden = false;
+        byId('analysis-dashboard').inert = false;
+        byId('analysis-dashboard').removeAttribute('aria-hidden');
+        byId('tool').setAttribute('aria-busy', 'false');
       })
       .catch(showError);
   }
@@ -367,7 +391,6 @@
         window.gtag('event', 'inbound_prefecture_change', { prefecture: event.target.value });
       }
     });
-    byId('data-retry').addEventListener('click', loadData);
     loadData();
   });
 })();

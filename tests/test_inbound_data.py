@@ -5,6 +5,7 @@ from datetime import date
 from pathlib import Path
 
 import pytest
+from bs4 import BeautifulSoup
 from openpyxl import Workbook
 
 from scripts.update_inbound_data import PREFECTURES, extract_nationality_table, validate_dataset
@@ -12,6 +13,7 @@ from scripts.update_inbound_data import PREFECTURES, extract_nationality_table, 
 
 ROOT = Path(__file__).resolve().parents[1]
 DATA_PATH = ROOT / "data" / "inbound" / "latest.json"
+HTML_PATH = ROOT / "inbound-analysis.html"
 
 
 def load_data():
@@ -109,3 +111,22 @@ def test_validation_rejects_missing_prefecture():
     data["prefectures"].pop("沖縄県")
     with pytest.raises(ValueError, match="47都道府県"):
         validate_dataset(data)
+
+
+def test_initial_html_exposes_only_loading_state():
+    soup = BeautifulSoup(HTML_PATH.read_text(encoding="utf-8"), "html.parser")
+    loading = soup.find(id="data-loading")
+    error = soup.find(id="data-error")
+    dashboard = soup.find(id="analysis-dashboard")
+
+    assert loading and not loading.has_attr("hidden")
+    assert loading.get_text(" ", strip=True) == "最新統計を読み込んでいます"
+    assert error and error.has_attr("hidden") and not error.get_text(strip=True)
+    assert dashboard and dashboard.has_attr("hidden") and dashboard.has_attr("inert")
+    assert "現在、最新統計を取得できません" not in HTML_PATH.read_text(encoding="utf-8")
+    assert soup.find("noscript").get_text(" ", strip=True) == "JavaScriptを有効にしてください この分析ツールの表示にはJavaScriptが必要です。"
+    assert all(not soup.find(id=element_id).get_text(strip=True) for element_id in (
+        "kpi-total", "kpi-total-unit", "kpi-national-share", "kpi-largest-market",
+        "kpi-largest-value", "kpi-specialized-market", "kpi-specialized-value",
+        "source-period", "source-updated", "source-unit", "source-scope",
+    ))

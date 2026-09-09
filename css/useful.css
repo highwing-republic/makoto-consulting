@@ -158,6 +158,7 @@ button{font:inherit}
 .prefecture-select select:disabled{cursor:wait;opacity:.65}
 .analysis-period{grid-column:1/-1;margin:0;padding-top:17px;border-top:1px solid var(--line);color:var(--accent);font-size:13px;font-weight:600}
 .data-loading,.data-error{margin-top:32px;padding:52px 34px;text-align:center;border:1px solid var(--line);background:var(--paper-light)}
+.data-loading[hidden],.data-error[hidden],.analysis-dashboard[hidden]{display:none!important}
 .data-loading span{display:inline-block;width:30px;height:30px;border:2px solid var(--line);border-top-color:var(--accent);border-radius:50%;animation:data-spin .8s linear infinite}
 .data-loading p{margin:14px 0 0;color:var(--ink-soft);font-size:13px}
 .data-error strong{display:block;font-family:var(--serif);font-size:26px;font-weight:600}
