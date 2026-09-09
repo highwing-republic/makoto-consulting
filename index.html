@@ -89,7 +89,7 @@
 
   <!-- ========================================
        Structured Data
-       Organization / WebSite / Service / FAQ
+       Brand / WebSite / Service / FAQ
   ========================================= -->
 
   <script type="application/ld+json">
@@ -100,14 +100,9 @@
       {
         "@type": "Organization",
         "@id": "https://lab.ugatta-llc.com/#organization",
-        "name": "合同会社UGATTA",
-        "url": "https://ugatta-llc.com/",
-        "description": "DX導入支援、マーケティング支援、コンテンツ・サービス開発、各種コンサルティングを行う法人です。",
-        "brand": {
-          "@type": "Brand",
-          "name": "宿泊DXラボ",
-          "url": "https://lab.ugatta-llc.com/"
-        }
+        "name": "宿泊DXラボ",
+        "url": "https://lab.ugatta-llc.com/",
+        "description": "旅館・ホテルの業務改善、データ活用、AI活用を支援する専門サイト"
       },
 
       {
@@ -649,6 +644,10 @@
       gap:18px
     }
 
+    .proof-grid{
+      grid-template-columns:1fr
+    }
+
     .proof-card,
     .resource-card{
       padding:30px;
@@ -670,22 +669,6 @@
       margin:0 0 16px;
       color:var(--muted);
       font-size:.8rem
-    }
-
-    .operator-list{
-      display:grid;
-      grid-template-columns:auto 1fr;
-      gap:7px 18px;
-      margin:18px 0;
-      font-size:.78rem
-    }
-
-    .operator-list dt{
-      color:#5f6c65
-    }
-
-    .operator-list dd{
-      margin:0
     }
 
     .resource-card .more{
@@ -857,13 +840,6 @@
 
     .footer-nav a:hover{
       color:var(--green)
-    }
-
-    .policy{
-      text-align:right;
-      margin-top:15px;
-      font-size:.67rem;
-      color:#5f6c65
     }
 
     .copy{
@@ -1067,8 +1043,6 @@
       <a href="useful.html">お役立ちツール</a>
 
       <a href="classics-ai-management/">経営コラム</a>
-
-      <a href="#operator">運営情報</a>
 
       <a
         class="nav-cta"
@@ -1369,33 +1343,22 @@
 
 
 <!-- ========================================
-     Cases / Operator
+     Cases
 ========================================= -->
 
-<section class="section proof" id="operator">
+<section class="section proof" id="cases">
   <div class="container">
     <div class="head">
-      <div class="eyebrow">CASES &amp; OPERATOR</div>
-      <h2 class="title">支援事例と運営者</h2>
-      <p class="lead">公開済みの支援内容と、宿泊DXラボの運営主体をご案内します</p>
+      <div class="eyebrow">CASES</div>
+      <h2 class="title">支援事例</h2>
+      <p class="lead">公開済みの支援内容と、取り組んだ課題をご案内します</p>
     </div>
 
     <div class="proof-grid">
       <article class="proof-card">
         <h3>宿泊施設への支援事例</h3>
-        <p>合同会社UGATTAの企業サイトで、インバウンド向けコンテンツ開発支援と、宿泊施設のDX伴走支援の事例を公開しています。課題と支援範囲をご確認いただけます。</p>
-        <a class="more" href="https://ugatta-llc.com/ugatta_case_studies.html" target="_blank" rel="noopener noreferrer">企業サイトで事例を見る　↗</a>
-      </article>
-
-      <article class="proof-card">
-        <h3>運営：合同会社UGATTA</h3>
-        <p>宿泊DXラボは、合同会社UGATTAが運営する、宿泊・観光事業者向けのDX支援・情報発信サイトです。</p>
-        <dl class="operator-list">
-          <dt>所在地</dt><dd>長野県松本市</dd>
-          <dt>代表者</dt><dd>佐藤 佑弥</dd>
-          <dt>設立</dt><dd>2024年11月</dd>
-        </dl>
-        <a class="more" href="https://ugatta-llc.com/about.html" target="_blank" rel="noopener noreferrer">会社概要を確認する　↗</a>
+        <p>インバウンド向けコンテンツ開発支援と、宿泊施設のDX伴走支援の事例を公開しています。課題と支援範囲をご確認いただけます。</p>
+        <a class="more" href="https://ugatta-llc.com/ugatta_case_studies.html" target="_blank" rel="noopener noreferrer">事例を見る　↗</a>
       </article>
     </div>
   </div>
@@ -1778,10 +1741,6 @@
           経営コラム
         </a>
 
-        <a href="https://ugatta-llc.com/about.html" target="_blank" rel="noopener noreferrer">
-          会社概要
-        </a>
-
         <a
           data-analytics-event="contact_click"
           data-contact-location="footer"
@@ -1794,11 +1753,6 @@
 
       </nav>
 
-    </div>
-
-
-    <div class="policy">
-      運営：<a href="https://ugatta-llc.com/about.html" target="_blank" rel="noopener noreferrer">合同会社UGATTA</a>
     </div>
 
 
