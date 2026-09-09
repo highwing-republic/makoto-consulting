@@ -18,9 +18,10 @@
     "url":"/classics-ai-management/hanfeizi/nangen/"
   },
   {
-    "slug":"nihei","chapter_id":7,"chapter_title":"二柄","article_title":"評価指標が現場の行動を変える",
-    "summary":"数字を置けば人は動きます。だからこそ、何を測り、何を評価しないかが重要です。KPIの副作用を考えます。",
-    "themes":["KPI","人事評価","組織設計"],"category":"組織と人材","status":"coming","published_at":null,"updated_at":null,"featured":true,"url":null
+    "slug":"nihei","chapter_id":7,"chapter_title":"二柄","article_title":"ホテルのKPIが現場の行動を変える",
+    "summary":"何を測り、誰が評価し、数字に表れない品質をどう守るか。客室清掃を例にKPIの副作用を考えます。",
+    "themes":["KPI","人事評価","組織設計"],"category":"組織と人材","status":"published","published_at":"2026-09-09","updated_at":"2026-09-09","featured":true,
+    "url":"/classics-ai-management/hanfeizi/nihei/"
   },
   {
     "slug":"yojin","chapter_id":27,"chapter_title":"用人","article_title":"AI時代の適材適所を考える",

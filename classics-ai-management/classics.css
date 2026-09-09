@@ -71,6 +71,7 @@ button,input{font:inherit}
 .context-note{margin-top:28px;padding:18px 22px;border-left:3px solid var(--gold);background:#fff;color:var(--muted);font-size:.83rem}
 
 .featured-grid{min-height:200px}
+.featured-grid{grid-template-columns:repeat(2,1fr)}
 .article-card{display:flex;flex-direction:column;min-height:430px;padding:34px;background:#fff}
 .article-card[data-status="coming"]{background:rgba(255,255,255,.46)}
 .article-card__meta{display:flex;align-items:center;justify-content:space-between;gap:14px;color:#5f6c65;font-size:.72rem;letter-spacing:.08em}
