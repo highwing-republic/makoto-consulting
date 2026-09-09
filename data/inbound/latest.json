@@ -1,0 +1,4962 @@
+{
+  "metadata": {
+    "source": "観光庁 宿泊旅行統計調査",
+    "source_url": "https://www.mlit.go.jp/kankocho/tokei_hakusyo/shukuhakutokei.html",
+    "excel_url": "https://www.mlit.go.jp/kankocho/content/002018998.xlsx",
+    "year": 2026,
+    "month": 6,
+    "release_type": "第2次速報",
+    "updated_at": "2026-08-31",
+    "unit": "人泊",
+    "survey_note": "2026年1月から集計・層化基準変更",
+    "survey_scope": "客室数20室以上の施設",
+    "nationality_coverage": "国籍（出身地）別集計表に掲載された国・地域",
+    "sheet_name": "参考第1表(6月)"
+  },
+  "national": {
+    "foreign_guest_nights": 10863490,
+    "nationality": {
+      "韓国": 1312780,
+      "中国": 1307940,
+      "香港": 494030,
+      "台湾": 1857580,
+      "米国": 1827880,
+      "カナダ": 175610,
+      "英国": 222600,
+      "ドイツ": 146380,
+      "フランス": 155700,
+      "ロシア": 91550,
+      "シンガポール": 375730,
+      "タイ": 176210,
+      "マレーシア": 123340,
+      "インド": 212980,
+      "オーストラリア": 342920,
+      "インドネシア": 139070,
+      "ベトナム": 73820,
+      "フィリピン": 152960,
+      "イタリア": 140830,
+      "スペイン": 138590,
+      "北欧地域": 125620,
+      "中東地域": 109260,
+      "メキシコ": 72510,
+      "その他": 939900
+    },
+    "monthly": [
+      {
+        "year": 2025,
+        "month": 7,
+        "foreign_guest_nights": 11856500,
+        "survey_scope": "従業者数10人以上の施設"
+      },
+      {
+        "year": 2025,
+        "month": 8,
+        "foreign_guest_nights": 11798770,
+        "survey_scope": "従業者数10人以上の施設"
+      },
+      {
+        "year": 2025,
+        "month": 9,
+        "foreign_guest_nights": 10864080,
+        "survey_scope": "従業者数10人以上の施設"
+      },
+      {
+        "year": 2025,
+        "month": 10,
+        "foreign_guest_nights": 14222490,
+        "survey_scope": "従業者数10人以上の施設"
+      },
+      {
+        "year": 2025,
+        "month": 11,
+        "foreign_guest_nights": 12702120,
+        "survey_scope": "従業者数10人以上の施設"
+      },
+      {
+        "year": 2025,
+        "month": 12,
+        "foreign_guest_nights": 13445680,
+        "survey_scope": "従業者数10人以上の施設"
+      },
+      {
+        "year": 2026,
+        "month": 1,
+        "foreign_guest_nights": 11428810,
+        "survey_scope": "客室数20室以上の施設"
+      },
+      {
+        "year": 2026,
+        "month": 2,
+        "foreign_guest_nights": 12302330,
+        "survey_scope": "客室数20室以上の施設"
+      },
+      {
+        "year": 2026,
+        "month": 3,
+        "foreign_guest_nights": 12503450,
+        "survey_scope": "客室数20室以上の施設"
+      },
+      {
+        "year": 2026,
+        "month": 4,
+        "foreign_guest_nights": 13412140,
+        "survey_scope": "客室数20室以上の施設"
+      },
+      {
+        "year": 2026,
+        "month": 5,
+        "foreign_guest_nights": 12764000,
+        "survey_scope": "客室数20室以上の施設"
+      },
+      {
+        "year": 2026,
+        "month": 6,
+        "foreign_guest_nights": 10863490,
+        "survey_scope": "客室数20室以上の施設"
+      }
+    ]
+  },
+  "prefectures": {
+    "北海道": {
+      "foreign_guest_nights": 730250,
+      "nationality": {
+        "韓国": 171540,
+        "中国": 54810,
+        "香港": 51850,
+        "台湾": 194360,
+        "米国": 49600,
+        "カナダ": 6400,
+        "英国": 4940,
+        "ドイツ": 3380,
+        "フランス": 2870,
+        "ロシア": 1330,
+        "シンガポール": 74860,
+        "タイ": 15300,
+        "マレーシア": 12980,
+        "インド": 3500,
+        "オーストラリア": 13330,
+        "インドネシア": 8040,
+        "ベトナム": 1450,
+        "フィリピン": 12390,
+        "イタリア": 1630,
+        "スペイン": 1180,
+        "北欧地域": 2650,
+        "中東地域": 1790,
+        "メキシコ": 290,
+        "その他": 34640
+      },
+      "monthly": [
+        {
+          "year": 2025,
+          "month": 7,
+          "foreign_guest_nights": 933910,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 8,
+          "foreign_guest_nights": 799880,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 9,
+          "foreign_guest_nights": 578980,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 10,
+          "foreign_guest_nights": 826270,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 11,
+          "foreign_guest_nights": 644600,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 12,
+          "foreign_guest_nights": 1560780,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 1,
+          "foreign_guest_nights": 1520020,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 2,
+          "foreign_guest_nights": 1564720,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 3,
+          "foreign_guest_nights": 991600,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 4,
+          "foreign_guest_nights": 513710,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 5,
+          "foreign_guest_nights": 614560,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 6,
+          "foreign_guest_nights": 730250,
+          "survey_scope": "客室数20室以上の施設"
+        }
+      ]
+    },
+    "青森県": {
+      "foreign_guest_nights": 43160,
+      "nationality": {
+        "韓国": 6600,
+        "中国": 4590,
+        "香港": 1840,
+        "台湾": 19510,
+        "米国": 3370,
+        "カナダ": 390,
+        "英国": 320,
+        "ドイツ": 490,
+        "フランス": 380,
+        "ロシア": 50,
+        "シンガポール": 1340,
+        "タイ": 250,
+        "マレーシア": 210,
+        "インド": 90,
+        "オーストラリア": 850,
+        "インドネシア": 160,
+        "ベトナム": 270,
+        "フィリピン": 500,
+        "イタリア": 120,
+        "スペイン": 100,
+        "北欧地域": 150,
+        "中東地域": 190,
+        "メキシコ": 20,
+        "その他": 1320
+      },
+      "monthly": [
+        {
+          "year": 2025,
+          "month": 7,
+          "foreign_guest_nights": 38090,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 8,
+          "foreign_guest_nights": 34630,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 9,
+          "foreign_guest_nights": 32560,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 10,
+          "foreign_guest_nights": 73370,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 11,
+          "foreign_guest_nights": 54330,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 12,
+          "foreign_guest_nights": 36380,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 1,
+          "foreign_guest_nights": 42770,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 2,
+          "foreign_guest_nights": 67700,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 3,
+          "foreign_guest_nights": 30410,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 4,
+          "foreign_guest_nights": 68170,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 5,
+          "foreign_guest_nights": 40550,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 6,
+          "foreign_guest_nights": 43160,
+          "survey_scope": "客室数20室以上の施設"
+        }
+      ]
+    },
+    "岩手県": {
+      "foreign_guest_nights": 21660,
+      "nationality": {
+        "韓国": 1730,
+        "中国": 1260,
+        "香港": 740,
+        "台湾": 10820,
+        "米国": 1310,
+        "カナダ": 190,
+        "英国": 240,
+        "ドイツ": 170,
+        "フランス": 190,
+        "ロシア": 50,
+        "シンガポール": 500,
+        "タイ": 140,
+        "マレーシア": 150,
+        "インド": 110,
+        "オーストラリア": 580,
+        "インドネシア": 220,
+        "ベトナム": 1230,
+        "フィリピン": 170,
+        "イタリア": 40,
+        "スペイン": 80,
+        "北欧地域": 120,
+        "中東地域": 30,
+        "メキシコ": 30,
+        "その他": 1550
+      },
+      "monthly": [
+        {
+          "year": 2025,
+          "month": 7,
+          "foreign_guest_nights": 26420,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 8,
+          "foreign_guest_nights": 29860,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 9,
+          "foreign_guest_nights": 24810,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 10,
+          "foreign_guest_nights": 35220,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 11,
+          "foreign_guest_nights": 28220,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 12,
+          "foreign_guest_nights": 42980,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 1,
+          "foreign_guest_nights": 59670,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 2,
+          "foreign_guest_nights": 55750,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 3,
+          "foreign_guest_nights": 26680,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 4,
+          "foreign_guest_nights": 39980,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 5,
+          "foreign_guest_nights": 24830,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 6,
+          "foreign_guest_nights": 21660,
+          "survey_scope": "客室数20室以上の施設"
+        }
+      ]
+    },
+    "宮城県": {
+      "foreign_guest_nights": 74200,
+      "nationality": {
+        "韓国": 3010,
+        "中国": 7280,
+        "香港": 4460,
+        "台湾": 37310,
+        "米国": 6850,
+        "カナダ": 720,
+        "英国": 910,
+        "ドイツ": 750,
+        "フランス": 820,
+        "ロシア": 280,
+        "シンガポール": 1480,
+        "タイ": 790,
+        "マレーシア": 420,
+        "インド": 200,
+        "オーストラリア": 1390,
+        "インドネシア": 580,
+        "ベトナム": 280,
+        "フィリピン": 260,
+        "イタリア": 250,
+        "スペイン": 220,
+        "北欧地域": 420,
+        "中東地域": 190,
+        "メキシコ": 40,
+        "その他": 5150
+      },
+      "monthly": [
+        {
+          "year": 2025,
+          "month": 7,
+          "foreign_guest_nights": 62770,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 8,
+          "foreign_guest_nights": 75190,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 9,
+          "foreign_guest_nights": 59010,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 10,
+          "foreign_guest_nights": 95940,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 11,
+          "foreign_guest_nights": 103360,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 12,
+          "foreign_guest_nights": 99910,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 1,
+          "foreign_guest_nights": 105190,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 2,
+          "foreign_guest_nights": 116340,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 3,
+          "foreign_guest_nights": 93920,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 4,
+          "foreign_guest_nights": 119860,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 5,
+          "foreign_guest_nights": 74700,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 6,
+          "foreign_guest_nights": 74200,
+          "survey_scope": "客室数20室以上の施設"
+        }
+      ]
+    },
+    "秋田県": {
+      "foreign_guest_nights": 11400,
+      "nationality": {
+        "韓国": 440,
+        "中国": 1340,
+        "香港": 210,
+        "台湾": 6020,
+        "米国": 560,
+        "カナダ": 200,
+        "英国": 140,
+        "ドイツ": 190,
+        "フランス": 80,
+        "ロシア": 40,
+        "シンガポール": 370,
+        "タイ": 160,
+        "マレーシア": 70,
+        "インド": 60,
+        "オーストラリア": 290,
+        "インドネシア": 120,
+        "ベトナム": 30,
+        "フィリピン": 320,
+        "イタリア": 20,
+        "スペイン": 60,
+        "北欧地域": 60,
+        "中東地域": 10,
+        "メキシコ": 0,
+        "その他": 610
+      },
+      "monthly": [
+        {
+          "year": 2025,
+          "month": 7,
+          "foreign_guest_nights": 9970,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 8,
+          "foreign_guest_nights": 11370,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 9,
+          "foreign_guest_nights": 6880,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 10,
+          "foreign_guest_nights": 18020,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 11,
+          "foreign_guest_nights": 14190,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 12,
+          "foreign_guest_nights": 7310,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 1,
+          "foreign_guest_nights": 7730,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 2,
+          "foreign_guest_nights": 11200,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 3,
+          "foreign_guest_nights": 8740,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 4,
+          "foreign_guest_nights": 20260,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 5,
+          "foreign_guest_nights": 10100,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 6,
+          "foreign_guest_nights": 11400,
+          "survey_scope": "客室数20室以上の施設"
+        }
+      ]
+    },
+    "山形県": {
+      "foreign_guest_nights": 9530,
+      "nationality": {
+        "韓国": 600,
+        "中国": 870,
+        "香港": 420,
+        "台湾": 5050,
+        "米国": 470,
+        "カナダ": 50,
+        "英国": 60,
+        "ドイツ": 110,
+        "フランス": 130,
+        "ロシア": 40,
+        "シンガポール": 190,
+        "タイ": 110,
+        "マレーシア": 120,
+        "インド": 10,
+        "オーストラリア": 220,
+        "インドネシア": 50,
+        "ベトナム": 30,
+        "フィリピン": 30,
+        "イタリア": 100,
+        "スペイン": 100,
+        "北欧地域": 50,
+        "中東地域": 70,
+        "メキシコ": 30,
+        "その他": 610
+      },
+      "monthly": [
+        {
+          "year": 2025,
+          "month": 7,
+          "foreign_guest_nights": 10180,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 8,
+          "foreign_guest_nights": 9060,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 9,
+          "foreign_guest_nights": 9800,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 10,
+          "foreign_guest_nights": 20420,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 11,
+          "foreign_guest_nights": 18500,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 12,
+          "foreign_guest_nights": 36010,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 1,
+          "foreign_guest_nights": 51070,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 2,
+          "foreign_guest_nights": 54050,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 3,
+          "foreign_guest_nights": 31810,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 4,
+          "foreign_guest_nights": 18220,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 5,
+          "foreign_guest_nights": 12310,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 6,
+          "foreign_guest_nights": 9530,
+          "survey_scope": "客室数20室以上の施設"
+        }
+      ]
+    },
+    "福島県": {
+      "foreign_guest_nights": 25650,
+      "nationality": {
+        "韓国": 570,
+        "中国": 2330,
+        "香港": 860,
+        "台湾": 15180,
+        "米国": 1340,
+        "カナダ": 100,
+        "英国": 210,
+        "ドイツ": 200,
+        "フランス": 190,
+        "ロシア": 40,
+        "シンガポール": 340,
+        "タイ": 280,
+        "マレーシア": 210,
+        "インド": 150,
+        "オーストラリア": 400,
+        "インドネシア": 400,
+        "ベトナム": 380,
+        "フィリピン": 60,
+        "イタリア": 180,
+        "スペイン": 70,
+        "北欧地域": 160,
+        "中東地域": 130,
+        "メキシコ": 20,
+        "その他": 1780
+      },
+      "monthly": [
+        {
+          "year": 2025,
+          "month": 7,
+          "foreign_guest_nights": 14560,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 8,
+          "foreign_guest_nights": 15290,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 9,
+          "foreign_guest_nights": 17570,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 10,
+          "foreign_guest_nights": 27050,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 11,
+          "foreign_guest_nights": 36550,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 12,
+          "foreign_guest_nights": 30080,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 1,
+          "foreign_guest_nights": 64040,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 2,
+          "foreign_guest_nights": 58550,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 3,
+          "foreign_guest_nights": 41920,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 4,
+          "foreign_guest_nights": 45760,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 5,
+          "foreign_guest_nights": 20520,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 6,
+          "foreign_guest_nights": 25650,
+          "survey_scope": "客室数20室以上の施設"
+        }
+      ]
+    },
+    "茨城県": {
+      "foreign_guest_nights": 28000,
+      "nationality": {
+        "韓国": 3880,
+        "中国": 6490,
+        "香港": 450,
+        "台湾": 3190,
+        "米国": 2540,
+        "カナダ": 250,
+        "英国": 940,
+        "ドイツ": 600,
+        "フランス": 300,
+        "ロシア": 110,
+        "シンガポール": 300,
+        "タイ": 1500,
+        "マレーシア": 270,
+        "インド": 550,
+        "オーストラリア": 150,
+        "インドネシア": 970,
+        "ベトナム": 380,
+        "フィリピン": 550,
+        "イタリア": 230,
+        "スペイン": 30,
+        "北欧地域": 170,
+        "中東地域": 100,
+        "メキシコ": 40,
+        "その他": 2210
+      },
+      "monthly": [
+        {
+          "year": 2025,
+          "month": 7,
+          "foreign_guest_nights": 16950,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 8,
+          "foreign_guest_nights": 19500,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 9,
+          "foreign_guest_nights": 28690,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 10,
+          "foreign_guest_nights": 40430,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 11,
+          "foreign_guest_nights": 31040,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 12,
+          "foreign_guest_nights": 16350,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 1,
+          "foreign_guest_nights": 21720,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 2,
+          "foreign_guest_nights": 27470,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 3,
+          "foreign_guest_nights": 35610,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 4,
+          "foreign_guest_nights": 42850,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 5,
+          "foreign_guest_nights": 32840,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 6,
+          "foreign_guest_nights": 28000,
+          "survey_scope": "客室数20室以上の施設"
+        }
+      ]
+    },
+    "栃木県": {
+      "foreign_guest_nights": 27080,
+      "nationality": {
+        "韓国": 4370,
+        "中国": 3670,
+        "香港": 970,
+        "台湾": 3250,
+        "米国": 4820,
+        "カナダ": 360,
+        "英国": 520,
+        "ドイツ": 450,
+        "フランス": 610,
+        "ロシア": 30,
+        "シンガポール": 750,
+        "タイ": 700,
+        "マレーシア": 360,
+        "インド": 480,
+        "オーストラリア": 630,
+        "インドネシア": 270,
+        "ベトナム": 470,
+        "フィリピン": 210,
+        "イタリア": 270,
+        "スペイン": 160,
+        "北欧地域": 340,
+        "中東地域": 170,
+        "メキシコ": 70,
+        "その他": 3080
+      },
+      "monthly": [
+        {
+          "year": 2025,
+          "month": 7,
+          "foreign_guest_nights": 20210,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 8,
+          "foreign_guest_nights": 18680,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 9,
+          "foreign_guest_nights": 26830,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 10,
+          "foreign_guest_nights": 48850,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 11,
+          "foreign_guest_nights": 50800,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 12,
+          "foreign_guest_nights": 24800,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 1,
+          "foreign_guest_nights": 30070,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 2,
+          "foreign_guest_nights": 29570,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 3,
+          "foreign_guest_nights": 27940,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 4,
+          "foreign_guest_nights": 37560,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 5,
+          "foreign_guest_nights": 31010,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 6,
+          "foreign_guest_nights": 27080,
+          "survey_scope": "客室数20室以上の施設"
+        }
+      ]
+    },
+    "群馬県": {
+      "foreign_guest_nights": 16130,
+      "nationality": {
+        "韓国": 870,
+        "中国": 2020,
+        "香港": 1410,
+        "台湾": 2510,
+        "米国": 2220,
+        "カナダ": 780,
+        "英国": 300,
+        "ドイツ": 100,
+        "フランス": 420,
+        "ロシア": 80,
+        "シンガポール": 600,
+        "タイ": 510,
+        "マレーシア": 120,
+        "インド": 190,
+        "オーストラリア": 650,
+        "インドネシア": 150,
+        "ベトナム": 230,
+        "フィリピン": 230,
+        "イタリア": 290,
+        "スペイン": 80,
+        "北欧地域": 250,
+        "中東地域": 60,
+        "メキシコ": 10,
+        "その他": 2060
+      },
+      "monthly": [
+        {
+          "year": 2025,
+          "month": 7,
+          "foreign_guest_nights": 14050,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 8,
+          "foreign_guest_nights": 12660,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 9,
+          "foreign_guest_nights": 14990,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 10,
+          "foreign_guest_nights": 23400,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 11,
+          "foreign_guest_nights": 30040,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 12,
+          "foreign_guest_nights": 35320,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 1,
+          "foreign_guest_nights": 35540,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 2,
+          "foreign_guest_nights": 44670,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 3,
+          "foreign_guest_nights": 23550,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 4,
+          "foreign_guest_nights": 30350,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 5,
+          "foreign_guest_nights": 22880,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 6,
+          "foreign_guest_nights": 16130,
+          "survey_scope": "客室数20室以上の施設"
+        }
+      ]
+    },
+    "埼玉県": {
+      "foreign_guest_nights": 21640,
+      "nationality": {
+        "韓国": 1900,
+        "中国": 4470,
+        "香港": 580,
+        "台湾": 2560,
+        "米国": 3310,
+        "カナダ": 480,
+        "英国": 400,
+        "ドイツ": 270,
+        "フランス": 150,
+        "ロシア": 120,
+        "シンガポール": 280,
+        "タイ": 980,
+        "マレーシア": 690,
+        "インド": 470,
+        "オーストラリア": 370,
+        "インドネシア": 200,
+        "ベトナム": 540,
+        "フィリピン": 220,
+        "イタリア": 80,
+        "スペイン": 150,
+        "北欧地域": 350,
+        "中東地域": 90,
+        "メキシコ": 20,
+        "その他": 2410
+      },
+      "monthly": [
+        {
+          "year": 2025,
+          "month": 7,
+          "foreign_guest_nights": 16990,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 8,
+          "foreign_guest_nights": 20680,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 9,
+          "foreign_guest_nights": 20210,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 10,
+          "foreign_guest_nights": 26320,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 11,
+          "foreign_guest_nights": 25640,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 12,
+          "foreign_guest_nights": 23330,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 1,
+          "foreign_guest_nights": 20070,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 2,
+          "foreign_guest_nights": 19110,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 3,
+          "foreign_guest_nights": 28160,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 4,
+          "foreign_guest_nights": 30220,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 5,
+          "foreign_guest_nights": 28480,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 6,
+          "foreign_guest_nights": 21640,
+          "survey_scope": "客室数20室以上の施設"
+        }
+      ]
+    },
+    "千葉県": {
+      "foreign_guest_nights": 313990,
+      "nationality": {
+        "韓国": 19150,
+        "中国": 21740,
+        "香港": 7020,
+        "台湾": 40330,
+        "米国": 88460,
+        "カナダ": 5470,
+        "英国": 2520,
+        "ドイツ": 1280,
+        "フランス": 1210,
+        "ロシア": 810,
+        "シンガポール": 9470,
+        "タイ": 11090,
+        "マレーシア": 4660,
+        "インド": 5890,
+        "オーストラリア": 17380,
+        "インドネシア": 4890,
+        "ベトナム": 3630,
+        "フィリピン": 8960,
+        "イタリア": 770,
+        "スペイン": 1330,
+        "北欧地域": 1400,
+        "中東地域": 1690,
+        "メキシコ": 3880,
+        "その他": 21530
+      },
+      "monthly": [
+        {
+          "year": 2025,
+          "month": 7,
+          "foreign_guest_nights": 448900,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 8,
+          "foreign_guest_nights": 334600,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 9,
+          "foreign_guest_nights": 294560,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 10,
+          "foreign_guest_nights": 388470,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 11,
+          "foreign_guest_nights": 264050,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 12,
+          "foreign_guest_nights": 293610,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 1,
+          "foreign_guest_nights": 325900,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 2,
+          "foreign_guest_nights": 309070,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 3,
+          "foreign_guest_nights": 339600,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 4,
+          "foreign_guest_nights": 436100,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 5,
+          "foreign_guest_nights": 365850,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 6,
+          "foreign_guest_nights": 313990,
+          "survey_scope": "客室数20室以上の施設"
+        }
+      ]
+    },
+    "東京都": {
+      "foreign_guest_nights": 3718990,
+      "nationality": {
+        "韓国": 268580,
+        "中国": 478910,
+        "香港": 124130,
+        "台湾": 367110,
+        "米国": 877320,
+        "カナダ": 83060,
+        "英国": 102270,
+        "ドイツ": 60440,
+        "フランス": 60520,
+        "ロシア": 46310,
+        "シンガポール": 123900,
+        "タイ": 56060,
+        "マレーシア": 46450,
+        "インド": 107120,
+        "オーストラリア": 141930,
+        "インドネシア": 61850,
+        "ベトナム": 18260,
+        "フィリピン": 61380,
+        "イタリア": 53930,
+        "スペイン": 50990,
+        "北欧地域": 55360,
+        "中東地域": 59590,
+        "メキシコ": 38760,
+        "その他": 348000
+      },
+      "monthly": [
+        {
+          "year": 2025,
+          "month": 7,
+          "foreign_guest_nights": 3913780,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 8,
+          "foreign_guest_nights": 3917080,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 9,
+          "foreign_guest_nights": 3878560,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 10,
+          "foreign_guest_nights": 4530030,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 11,
+          "foreign_guest_nights": 4171440,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 12,
+          "foreign_guest_nights": 4494040,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 1,
+          "foreign_guest_nights": 3646340,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 2,
+          "foreign_guest_nights": 3715300,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 3,
+          "foreign_guest_nights": 4122720,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 4,
+          "foreign_guest_nights": 4221740,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 5,
+          "foreign_guest_nights": 4326020,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 6,
+          "foreign_guest_nights": 3718990,
+          "survey_scope": "客室数20室以上の施設"
+        }
+      ]
+    },
+    "神奈川県": {
+      "foreign_guest_nights": 281880,
+      "nationality": {
+        "韓国": 14020,
+        "中国": 50680,
+        "香港": 9780,
+        "台湾": 28910,
+        "米国": 57730,
+        "カナダ": 4130,
+        "英国": 6540,
+        "ドイツ": 4730,
+        "フランス": 5540,
+        "ロシア": 1920,
+        "シンガポール": 6920,
+        "タイ": 5110,
+        "マレーシア": 3080,
+        "インド": 6590,
+        "オーストラリア": 12350,
+        "インドネシア": 1850,
+        "ベトナム": 1970,
+        "フィリピン": 2480,
+        "イタリア": 2770,
+        "スペイン": 4050,
+        "北欧地域": 4440,
+        "中東地域": 2720,
+        "メキシコ": 2110,
+        "その他": 26770
+      },
+      "monthly": [
+        {
+          "year": 2025,
+          "month": 7,
+          "foreign_guest_nights": 304360,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 8,
+          "foreign_guest_nights": 319290,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 9,
+          "foreign_guest_nights": 333460,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 10,
+          "foreign_guest_nights": 489640,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 11,
+          "foreign_guest_nights": 361560,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 12,
+          "foreign_guest_nights": 312200,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 1,
+          "foreign_guest_nights": 219420,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 2,
+          "foreign_guest_nights": 259310,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 3,
+          "foreign_guest_nights": 359600,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 4,
+          "foreign_guest_nights": 409710,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 5,
+          "foreign_guest_nights": 372960,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 6,
+          "foreign_guest_nights": 281880,
+          "survey_scope": "客室数20室以上の施設"
+        }
+      ]
+    },
+    "新潟県": {
+      "foreign_guest_nights": 28700,
+      "nationality": {
+        "韓国": 4110,
+        "中国": 2250,
+        "香港": 1440,
+        "台湾": 4220,
+        "米国": 1940,
+        "カナダ": 200,
+        "英国": 330,
+        "ドイツ": 310,
+        "フランス": 170,
+        "ロシア": 60,
+        "シンガポール": 820,
+        "タイ": 450,
+        "マレーシア": 980,
+        "インド": 1180,
+        "オーストラリア": 390,
+        "インドネシア": 850,
+        "ベトナム": 380,
+        "フィリピン": 1290,
+        "イタリア": 50,
+        "スペイン": 110,
+        "北欧地域": 200,
+        "中東地域": 60,
+        "メキシコ": 10,
+        "その他": 3220
+      },
+      "monthly": [
+        {
+          "year": 2025,
+          "month": 7,
+          "foreign_guest_nights": 16780,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 8,
+          "foreign_guest_nights": 16850,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 9,
+          "foreign_guest_nights": 13490,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 10,
+          "foreign_guest_nights": 24350,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 11,
+          "foreign_guest_nights": 23680,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 12,
+          "foreign_guest_nights": 68500,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 1,
+          "foreign_guest_nights": 139880,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 2,
+          "foreign_guest_nights": 143560,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 3,
+          "foreign_guest_nights": 82050,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 4,
+          "foreign_guest_nights": 31780,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 5,
+          "foreign_guest_nights": 23570,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 6,
+          "foreign_guest_nights": 28700,
+          "survey_scope": "客室数20室以上の施設"
+        }
+      ]
+    },
+    "富山県": {
+      "foreign_guest_nights": 23000,
+      "nationality": {
+        "韓国": 1060,
+        "中国": 2860,
+        "香港": 1250,
+        "台湾": 5460,
+        "米国": 1310,
+        "カナダ": 80,
+        "英国": 310,
+        "ドイツ": 210,
+        "フランス": 240,
+        "ロシア": 210,
+        "シンガポール": 840,
+        "タイ": 1180,
+        "マレーシア": 270,
+        "インド": 190,
+        "オーストラリア": 240,
+        "インドネシア": 210,
+        "ベトナム": 100,
+        "フィリピン": 130,
+        "イタリア": 20,
+        "スペイン": 30,
+        "北欧地域": 50,
+        "中東地域": 60,
+        "メキシコ": 10,
+        "その他": 2020
+      },
+      "monthly": [
+        {
+          "year": 2025,
+          "month": 7,
+          "foreign_guest_nights": 20850,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 8,
+          "foreign_guest_nights": 16740,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 9,
+          "foreign_guest_nights": 20350,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 10,
+          "foreign_guest_nights": 31910,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 11,
+          "foreign_guest_nights": 23550,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 12,
+          "foreign_guest_nights": 14900,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 1,
+          "foreign_guest_nights": 12650,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 2,
+          "foreign_guest_nights": 21300,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 3,
+          "foreign_guest_nights": 12520,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 4,
+          "foreign_guest_nights": 76600,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 5,
+          "foreign_guest_nights": 63000,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 6,
+          "foreign_guest_nights": 23000,
+          "survey_scope": "客室数20室以上の施設"
+        }
+      ]
+    },
+    "石川県": {
+      "foreign_guest_nights": 121010,
+      "nationality": {
+        "韓国": 3820,
+        "中国": 8710,
+        "香港": 5080,
+        "台湾": 22100,
+        "米国": 21740,
+        "カナダ": 2250,
+        "英国": 4250,
+        "ドイツ": 2640,
+        "フランス": 4870,
+        "ロシア": 600,
+        "シンガポール": 3010,
+        "タイ": 690,
+        "マレーシア": 750,
+        "インド": 820,
+        "オーストラリア": 5360,
+        "インドネシア": 1090,
+        "ベトナム": 330,
+        "フィリピン": 320,
+        "イタリア": 7280,
+        "スペイン": 5420,
+        "北欧地域": 3870,
+        "中東地域": 1650,
+        "メキシコ": 600,
+        "その他": 13770
+      },
+      "monthly": [
+        {
+          "year": 2025,
+          "month": 7,
+          "foreign_guest_nights": 109140,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 8,
+          "foreign_guest_nights": 118150,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 9,
+          "foreign_guest_nights": 124720,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 10,
+          "foreign_guest_nights": 227350,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 11,
+          "foreign_guest_nights": 218940,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 12,
+          "foreign_guest_nights": 141590,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 1,
+          "foreign_guest_nights": 92880,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 2,
+          "foreign_guest_nights": 106460,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 3,
+          "foreign_guest_nights": 147760,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 4,
+          "foreign_guest_nights": 234030,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 5,
+          "foreign_guest_nights": 205540,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 6,
+          "foreign_guest_nights": 121010,
+          "survey_scope": "客室数20室以上の施設"
+        }
+      ]
+    },
+    "福井県": {
+      "foreign_guest_nights": 8420,
+      "nationality": {
+        "韓国": 640,
+        "中国": 1560,
+        "香港": 690,
+        "台湾": 2170,
+        "米国": 560,
+        "カナダ": 70,
+        "英国": 80,
+        "ドイツ": 70,
+        "フランス": 130,
+        "ロシア": 10,
+        "シンガポール": 130,
+        "タイ": 160,
+        "マレーシア": 50,
+        "インド": 70,
+        "オーストラリア": 120,
+        "インドネシア": 70,
+        "ベトナム": 180,
+        "フィリピン": 130,
+        "イタリア": 40,
+        "スペイン": 70,
+        "北欧地域": 60,
+        "中東地域": 0,
+        "メキシコ": 0,
+        "その他": 1340
+      },
+      "monthly": [
+        {
+          "year": 2025,
+          "month": 7,
+          "foreign_guest_nights": 5630,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 8,
+          "foreign_guest_nights": 4440,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 9,
+          "foreign_guest_nights": 5110,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 10,
+          "foreign_guest_nights": 7950,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 11,
+          "foreign_guest_nights": 10720,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 12,
+          "foreign_guest_nights": 8920,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 1,
+          "foreign_guest_nights": 8020,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 2,
+          "foreign_guest_nights": 8740,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 3,
+          "foreign_guest_nights": 7750,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 4,
+          "foreign_guest_nights": 11150,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 5,
+          "foreign_guest_nights": 10830,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 6,
+          "foreign_guest_nights": 8420,
+          "survey_scope": "客室数20室以上の施設"
+        }
+      ]
+    },
+    "山梨県": {
+      "foreign_guest_nights": 96700,
+      "nationality": {
+        "韓国": 4270,
+        "中国": 11440,
+        "香港": 6400,
+        "台湾": 17170,
+        "米国": 11390,
+        "カナダ": 1010,
+        "英国": 1690,
+        "ドイツ": 1120,
+        "フランス": 1710,
+        "ロシア": 810,
+        "シンガポール": 5090,
+        "タイ": 8260,
+        "マレーシア": 2010,
+        "インド": 2150,
+        "オーストラリア": 2200,
+        "インドネシア": 1900,
+        "ベトナム": 3860,
+        "フィリピン": 940,
+        "イタリア": 440,
+        "スペイン": 670,
+        "北欧地域": 1080,
+        "中東地域": 820,
+        "メキシコ": 310,
+        "その他": 9840
+      },
+      "monthly": [
+        {
+          "year": 2025,
+          "month": 7,
+          "foreign_guest_nights": 119090,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 8,
+          "foreign_guest_nights": 114210,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 9,
+          "foreign_guest_nights": 100320,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 10,
+          "foreign_guest_nights": 148530,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 11,
+          "foreign_guest_nights": 142430,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 12,
+          "foreign_guest_nights": 154570,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 1,
+          "foreign_guest_nights": 127600,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 2,
+          "foreign_guest_nights": 158990,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 3,
+          "foreign_guest_nights": 178210,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 4,
+          "foreign_guest_nights": 216290,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 5,
+          "foreign_guest_nights": 179310,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 6,
+          "foreign_guest_nights": 96700,
+          "survey_scope": "客室数20室以上の施設"
+        }
+      ]
+    },
+    "長野県": {
+      "foreign_guest_nights": 93520,
+      "nationality": {
+        "韓国": 3150,
+        "中国": 8320,
+        "香港": 5730,
+        "台湾": 23020,
+        "米国": 8810,
+        "カナダ": 960,
+        "英国": 1940,
+        "ドイツ": 1450,
+        "フランス": 2080,
+        "ロシア": 330,
+        "シンガポール": 6210,
+        "タイ": 5740,
+        "マレーシア": 1610,
+        "インド": 1050,
+        "オーストラリア": 2580,
+        "インドネシア": 2900,
+        "ベトナム": 710,
+        "フィリピン": 850,
+        "イタリア": 500,
+        "スペイン": 790,
+        "北欧地域": 1180,
+        "中東地域": 1010,
+        "メキシコ": 290,
+        "その他": 9670
+      },
+      "monthly": [
+        {
+          "year": 2025,
+          "month": 7,
+          "foreign_guest_nights": 99050,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 8,
+          "foreign_guest_nights": 72270,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 9,
+          "foreign_guest_nights": 80720,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 10,
+          "foreign_guest_nights": 185970,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 11,
+          "foreign_guest_nights": 135490,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 12,
+          "foreign_guest_nights": 212900,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 1,
+          "foreign_guest_nights": 241880,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 2,
+          "foreign_guest_nights": 260880,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 3,
+          "foreign_guest_nights": 145670,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 4,
+          "foreign_guest_nights": 168400,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 5,
+          "foreign_guest_nights": 152690,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 6,
+          "foreign_guest_nights": 93520,
+          "survey_scope": "客室数20室以上の施設"
+        }
+      ]
+    },
+    "岐阜県": {
+      "foreign_guest_nights": 85730,
+      "nationality": {
+        "韓国": 5850,
+        "中国": 4550,
+        "香港": 3890,
+        "台湾": 17180,
+        "米国": 9780,
+        "カナダ": 1060,
+        "英国": 2030,
+        "ドイツ": 1090,
+        "フランス": 2160,
+        "ロシア": 400,
+        "シンガポール": 3340,
+        "タイ": 4150,
+        "マレーシア": 1480,
+        "インド": 830,
+        "オーストラリア": 3810,
+        "インドネシア": 2410,
+        "ベトナム": 1310,
+        "フィリピン": 890,
+        "イタリア": 3820,
+        "スペイン": 6320,
+        "北欧地域": 1430,
+        "中東地域": 1300,
+        "メキシコ": 330,
+        "その他": 6260
+      },
+      "monthly": [
+        {
+          "year": 2025,
+          "month": 7,
+          "foreign_guest_nights": 98040,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 8,
+          "foreign_guest_nights": 108390,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 9,
+          "foreign_guest_nights": 89950,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 10,
+          "foreign_guest_nights": 169240,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 11,
+          "foreign_guest_nights": 150260,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 12,
+          "foreign_guest_nights": 123390,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 1,
+          "foreign_guest_nights": 119720,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 2,
+          "foreign_guest_nights": 140140,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 3,
+          "foreign_guest_nights": 133110,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 4,
+          "foreign_guest_nights": 156820,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 5,
+          "foreign_guest_nights": 149130,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 6,
+          "foreign_guest_nights": 85730,
+          "survey_scope": "客室数20室以上の施設"
+        }
+      ]
+    },
+    "静岡県": {
+      "foreign_guest_nights": 109290,
+      "nationality": {
+        "韓国": 15450,
+        "中国": 26690,
+        "香港": 5770,
+        "台湾": 11940,
+        "米国": 9670,
+        "カナダ": 1260,
+        "英国": 1250,
+        "ドイツ": 1460,
+        "フランス": 1630,
+        "ロシア": 1320,
+        "シンガポール": 4000,
+        "タイ": 2000,
+        "マレーシア": 2010,
+        "インド": 3230,
+        "オーストラリア": 3410,
+        "インドネシア": 2060,
+        "ベトナム": 3040,
+        "フィリピン": 900,
+        "イタリア": 460,
+        "スペイン": 300,
+        "北欧地域": 1240,
+        "中東地域": 590,
+        "メキシコ": 200,
+        "その他": 8430
+      },
+      "monthly": [
+        {
+          "year": 2025,
+          "month": 7,
+          "foreign_guest_nights": 173450,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 8,
+          "foreign_guest_nights": 150100,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 9,
+          "foreign_guest_nights": 128500,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 10,
+          "foreign_guest_nights": 186700,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 11,
+          "foreign_guest_nights": 159200,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 12,
+          "foreign_guest_nights": 127040,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 1,
+          "foreign_guest_nights": 89330,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 2,
+          "foreign_guest_nights": 107030,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 3,
+          "foreign_guest_nights": 124490,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 4,
+          "foreign_guest_nights": 153070,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 5,
+          "foreign_guest_nights": 144650,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 6,
+          "foreign_guest_nights": 109290,
+          "survey_scope": "客室数20室以上の施設"
+        }
+      ]
+    },
+    "愛知県": {
+      "foreign_guest_nights": 283260,
+      "nationality": {
+        "韓国": 44410,
+        "中国": 37290,
+        "香港": 17840,
+        "台湾": 82610,
+        "米国": 14040,
+        "カナダ": 2370,
+        "英国": 2800,
+        "ドイツ": 2270,
+        "フランス": 2840,
+        "ロシア": 820,
+        "シンガポール": 11800,
+        "タイ": 6900,
+        "マレーシア": 2860,
+        "インド": 3180,
+        "オーストラリア": 4810,
+        "インドネシア": 4420,
+        "ベトナム": 6660,
+        "フィリピン": 9780,
+        "イタリア": 1110,
+        "スペイン": 1130,
+        "北欧地域": 1900,
+        "中東地域": 1230,
+        "メキシコ": 430,
+        "その他": 15340
+      },
+      "monthly": [
+        {
+          "year": 2025,
+          "month": 7,
+          "foreign_guest_nights": 340540,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 8,
+          "foreign_guest_nights": 334700,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 9,
+          "foreign_guest_nights": 308770,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 10,
+          "foreign_guest_nights": 420270,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 11,
+          "foreign_guest_nights": 397670,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 12,
+          "foreign_guest_nights": 351400,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 1,
+          "foreign_guest_nights": 282700,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 2,
+          "foreign_guest_nights": 300590,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 3,
+          "foreign_guest_nights": 354070,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 4,
+          "foreign_guest_nights": 321290,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 5,
+          "foreign_guest_nights": 341770,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 6,
+          "foreign_guest_nights": 283260,
+          "survey_scope": "客室数20室以上の施設"
+        }
+      ]
+    },
+    "三重県": {
+      "foreign_guest_nights": 22480,
+      "nationality": {
+        "韓国": 1050,
+        "中国": 3950,
+        "香港": 2380,
+        "台湾": 5920,
+        "米国": 1970,
+        "カナダ": 190,
+        "英国": 170,
+        "ドイツ": 210,
+        "フランス": 590,
+        "ロシア": 70,
+        "シンガポール": 1300,
+        "タイ": 1150,
+        "マレーシア": 240,
+        "インド": 150,
+        "オーストラリア": 370,
+        "インドネシア": 230,
+        "ベトナム": 230,
+        "フィリピン": 230,
+        "イタリア": 140,
+        "スペイン": 160,
+        "北欧地域": 130,
+        "中東地域": 40,
+        "メキシコ": 40,
+        "その他": 1540
+      },
+      "monthly": [
+        {
+          "year": 2025,
+          "month": 7,
+          "foreign_guest_nights": 18450,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 8,
+          "foreign_guest_nights": 19900,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 9,
+          "foreign_guest_nights": 25920,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 10,
+          "foreign_guest_nights": 30570,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 11,
+          "foreign_guest_nights": 32710,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 12,
+          "foreign_guest_nights": 29230,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 1,
+          "foreign_guest_nights": 14380,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 2,
+          "foreign_guest_nights": 22340,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 3,
+          "foreign_guest_nights": 35290,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 4,
+          "foreign_guest_nights": 31650,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 5,
+          "foreign_guest_nights": 26060,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 6,
+          "foreign_guest_nights": 22480,
+          "survey_scope": "客室数20室以上の施設"
+        }
+      ]
+    },
+    "滋賀県": {
+      "foreign_guest_nights": 18520,
+      "nationality": {
+        "韓国": 1720,
+        "中国": 2180,
+        "香港": 1690,
+        "台湾": 5920,
+        "米国": 1350,
+        "カナダ": 140,
+        "英国": 230,
+        "ドイツ": 190,
+        "フランス": 150,
+        "ロシア": 40,
+        "シンガポール": 790,
+        "タイ": 390,
+        "マレーシア": 160,
+        "インド": 140,
+        "オーストラリア": 380,
+        "インドネシア": 130,
+        "ベトナム": 150,
+        "フィリピン": 100,
+        "イタリア": 60,
+        "スペイン": 70,
+        "北欧地域": 230,
+        "中東地域": 390,
+        "メキシコ": 20,
+        "その他": 1370
+      },
+      "monthly": [
+        {
+          "year": 2025,
+          "month": 7,
+          "foreign_guest_nights": 17830,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 8,
+          "foreign_guest_nights": 14020,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 9,
+          "foreign_guest_nights": 15200,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 10,
+          "foreign_guest_nights": 23170,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 11,
+          "foreign_guest_nights": 30650,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 12,
+          "foreign_guest_nights": 26280,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 1,
+          "foreign_guest_nights": 21670,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 2,
+          "foreign_guest_nights": 22890,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 3,
+          "foreign_guest_nights": 29440,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 4,
+          "foreign_guest_nights": 39910,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 5,
+          "foreign_guest_nights": 22420,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 6,
+          "foreign_guest_nights": 18520,
+          "survey_scope": "客室数20室以上の施設"
+        }
+      ]
+    },
+    "京都府": {
+      "foreign_guest_nights": 1095320,
+      "nationality": {
+        "韓国": 55110,
+        "中国": 127900,
+        "香港": 21350,
+        "台湾": 109820,
+        "米国": 271910,
+        "カナダ": 23170,
+        "英国": 31920,
+        "ドイツ": 20840,
+        "フランス": 25680,
+        "ロシア": 12700,
+        "シンガポール": 23510,
+        "タイ": 7770,
+        "マレーシア": 8210,
+        "インド": 29590,
+        "オーストラリア": 42100,
+        "インドネシア": 9970,
+        "ベトナム": 7800,
+        "フィリピン": 7000,
+        "イタリア": 35970,
+        "スペイン": 36410,
+        "北欧地域": 18010,
+        "中東地域": 19700,
+        "メキシコ": 9910,
+        "その他": 134630
+      },
+      "monthly": [
+        {
+          "year": 2025,
+          "month": 7,
+          "foreign_guest_nights": 1304250,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 8,
+          "foreign_guest_nights": 1333760,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 9,
+          "foreign_guest_nights": 1287040,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 10,
+          "foreign_guest_nights": 1498120,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 11,
+          "foreign_guest_nights": 1371700,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 12,
+          "foreign_guest_nights": 1206850,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 1,
+          "foreign_guest_nights": 749040,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 2,
+          "foreign_guest_nights": 796130,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 3,
+          "foreign_guest_nights": 1136630,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 4,
+          "foreign_guest_nights": 1431930,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 5,
+          "foreign_guest_nights": 1281710,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 6,
+          "foreign_guest_nights": 1095320,
+          "survey_scope": "客室数20室以上の施設"
+        }
+      ]
+    },
+    "大阪府": {
+      "foreign_guest_nights": 1608740,
+      "nationality": {
+        "韓国": 210540,
+        "中国": 247100,
+        "香港": 67020,
+        "台湾": 222030,
+        "米国": 232380,
+        "カナダ": 24590,
+        "英国": 31410,
+        "ドイツ": 21450,
+        "フランス": 19550,
+        "ロシア": 14010,
+        "シンガポール": 52140,
+        "タイ": 29190,
+        "マレーシア": 22770,
+        "インド": 37700,
+        "オーストラリア": 57610,
+        "インドネシア": 25680,
+        "ベトナム": 15720,
+        "フィリピン": 28940,
+        "イタリア": 18630,
+        "スペイン": 18740,
+        "北欧地域": 18210,
+        "中東地域": 11220,
+        "メキシコ": 12000,
+        "その他": 163880
+      },
+      "monthly": [
+        {
+          "year": 2025,
+          "month": 7,
+          "foreign_guest_nights": 1851980,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 8,
+          "foreign_guest_nights": 1859570,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 9,
+          "foreign_guest_nights": 1390290,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 10,
+          "foreign_guest_nights": 2037730,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 11,
+          "foreign_guest_nights": 1921540,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 12,
+          "foreign_guest_nights": 1834140,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 1,
+          "foreign_guest_nights": 1581910,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 2,
+          "foreign_guest_nights": 1799490,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 3,
+          "foreign_guest_nights": 1847130,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 4,
+          "foreign_guest_nights": 2053870,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 5,
+          "foreign_guest_nights": 1883850,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 6,
+          "foreign_guest_nights": 1608740,
+          "survey_scope": "客室数20室以上の施設"
+        }
+      ]
+    },
+    "兵庫県": {
+      "foreign_guest_nights": 129810,
+      "nationality": {
+        "韓国": 18180,
+        "中国": 25110,
+        "香港": 6140,
+        "台湾": 42310,
+        "米国": 8480,
+        "カナダ": 900,
+        "英国": 1470,
+        "ドイツ": 1570,
+        "フランス": 1750,
+        "ロシア": 430,
+        "シンガポール": 2750,
+        "タイ": 910,
+        "マレーシア": 680,
+        "インド": 1020,
+        "オーストラリア": 1900,
+        "インドネシア": 630,
+        "ベトナム": 600,
+        "フィリピン": 1260,
+        "イタリア": 740,
+        "スペイン": 850,
+        "北欧地域": 680,
+        "中東地域": 580,
+        "メキシコ": 120,
+        "その他": 9000
+      },
+      "monthly": [
+        {
+          "year": 2025,
+          "month": 7,
+          "foreign_guest_nights": 143730,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 8,
+          "foreign_guest_nights": 126230,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 9,
+          "foreign_guest_nights": 152450,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 10,
+          "foreign_guest_nights": 225870,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 11,
+          "foreign_guest_nights": 184790,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 12,
+          "foreign_guest_nights": 159510,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 1,
+          "foreign_guest_nights": 108310,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 2,
+          "foreign_guest_nights": 121810,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 3,
+          "foreign_guest_nights": 135990,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 4,
+          "foreign_guest_nights": 161130,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 5,
+          "foreign_guest_nights": 142680,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 6,
+          "foreign_guest_nights": 129810,
+          "survey_scope": "客室数20室以上の施設"
+        }
+      ]
+    },
+    "奈良県": {
+      "foreign_guest_nights": 27930,
+      "nationality": {
+        "韓国": 1920,
+        "中国": 3500,
+        "香港": 1360,
+        "台湾": 2910,
+        "米国": 8800,
+        "カナダ": 270,
+        "英国": 520,
+        "ドイツ": 310,
+        "フランス": 1680,
+        "ロシア": 180,
+        "シンガポール": 760,
+        "タイ": 320,
+        "マレーシア": 260,
+        "インド": 180,
+        "オーストラリア": 740,
+        "インドネシア": 130,
+        "ベトナム": 80,
+        "フィリピン": 130,
+        "イタリア": 410,
+        "スペイン": 340,
+        "北欧地域": 250,
+        "中東地域": 80,
+        "メキシコ": 60,
+        "その他": 2730
+      },
+      "monthly": [
+        {
+          "year": 2025,
+          "month": 7,
+          "foreign_guest_nights": 39670,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 8,
+          "foreign_guest_nights": 28260,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 9,
+          "foreign_guest_nights": 28060,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 10,
+          "foreign_guest_nights": 44360,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 11,
+          "foreign_guest_nights": 35660,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 12,
+          "foreign_guest_nights": 25250,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 1,
+          "foreign_guest_nights": 22890,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 2,
+          "foreign_guest_nights": 24400,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 3,
+          "foreign_guest_nights": 37010,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 4,
+          "foreign_guest_nights": 45550,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 5,
+          "foreign_guest_nights": 34100,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 6,
+          "foreign_guest_nights": 27930,
+          "survey_scope": "客室数20室以上の施設"
+        }
+      ]
+    },
+    "和歌山県": {
+      "foreign_guest_nights": 35350,
+      "nationality": {
+        "韓国": 3820,
+        "中国": 8870,
+        "香港": 3930,
+        "台湾": 4860,
+        "米国": 2770,
+        "カナダ": 760,
+        "英国": 770,
+        "ドイツ": 700,
+        "フランス": 1130,
+        "ロシア": 270,
+        "シンガポール": 880,
+        "タイ": 340,
+        "マレーシア": 320,
+        "インド": 110,
+        "オーストラリア": 990,
+        "インドネシア": 90,
+        "ベトナム": 110,
+        "フィリピン": 30,
+        "イタリア": 420,
+        "スペイン": 280,
+        "北欧地域": 150,
+        "中東地域": 20,
+        "メキシコ": 80,
+        "その他": 3420
+      },
+      "monthly": [
+        {
+          "year": 2025,
+          "month": 7,
+          "foreign_guest_nights": 48560,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 8,
+          "foreign_guest_nights": 48970,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 9,
+          "foreign_guest_nights": 50260,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 10,
+          "foreign_guest_nights": 79730,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 11,
+          "foreign_guest_nights": 63400,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 12,
+          "foreign_guest_nights": 36980,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 1,
+          "foreign_guest_nights": 21310,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 2,
+          "foreign_guest_nights": 31670,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 3,
+          "foreign_guest_nights": 45070,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 4,
+          "foreign_guest_nights": 54840,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 5,
+          "foreign_guest_nights": 47850,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 6,
+          "foreign_guest_nights": 35350,
+          "survey_scope": "客室数20室以上の施設"
+        }
+      ]
+    },
+    "鳥取県": {
+      "foreign_guest_nights": 15560,
+      "nationality": {
+        "韓国": 3100,
+        "中国": 2230,
+        "香港": 1270,
+        "台湾": 5500,
+        "米国": 790,
+        "カナダ": 160,
+        "英国": 90,
+        "ドイツ": 100,
+        "フランス": 110,
+        "ロシア": 190,
+        "シンガポール": 340,
+        "タイ": 140,
+        "マレーシア": 40,
+        "インド": 30,
+        "オーストラリア": 150,
+        "インドネシア": 30,
+        "ベトナム": 200,
+        "フィリピン": 20,
+        "イタリア": 10,
+        "スペイン": 10,
+        "北欧地域": 20,
+        "中東地域": 0,
+        "メキシコ": 0,
+        "その他": 460
+      },
+      "monthly": [
+        {
+          "year": 2025,
+          "month": 7,
+          "foreign_guest_nights": 14130,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 8,
+          "foreign_guest_nights": 11860,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 9,
+          "foreign_guest_nights": 10810,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 10,
+          "foreign_guest_nights": 15370,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 11,
+          "foreign_guest_nights": 11860,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 12,
+          "foreign_guest_nights": 13110,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 1,
+          "foreign_guest_nights": 16040,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 2,
+          "foreign_guest_nights": 20780,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 3,
+          "foreign_guest_nights": 18110,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 4,
+          "foreign_guest_nights": 15910,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 5,
+          "foreign_guest_nights": 15850,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 6,
+          "foreign_guest_nights": 15560,
+          "survey_scope": "客室数20室以上の施設"
+        }
+      ]
+    },
+    "島根県": {
+      "foreign_guest_nights": 6490,
+      "nationality": {
+        "韓国": 690,
+        "中国": 780,
+        "香港": 200,
+        "台湾": 2610,
+        "米国": 350,
+        "カナダ": 40,
+        "英国": 60,
+        "ドイツ": 90,
+        "フランス": 360,
+        "ロシア": 10,
+        "シンガポール": 120,
+        "タイ": 30,
+        "マレーシア": 80,
+        "インド": 10,
+        "オーストラリア": 130,
+        "インドネシア": 50,
+        "ベトナム": 70,
+        "フィリピン": 90,
+        "イタリア": 40,
+        "スペイン": 10,
+        "北欧地域": 140,
+        "中東地域": 0,
+        "メキシコ": 0,
+        "その他": 520
+      },
+      "monthly": [
+        {
+          "year": 2025,
+          "month": 7,
+          "foreign_guest_nights": 7200,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 8,
+          "foreign_guest_nights": 6260,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 9,
+          "foreign_guest_nights": 7180,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 10,
+          "foreign_guest_nights": 10850,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 11,
+          "foreign_guest_nights": 9970,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 12,
+          "foreign_guest_nights": 9010,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 1,
+          "foreign_guest_nights": 6930,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 2,
+          "foreign_guest_nights": 6890,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 3,
+          "foreign_guest_nights": 7990,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 4,
+          "foreign_guest_nights": 9600,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 5,
+          "foreign_guest_nights": 9620,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 6,
+          "foreign_guest_nights": 6490,
+          "survey_scope": "客室数20室以上の施設"
+        }
+      ]
+    },
+    "岡山県": {
+      "foreign_guest_nights": 48940,
+      "nationality": {
+        "韓国": 2840,
+        "中国": 3250,
+        "香港": 2000,
+        "台湾": 27820,
+        "米国": 2350,
+        "カナダ": 320,
+        "英国": 620,
+        "ドイツ": 480,
+        "フランス": 740,
+        "ロシア": 250,
+        "シンガポール": 810,
+        "タイ": 360,
+        "マレーシア": 190,
+        "インド": 60,
+        "オーストラリア": 830,
+        "インドネシア": 310,
+        "ベトナム": 380,
+        "フィリピン": 300,
+        "イタリア": 230,
+        "スペイン": 110,
+        "北欧地域": 270,
+        "中東地域": 120,
+        "メキシコ": 460,
+        "その他": 3830
+      },
+      "monthly": [
+        {
+          "year": 2025,
+          "month": 7,
+          "foreign_guest_nights": 43890,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 8,
+          "foreign_guest_nights": 45020,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 9,
+          "foreign_guest_nights": 45780,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 10,
+          "foreign_guest_nights": 73500,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 11,
+          "foreign_guest_nights": 68370,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 12,
+          "foreign_guest_nights": 55090,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 1,
+          "foreign_guest_nights": 34180,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 2,
+          "foreign_guest_nights": 37020,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 3,
+          "foreign_guest_nights": 50960,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 4,
+          "foreign_guest_nights": 63610,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 5,
+          "foreign_guest_nights": 57760,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 6,
+          "foreign_guest_nights": 48940,
+          "survey_scope": "客室数20室以上の施設"
+        }
+      ]
+    },
+    "広島県": {
+      "foreign_guest_nights": 155130,
+      "nationality": {
+        "韓国": 13510,
+        "中国": 8690,
+        "香港": 3380,
+        "台湾": 14270,
+        "米国": 33790,
+        "カナダ": 2370,
+        "英国": 8360,
+        "ドイツ": 4490,
+        "フランス": 5230,
+        "ロシア": 680,
+        "シンガポール": 3260,
+        "タイ": 390,
+        "マレーシア": 500,
+        "インド": 2610,
+        "オーストラリア": 7430,
+        "インドネシア": 560,
+        "ベトナム": 590,
+        "フィリピン": 640,
+        "イタリア": 4360,
+        "スペイン": 3860,
+        "北欧地域": 2160,
+        "中東地域": 490,
+        "メキシコ": 1070,
+        "その他": 19810
+      },
+      "monthly": [
+        {
+          "year": 2025,
+          "month": 7,
+          "foreign_guest_nights": 136440,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 8,
+          "foreign_guest_nights": 143850,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 9,
+          "foreign_guest_nights": 158300,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 10,
+          "foreign_guest_nights": 206580,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 11,
+          "foreign_guest_nights": 196590,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 12,
+          "foreign_guest_nights": 130950,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 1,
+          "foreign_guest_nights": 98210,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 2,
+          "foreign_guest_nights": 106810,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 3,
+          "foreign_guest_nights": 187700,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 4,
+          "foreign_guest_nights": 250990,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 5,
+          "foreign_guest_nights": 190100,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 6,
+          "foreign_guest_nights": 155130,
+          "survey_scope": "客室数20室以上の施設"
+        }
+      ]
+    },
+    "山口県": {
+      "foreign_guest_nights": 14500,
+      "nationality": {
+        "韓国": 6790,
+        "中国": 930,
+        "香港": 690,
+        "台湾": 1350,
+        "米国": 1660,
+        "カナダ": 60,
+        "英国": 40,
+        "ドイツ": 80,
+        "フランス": 180,
+        "ロシア": 0,
+        "シンガポール": 180,
+        "タイ": 60,
+        "マレーシア": 110,
+        "インド": 30,
+        "オーストラリア": 140,
+        "インドネシア": 70,
+        "ベトナム": 220,
+        "フィリピン": 100,
+        "イタリア": 20,
+        "スペイン": 20,
+        "北欧地域": 90,
+        "中東地域": 10,
+        "メキシコ": 20,
+        "その他": 690
+      },
+      "monthly": [
+        {
+          "year": 2025,
+          "month": 7,
+          "foreign_guest_nights": 10680,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 8,
+          "foreign_guest_nights": 7070,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 9,
+          "foreign_guest_nights": 11030,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 10,
+          "foreign_guest_nights": 15420,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 11,
+          "foreign_guest_nights": 15400,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 12,
+          "foreign_guest_nights": 13870,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 1,
+          "foreign_guest_nights": 15580,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 2,
+          "foreign_guest_nights": 17830,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 3,
+          "foreign_guest_nights": 17570,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 4,
+          "foreign_guest_nights": 18070,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 5,
+          "foreign_guest_nights": 17790,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 6,
+          "foreign_guest_nights": 14500,
+          "survey_scope": "客室数20室以上の施設"
+        }
+      ]
+    },
+    "徳島県": {
+      "foreign_guest_nights": 12860,
+      "nationality": {
+        "韓国": 4260,
+        "中国": 880,
+        "香港": 1180,
+        "台湾": 2460,
+        "米国": 640,
+        "カナダ": 110,
+        "英国": 150,
+        "ドイツ": 140,
+        "フランス": 220,
+        "ロシア": 10,
+        "シンガポール": 240,
+        "タイ": 110,
+        "マレーシア": 160,
+        "インド": 10,
+        "オーストラリア": 230,
+        "インドネシア": 70,
+        "ベトナム": 60,
+        "フィリピン": 30,
+        "イタリア": 90,
+        "スペイン": 10,
+        "北欧地域": 150,
+        "中東地域": 0,
+        "メキシコ": 0,
+        "その他": 1660
+      },
+      "monthly": [
+        {
+          "year": 2025,
+          "month": 7,
+          "foreign_guest_nights": 13870,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 8,
+          "foreign_guest_nights": 12890,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 9,
+          "foreign_guest_nights": 12180,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 10,
+          "foreign_guest_nights": 20310,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 11,
+          "foreign_guest_nights": 20870,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 12,
+          "foreign_guest_nights": 18890,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 1,
+          "foreign_guest_nights": 9910,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 2,
+          "foreign_guest_nights": 11750,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 3,
+          "foreign_guest_nights": 15830,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 4,
+          "foreign_guest_nights": 19800,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 5,
+          "foreign_guest_nights": 17080,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 6,
+          "foreign_guest_nights": 12860,
+          "survey_scope": "客室数20室以上の施設"
+        }
+      ]
+    },
+    "香川県": {
+      "foreign_guest_nights": 67480,
+      "nationality": {
+        "韓国": 18200,
+        "中国": 5550,
+        "香港": 3020,
+        "台湾": 32540,
+        "米国": 1450,
+        "カナダ": 140,
+        "英国": 600,
+        "ドイツ": 360,
+        "フランス": 330,
+        "ロシア": 70,
+        "シンガポール": 410,
+        "タイ": 230,
+        "マレーシア": 130,
+        "インド": 120,
+        "オーストラリア": 650,
+        "インドネシア": 100,
+        "ベトナム": 80,
+        "フィリピン": 80,
+        "イタリア": 190,
+        "スペイン": 60,
+        "北欧地域": 100,
+        "中東地域": 120,
+        "メキシコ": 10,
+        "その他": 2920
+      },
+      "monthly": [
+        {
+          "year": 2025,
+          "month": 7,
+          "foreign_guest_nights": 52310,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 8,
+          "foreign_guest_nights": 62890,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 9,
+          "foreign_guest_nights": 66420,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 10,
+          "foreign_guest_nights": 117470,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 11,
+          "foreign_guest_nights": 109420,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 12,
+          "foreign_guest_nights": 76150,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 1,
+          "foreign_guest_nights": 61490,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 2,
+          "foreign_guest_nights": 70640,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 3,
+          "foreign_guest_nights": 79090,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 4,
+          "foreign_guest_nights": 92370,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 5,
+          "foreign_guest_nights": 86770,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 6,
+          "foreign_guest_nights": 67480,
+          "survey_scope": "客室数20室以上の施設"
+        }
+      ]
+    },
+    "愛媛県": {
+      "foreign_guest_nights": 28240,
+      "nationality": {
+        "韓国": 12480,
+        "中国": 1400,
+        "香港": 1180,
+        "台湾": 8120,
+        "米国": 730,
+        "カナダ": 170,
+        "英国": 220,
+        "ドイツ": 250,
+        "フランス": 330,
+        "ロシア": 50,
+        "シンガポール": 300,
+        "タイ": 40,
+        "マレーシア": 120,
+        "インド": 90,
+        "オーストラリア": 500,
+        "インドネシア": 110,
+        "ベトナム": 110,
+        "フィリピン": 60,
+        "イタリア": 60,
+        "スペイン": 80,
+        "北欧地域": 220,
+        "中東地域": 30,
+        "メキシコ": 0,
+        "その他": 1400
+      },
+      "monthly": [
+        {
+          "year": 2025,
+          "month": 7,
+          "foreign_guest_nights": 32820,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 8,
+          "foreign_guest_nights": 28800,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 9,
+          "foreign_guest_nights": 29760,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 10,
+          "foreign_guest_nights": 51370,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 11,
+          "foreign_guest_nights": 51880,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 12,
+          "foreign_guest_nights": 48000,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 1,
+          "foreign_guest_nights": 42710,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 2,
+          "foreign_guest_nights": 48760,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 3,
+          "foreign_guest_nights": 50300,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 4,
+          "foreign_guest_nights": 73620,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 5,
+          "foreign_guest_nights": 58000,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 6,
+          "foreign_guest_nights": 28240,
+          "survey_scope": "客室数20室以上の施設"
+        }
+      ]
+    },
+    "高知県": {
+      "foreign_guest_nights": 10450,
+      "nationality": {
+        "韓国": 570,
+        "中国": 1200,
+        "香港": 730,
+        "台湾": 5050,
+        "米国": 680,
+        "カナダ": 70,
+        "英国": 200,
+        "ドイツ": 90,
+        "フランス": 190,
+        "ロシア": 20,
+        "シンガポール": 320,
+        "タイ": 230,
+        "マレーシア": 10,
+        "インド": 10,
+        "オーストラリア": 160,
+        "インドネシア": 20,
+        "ベトナム": 40,
+        "フィリピン": 90,
+        "イタリア": 10,
+        "スペイン": 30,
+        "北欧地域": 30,
+        "中東地域": 10,
+        "メキシコ": 10,
+        "その他": 570
+      },
+      "monthly": [
+        {
+          "year": 2025,
+          "month": 7,
+          "foreign_guest_nights": 7610,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 8,
+          "foreign_guest_nights": 5150,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 9,
+          "foreign_guest_nights": 7530,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 10,
+          "foreign_guest_nights": 12160,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 11,
+          "foreign_guest_nights": 12260,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 12,
+          "foreign_guest_nights": 8800,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 1,
+          "foreign_guest_nights": 9330,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 2,
+          "foreign_guest_nights": 15320,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 3,
+          "foreign_guest_nights": 17960,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 4,
+          "foreign_guest_nights": 10860,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 5,
+          "foreign_guest_nights": 11160,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 6,
+          "foreign_guest_nights": 10450,
+          "survey_scope": "客室数20室以上の施設"
+        }
+      ]
+    },
+    "福岡県": {
+      "foreign_guest_nights": 626430,
+      "nationality": {
+        "韓国": 224190,
+        "中国": 63400,
+        "香港": 75440,
+        "台湾": 159280,
+        "米国": 15380,
+        "カナダ": 3990,
+        "英国": 3310,
+        "ドイツ": 1610,
+        "フランス": 1750,
+        "ロシア": 750,
+        "シンガポール": 15120,
+        "タイ": 6900,
+        "マレーシア": 3700,
+        "インド": 730,
+        "オーストラリア": 4840,
+        "インドネシア": 2420,
+        "ベトナム": 760,
+        "フィリピン": 7200,
+        "イタリア": 770,
+        "スペイン": 630,
+        "北欧地域": 1430,
+        "中東地域": 350,
+        "メキシコ": 190,
+        "その他": 19450
+      },
+      "monthly": [
+        {
+          "year": 2025,
+          "month": 7,
+          "foreign_guest_nights": 507050,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 8,
+          "foreign_guest_nights": 601310,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 9,
+          "foreign_guest_nights": 534290,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 10,
+          "foreign_guest_nights": 659410,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 11,
+          "foreign_guest_nights": 584670,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 12,
+          "foreign_guest_nights": 724430,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 1,
+          "foreign_guest_nights": 555160,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 2,
+          "foreign_guest_nights": 628450,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 3,
+          "foreign_guest_nights": 607960,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 4,
+          "foreign_guest_nights": 628930,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 5,
+          "foreign_guest_nights": 633570,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 6,
+          "foreign_guest_nights": 626430,
+          "survey_scope": "客室数20室以上の施設"
+        }
+      ]
+    },
+    "佐賀県": {
+      "foreign_guest_nights": 11280,
+      "nationality": {
+        "韓国": 4330,
+        "中国": 1220,
+        "香港": 820,
+        "台湾": 3030,
+        "米国": 450,
+        "カナダ": 40,
+        "英国": 100,
+        "ドイツ": 70,
+        "フランス": 40,
+        "ロシア": 20,
+        "シンガポール": 190,
+        "タイ": 80,
+        "マレーシア": 20,
+        "インド": 20,
+        "オーストラリア": 80,
+        "インドネシア": 60,
+        "ベトナム": 120,
+        "フィリピン": 0,
+        "イタリア": 0,
+        "スペイン": 10,
+        "北欧地域": 20,
+        "中東地域": 30,
+        "メキシコ": 0,
+        "その他": 450
+      },
+      "monthly": [
+        {
+          "year": 2025,
+          "month": 7,
+          "foreign_guest_nights": 13600,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 8,
+          "foreign_guest_nights": 10960,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 9,
+          "foreign_guest_nights": 14590,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 10,
+          "foreign_guest_nights": 22180,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 11,
+          "foreign_guest_nights": 21870,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 12,
+          "foreign_guest_nights": 21390,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 1,
+          "foreign_guest_nights": 14570,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 2,
+          "foreign_guest_nights": 34370,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 3,
+          "foreign_guest_nights": 29710,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 4,
+          "foreign_guest_nights": 21050,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 5,
+          "foreign_guest_nights": 17590,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 6,
+          "foreign_guest_nights": 11280,
+          "survey_scope": "客室数20室以上の施設"
+        }
+      ]
+    },
+    "長崎県": {
+      "foreign_guest_nights": 40030,
+      "nationality": {
+        "韓国": 11040,
+        "中国": 3750,
+        "香港": 1490,
+        "台湾": 5770,
+        "米国": 5010,
+        "カナダ": 370,
+        "英国": 720,
+        "ドイツ": 770,
+        "フランス": 420,
+        "ロシア": 120,
+        "シンガポール": 1240,
+        "タイ": 350,
+        "マレーシア": 510,
+        "インド": 220,
+        "オーストラリア": 1030,
+        "インドネシア": 680,
+        "ベトナム": 170,
+        "フィリピン": 330,
+        "イタリア": 170,
+        "スペイン": 90,
+        "北欧地域": 700,
+        "中東地域": 270,
+        "メキシコ": 50,
+        "その他": 2860
+      },
+      "monthly": [
+        {
+          "year": 2025,
+          "month": 7,
+          "foreign_guest_nights": 39760,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 8,
+          "foreign_guest_nights": 32400,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 9,
+          "foreign_guest_nights": 33930,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 10,
+          "foreign_guest_nights": 49940,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 11,
+          "foreign_guest_nights": 52570,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 12,
+          "foreign_guest_nights": 45800,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 1,
+          "foreign_guest_nights": 42750,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 2,
+          "foreign_guest_nights": 53500,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 3,
+          "foreign_guest_nights": 60820,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 4,
+          "foreign_guest_nights": 75430,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 5,
+          "foreign_guest_nights": 57910,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 6,
+          "foreign_guest_nights": 40030,
+          "survey_scope": "客室数20室以上の施設"
+        }
+      ]
+    },
+    "熊本県": {
+      "foreign_guest_nights": 74030,
+      "nationality": {
+        "韓国": 20350,
+        "中国": 7240,
+        "香港": 2130,
+        "台湾": 29990,
+        "米国": 2580,
+        "カナダ": 310,
+        "英国": 410,
+        "ドイツ": 420,
+        "フランス": 590,
+        "ロシア": 90,
+        "シンガポール": 1620,
+        "タイ": 520,
+        "マレーシア": 510,
+        "インド": 70,
+        "オーストラリア": 600,
+        "インドネシア": 270,
+        "ベトナム": 160,
+        "フィリピン": 430,
+        "イタリア": 90,
+        "スペイン": 120,
+        "北欧地域": 260,
+        "中東地域": 170,
+        "メキシコ": 60,
+        "その他": 4610
+      },
+      "monthly": [
+        {
+          "year": 2025,
+          "month": 7,
+          "foreign_guest_nights": 92890,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 8,
+          "foreign_guest_nights": 110900,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 9,
+          "foreign_guest_nights": 123140,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 10,
+          "foreign_guest_nights": 169820,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 11,
+          "foreign_guest_nights": 164160,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 12,
+          "foreign_guest_nights": 133430,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 1,
+          "foreign_guest_nights": 99060,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 2,
+          "foreign_guest_nights": 108530,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 3,
+          "foreign_guest_nights": 131180,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 4,
+          "foreign_guest_nights": 110830,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 5,
+          "foreign_guest_nights": 110390,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 6,
+          "foreign_guest_nights": 74030,
+          "survey_scope": "客室数20室以上の施設"
+        }
+      ]
+    },
+    "大分県": {
+      "foreign_guest_nights": 74800,
+      "nationality": {
+        "韓国": 23650,
+        "中国": 4790,
+        "香港": 6590,
+        "台湾": 22820,
+        "米国": 3160,
+        "カナダ": 360,
+        "英国": 570,
+        "ドイツ": 300,
+        "フランス": 300,
+        "ロシア": 150,
+        "シンガポール": 3580,
+        "タイ": 960,
+        "マレーシア": 630,
+        "インド": 490,
+        "オーストラリア": 1580,
+        "インドネシア": 600,
+        "ベトナム": 190,
+        "フィリピン": 770,
+        "イタリア": 70,
+        "スペイン": 110,
+        "北欧地域": 170,
+        "中東地域": 110,
+        "メキシコ": 10,
+        "その他": 2690
+      },
+      "monthly": [
+        {
+          "year": 2025,
+          "month": 7,
+          "foreign_guest_nights": 61940,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 8,
+          "foreign_guest_nights": 58140,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 9,
+          "foreign_guest_nights": 60400,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 10,
+          "foreign_guest_nights": 117090,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 11,
+          "foreign_guest_nights": 106640,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 12,
+          "foreign_guest_nights": 117450,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 1,
+          "foreign_guest_nights": 117680,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 2,
+          "foreign_guest_nights": 123890,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 3,
+          "foreign_guest_nights": 93840,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 4,
+          "foreign_guest_nights": 120590,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 5,
+          "foreign_guest_nights": 107330,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 6,
+          "foreign_guest_nights": 74800,
+          "survey_scope": "客室数20室以上の施設"
+        }
+      ]
+    },
+    "宮崎県": {
+      "foreign_guest_nights": 19490,
+      "nationality": {
+        "韓国": 4460,
+        "中国": 1530,
+        "香港": 800,
+        "台湾": 8330,
+        "米国": 800,
+        "カナダ": 80,
+        "英国": 150,
+        "ドイツ": 90,
+        "フランス": 260,
+        "ロシア": 70,
+        "シンガポール": 800,
+        "タイ": 130,
+        "マレーシア": 100,
+        "インド": 10,
+        "オーストラリア": 280,
+        "インドネシア": 210,
+        "ベトナム": 130,
+        "フィリピン": 110,
+        "イタリア": 20,
+        "スペイン": 40,
+        "北欧地域": 40,
+        "中東地域": 20,
+        "メキシコ": 0,
+        "その他": 990
+      },
+      "monthly": [
+        {
+          "year": 2025,
+          "month": 7,
+          "foreign_guest_nights": 11820,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 8,
+          "foreign_guest_nights": 12430,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 9,
+          "foreign_guest_nights": 10220,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 10,
+          "foreign_guest_nights": 17740,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 11,
+          "foreign_guest_nights": 22020,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 12,
+          "foreign_guest_nights": 19320,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 1,
+          "foreign_guest_nights": 14590,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 2,
+          "foreign_guest_nights": 26090,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 3,
+          "foreign_guest_nights": 17940,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 4,
+          "foreign_guest_nights": 23570,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 5,
+          "foreign_guest_nights": 20560,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 6,
+          "foreign_guest_nights": 19490,
+          "survey_scope": "客室数20室以上の施設"
+        }
+      ]
+    },
+    "鹿児島県": {
+      "foreign_guest_nights": 32630,
+      "nationality": {
+        "韓国": 6110,
+        "中国": 5190,
+        "香港": 2020,
+        "台湾": 8000,
+        "米国": 4290,
+        "カナダ": 250,
+        "英国": 440,
+        "ドイツ": 470,
+        "フランス": 730,
+        "ロシア": 160,
+        "シンガポール": 850,
+        "タイ": 260,
+        "マレーシア": 270,
+        "インド": 130,
+        "オーストラリア": 390,
+        "インドネシア": 180,
+        "ベトナム": 40,
+        "フィリピン": 60,
+        "イタリア": 130,
+        "スペイン": 70,
+        "北欧地域": 400,
+        "中東地域": 140,
+        "メキシコ": 40,
+        "その他": 1790
+      },
+      "monthly": [
+        {
+          "year": 2025,
+          "month": 7,
+          "foreign_guest_nights": 28690,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 8,
+          "foreign_guest_nights": 27320,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 9,
+          "foreign_guest_nights": 35140,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 10,
+          "foreign_guest_nights": 56220,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 11,
+          "foreign_guest_nights": 62160,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 12,
+          "foreign_guest_nights": 63210,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 1,
+          "foreign_guest_nights": 60760,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 2,
+          "foreign_guest_nights": 82620,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 3,
+          "foreign_guest_nights": 62650,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 4,
+          "foreign_guest_nights": 57910,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 5,
+          "foreign_guest_nights": 55810,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 6,
+          "foreign_guest_nights": 32630,
+          "survey_scope": "客室数20室以上の施設"
+        }
+      ]
+    },
+    "沖縄県": {
+      "foreign_guest_nights": 513800,
+      "nationality": {
+        "韓国": 83830,
+        "中国": 33180,
+        "香港": 34420,
+        "台湾": 204910,
+        "米国": 46960,
+        "カナダ": 4910,
+        "英国": 5110,
+        "ドイツ": 7510,
+        "フランス": 4160,
+        "ロシア": 5440,
+        "シンガポール": 7690,
+        "タイ": 2850,
+        "マレーシア": 1810,
+        "インド": 1330,
+        "オーストラリア": 6390,
+        "インドネシア": 790,
+        "ベトナム": 100,
+        "フィリピン": 1960,
+        "イタリア": 3810,
+        "スペイン": 3060,
+        "北欧地域": 4800,
+        "中東地域": 1830,
+        "メキシコ": 830,
+        "その他": 37030
+      },
+      "monthly": [
+        {
+          "year": 2025,
+          "month": 7,
+          "foreign_guest_nights": 543600,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 8,
+          "foreign_guest_nights": 637200,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 9,
+          "foreign_guest_nights": 555340,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 10,
+          "foreign_guest_nights": 621820,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 11,
+          "foreign_guest_nights": 454660,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2025,
+          "month": 12,
+          "foreign_guest_nights": 412220,
+          "survey_scope": "従業者数10人以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 1,
+          "foreign_guest_nights": 446120,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 2,
+          "foreign_guest_nights": 509850,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 3,
+          "foreign_guest_nights": 439410,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 4,
+          "foreign_guest_nights": 596180,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 5,
+          "foreign_guest_nights": 609940,
+          "survey_scope": "客室数20室以上の施設"
+        },
+        {
+          "year": 2026,
+          "month": 6,
+          "foreign_guest_nights": 513800,
+          "survey_scope": "客室数20室以上の施設"
+        }
+      ]
+    }
+  }
+}
