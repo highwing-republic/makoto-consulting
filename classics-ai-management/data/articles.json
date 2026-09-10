@@ -24,9 +24,10 @@
     "url":"/classics-ai-management/hanfeizi/nihei/"
   },
   {
-    "slug":"yojin","chapter_id":27,"chapter_title":"用人","article_title":"AI時代の適材適所を考える",
-    "summary":"人の強みとAIの得意分野をどう組み合わせるか。役割を曖昧にせず、能力が生きる配置を考えます。",
-    "themes":["人材配置","業務設計","生産性"],"category":"組織と人材","status":"coming","published_at":null,"updated_at":null,"featured":true,"url":null
+    "slug":"yojin","chapter_id":27,"chapter_title":"用人","article_title":"ホテルの人とAIの役割を組み合わせる",
+    "summary":"仕事を工程に分け、人、AI、責任者の強みをどう組み合わせるか。役割と確認、責任の境界を考えます。",
+    "themes":["人材配置","業務設計","AI活用"],"category":"組織と人材","status":"published","published_at":"2026-09-10","updated_at":"2026-09-10","featured":true,
+    "url":"/classics-ai-management/hanfeizi/yojin/"
   },
   {
     "slug":"goto","chapter_id":49,"chapter_title":"五蠹","article_title":"忙しさを生む仕事を見直す",
