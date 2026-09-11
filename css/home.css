@@ -4,21 +4,22 @@
   display:flex;
   align-items:center;
   overflow:hidden;
-  background:url("../images/hero.jpg") center/cover no-repeat;
+  background:linear-gradient(135deg,#f3f7f9 0%,#e8f0f4 100%);
 }
 .home-hero:before{
   content:"";
   position:absolute;
   inset:0;
-  background:linear-gradient(90deg,rgba(246,245,239,.98) 0%,rgba(246,245,239,.93) 42%,rgba(246,245,239,.48) 72%,rgba(246,245,239,.14) 100%);
+  background:radial-gradient(circle at 82% 20%,rgba(23,100,125,.14),transparent 38%);
 }
 .home-hero__inner{position:relative;z-index:1;padding:105px 0 112px}
-.home-hero__copy{max-width:790px}
-.home-hero .eyebrow{margin-bottom:17px;color:#735218}
+.home-hero__copy{position:relative;max-width:790px;padding-left:30px}
+.home-hero__copy:before{content:"";position:absolute;left:0;top:4px;bottom:4px;width:4px;border-radius:4px;background:var(--gold)}
+.home-hero .eyebrow{margin-bottom:17px;color:var(--signal)}
 .home-hero h1{margin:0;color:var(--accent);font-family:var(--serif);font-size:clamp(42px,5.5vw,72px);font-weight:500;line-height:1.38;letter-spacing:.025em}
-.home-hero__lead{max-width:690px;margin:28px 0 0;color:#46504a;font-size:16px;line-height:2}
+.home-hero__lead{max-width:690px;margin:28px 0 0;color:var(--ink-soft);font-size:16px;line-height:2}
 .home-hero .button{margin-top:36px}
-.lab-principle{display:flex;gap:22px;margin:38px 0 0;padding:0;list-style:none;color:#52605a;font-family:var(--serif);font-size:14px;letter-spacing:.1em}
+.lab-principle{display:flex;gap:22px;margin:38px 0 0;padding:0;list-style:none;color:#526b7a;font-family:var(--serif);font-size:14px;letter-spacing:.1em}
 .lab-principle li+li:before{content:"／";margin-right:22px;color:var(--gold)}
 
 .home-section{padding:132px 0;scroll-margin-top:82px}
@@ -27,10 +28,10 @@
 .home-section__heading h2{margin:0;color:var(--accent);font-family:var(--serif);font-size:clamp(36px,4.5vw,60px);font-weight:500;line-height:1.42}
 .home-section__heading>p{max-width:620px;margin:0;color:var(--ink-soft);font-size:14px;line-height:2}
 
-.analysis-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));border-top:1px solid var(--line);border-left:1px solid var(--line)}
-.analysis-card{position:relative;display:flex;min-height:430px;padding:40px 36px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--paper-light);flex-direction:column;align-items:flex-start}
+.analysis-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:18px}
+.analysis-card{position:relative;display:flex;min-height:430px;padding:40px 36px;border:1px solid var(--line);border-radius:16px;background:var(--paper-light);box-shadow:0 14px 34px rgba(23,50,77,.06);flex-direction:column;align-items:flex-start}
 .analysis-card__number{margin:0 0 58px;color:#777f7a;font:600 10px/1 var(--latin);letter-spacing:.15em}
-.analysis-card__type{margin:0 0 15px;color:#735218;font:600 10px/1.5 var(--latin);letter-spacing:.14em}
+.analysis-card__type{margin:0 0 15px;color:var(--signal);font:700 10px/1.5 var(--latin);letter-spacing:.14em}
 .analysis-card h3{margin:0 0 20px;color:var(--accent);font-family:var(--serif);font-size:clamp(27px,2.6vw,37px);font-weight:500;line-height:1.5}
 .analysis-card>p:not(.analysis-card__number):not(.analysis-card__type){margin:0 0 32px;color:#5e6662;font-size:14px;line-height:1.9}
 .analysis-card .button{margin-top:auto}
@@ -55,9 +56,9 @@
 .about-lab__body p{margin:0 0 22px;color:#d7dfdb;font-family:var(--serif);font-size:clamp(18px,1.75vw,23px);line-height:2}
 .about-lab__body p:last-child{margin-bottom:0}
 
-.site-footer .footer-lab-description{margin:26px 0 0;max-width:500px;color:#b9c5bf;font-size:12px;line-height:2}
+.site-footer .footer-lab-description{margin:26px 0 0;max-width:500px;color:#b8c7d2;font-size:12px;line-height:2}
 .footer-links--lab{grid-template-columns:1fr}
-.footer-links--lab>div{display:grid;grid-template-columns:repeat(4,max-content);gap:12px 28px;align-items:start}
+.footer-links--lab>div{display:grid;grid-template-columns:repeat(3,max-content);gap:12px 28px;align-items:start}
 
 @media(max-width:900px){
   .home-hero{min-height:580px}
@@ -68,7 +69,8 @@
 }
 @media(max-width:620px){
   .home-hero{min-height:600px}
-  .home-hero:before{background:rgba(246,245,239,.88)}
+  .home-hero:before{background:radial-gradient(circle at 80% 12%,rgba(23,100,125,.12),transparent 48%)}
+  .home-hero__copy{padding-left:20px}
   .home-hero__inner{padding:78px 0 88px}
   .home-hero h1{font-size:clamp(32px,9.5vw,40px);line-height:1.5}
   .home-hero__lead{font-size:15px}
