@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-QS9HSHCY33"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-QS9HSHCY33');</script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>宿泊経営AI｜地域データからDX・インバウンド・宿泊市場を考える｜宿泊DXラボ</title>
+  <meta name="description" content="宿泊DXラボの公的統計分析と施設情報をもとに、人手不足、DX、インバウンド、宿泊市場について考えるヒントを提示する無料ツールです。">
+  <meta name="robots" content="index,follow,max-image-preview:large">
+  <link rel="canonical" href="https://lab.ugatta-llc.com/management-ai.html">
+  <meta name="theme-color" content="#17324d">
+  <meta property="og:locale" content="ja_JP"><meta property="og:type" content="website"><meta property="og:site_name" content="宿泊DXラボ">
+  <meta property="og:title" content="宿泊経営AI｜地域データからDX・インバウンド・宿泊市場を考える｜宿泊DXラボ">
+  <meta property="og:description" content="地域データと施設の状況から、宿泊経営について一緒に考える無料ツールです。">
+  <meta property="og:url" content="https://lab.ugatta-llc.com/management-ai.html"><meta property="og:image" content="https://lab.ugatta-llc.com/images/hero.jpg">
+  <meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="宿泊経営AI｜宿泊DXラボ"><meta name="twitter:description" content="公的統計と施設情報から、次に確認したいことを整理します。"><meta name="twitter:image" content="https://lab.ugatta-llc.com/images/hero.jpg">
+  <link rel="icon" type="image/png" href="favicon.png?v=20260909e">
+  <link rel="stylesheet" href="css/useful.css?v=20260911f">
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"WebApplication","name":"宿泊経営AI","url":"https://lab.ugatta-llc.com/management-ai.html","applicationCategory":"BusinessApplication","operatingSystem":"Web","isAccessibleForFree":true,"inLanguage":"ja-JP","description":"公的統計分析と施設情報を並べ、宿泊経営で次に確認したいことを整理するルールベース型ツール。","provider":{"@type":"Organization","name":"宿泊DXラボ","url":"https://lab.ugatta-llc.com/"}}
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main">本文へ移動</a>
+  <header class="site-header" data-header><div class="container header-inner">
+    <a class="brand" href="/" aria-label="宿泊DXラボ ホーム"><span class="brand-copy"><strong>宿泊DXラボ</strong><small>データを見る。試す。考える。</small></span></a>
+    <button class="menu-toggle" type="button" aria-controls="global-nav" aria-expanded="false" aria-label="メニューを開く" data-menu-toggle><span></span><span></span><span></span></button>
+    <nav class="global-nav" id="global-nav" aria-label="メインナビゲーション" data-nav><ul><li><a aria-current="page" href="/useful.html">分析・ツール</a></li><li><a href="/#about-lab">このラボについて</a></li></ul></nav>
+  </div></header>
+
+  <main id="main">
+    <nav class="breadcrumb container" aria-label="パンくずリスト"><ol><li><a href="/">ホーム</a></li><li><a href="/useful.html">分析・ツール</a></li><li aria-current="page">宿泊経営AI</li></ol></nav>
+    <section class="page-hero tool-page-hero management-hero"><div class="container page-hero-grid">
+      <div><p class="eyebrow">SHUKUHAKU MANAGEMENT AI 07</p><h1>宿泊経営AI</h1></div>
+      <div class="inbound-hero__copy"><p class="lead-copy">地域データと施設の状況から、<br>一緒に考えます。</p><p>宿泊DXラボの分析データと簡単な施設情報をもとに、DX、人手不足、インバウンド、地域市場などについて考えるためのヒントを提示します。</p><small>公開データ × ルールベース分析／登録不要</small></div>
+    </div></section>
+
+    <section class="inbound-tool management-ai" data-management-ai aria-labelledby="management-form-title" aria-busy="true"><div class="container">
+      <div class="data-loading" id="management-loading" role="status"><span aria-hidden="true"></span><p>地域統計を読み込んでいます</p></div>
+      <div class="data-error" id="management-error" role="alert" hidden></div>
+      <noscript><div class="data-error"><strong>JavaScriptを有効にしてください</strong><p>このツールの利用にはJavaScriptが必要です。</p></div></noscript>
+
+      <form class="management-form" id="management-ai-form">
+        <fieldset id="management-fields" disabled>
+          <legend class="sr-only">宿泊経営AIへの相談内容</legend>
+          <section class="management-step management-step--first">
+            <p class="management-step__number">01</p>
+            <div class="management-step__heading"><div><p class="eyebrow">TOPIC</p><h2 id="management-form-title">何について考えますか？</h2></div><p>最も近いテーマをひとつ選んでください。</p></div>
+            <div class="management-topic-grid" role="radiogroup" aria-label="相談テーマ">
+              <label class="management-topic"><input type="radio" name="topic" value="dx" checked required><span><b>人手不足・DX</b><small>業務負荷や省力化を考える</small></span></label>
+              <label class="management-topic"><input type="radio" name="topic" value="inbound"><span><b>インバウンド</b><small>外国人宿泊需要を考える</small></span></label>
+              <label class="management-topic"><input type="radio" name="topic" value="sales"><span><b>売上・稼働</b><small>地域値と自施設を比べる</small></span></label>
+              <label class="management-topic"><input type="radio" name="topic" value="market"><span><b>地域市場</b><small>需要・供給・地域特性を見る</small></span></label>
+              <label class="management-topic"><input type="radio" name="topic" value="other"><span><b>その他</b><small>相談できる内容を確認する</small></span></label>
+            </div>
+          </section>
+
+          <section class="management-step">
+            <p class="management-step__number">02</p>
+            <div class="management-step__heading"><div><p class="eyebrow">REGION &amp; FACILITY</p><h2>地域と施設の状況</h2></div><p>都道府県だけでも分析できます。施設情報は任意です。</p></div>
+            <div class="management-required-field"><label for="management-prefecture">都道府県 <span>必須</span></label><select id="management-prefecture" name="prefecture" required></select></div>
+            <details class="management-optional"><summary>施設情報を入力すると、地域との参考比較ができます</summary>
+              <div class="management-input-grid">
+                <label>施設タイプ<select id="facility-type" name="facility_type"><option value="">選択しない</option><option value="旅館">旅館</option><option value="ホテル">ホテル</option><option value="簡易宿所">簡易宿所</option><option value="その他">その他</option></select></label>
+                <label>客室数<span class="input-suffix"><input id="facility-rooms" name="rooms" type="number" min="1" max="10000" step="1" inputmode="numeric" placeholder="例：30"><span>室</span></span></label>
+                <label>従業員数<span class="input-suffix"><input id="facility-employees" name="employees" type="number" min="1" max="10000" step="1" inputmode="numeric" placeholder="例：12"><span>人</span></span></label>
+                <label>自施設の稼働率<span class="input-suffix"><input id="facility-occupancy" name="occupancy" type="number" min="0" max="100" step="0.1" inputmode="decimal" placeholder="例：62"><span>%</span></span></label>
+                <label>外国人宿泊比率<span class="input-suffix"><input id="facility-foreign-share" name="foreign_share" type="number" min="0" max="100" step="0.1" inputmode="decimal" placeholder="例：15"><span>%</span></span></label>
+              </div>
+              <p class="management-form-note">氏名、施設名、電話番号、メールアドレスなどの個人情報は入力しないでください。</p>
+            </details>
+          </section>
+
+          <section class="management-step">
+            <p class="management-step__number">03</p>
+            <div class="management-step__heading"><div><p class="eyebrow">QUESTION</p><h2>現在困っていること</h2></div><p>任意の短文です。選択した相談テーマを優先して分析します。</p></div>
+            <div class="management-examples" aria-label="質問例">
+              <button type="button" data-question-example data-topic="dx">人手不足対策はどこから始めればいい？</button>
+              <button type="button" data-question-example data-topic="inbound">インバウンドを強化する余地はある？</button>
+              <button type="button" data-question-example data-topic="sales">地域と比べてうちの稼働率は低い？</button>
+              <button type="button" data-question-example data-topic="market">この地域の宿泊市場は伸びている？</button>
+              <button type="button" data-question-example data-topic="dx">DXで優先する業務はどこ？</button>
+            </div>
+            <label class="management-question-label" for="management-question">質問・困っていること<textarea id="management-question" name="question" rows="3" maxlength="240" placeholder="例：フロント業務を効率化したい"></textarea></label>
+            <div class="management-submit"><button class="button button--large" type="submit">地域データと一緒に考える <span aria-hidden="true">→</span></button><p>外部の生成AI APIは使用せず、入力内容をサーバーへ保存しません。</p></div>
+          </section>
+        </fieldset>
+      </form>
+
+      <section class="management-result" id="management-result" aria-live="polite" tabindex="-1" hidden inert>
+        <div class="management-answer-header"><div><p class="eyebrow">ANALYSIS RESULT</p><h2><span id="answer-prefecture"></span> × <span id="answer-topic"></span></h2></div><div class="management-rule-badge">公的統計をもとにした参考分析</div></div>
+        <section class="management-answer-block management-answer-block--status"><p class="management-answer-label">現状</p><p class="management-status" id="answer-status"></p></section>
+        <section class="management-answer-block"><p class="management-answer-label">データから見えること</p><ul class="management-facts" id="answer-facts"></ul><p class="management-missing" id="missing-data-note" hidden></p></section>
+
+        <section class="management-answer-block" id="facility-comparison-section" hidden><div class="management-answer-heading"><p class="management-answer-label">自施設と地域の参考比較</p><span>比較地域：<b id="comparison-region-name"></b></span></div><div class="management-comparisons" id="facility-comparisons"></div><p class="management-comparison-note">地域統計とは集計対象・期間等が異なる場合があります。参考比較としてご覧ください。</p></section>
+
+        <div class="management-answer-columns">
+          <section class="management-answer-block"><p class="management-answer-label">考えられる仮説</p><div class="management-hypotheses" id="answer-hypotheses"></div></section>
+          <section class="management-answer-block"><p class="management-answer-label">最初に確認したいこと</p><ol class="management-checklist" id="answer-checklist"></ol></section>
+        </div>
+        <p class="management-more-guide" id="more-input-guide">より具体的に見るには、客室数・稼働率・従業員数などを入力すると比較できます。</p>
+
+        <section class="management-answer-block management-related"><p class="management-answer-label">関連分析</p><ul id="answer-related"></ul></section>
+        <section class="management-answer-block management-periods"><p class="management-answer-label">使用データ時点</p><dl id="answer-data-periods"></dl><p>異なる時点・集計範囲の公的統計を組み合わせています。</p></section>
+
+        <details class="management-grounds"><summary>この回答の根拠を見る</summary><div class="management-grounds-grid">
+          <section><h3>参照した分析</h3><ul id="answer-references"></ul></section>
+          <section><h3>使用した主要指標</h3><ul id="answer-metrics"></ul></section>
+          <section><h3>判定したルール</h3><ul id="answer-rules"></ul></section>
+          <section><h3>元データ</h3><ul id="answer-sources"></ul></section>
+        </div><p>回答は公開データと入力値に対する固定ルールから生成しています。外部の生成AIによる文章生成や推測は行っていません。</p></details>
+      </section>
+
+      <aside class="management-disclaimer"><p>宿泊経営AIは、公的統計と入力情報をもとに考えるための参考情報を提示するツールです。個別施設の経営成果を保証するものではなく、投資・採用・価格設定等の最終判断は利用者自身で行ってください。</p></aside>
+    </div></section>
+  </main>
+
+  <footer class="site-footer"><div class="container footer-grid"><div><a class="brand brand--footer" href="/"><span class="brand-copy"><strong>宿泊DXラボ</strong><small>データを見る。試す。考える。</small></span></a><p class="footer-lead">宿泊・観光について、データ・AI・DXを使って分析・実験するラボ。</p></div><div class="footer-links"><div><p class="footer-heading">ラボ</p><a href="/useful.html">分析・ツール</a><a href="/#about-lab">このラボについて</a></div><div><p class="footer-heading">お問い合わせ</p><a data-analytics-event="contact_click" href="https://forms.gle/yjinqFdntoXhTmgk7" target="_blank" rel="noopener noreferrer">UGATTAのフォームを開く</a></div></div></div><div class="container footer-bottom"><span>© 2026 宿泊DXラボ</span></div></footer>
+  <script src="js/site.js?v=20260909c" defer></script>
+  <script src="js/management-ai-rules.js?v=20260911a" defer></script>
+  <script src="js/management-ai.js?v=20260911a" defer></script>
+</body>
+</html>
