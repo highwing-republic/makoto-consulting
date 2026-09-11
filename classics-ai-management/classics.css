@@ -1,6 +1,6 @@
 :root{
-  --green:#214c39;--green-deep:#163a2c;--gold:#735218;--ink:#26352e;--muted:#5f6c65;
-  --paper:#f7f5ef;--paper-2:#eeece4;--white:#fff;--line:#dadcd5;
+  --green:#17324d;--green-deep:#10263a;--gold:#c79832;--ink:#24313d;--muted:#63727f;
+  --paper:#f3f7f9;--paper-2:#eaf1f5;--white:#fff;--line:#d8e2e8;
   --serif:"Yu Mincho","Hiragino Mincho ProN",serif;--sans:"Noto Sans JP","Yu Gothic",Meiryo,sans-serif;
   --container:1120px
 }
@@ -149,9 +149,11 @@ button,input{font:inherit}
 .article-nav a{color:var(--green);font-size:.82rem}
 .article-nav a:last-child{text-align:right}
 
-.site-footer{padding:44px 0 22px;background:#102d22;color:#fff}
+.site-footer{padding:44px 0 22px;background:var(--green-deep);color:#fff}
 .site-footer .brand small{color:#aab8b0}
 .footer-top{display:flex;justify-content:space-between;gap:40px;padding-bottom:34px}
+.footer-brand-copy{max-width:520px}
+.footer-lead{margin:24px 0 0;color:#b8c7d2;font-size:.74rem;line-height:2}
 .footer-links{display:flex;flex-wrap:wrap;gap:20px;color:#d7dfdb;font-size:.74rem}
 .footer-bottom{display:flex;justify-content:space-between;padding-top:18px;border-top:1px solid rgba(255,255,255,.14);color:#82938a;font-size:.68rem}
 

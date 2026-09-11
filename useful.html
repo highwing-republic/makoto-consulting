@@ -28,14 +28,13 @@
   <meta name="twitter:image" content="https://lab.ugatta-llc.com/images/hero.jpg">
   <meta name="theme-color" content="#17324d">
   <link rel="icon" type="image/png" href="favicon.png?v=20260909e">
-  <link rel="stylesheet" href="css/useful.css?v=20260911c">
+  <link rel="stylesheet" href="css/useful.css?v=20260911d">
   <script type="application/ld+json">
   {
     "@context":"https://schema.org",
-    "@type":"BreadcrumbList",
-    "itemListElement":[
-      {"@type":"ListItem","position":1,"name":"ホーム","item":"https://lab.ugatta-llc.com/"},
-      {"@type":"ListItem","position":2,"name":"分析・ツール","item":"https://lab.ugatta-llc.com/useful.html"}
+    "@graph":[
+      {"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"ホーム","item":"https://lab.ugatta-llc.com/"},{"@type":"ListItem","position":2,"name":"分析・ツール","item":"https://lab.ugatta-llc.com/useful.html"}]},
+      {"@type":"CollectionPage","name":"宿泊・観光の分析・実験ツール","url":"https://lab.ugatta-llc.com/useful.html","mainEntity":{"@type":"ItemList","numberOfItems":3,"itemListElement":[{"@type":"ListItem","position":1,"name":"旅館・ホテル DXかんたん診断","url":"https://lab.ugatta-llc.com/dx-diagnosis.html"},{"@type":"ListItem","position":2,"name":"都道府県別 インバウンド宿泊者分析","url":"https://lab.ugatta-llc.com/inbound-analysis.html"},{"@type":"ListItem","position":3,"name":"観光株シグナル","url":"https://lab.ugatta-llc.com/useful.html#tourism-market-signal"}]}}
     ]
   }
   </script>
@@ -53,9 +52,8 @@
       </button>
       <nav class="global-nav" id="global-nav" aria-label="メインナビゲーション" data-nav>
         <ul>
-          <li><a href="/">宿泊DXラボ</a></li>
           <li><a aria-current="page" href="/useful.html">分析・ツール</a></li>
-          <li><a href="/#about-lab">宿泊DXラボとは</a></li>
+          <li><a href="/#about-lab">このラボについて</a></li>
         </ul>
       </nav>
     </div>
@@ -91,37 +89,22 @@
           </article>
 
           <article class="tool-directory-card">
-            <span class="tool-badge">FREE / DAILY REPORT</span>
-            <p class="tool-directory-card__number">02</p>
-            <h2>観光株シグナル<span lang="en">Tourism Market Signal</span></h2>
-            <p>観光・インバウンド関連50銘柄から、追加調査の優先度が高い企業を確認できます。</p>
-            <ul class="check-list"><li>50銘柄を毎営業日分析</li><li>注目度と前日差分を表示</li><li>上位企業の調査観点を整理</li></ul>
-            <a class="button button--outline" href="#tourism-market-signal">最新レポートを見る<span aria-hidden="true">↓</span></a>
-          </article>
-
-          <article class="tool-directory-card">
             <span class="tool-badge">FREE / OFFICIAL DATA</span>
-            <p class="tool-directory-card__number">03</p>
+            <p class="tool-directory-card__number">02</p>
             <h2>都道府県別<br>インバウンド宿泊者分析</h2>
-            <p>観光庁の宿泊旅行統計調査から、地域の外国人宿泊需要と全国平均との差を確認できます。</p>
-            <ul class="check-list"><li>47都道府県の最新第2次速報</li><li>国・地域別TOP10と全国比較</li><li>地域特化度から注目市場候補を整理</li></ul>
+            <p>観光庁の宿泊旅行統計をもとに、外国人宿泊需要、国・地域別構成、全国比較などを分析します。</p>
+            <ul class="check-list"><li>全国と47都道府県の最新第2次速報</li><li>国・地域別TOP10と全国比較</li><li>地域特化度から注目市場候補を整理</li></ul>
             <a class="button button--outline" data-analytics-event="tool_click" href="inbound-analysis.html">実データで分析する<span aria-hidden="true">→</span></a>
           </article>
-        </div>
-      </div>
-    </section>
 
-    <section class="section tool-intro-section" id="tourism-market-signal">
-      <div class="container tool-intro-grid reveal">
-        <div>
-          <span class="tool-badge">FREE / DAILY REPORT</span>
-          <h2>観光株シグナル<span lang="en">Tourism Market Signal</span></h2>
-        </div>
-        <div class="tool-intro-copy">
-          <p class="lead-copy">観光市場で起きている変化を、50銘柄から確認できます。</p>
-          <p>株価・出来高などの定量指標と前日差分を分析し、追加調査の優先度が高い企業を抽出します。</p>
-          <ul class="check-list"><li>観光・インバウンド関連50銘柄を毎営業日分析</li><li>注目度と前日からの変化を分けて表示</li><li>上位企業の調査観点をAIで整理</li></ul>
-          <a class="button button--outline" href="#latest-report">最新レポートを見る<span aria-hidden="true">↓</span></a>
+          <article class="tool-directory-card" id="tourism-market-signal">
+            <span class="tool-badge">FREE / DAILY REPORT</span>
+            <p class="tool-directory-card__number">03</p>
+            <h2>観光株シグナル<span lang="en">Tourism Market Signal</span></h2>
+            <p>観光・インバウンド関連企業の市場変化から、追加調査したい動きを確認します。</p>
+            <ul class="check-list"><li>50銘柄を毎営業日分析</li><li>注目度と前日差分を表示</li><li>上位企業の調査観点を整理</li></ul>
+            <a class="button button--outline" data-analytics-event="tool_click" href="#latest-report">最新シグナルを見る<span aria-hidden="true">↓</span></a>
+          </article>
         </div>
       </div>
     </section>
@@ -129,8 +112,8 @@
     <section class="section section--tint embedded-tool-section" id="latest-report">
       <div class="container">
         <div class="section-heading reveal">
-          <div><p class="eyebrow">ツールを使う</p><h2 class="section-title">最新レポートを見る</h2></div>
-          <p class="section-description">レポートは平日の朝に更新します。見づらい場合は、拡大表示でご覧ください。</p>
+          <div><p class="eyebrow">LATEST SIGNAL</p><h2 class="section-title">最新の観光市場シグナル</h2></div>
+          <p class="section-description">観光・インバウンド関連企業の市場変化から、直近で確認しておきたい動きをまとめています。平日の朝に更新します。</p>
         </div>
         <div class="embed-frame reveal"><iframe src="https://highwing-republic.github.io/tourism-market-signal/index.html" title="観光株シグナル Tourism Market Signal" loading="lazy"></iframe></div>
         <div class="embed-actions reveal"><a class="button button--outline" data-analytics-event="tool_click" href="report.html" target="_blank" rel="noopener noreferrer">レポートを拡大表示する<span aria-hidden="true">↗</span></a></div>
@@ -151,10 +134,10 @@
     <div class="container footer-grid">
       <div>
         <a class="brand brand--footer" href="/"><span class="brand-copy"><strong>宿泊DXラボ</strong><small>データを見る。試す。考える。</small></span></a>
-        <p class="footer-lead">宿泊・観光について、データ・AI・DXを使って分析・実験するラボです。</p>
+        <p class="footer-lead">宿泊・観光について、データ・AI・DXを使って分析・実験するラボ。</p>
       </div>
       <div class="footer-links">
-        <div><p class="footer-heading">ラボ</p><a href="/useful.html">分析・ツール</a><a href="/#about-lab">宿泊DXラボについて</a></div>
+        <div><p class="footer-heading">ラボ</p><a href="/useful.html">分析・ツール</a><a href="/#about-lab">このラボについて</a></div>
         <div><p class="footer-heading">お問い合わせ</p><a href="https://forms.gle/yjinqFdntoXhTmgk7" target="_blank" rel="noopener noreferrer" data-analytics-event="contact_click">UGATTAのフォームを開く</a></div>
       </div>
     </div>
