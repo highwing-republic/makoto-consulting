@@ -1,0 +1,86 @@
+.home-hero{
+  position:relative;
+  min-height:620px;
+  display:flex;
+  align-items:center;
+  overflow:hidden;
+  background:url("../images/hero.jpg") center/cover no-repeat;
+}
+.home-hero:before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(90deg,rgba(246,245,239,.98) 0%,rgba(246,245,239,.93) 42%,rgba(246,245,239,.48) 72%,rgba(246,245,239,.14) 100%);
+}
+.home-hero__inner{position:relative;z-index:1;padding:105px 0 112px}
+.home-hero__copy{max-width:790px}
+.home-hero .eyebrow{margin-bottom:17px;color:#735218}
+.home-hero h1{margin:0;color:var(--accent);font-family:var(--serif);font-size:clamp(42px,5.5vw,72px);font-weight:500;line-height:1.38;letter-spacing:.025em}
+.home-hero__lead{max-width:690px;margin:28px 0 0;color:#46504a;font-size:16px;line-height:2}
+.home-hero .button{margin-top:36px}
+.lab-principle{display:flex;gap:22px;margin:38px 0 0;padding:0;list-style:none;color:#52605a;font-family:var(--serif);font-size:14px;letter-spacing:.1em}
+.lab-principle li+li:before{content:"／";margin-right:22px;color:var(--gold)}
+
+.home-section{padding:132px 0;scroll-margin-top:82px}
+.home-section--tint{background:var(--paper-soft)}
+.home-section__heading{display:grid;grid-template-columns:minmax(260px,.75fr) minmax(0,1.25fr);gap:clamp(44px,8vw,110px);align-items:end;margin-bottom:64px}
+.home-section__heading h2{margin:0;color:var(--accent);font-family:var(--serif);font-size:clamp(36px,4.5vw,60px);font-weight:500;line-height:1.42}
+.home-section__heading>p{max-width:620px;margin:0;color:var(--ink-soft);font-size:14px;line-height:2}
+
+.analysis-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));border-top:1px solid var(--line);border-left:1px solid var(--line)}
+.analysis-card{position:relative;display:flex;min-height:430px;padding:40px 36px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--paper-light);flex-direction:column;align-items:flex-start}
+.analysis-card__number{margin:0 0 58px;color:#777f7a;font:600 10px/1 var(--latin);letter-spacing:.15em}
+.analysis-card__type{margin:0 0 15px;color:#735218;font:600 10px/1.5 var(--latin);letter-spacing:.14em}
+.analysis-card h3{margin:0 0 20px;color:var(--accent);font-family:var(--serif);font-size:clamp(27px,2.6vw,37px);font-weight:500;line-height:1.5}
+.analysis-card>p:not(.analysis-card__number):not(.analysis-card__type){margin:0 0 32px;color:#5e6662;font-size:14px;line-height:1.9}
+.analysis-card .button{margin-top:auto}
+
+.notes-intro{display:flex;align-items:flex-end;justify-content:space-between;gap:48px;margin-bottom:50px}
+.notes-intro h2{margin:0;color:var(--accent);font-family:var(--serif);font-size:clamp(36px,4.5vw,60px);font-weight:500;line-height:1.4}
+.notes-intro__copy{max-width:570px;margin:0;color:var(--ink-soft);font-size:14px;line-height:2}
+.notes-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:18px}
+.note-card{display:flex;min-height:300px;padding:32px;border:1px solid var(--line);background:#fff;flex-direction:column}
+.note-card__meta{margin:0 0 28px;color:#735218;font-size:10px;font-weight:600;letter-spacing:.11em}
+.note-card h3{margin:0 0 16px;color:var(--accent);font-family:var(--serif);font-size:24px;font-weight:500;line-height:1.6}
+.note-card>p:not(.note-card__meta){margin:0 0 25px;color:#5e6662;font-size:13px;line-height:1.9}
+.note-card__link{margin-top:auto;color:var(--accent);font-size:12px;font-weight:600}
+.notes-more{margin-top:34px;text-align:right}
+.notes-more a{color:var(--accent);font-size:13px;font-weight:600;text-decoration:underline;text-underline-offset:5px}
+
+.about-lab{background:var(--accent-deep);color:#fff;scroll-margin-top:82px}
+.about-lab__grid{display:grid;grid-template-columns:minmax(240px,.7fr) minmax(0,1.3fr);gap:clamp(48px,9vw,125px)}
+.about-lab .eyebrow{color:#a9b9b1}
+.about-lab h2{margin:0;color:#fff;font-family:var(--serif);font-size:clamp(36px,4.3vw,58px);font-weight:500;line-height:1.45}
+.about-lab__body{max-width:720px}
+.about-lab__body p{margin:0 0 22px;color:#d7dfdb;font-family:var(--serif);font-size:clamp(18px,1.75vw,23px);line-height:2}
+.about-lab__body p:last-child{margin-bottom:0}
+
+.site-footer .footer-lab-description{margin:26px 0 0;max-width:500px;color:#b9c5bf;font-size:12px;line-height:2}
+.footer-links--lab{grid-template-columns:1fr}
+.footer-links--lab>div{display:grid;grid-template-columns:repeat(4,max-content);gap:12px 28px;align-items:start}
+
+@media(max-width:900px){
+  .home-hero{min-height:580px}
+  .home-section__heading,.about-lab__grid{grid-template-columns:1fr;gap:36px}
+  .notes-intro{align-items:flex-start;flex-direction:column}
+  .analysis-card{min-height:390px}
+  .footer-links--lab>div{grid-template-columns:repeat(2,max-content)}
+}
+@media(max-width:620px){
+  .home-hero{min-height:600px}
+  .home-hero:before{background:rgba(246,245,239,.88)}
+  .home-hero__inner{padding:78px 0 88px}
+  .home-hero h1{font-size:clamp(32px,9.5vw,40px);line-height:1.5}
+  .home-hero__lead{font-size:15px}
+  .home-hero .button{width:100%}
+  .lab-principle{gap:9px;font-size:12px;letter-spacing:.04em}
+  .lab-principle li+li:before{margin-right:9px}
+  .home-section{padding:82px 0}
+  .home-section__heading{margin-bottom:42px}
+  .analysis-card{min-height:auto;padding:31px 25px}
+  .analysis-card__number{margin-bottom:40px}
+  .analysis-card .button{width:100%;margin-top:4px}
+  .note-card{min-height:auto;padding:27px 24px}
+  .notes-more{text-align:left}
+  .footer-links--lab>div{grid-template-columns:1fr}
+}
