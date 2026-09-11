@@ -1,4 +1,4 @@
-name: Update inbound accommodation data
+name: Update accommodation and cross-analysis data
 
 on:
   schedule:
@@ -29,19 +29,21 @@ jobs:
         run: python -m pip install -r requirements.txt
 
       - name: Fetch and validate latest second preliminary data
-        run: python scripts/update_inbound_data.py
+        run: |
+          python scripts/update_inbound_data.py
+          python scripts/update_cross_analysis_data.py
 
       - name: Run tests
         run: python -m pytest -q
 
       - name: Commit updated JSON
         run: |
-          if git diff --quiet -- data/inbound/latest.json data/inbound/metadata.json; then
-            echo "No new second preliminary data."
+          if git diff --quiet -- data/inbound/latest.json data/inbound/metadata.json data/analysis; then
+            echo "No new public statistics data."
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/inbound/latest.json data/inbound/metadata.json
-          git commit -m "Update inbound accommodation statistics"
+          git add data/inbound/latest.json data/inbound/metadata.json data/analysis
+          git commit -m "Update public accommodation statistics"
           git push

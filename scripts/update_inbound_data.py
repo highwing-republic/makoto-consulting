@@ -90,7 +90,7 @@ def discover_releases(session: requests.Session) -> tuple[list[Release], str]:
                 (int(match.group(1)), urljoin(ARCHIVE_PAGE, anchor["href"].strip()))
             )
 
-    for _, page_url in sorted(year_pages, reverse=True)[:2]:
+    for _, page_url in sorted(year_pages, reverse=True)[:3]:
         _, soup = fetch_page(session, page_url)
         pages.append((page_url, soup))
 
