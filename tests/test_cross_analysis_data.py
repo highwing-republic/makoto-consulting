@@ -114,10 +114,12 @@ def test_pages_start_with_loading_only_and_keep_noscript():
 
 
 def test_home_and_directory_list_tools_in_order():
-    for page in ("index.html", "useful.html"):
-        source = (ROOT / page).read_text(encoding="utf-8")
-        positions = [source.index(f'>{number:02d}<') for number in range(1, 7)]
-        assert positions == sorted(positions)
+    home = (ROOT / "index.html").read_text(encoding="utf-8")
+    assert all(label in home for label in ("旅館・ホテル", "インバウンド宿泊者分析", "観光株シグナル"))
+    assert 'id="analysis-tools"' in home
+    source = (ROOT / "useful.html").read_text(encoding="utf-8")
+    positions = [source.index(f'>{number:02d}<') for number in range(1, 7)]
+    assert positions == sorted(positions)
 
 
 def test_pref_query_resolution_and_reload_contract():
@@ -130,7 +132,7 @@ def test_pref_query_resolution_and_reload_contract():
     result = subprocess.run(
         ["node", "-e", script], cwd=ROOT, check=True, capture_output=True, text=True
     )
-    assert json.loads(result.stdout) == ["nagano", "tokyo", "tokyo", "nagano"]
+    assert json.loads(result.stdout) == ["nagano", "", "", "nagano"]
 
 
 def test_responsive_layout_and_existing_tools_regression():

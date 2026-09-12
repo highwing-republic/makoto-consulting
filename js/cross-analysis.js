@@ -1,8 +1,10 @@
 (() => {
   'use strict';
 
-  function resolvePrefectureSlug(rows, requested, fallback = 'tokyo') {
-    return rows.some((item) => item.prefecture_slug === requested) ? requested : fallback;
+  function resolvePrefectureSlug(rows, requested, fallback = '') {
+    if (!requested) return fallback;
+    const match = rows.find((item) => item.prefecture_slug === requested || item.prefecture_code === String(requested).padStart(2, '0'));
+    return match ? match.prefecture_slug : fallback;
   }
   globalThis.CrossAnalysisUtils = { resolvePrefectureSlug };
   if (typeof document === 'undefined') return;
@@ -64,6 +66,14 @@
     const url = new URL(window.location.href);
     url.searchParams.set('pref', slug);
     history.replaceState(null, '', url);
+  }
+
+  function updateRelatedLinks(slug) {
+    document.querySelectorAll('[data-pref-link]').forEach((link) => {
+      const url = new URL(link.href, window.location.href);
+      url.searchParams.set('pref', slug);
+      link.href = `${url.pathname}${url.search}${url.hash}`;
+    });
   }
 
   function selectedRecord() {
@@ -149,6 +159,7 @@
     const item = selectedRecord();
     if (!item) return;
     updateUrl(item.prefecture_slug);
+    updateRelatedLinks(item.prefecture_slug);
     setText('selected-area-name', item.prefecture_name);
     setText('analysis-period', `分析期間：${sourcePeriod(dataset.metadata)}`);
     setText('primary-score', `${item[config.scoreKey]} / 100`);
@@ -175,15 +186,23 @@
     }
     renderBars(item);
     renderScatter(item);
+    dashboard.hidden = false;
+    dashboard.inert = false;
+    dashboard.setAttribute('aria-hidden', 'false');
     document.querySelectorAll('#prefecture-ranking li').forEach((li) => li.classList.toggle('is-selected', li.dataset.slug === item.prefecture_slug));
+    if (globalThis.LabAnalytics) {
+      globalThis.LabAnalytics.track('analysis_run', { tool_id: `cross-${type}`, prefecture_code: item.prefecture_code });
+      globalThis.LabAnalytics.track('analysis_result_view', { tool_id: `cross-${type}`, dataset_version: dataset.metadata.retrieved_at.replaceAll('-', '') });
+    }
   }
 
   function showError(message) {
     loading.hidden = true;
     error.hidden = false;
-    error.innerHTML = `<strong>現在、最新統計を取得できません</strong><p>${message}</p><button class="button button--outline" type="button" id="retry-data">再読み込みする</button>`;
+    error.innerHTML = `<strong>現在、最新統計を取得できません</strong><p>${message}</p><div class="analysis-actions"><button class="button button--outline" type="button" id="retry-data">再読み込みする</button><a class="button button--outline" href="https://www.mlit.go.jp/kankocho/tokei_hakusyo/shukuhakutokei.html" target="_blank" rel="noopener noreferrer">観光庁の出典を見る</a></div>`;
     $('retry-data').addEventListener('click', load);
     root.setAttribute('aria-busy', 'false');
+    if (globalThis.LabAnalytics) globalThis.LabAnalytics.track('tool_error', { tool_id: `cross-${type}`, error_code: 'data_fetch' });
   }
 
   function renderSources() {
@@ -206,18 +225,19 @@
       dataset = await response.json();
       if (!dataset.prefectures || Object.keys(dataset.prefectures).length !== 47) throw new Error('47都道府県分のデータを確認できませんでした。');
       const rows = Object.values(dataset.prefectures).sort((a, b) => a.prefecture_code.localeCompare(b.prefecture_code));
-      select.replaceChildren(...rows.map((item) => new Option(item.prefecture_name, item.prefecture_slug)));
+      select.replaceChildren(new Option('都道府県を選択してください', ''), ...rows.map((item) => new Option(item.prefecture_name, item.prefecture_slug)));
       const requested = new URLSearchParams(location.search).get('pref');
       select.value = resolvePrefectureSlug(rows, requested);
       select.disabled = false;
       select.addEventListener('change', render, { passive: true });
       renderRanking();
       renderSources();
-      render();
       loading.hidden = true;
-      dashboard.hidden = false;
-      dashboard.inert = false;
-      dashboard.setAttribute('aria-hidden', 'false');
+      if (select.value) {
+        render();
+      } else {
+        setText('analysis-period', requested ? '指定された都道府県を確認できません。選択欄から選び直してください。' : '都道府県を選ぶと分析結果を表示します。');
+      }
       root.setAttribute('aria-busy', 'false');
     } catch (cause) {
       console.error(cause);

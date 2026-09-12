@@ -56,13 +56,13 @@ console.log(JSON.stringify({
 
 def test_page_has_required_inputs_and_fixed_answer_structure():
     soup = BeautifulSoup(PAGE.read_text(encoding="utf-8"), "html.parser")
-    assert soup.title.string == "宿泊経営AI｜地域データからDX・インバウンド・宿泊市場を考える｜宿泊DXラボ"
+    assert soup.title.string == "宿泊経営の課題整理（β）｜公的統計と施設情報から次の確認を整理｜宿泊DXラボ"
     assert soup.find("link", rel="canonical")["href"] == "https://lab.ugatta-llc.com/management-ai.html"
     assert len(soup.select('input[name="topic"]')) == 5
     assert soup.find(id="management-prefecture").has_attr("required")
     for field_id in ("facility-type", "facility-rooms", "facility-employees", "facility-occupancy", "facility-foreign-share", "management-question"):
         assert soup.find(id=field_id)
-    for section_id in ("answer-status", "answer-facts", "answer-hypotheses", "answer-checklist", "answer-related", "answer-data-periods", "answer-references", "answer-metrics", "answer-rules"):
+    for section_id in ("answer-status", "answer-facts", "answer-hypotheses", "answer-checklist", "answer-related", "answer-data-periods", "answer-references", "answer-metrics", "answer-rules", "answer-rule-version"):
         assert soup.find(id=section_id)
     assert soup.find("noscript")
 
@@ -120,9 +120,9 @@ def test_topic_classification_pref_fallback_and_five_representative_cases():
 
 def test_ga4_events_exclude_free_text_and_rules_are_separated():
     source = UI.read_text(encoding="utf-8")
-    for event in ("management_ai_start", "management_ai_topic_select", "management_ai_analyze", "management_ai_related_tool_click"):
+    for event in ("tool_open", "analysis_run", "analysis_result_view"):
         assert event in source
-    analyze_payload = source[source.index("management_ai_analyze"):source.index("management_ai_analyze") + 300]
+    analyze_payload = source[source.index("analysis_run"):source.index("analysis_run") + 450]
     assert "question" not in analyze_payload
     assert 'src="js/management-ai-rules.js' in PAGE.read_text(encoding="utf-8")
     assert 'src="js/management-ai.js' in PAGE.read_text(encoding="utf-8")
@@ -135,10 +135,11 @@ def test_responsive_styles_and_tools_01_to_07_regression():
     assert ".management-topic-grid" in css
     assert "@media(max-width:760px)" in css
     assert "@media(max-width:620px)" in css
-    for page_name in ("index.html", "useful.html"):
-        source = (ROOT / page_name).read_text(encoding="utf-8")
-        positions = [source.index(f">{number:02d}<") for number in range(1, 8)]
-        assert positions == sorted(positions)
-        assert "management-ai.html" in source
+    source = (ROOT / "useful.html").read_text(encoding="utf-8")
+    positions = [source.index(f">{number:02d}<") for number in range(1, 8)]
+    assert positions == sorted(positions)
+    assert "management-ai.html" in source
+    home = (ROOT / "index.html").read_text(encoding="utf-8")
+    assert "すべての分析・ツールを見る" in home and "management-ai.html" not in home
     for existing in ("dx-diagnosis.html", "inbound-analysis.html", "dx-necessity-analysis.html", "supply-demand-gap-analysis.html", "tourism-pressure-analysis.html"):
         assert (ROOT / existing).exists()

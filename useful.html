@@ -34,7 +34,7 @@
     "@context":"https://schema.org",
     "@graph":[
       {"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"ホーム","item":"https://lab.ugatta-llc.com/"},{"@type":"ListItem","position":2,"name":"分析・ツール","item":"https://lab.ugatta-llc.com/useful.html"}]},
-      {"@type":"CollectionPage","name":"宿泊・観光の分析・実験ツール","url":"https://lab.ugatta-llc.com/useful.html","mainEntity":{"@type":"ItemList","numberOfItems":7,"itemListElement":[{"@type":"ListItem","position":1,"name":"旅館・ホテル DXかんたん診断","url":"https://lab.ugatta-llc.com/dx-diagnosis.html"},{"@type":"ListItem","position":2,"name":"都道府県別 インバウンド宿泊者分析","url":"https://lab.ugatta-llc.com/inbound-analysis.html"},{"@type":"ListItem","position":3,"name":"観光株シグナル","url":"https://lab.ugatta-llc.com/useful.html#tourism-market-signal"},{"@type":"ListItem","position":4,"name":"都道府県別 宿泊DX必要度分析","url":"https://lab.ugatta-llc.com/dx-necessity-analysis.html"},{"@type":"ListItem","position":5,"name":"都道府県別 宿泊市場需給ギャップ分析","url":"https://lab.ugatta-llc.com/supply-demand-gap-analysis.html"},{"@type":"ListItem","position":6,"name":"都道府県別 観光負荷・観光依存度分析","url":"https://lab.ugatta-llc.com/tourism-pressure-analysis.html"},{"@type":"ListItem","position":7,"name":"宿泊経営AI","url":"https://lab.ugatta-llc.com/management-ai.html"}]}}
+      {"@type":"CollectionPage","name":"宿泊・観光の分析・実験ツール","url":"https://lab.ugatta-llc.com/useful.html","mainEntity":{"@type":"ItemList","numberOfItems":7,"itemListElement":[{"@type":"ListItem","position":1,"name":"旅館・ホテル DXかんたん診断","url":"https://lab.ugatta-llc.com/dx-diagnosis.html"},{"@type":"ListItem","position":2,"name":"都道府県別 インバウンド宿泊者分析","url":"https://lab.ugatta-llc.com/inbound-analysis.html"},{"@type":"ListItem","position":3,"name":"観光株シグナル","url":"https://lab.ugatta-llc.com/useful.html#tourism-market-signal"},{"@type":"ListItem","position":4,"name":"都道府県別 地域の省人化・DX検討指標","url":"https://lab.ugatta-llc.com/dx-necessity-analysis.html"},{"@type":"ListItem","position":5,"name":"都道府県別 宿泊市場の需給参考指標","url":"https://lab.ugatta-llc.com/supply-demand-gap-analysis.html"},{"@type":"ListItem","position":6,"name":"都道府県別 宿泊集中度・宿泊業依存度","url":"https://lab.ugatta-llc.com/tourism-pressure-analysis.html"},{"@type":"ListItem","position":7,"name":"宿泊経営の課題整理（β）","url":"https://lab.ugatta-llc.com/management-ai.html"}]}}
     ]
   }
   </script>
@@ -53,7 +53,8 @@
       <nav class="global-nav" id="global-nav" aria-label="メインナビゲーション" data-nav>
         <ul>
           <li><a aria-current="page" href="/useful.html">分析・ツール</a></li>
-          <li><a href="/#about-lab">このラボについて</a></li>
+          <li><a href="/classics-ai-management/">ラボノート</a></li>
+          <li><a href="/#about-lab">宿泊DXラボとは</a></li>
         </ul>
       </nav>
     </div>
@@ -84,8 +85,8 @@
             <p class="tool-directory-card__number">01</p>
             <h2>旅館・ホテル<br>DXかんたん診断</h2>
             <p>施設の数字と16個の質問から、DXの現在地と優先して改善したいポイントを整理します。</p>
-            <ul class="check-list"><li>8カテゴリのDXスコアを見える化</li><li>優先課題と関連施策を提案</li><li>登録不要で無料</li></ul>
-            <a class="button" data-analytics-event="tool_click" href="dx-diagnosis.html">無料で診断する<span aria-hidden="true">→</span></a>
+            <dl class="tool-meta"><div><dt>対象</dt><dd>自施設</dd></div><div><dt>入力</dt><dd>施設情報・16問</dd></div><div><dt>結果</dt><dd>8カテゴリと優先確認項目</dd></div><div><dt>条件</dt><dd>無料・登録不要・外部ツール</dd></div></dl>
+            <a class="button" data-analytics-event="tool_open" data-tool-id="dx-diagnosis" href="dx-diagnosis.html">無料で診断する<span aria-hidden="true">→</span></a>
           </article>
 
           <article class="tool-directory-card">
@@ -93,45 +94,45 @@
             <p class="tool-directory-card__number">02</p>
             <h2>都道府県別<br>インバウンド宿泊者分析</h2>
             <p>観光庁の宿泊旅行統計をもとに、外国人宿泊需要、国・地域別構成、全国比較などを分析します。</p>
-            <ul class="check-list"><li>全国と47都道府県の最新第2次速報</li><li>国・地域別TOP10と全国比較</li><li>地域特化度から注目市場候補を整理</li></ul>
-            <a class="button button--outline" data-analytics-event="tool_click" href="inbound-analysis.html">実データで分析する<span aria-hidden="true">→</span></a>
+            <dl class="tool-meta"><div><dt>対象</dt><dd>全国・都道府県</dd></div><div><dt>入力</dt><dd>地域選択</dd></div><div><dt>結果</dt><dd>延べ宿泊者数・国地域別構成</dd></div><div><dt>条件</dt><dd>無料・公的統計</dd></div></dl>
+            <a class="button button--outline" data-analytics-event="tool_open" data-tool-id="inbound" href="inbound-analysis.html">実データで分析する<span aria-hidden="true">→</span></a>
           </article>
 
-          <article class="tool-directory-card" id="tourism-market-signal">
-            <span class="tool-badge">FREE / DAILY REPORT</span>
+          <article class="tool-directory-card tool-directory-card--research" id="tourism-market-signal">
+            <span class="tool-badge">研究・参考資料 / 外部レポート</span>
             <p class="tool-directory-card__number">03</p>
             <h2>観光株シグナル<span lang="en">Tourism Market Signal</span></h2>
             <p>観光・インバウンド関連企業の市場変化から、追加調査したい動きを確認します。</p>
-            <ul class="check-list"><li>50銘柄を毎営業日分析</li><li>注目度と前日差分を表示</li><li>上位企業の調査観点を整理</li></ul>
-            <a class="button button--outline" data-analytics-event="tool_click" href="#latest-report">最新シグナルを見る<span aria-hidden="true">↓</span></a>
+            <dl class="tool-meta"><div><dt>対象</dt><dd>観光関連企業</dd></div><div><dt>入力</dt><dd>なし</dd></div><div><dt>結果</dt><dd>市場反応の調査候補</dd></div><div><dt>条件</dt><dd>外部・研究用・投資助言ではない</dd></div></dl>
+            <a class="button button--outline" data-analytics-event="tool_open" data-tool-id="market-signal" href="#latest-report">参考レポートを見る<span aria-hidden="true">↓</span></a>
           </article>
 
-          <article class="tool-directory-card">
+          <article class="tool-directory-card" id="regional-tools">
             <span class="tool-badge">FREE / OFFICIAL DATA</span><p class="tool-directory-card__number">04</p>
-            <h2>都道府県別<br>宿泊DX必要度分析</h2><p>宿泊需要、人材負荷、生産年齢人口をクロスし、省人化・DXを検討する必要性を都道府県別に分析。</p>
-            <ul class="check-list"><li>3つの公的統計を横断</li><li>47都道府県の参考スコア</li><li>スコアの主な要因を表示</li></ul>
-            <a class="button button--outline" data-analytics-event="tool_click" href="dx-necessity-analysis.html">DX必要度を見る<span aria-hidden="true">→</span></a>
+            <h2>地域の省人化・<br>DX検討指標</h2><p>旧「宿泊DX必要度分析」。宿泊需要、人材負荷、生産年齢人口から、検討条件を比較します。</p>
+            <dl class="tool-meta"><div><dt>対象</dt><dd>都道府県</dd></div><div><dt>入力</dt><dd>地域選択</dd></div><div><dt>結果</dt><dd>参考スコア・4要素</dd></div><div><dt>条件</dt><dd>自施設診断ではない</dd></div></dl>
+            <a class="button button--outline" data-analytics-event="tool_open" data-tool-id="dx-necessity" href="dx-necessity-analysis.html">検討指標を見る<span aria-hidden="true">→</span></a>
           </article>
 
           <article class="tool-directory-card">
             <span class="tool-badge">FREE / OFFICIAL DATA</span><p class="tool-directory-card__number">05</p>
-            <h2>都道府県別<br>宿泊市場需給ギャップ分析</h2><p>宿泊需要の伸び、客室稼働率、宿泊事業所数から、地域の需給状況を分析。</p>
-            <ul class="check-list"><li>需要と供給を2軸で比較</li><li>市場タイプを4分類</li><li>47都道府県の散布図と順位</li></ul>
-            <a class="button button--outline" data-analytics-event="tool_click" href="supply-demand-gap-analysis.html">市場需給を見る<span aria-hidden="true">→</span></a>
+            <h2>都道府県別<br>宿泊市場の需給参考指標</h2><p>旧「宿泊市場需給ギャップ分析」。需要の伸び、稼働率、宿泊事業所あたり需要を比較します。</p>
+            <dl class="tool-meta"><div><dt>対象</dt><dd>都道府県</dd></div><div><dt>入力</dt><dd>地域選択</dd></div><div><dt>結果</dt><dd>市場類型・散布図・参考順位</dd></div><div><dt>条件</dt><dd>供給不足を断定しない</dd></div></dl>
+            <a class="button button--outline" data-analytics-event="tool_open" data-tool-id="supply-demand" href="supply-demand-gap-analysis.html">需給参考指標を見る<span aria-hidden="true">→</span></a>
           </article>
 
           <article class="tool-directory-card">
             <span class="tool-badge">FREE / OFFICIAL DATA</span><p class="tool-directory-card__number">06</p>
-            <h2>都道府県別<br>観光負荷・観光依存度分析</h2><p>宿泊者数、人口、宿泊業従業者数をクロスし、地域における観光の存在感を分析。</p>
-            <ul class="check-list"><li>観光負荷と依存度の2軸</li><li>人口・宿泊・産業統計を結合</li><li>地域タイプと全国順位</li></ul>
-            <a class="button button--outline" data-analytics-event="tool_click" href="tourism-pressure-analysis.html">地域を分析する<span aria-hidden="true">→</span></a>
+            <h2>都道府県別<br>宿泊集中度・宿泊業依存度</h2><p>旧「観光負荷・観光依存度分析」。宿泊需要の集中と宿泊業の構成を分けて確認します。</p>
+            <dl class="tool-meta"><div><dt>対象</dt><dd>都道府県</dd></div><div><dt>入力</dt><dd>地域選択</dd></div><div><dt>結果</dt><dd>宿泊集中度・宿泊業依存度</dd></div><div><dt>条件</dt><dd>日帰り客・住民意識は対象外</dd></div></dl>
+            <a class="button button--outline" data-analytics-event="tool_open" data-tool-id="tourism-pressure" href="tourism-pressure-analysis.html">地域を分析する<span aria-hidden="true">→</span></a>
           </article>
 
           <article class="tool-directory-card">
             <span class="tool-badge">FREE / RULE-BASED</span><p class="tool-directory-card__number">07</p>
-            <h2>宿泊経営AI<span lang="en">SHUKUHAKU MANAGEMENT AI</span></h2><p>宿泊DXラボの地域分析と施設情報を組み合わせ、DX・人手不足・インバウンド・市場について考えるためのヒントを提示します。</p>
-            <ul class="check-list"><li>都道府県と相談テーマから分析</li><li>自施設と地域を参考比較</li><li>回答根拠と元データを表示</li></ul>
-            <a class="button button--outline" data-analytics-event="tool_click" href="management-ai.html">AIと考える<span aria-hidden="true">→</span></a>
+            <h2>宿泊経営の課題整理（β）<span lang="en">RULE-BASED</span></h2><p>地域分析と任意の施設情報を組み合わせ、次に確認する課題をルールベースで整理します。</p>
+            <dl class="tool-meta"><div><dt>対象</dt><dd>都道府県＋任意の施設情報</dd></div><div><dt>入力</dt><dd>地域・テーマ・任意項目</dd></div><div><dt>結果</dt><dd>要点・数値・論点・確認事項</dd></div><div><dt>条件</dt><dd>β版・生成AIではない</dd></div></dl>
+            <a class="button button--outline" data-analytics-event="tool_open" data-tool-id="management-issue-organizer" href="management-ai.html">課題を整理する<span aria-hidden="true">→</span></a>
           </article>
         </div>
       </div>
@@ -140,11 +141,11 @@
     <section class="section section--tint embedded-tool-section" id="latest-report">
       <div class="container">
         <div class="section-heading reveal">
-          <div><p class="eyebrow">LATEST SIGNAL</p><h2 class="section-title">最新の観光市場シグナル</h2></div>
-          <p class="section-description">観光・インバウンド関連企業の市場変化から、直近で確認しておきたい動きをまとめています。平日の朝に更新します。</p>
+          <div><p class="eyebrow">RESEARCH &amp; REFERENCES</p><h2 class="section-title">観光株シグナル</h2></div>
+          <p class="section-description">外部GitHub Pagesで提供する企業動向の研究・参考レポートです。株価の動きは地域の宿泊需要を示しません。対象取引日と更新日時はレポート内で確認してください。</p>
         </div>
         <div class="embed-frame reveal"><iframe src="https://highwing-republic.github.io/tourism-market-signal/index.html" title="観光株シグナル Tourism Market Signal" loading="lazy"></iframe></div>
-        <div class="embed-actions reveal"><a class="button button--outline" data-analytics-event="tool_click" href="report.html" target="_blank" rel="noopener noreferrer">レポートを拡大表示する<span aria-hidden="true">↗</span></a></div>
+        <div class="embed-actions reveal"><p>外部レポートを読み込めない場合は、別ページで開いてください。</p><a class="button button--outline" data-analytics-event="tool_open" data-tool-id="market-signal-external" href="report.html" target="_blank" rel="noopener noreferrer">レポートを別タブで開く<span aria-hidden="true">↗</span></a></div>
       </div>
     </section>
 
@@ -162,11 +163,12 @@
     <div class="container footer-grid">
       <div>
         <a class="brand brand--footer" href="/"><span class="brand-copy"><strong>宿泊DXラボ</strong><small>データを見る。試す。考える。</small></span></a>
-        <p class="footer-lead">宿泊・観光について、データ・AI・DXを使って分析・実験するラボ。</p>
+        <p class="footer-lead">宿泊・観光について、データ・AI・DXを使って分析・実験するラボです。</p>
+        <small>運営：合同会社UGATTA</small>
       </div>
       <div class="footer-links">
-        <div><p class="footer-heading">ラボ</p><a href="/useful.html">分析・ツール</a><a href="/#about-lab">このラボについて</a></div>
-        <div><p class="footer-heading">お問い合わせ</p><a href="https://forms.gle/yjinqFdntoXhTmgk7" target="_blank" rel="noopener noreferrer" data-analytics-event="contact_click">UGATTAのフォームを開く</a></div>
+        <div><p class="footer-heading">ラボ</p><a href="/useful.html">分析・ツール</a><a href="/classics-ai-management/">ラボノート</a><a href="/#about-lab">宿泊DXラボについて</a></div>
+        <div><p class="footer-heading">お問い合わせ</p><a href="https://forms.gle/yjinqFdntoXhTmgk7" target="_blank" rel="noopener noreferrer" data-analytics-event="consultation_click" data-tool-id="footer">お問い合わせ ↗</a></div>
       </div>
     </div>
     <div class="container footer-bottom"><span>© 2026 宿泊DXラボ</span></div>

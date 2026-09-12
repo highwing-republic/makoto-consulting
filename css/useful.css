@@ -279,3 +279,23 @@ button{font:inherit}
 @media(max-width:1000px){.management-topic-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.management-input-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.management-comparisons{grid-template-columns:1fr 1fr}}
 @media(max-width:760px){.management-step__heading{align-items:flex-start;flex-direction:column;gap:9px}.management-step__heading>p{text-align:left}.management-topic-grid{grid-template-columns:1fr 1fr}.management-required-field{grid-template-columns:1fr;gap:10px}.management-facts,.management-answer-columns,.management-periods dl{grid-template-columns:1fr}.management-answer-columns .management-answer-block{height:auto}.management-answer-header{align-items:flex-start;flex-direction:column}.management-comparisons{grid-template-columns:1fr}.management-grounds-grid{grid-template-columns:1fr}}
 @media(max-width:620px){.management-hero{padding-bottom:52px}.management-ai{padding-top:38px}.management-step{padding:26px 19px}.management-step__number{top:24px;right:20px}.management-step__heading{padding-right:28px}.management-topic-grid{grid-template-columns:1fr}.management-topic span{min-height:88px}.management-input-grid{grid-template-columns:1fr;padding:22px 18px 16px}.management-optional summary{padding:18px}.management-form-note{padding:0 18px 20px}.management-submit{align-items:stretch;flex-direction:column}.management-submit .button{width:100%}.management-result{margin-top:48px}.management-answer-block{padding:24px 19px}.management-facts{display:block}.management-answer-heading{align-items:flex-start;flex-direction:column;gap:0}.management-related ul{display:grid}.management-related a{width:100%}.management-periods dl>div{align-items:flex-start;flex-direction:column;gap:4px}.management-grounds summary{padding:19px}.management-grounds-grid{padding:24px 19px 8px}.management-grounds>p{padding:16px 19px 22px}}
+
+/* Phase 1-3: trust, external-tool and result-action patterns */
+.scope-badge{display:inline-flex;min-height:28px;margin-bottom:16px;padding:5px 11px;border-radius:999px;background:#e7f1f3;color:var(--signal);font-size:12px;font-weight:700;align-items:center}
+.scope-badge--facility{background:#fff3db;color:#735218}
+.external-tool-notice,.next-action-panel{margin-bottom:22px;padding:24px;border:1px solid var(--line);border-radius:12px;background:#fff}
+.tool-meta{display:grid;width:100%;gap:0;margin:4px 0 24px}.tool-meta>div{display:grid;grid-template-columns:58px 1fr;gap:10px;padding:8px 0;border-top:1px solid var(--line)}.tool-meta dt{color:#6d787e;font-size:10px;font-weight:700}.tool-meta dd{margin:0;color:var(--ink-soft);font-size:11px;line-height:1.55}.tool-directory-card--research{border-style:dashed;background:#f7f4ed}.tool-directory-card--research .tool-badge{background:#efe5cd;color:#6e5324}
+.external-tool-notice strong,.next-action-panel h3{display:block;margin:0 0 8px;color:var(--accent);font-family:var(--serif);font-size:21px}
+.external-tool-notice p,.next-action-panel li{color:var(--ink-soft);font-size:13px;line-height:1.8}
+.external-tool-notice .button{margin-top:8px}
+.next-action-panel{margin-top:22px}.next-action-panel ul{margin:0 0 16px;padding-left:21px}.next-action-panel a{display:inline-flex;min-height:44px;color:var(--accent);font-weight:700;align-items:center}
+.analysis-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}.analysis-actions .button{min-height:44px}
+.footer-note{max-width:280px;margin:0 0 8px;color:#b8c7d2;font-size:10px;line-height:1.7}
+.state-warning{margin:16px 0 0;padding:12px 15px;border-left:3px solid var(--gold);background:#fff4dc;color:#665533;font-size:12px;line-height:1.7}
+@media(max-width:620px){.external-tool-notice,.next-action-panel{padding:20px}.external-tool-notice .button,.analysis-actions .button{width:100%}}
+@media print{
+  .site-header,.site-footer,.breadcrumb,.analysis-control-panel,.data-loading,.data-error,.analysis-actions,.button{display:none!important}
+  body{background:#fff;color:#111}.inbound-tool,.section{padding:20px 0}.analysis-dashboard{display:block!important}.analysis-section,.analysis-panel,.score-card,.reason-card{break-inside:avoid;box-shadow:none!important}
+  .score-card{border:1px solid #333;background:#fff!important;color:#111!important}.score-card>*{color:#111!important}
+  a{color:#111;text-decoration:none}
+}

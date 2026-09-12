@@ -24,11 +24,11 @@
   let dataset = null;
 
   function formatNumber(value) {
-    return numberFormatter.format(Math.round(value || 0));
+    return Number.isFinite(value) ? numberFormatter.format(Math.round(value)) : '公表値なし';
   }
 
   function formatPercent(value) {
-    return percentFormatter.format((value || 0) * 100) + '%';
+    return Number.isFinite(value) ? percentFormatter.format(value * 100) + '%' : '算出不可';
   }
 
   function formatCompact(value) {
@@ -51,12 +51,22 @@
 
   function getInitialArea() {
     const slug = new URLSearchParams(window.location.search).get('pref');
-    return slugToPrefecture.get(slug) || '全国';
+    if (!slug) return '全国';
+    if (slugToPrefecture.has(slug)) return slugToPrefecture.get(slug);
+    const code = Number(slug);
+    if (Number.isInteger(code) && code >= 1 && code <= PREFECTURE_SLUGS.length) return PREFECTURE_SLUGS[code - 1][0];
+    return null;
   }
 
   function populateSelector(selectedArea) {
     const select = byId('prefecture-select');
     select.textContent = '';
+    if (!selectedArea) {
+      const invalidOption = document.createElement('option');
+      invalidOption.value = '';
+      invalidOption.textContent = '都道府県を選択してください';
+      select.appendChild(invalidOption);
+    }
     const nationalOption = document.createElement('option');
     nationalOption.value = '全国';
     nationalOption.textContent = '全国';
@@ -318,6 +328,11 @@
     renderComparison(markets);
     renderInsight(area, markets);
     if (updateAddress) updateUrl(area);
+    if (globalThis.LabAnalytics) {
+      const code = area === '全国' ? '00' : String(PREFECTURE_SLUGS.findIndex(function (item) { return item[0] === area; }) + 1).padStart(2, '0');
+      globalThis.LabAnalytics.track('analysis_run', { tool_id: 'inbound', prefecture_code: code });
+      globalThis.LabAnalytics.track('analysis_result_view', { tool_id: 'inbound', dataset_version: String(dataset.metadata.updated_at).replaceAll('-', '') });
+    }
   }
 
   function setSourceMetadata() {
@@ -336,13 +351,19 @@
     const title = document.createElement('strong');
     const message = document.createElement('p');
     const retry = document.createElement('button');
+    const source = document.createElement('a');
     title.textContent = '現在、最新統計を取得できません';
     message.textContent = '時間をおいて再度お試しください。統計を取得できない場合は数値を表示しません。';
     retry.className = 'button button--outline';
     retry.type = 'button';
     retry.textContent = '再読み込みする';
     retry.addEventListener('click', loadData);
-    errorPanel.replaceChildren(title, message, retry);
+    source.className = 'button button--outline';
+    source.href = 'https://www.mlit.go.jp/kankocho/tokei_hakusyo/shukuhakutokei.html';
+    source.target = '_blank';
+    source.rel = 'noopener noreferrer';
+    source.textContent = '観光庁の出典を見る';
+    errorPanel.replaceChildren(title, message, retry, source);
     byId('data-loading').hidden = true;
     byId('analysis-dashboard').hidden = true;
     byId('analysis-dashboard').inert = true;
@@ -351,6 +372,7 @@
     byId('analysis-period').textContent = '最新統計を取得できません';
     byId('prefecture-select').disabled = true;
     byId('tool').setAttribute('aria-busy', 'false');
+    if (globalThis.LabAnalytics) globalThis.LabAnalytics.track('tool_error', { tool_id: 'inbound', error_code: 'data_fetch' });
   }
 
   function loadData() {
@@ -374,11 +396,15 @@
         const selectedArea = getInitialArea();
         populateSelector(selectedArea);
         setSourceMetadata();
-        renderArea(selectedArea, false);
         byId('data-loading').hidden = true;
-        byId('analysis-dashboard').hidden = false;
-        byId('analysis-dashboard').inert = false;
-        byId('analysis-dashboard').removeAttribute('aria-hidden');
+        if (selectedArea) {
+          renderArea(selectedArea, false);
+          byId('analysis-dashboard').hidden = false;
+          byId('analysis-dashboard').inert = false;
+          byId('analysis-dashboard').removeAttribute('aria-hidden');
+        } else {
+          byId('analysis-period').textContent = '指定された都道府県を確認できません。選択欄から選び直してください。';
+        }
         byId('tool').setAttribute('aria-busy', 'false');
       })
       .catch(showError);
@@ -386,10 +412,11 @@
 
   document.addEventListener('DOMContentLoaded', function () {
     byId('prefecture-select').addEventListener('change', function (event) {
+      if (!event.target.value) return;
       renderArea(event.target.value, true);
-      if (typeof window.gtag === 'function') {
-        window.gtag('event', 'inbound_prefecture_change', { prefecture: event.target.value });
-      }
+      byId('analysis-dashboard').hidden = false;
+      byId('analysis-dashboard').inert = false;
+      byId('analysis-dashboard').removeAttribute('aria-hidden');
     });
     loadData();
   });

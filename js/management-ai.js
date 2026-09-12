@@ -27,7 +27,7 @@
   };
 
   function analytics(eventName, parameters = {}) {
-    if (typeof globalThis.gtag === 'function') globalThis.gtag('event', eventName, parameters);
+    if (globalThis.LabAnalytics) globalThis.LabAnalytics.track(eventName, parameters);
   }
 
   function updateUrl(pref, topic) {
@@ -117,9 +117,10 @@
     replaceList('answer-references', answer.references, (text) => element('li', '', text));
     replaceList('answer-metrics', answer.usedMetrics, (text) => element('li', '', text));
     const rules = answer.matchedRules.length
-      ? answer.matchedRules.map((id) => RULE_LABELS[id] || id)
+      ? answer.matchedRules.map((id) => `${id}：${RULE_LABELS[id] || '条件一致'}`)
       : ['選択テーマに対応する基本案内を表示'];
     replaceList('answer-rules', rules, (text) => element('li', '', text));
+    setText('answer-rule-version', Rules.RULE_VERSION);
 
     const sources = context.datasets.dx.metadata.sources;
     const sourceRows = [sources.lodging, sources.population, sources.economic_census];
@@ -151,11 +152,7 @@
       const link = element('a', '', `${tool.number} ${tool.label} →`);
       link.href = tool.href;
       link.dataset.relatedTool = tool.number;
-      link.addEventListener('click', () => analytics('management_ai_related_tool_click', {
-        tool_number: tool.number,
-        topic: answer.topic,
-        prefecture: context.slug
-      }));
+      link.addEventListener('click', () => analytics('tool_open', { tool_id: `related-${tool.number}` }));
       item.append(link);
       return item;
     });
@@ -189,11 +186,8 @@
     const answer = Rules.generateInsights(context, topic, facility, question.value.trim());
     updateUrl(context.slug, topic);
     renderAnswer(context, answer, facility);
-    analytics('management_ai_analyze', {
-      topic,
-      prefecture: context.slug,
-      has_facility_data: Object.values(facility).some((value) => value != null && value !== '')
-    });
+    analytics('analysis_run', { tool_id: 'management-issue-organizer', prefecture_code: context.statistics.prefecture_code });
+    analytics('analysis_result_view', { tool_id: 'management-issue-organizer', dataset_version: context.datasets.dx.metadata.retrieved_at.replaceAll('-', '') });
   }
 
   function showError(message) {
@@ -222,7 +216,7 @@
     loading.hidden = true;
     fields.disabled = false;
     root.setAttribute('aria-busy', 'false');
-    analytics('management_ai_start', { prefecture: slug });
+    analytics('tool_open', { tool_id: 'management-issue-organizer' });
   }
 
   form.addEventListener('submit', (event) => {
@@ -232,7 +226,6 @@
   prefectureSelect.addEventListener('change', () => updateUrl(prefectureSelect.value, selectedTopic()));
   form.querySelectorAll('input[name="topic"]').forEach((radio) => radio.addEventListener('change', () => {
     updateUrl(prefectureSelect.value, radio.value);
-    analytics('management_ai_topic_select', { topic: radio.value, prefecture: prefectureSelect.value });
   }));
   document.querySelectorAll('[data-question-example]').forEach((button) => button.addEventListener('click', () => {
     question.value = button.textContent.trim();

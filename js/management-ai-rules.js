@@ -1,6 +1,8 @@
 (() => {
   'use strict';
 
+  const RULE_VERSION = '1.0.0';
+
   const TOPICS = {
     dx: { label: '人手不足・DX', keywords: ['人手不足', '採用', 'スタッフ', '省人化', 'フロント', '清掃', '予約管理', '電話', '問い合わせ', '集計'] },
     inbound: { label: 'インバウンド', keywords: ['外国人', 'インバウンド', '海外', '中国', '台湾', '韓国', '欧米'] },
@@ -321,6 +323,7 @@
   }
 
   globalThis.ManagementAIRules = {
+    RULE_VERSION,
     TOPICS,
     RULES,
     classifyQuestion,

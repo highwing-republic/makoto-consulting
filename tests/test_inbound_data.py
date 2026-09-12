@@ -124,7 +124,10 @@ def test_initial_html_exposes_only_loading_state():
     assert error and error.has_attr("hidden") and not error.get_text(strip=True)
     assert dashboard and dashboard.has_attr("hidden") and dashboard.has_attr("inert")
     assert "現在、最新統計を取得できません" not in HTML_PATH.read_text(encoding="utf-8")
-    assert soup.find("noscript").get_text(" ", strip=True) == "JavaScriptを有効にしてください この分析ツールの表示にはJavaScriptが必要です。"
+    noscript = soup.find("noscript").get_text(" ", strip=True)
+    assert "JavaScriptを有効にしてください" in noscript
+    assert "外国人延べ宿泊者数" in noscript
+    assert "実際の旅行者人数ではなく延べ人泊" in noscript
     assert all(not soup.find(id=element_id).get_text(strip=True) for element_id in (
         "kpi-total", "kpi-total-unit", "kpi-national-share", "kpi-largest-market",
         "kpi-largest-value", "kpi-specialized-market", "kpi-specialized-value",

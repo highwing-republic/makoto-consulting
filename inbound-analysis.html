@@ -26,13 +26,13 @@
 </head>
 <body>
   <a class="skip-link" href="#main">本文へ移動</a>
-  <header class="site-header"><div class="container header-inner"><a class="brand" href="/" aria-label="宿泊DXラボ ホーム"><span class="brand-copy"><strong>宿泊DXラボ</strong><small>データを見る。試す。考える。</small></span></a><button class="menu-toggle" type="button" aria-controls="global-nav" aria-expanded="false" aria-label="メニューを開く" data-menu-toggle><span></span><span></span><span></span></button><nav class="global-nav" id="global-nav" aria-label="メインナビゲーション" data-nav><ul><li><a aria-current="page" href="/useful.html">分析・ツール</a></li><li><a href="/#about-lab">このラボについて</a></li></ul></nav></div></header>
+  <header class="site-header"><div class="container header-inner"><a class="brand" href="/" aria-label="宿泊DXラボ ホーム"><span class="brand-copy"><strong>宿泊DXラボ</strong><small>データを見る。試す。考える。</small></span></a><button class="menu-toggle" type="button" aria-controls="global-nav" aria-expanded="false" aria-label="メニューを開く" data-menu-toggle><span></span><span></span><span></span></button><nav class="global-nav" id="global-nav" aria-label="メインナビゲーション" data-nav><ul><li><a aria-current="page" href="/useful.html">分析・ツール</a></li><li><a href="/classics-ai-management/">ラボノート</a></li><li><a href="/#about-lab">宿泊DXラボとは</a></li></ul></nav></div></header>
   <main id="main">
     <nav class="breadcrumb container" aria-label="パンくずリスト"><ol><li><a href="/">ホーム</a></li><li><a href="/useful.html">分析・ツール</a></li><li aria-current="page">都道府県別インバウンド宿泊者分析</li></ol></nav>
 
     <section class="page-hero tool-page-hero inbound-hero">
       <div class="container page-hero-grid">
-        <div><p class="eyebrow">INBOUND MARKET ANALYSIS</p><h1>都道府県別インバウンド<br>宿泊者分析</h1></div>
+        <div><p class="eyebrow">INBOUND MARKET ANALYSIS</p><span class="scope-badge">分析対象：全国・都道府県</span><h1>都道府県別インバウンド<br>宿泊者分析</h1></div>
         <div class="inbound-hero__copy"><p class="lead-copy">公的統計から、地域のインバウンド市場を読み解く。</p><p>観光庁「宿泊旅行統計調査」をもとに、外国人宿泊者数、国籍別構成、全国平均との差を確認できます。</p><small>観光庁 宿泊旅行統計調査をもとに集計</small></div>
       </div>
     </section>
@@ -47,16 +47,16 @@
 
         <div class="data-loading" id="data-loading" role="status"><span aria-hidden="true"></span><p>最新統計を読み込んでいます</p></div>
         <div class="data-error" id="data-error" role="alert" hidden></div>
-        <noscript><div class="data-error"><strong>JavaScriptを有効にしてください</strong><p>この分析ツールの表示にはJavaScriptが必要です。</p></div></noscript>
+        <noscript><div class="data-error"><strong>JavaScriptを有効にしてください</strong><p>観光庁「宿泊旅行統計調査」の第2次速報から、外国人延べ宿泊者数と国・地域別構成を確認するツールです。実際の旅行者人数ではなく延べ人泊で、操作にはJavaScriptが必要です。</p></div></noscript>
 
         <div class="analysis-dashboard" id="analysis-dashboard" hidden inert aria-hidden="true">
-          <div class="data-scope-note"><span>集計対象</span><strong id="survey-scope"></strong><p>国籍別集計表と同じ対象範囲の外国人延べ宿泊者数を用いて、構成比と全国比較を計算しています。</p></div>
+          <div class="data-scope-note"><span>集計対象</span><strong id="survey-scope"></strong><p>「外国人延べ宿泊者数」は1人が2泊すると2人泊になる値で、実際の旅行者人数ではありません。国籍別集計表と同じ対象範囲で構成比を計算します。</p></div>
 
           <section class="analysis-section" aria-labelledby="kpi-heading">
             <div class="analysis-heading"><div><p class="eyebrow">OVERVIEW</p><h2 id="kpi-heading"><span id="selected-area-name"></span>の現在地</h2></div><p id="analysis-summary" aria-live="polite"></p></div>
             <div class="kpi-grid">
               <article class="kpi-card"><span>外国人延べ宿泊者数</span><strong id="kpi-total"></strong><small id="kpi-total-unit"></small></article>
-              <article class="kpi-card"><span>全国シェア</span><strong id="kpi-national-share"></strong><small id="kpi-share-note"></small></article>
+              <article class="kpi-card"><span>全国に占める宿泊人泊の割合</span><strong id="kpi-national-share"></strong><small id="kpi-share-note"></small></article>
               <article class="kpi-card"><span>最大市場</span><strong id="kpi-largest-market"></strong><small id="kpi-largest-value"></small></article>
               <article class="kpi-card kpi-card--accent"><span>最も地域特化度が高い市場 <button class="info-tip" type="button" aria-label="地域特化度の説明" data-tooltip="地域内の国籍シェアを、全国の同じ国籍シェアで割った宿泊DXラボ独自指標です。">?</button></span><strong id="kpi-specialized-market"></strong><small id="kpi-specialized-value"></small></article>
             </div>
@@ -91,6 +91,8 @@
             <p class="eyebrow">SHORT INSIGHT</p><h2 id="insight-heading">経営者向けショート示唆</h2><div id="short-insight"></div><p class="insight-caution">統計から確認できる規模と構成比をもとにした整理です。旅行者の動機や将来需要を断定するものではありません。</p>
           </section>
 
+          <section class="next-action-panel"><h3>次に確認すること</h3><ul><li>自施設の国・地域別予約実績と対象期間</li><li>主要予約ページの対応言語と販売経路</li><li>曜日・季節・キャンセル率の違い</li></ul><div class="analysis-actions"><button class="button button--outline" type="button" data-copy-result data-tool-id="inbound">要点をコピー</button><button class="button button--outline" type="button" data-print-result data-tool-id="inbound">印刷する</button><a class="button button--outline" href="/useful.html">ほかの分析・ツールを見る</a></div></section>
+
           <section class="analysis-source" aria-labelledby="source-heading">
             <div><p class="eyebrow">DATA SOURCE</p><h2 id="source-heading">出典・利用上の注意</h2></div>
             <dl><div><dt>出典</dt><dd><a id="source-link" href="https://www.mlit.go.jp/kankocho/tokei_hakusyo/shukuhakutokei.html" target="_blank" rel="noopener noreferrer">観光庁「宿泊旅行統計調査」↗</a></dd></div><div><dt>最新分析月</dt><dd id="source-period"></dd></div><div><dt>最終更新</dt><dd id="source-updated"></dd></div><div><dt>単位</dt><dd id="source-unit"></dd></div><div><dt>集計対象</dt><dd id="source-scope"></dd></div></dl>
@@ -100,7 +102,7 @@
     </section>
 
   </main>
-  <footer class="site-footer"><div class="container footer-grid"><div><a class="brand brand--footer" href="/"><span class="brand-copy"><strong>宿泊DXラボ</strong><small>データを見る。試す。考える。</small></span></a><p class="footer-lead">宿泊・観光について、データ・AI・DXを使って分析・実験するラボ。</p></div><div class="footer-links"><div><p class="footer-heading">ラボ</p><a href="/useful.html">分析・ツール</a><a href="/#about-lab">このラボについて</a></div><div><p class="footer-heading">お問い合わせ</p><a data-analytics-event="contact_click" href="https://forms.gle/yjinqFdntoXhTmgk7" target="_blank" rel="noopener noreferrer">UGATTAのフォームを開く</a></div></div></div><div class="container footer-bottom"><span>© 2026 宿泊DXラボ</span></div></footer>
+  <footer class="site-footer"><div class="container footer-grid"><div><a class="brand brand--footer" href="/"><span class="brand-copy"><strong>宿泊DXラボ</strong><small>データを見る。試す。考える。</small></span></a><p class="footer-lead">宿泊・観光について、データ・AI・DXを使って分析・実験するラボです。</p><small>運営：合同会社UGATTA</small></div><div class="footer-links"><div><p class="footer-heading">ラボ</p><a href="/useful.html">分析・ツール</a><a href="/classics-ai-management/">ラボノート</a><a href="/#about-lab">宿泊DXラボについて</a><a data-analytics-event="consultation_click" data-tool-id="footer" href="https://forms.gle/yjinqFdntoXhTmgk7" target="_blank" rel="noopener noreferrer">お問い合わせ ↗</a></div></div></div><div class="container footer-bottom"><span>© 2026 宿泊DXラボ</span></div></footer>
   <script defer src="js/site.js?v=20260909c"></script>
   <script defer src="js/inbound-analysis.js?v=20260910b"></script>
 </body>
