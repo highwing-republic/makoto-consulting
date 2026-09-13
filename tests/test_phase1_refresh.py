@@ -10,11 +10,12 @@ def soup(name):
     return BeautifulSoup((ROOT / name).read_text(encoding="utf-8"), "html.parser")
 
 
-def test_home_leads_with_lab_positioning_and_three_published_tools():
+def test_home_leads_with_lab_positioning_and_four_published_tools():
     page = soup("index.html")
     assert "宿泊・観光の経営を" in page.find("h1").get_text(" ", strip=True)
     assert "データとAIでもう少しわかりやすく" in page.find("h1").get_text(" ", strip=True)
-    assert len(page.select("#analysis-tools .analysis-card")) == 3
+    assert len(page.select("#analysis-tools .analysis-card")) == 4
+    assert page.find("a", href="/hotel-price-trends.html")
     assert page.find(id="lab-notes") and len(page.select("#lab-notes .note-card")) == 3
     assert page.find(id="about-lab")
     assert not page.find(id="flow") and not page.find(id="use-cases")
@@ -22,16 +23,36 @@ def test_home_leads_with_lab_positioning_and_three_published_tools():
     assert directory and directory["href"] == "/useful.html"
 
 
-def test_tool_directory_describes_scope_input_result_and_conditions_for_all_seven():
+def test_tool_directory_describes_scope_input_result_and_conditions_for_all_eight():
     page = soup("useful.html")
     cards = page.select(".tool-directory-card")
-    assert len(cards) == 7
+    assert len(cards) == 8
     for card in cards:
         labels = {item.get_text(strip=True) for item in card.select(".tool-meta dt")}
         assert labels == {"対象", "入力", "結果", "条件"}
     research = page.find(id="tourism-market-signal")
     assert research and "research" in research.get("class", [])[-1]
     assert page.find(id="regional-tools")
+
+
+def test_hotel_price_trends_has_controls_disclosures_and_rakuten_credit():
+    page = soup("hotel-price-trends.html")
+    assert "宿泊料金トレンド" in page.title.string
+    for control_id in ("hpt-region", "hpt-hotel", "hpt-stay-date", "hpt-meal"):
+        assert page.find(id=control_id)
+    body = page.get_text(" ", strip=True)
+    assert "大人2名・1室・1泊" in body
+    assert "満室とは判定しません" in body
+    credit = page.find("a", href="https://developers.rakuten.com/")
+    assert credit and credit.get_text(strip=True) == "Supported by Rakuten Developers"
+    assert page.find("script", src="js/hotel-price-trends.js?v=20260913a")
+
+
+def test_hotel_price_trends_script_keeps_browser_history_available():
+    script = (ROOT / "js" / "hotel-price-trends.js").read_text(encoding="utf-8")
+    assert "window.history.replaceState" in script
+    assert "let history" not in script
+    assert "snapshotHistory" in script
 
 
 def test_external_diagnosis_is_disclosed_and_has_a_persistent_alternative_link():
