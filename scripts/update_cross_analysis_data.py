@@ -413,11 +413,11 @@ def score_level(score: int | None) -> str | None:
 
 def classify_supply_market(growth: float, occupancy: float, national_growth: float, national_occupancy: float) -> str:
     return {
-        (True, True): "需給ひっ迫候補",
-        (True, False): "需要成長・供給余力型",
-        (False, True): "高稼働・成熟型",
-        (False, False): "需給軟調型",
-    }[(growth > national_growth, occupancy > national_occupancy)]
+        (True, True): "需要成長・高稼働型",
+        (True, False): "需要成長・稼働余力型",
+        (False, True): "需要減速・高稼働型",
+        (False, False): "需要減速・稼働余力型",
+    }[(growth >= national_growth, occupancy >= national_occupancy)]
 
 
 def classify_tourism_region(pressure: int, dependency: int) -> str:
@@ -551,7 +551,7 @@ def build_datasets(session: requests.Session, previous_common: dict[str, Any] | 
     return {
         "prefecture-statistics.json": common,
         "dx-necessity.json": {"metadata": {**metadata, "formula": "需要伸び率20%＋客室稼働率25%＋宿泊運営負荷30%＋生産年齢人口減少25%（各percentile rank）"}, "national": national, "prefectures": dx_records},
-        "supply-demand-gap.json": {"metadata": {**metadata, "formula": "客室稼働率40%＋需要伸び率35%＋事業所あたり宿泊需要25%（各percentile rank）", "quadrant_basis": "全国の需要伸び率と客室稼働率"}, "national": national, "prefectures": supply_records},
+        "supply-demand-gap.json": {"metadata": {**metadata, "formula": "客室稼働率40%＋需要伸び率35%＋事業所あたり宿泊需要25%（各percentile rank）", "quadrant_basis": "全国の需要伸び率と客室稼働率", "scoring": {"display_name": "追加調査優先度", "basis": "prefecture_percentile", "weights": {"occupancy": .40, "demand_growth": .35, "demand_per_establishment": .25}, "is_supply_shortage_measure": False}}, "national": national, "prefectures": supply_records},
         "tourism-pressure.json": {"metadata": {**metadata, "pressure_formula": "宿泊密度70%＋宿泊施設密度30%（各percentile rank）", "dependency_formula": "宿泊業従業者比率50%＋宿泊業事業所比率25%＋宿泊密度25%（各percentile rank）", "type_basis": "各参考スコア50点を相対比較の境界として分類"}, "national": national, "prefectures": tourism_records},
     }
 

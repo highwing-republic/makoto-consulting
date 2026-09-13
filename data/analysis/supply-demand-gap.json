@@ -44,7 +44,17 @@
     "methodology_note": "宿泊旅行統計調査は2026年1月から層化基準が変更されており、2025年以前との比較には変更の影響が含まれる可能性があります。",
     "indicator_note": "公的統計をもとに宿泊DXラボが独自に算出した参考指標です。",
     "formula": "客室稼働率40%＋需要伸び率35%＋事業所あたり宿泊需要25%（各percentile rank）",
-    "quadrant_basis": "全国の需要伸び率と客室稼働率"
+    "quadrant_basis": "全国の需要伸び率と客室稼働率",
+    "scoring": {
+      "display_name": "追加調査優先度",
+      "basis": "prefecture_percentile",
+      "weights": {
+        "occupancy": 0.4,
+        "demand_growth": 0.35,
+        "demand_per_establishment": 0.25
+      },
+      "is_supply_shortage_measure": false
+    }
   },
   "national": {
     "total_guest_nights": 639773530,
@@ -105,7 +115,7 @@
         "demand_per_establishment": 84.8
       },
       "score": 67,
-      "market_type": "需要成長・供給余力型",
+      "market_type": "需要成長・稼働余力型",
       "rank": 6
     },
     "02": {
@@ -144,7 +154,7 @@
         "demand_per_establishment": 37.0
       },
       "score": 69,
-      "market_type": "需要成長・供給余力型",
+      "market_type": "需要成長・稼働余力型",
       "rank": 5
     },
     "03": {
@@ -183,7 +193,7 @@
         "demand_per_establishment": 21.7
       },
       "score": 26,
-      "market_type": "需給軟調型",
+      "market_type": "需要減速・稼働余力型",
       "rank": 39
     },
     "04": {
@@ -222,7 +232,7 @@
         "demand_per_establishment": 73.9
       },
       "score": 77,
-      "market_type": "需要成長・供給余力型",
+      "market_type": "需要成長・稼働余力型",
       "rank": 2
     },
     "05": {
@@ -261,7 +271,7 @@
         "demand_per_establishment": 8.7
       },
       "score": 39,
-      "market_type": "需要成長・供給余力型",
+      "market_type": "需要成長・稼働余力型",
       "rank": 32
     },
     "06": {
@@ -300,7 +310,7 @@
         "demand_per_establishment": 0.0
       },
       "score": 20,
-      "market_type": "需要成長・供給余力型",
+      "market_type": "需要成長・稼働余力型",
       "rank": 47
     },
     "07": {
@@ -339,7 +349,7 @@
         "demand_per_establishment": 30.4
       },
       "score": 37,
-      "market_type": "需要成長・供給余力型",
+      "market_type": "需要成長・稼働余力型",
       "rank": 34
     },
     "08": {
@@ -378,7 +388,7 @@
         "demand_per_establishment": 50.0
       },
       "score": 66,
-      "market_type": "需要成長・供給余力型",
+      "market_type": "需要成長・稼働余力型",
       "rank": 10
     },
     "09": {
@@ -417,7 +427,7 @@
         "demand_per_establishment": 67.4
       },
       "score": 41,
-      "market_type": "需給軟調型",
+      "market_type": "需要減速・稼働余力型",
       "rank": 31
     },
     "10": {
@@ -456,7 +466,7 @@
         "demand_per_establishment": 32.6
       },
       "score": 25,
-      "market_type": "需要成長・供給余力型",
+      "market_type": "需要成長・稼働余力型",
       "rank": 44
     },
     "11": {
@@ -495,7 +505,7 @@
         "demand_per_establishment": 6.5
       },
       "score": 57,
-      "market_type": "需給ひっ迫候補",
+      "market_type": "需要成長・高稼働型",
       "rank": 22
     },
     "12": {
@@ -534,7 +544,7 @@
         "demand_per_establishment": 91.3
       },
       "score": 67,
-      "market_type": "需給ひっ迫候補",
+      "market_type": "需要成長・高稼働型",
       "rank": 6
     },
     "13": {
@@ -573,7 +583,7 @@
         "demand_per_establishment": 95.7
       },
       "score": 65,
-      "market_type": "高稼働・成熟型",
+      "market_type": "需要減速・高稼働型",
       "rank": 12
     },
     "14": {
@@ -612,7 +622,7 @@
         "demand_per_establishment": 82.6
       },
       "score": 85,
-      "market_type": "需給ひっ迫候補",
+      "market_type": "需要成長・高稼働型",
       "rank": 1
     },
     "15": {
@@ -651,7 +661,7 @@
         "demand_per_establishment": 13.0
       },
       "score": 26,
-      "market_type": "需要成長・供給余力型",
+      "market_type": "需要成長・稼働余力型",
       "rank": 39
     },
     "16": {
@@ -690,7 +700,7 @@
         "demand_per_establishment": 47.8
       },
       "score": 71,
-      "market_type": "需要成長・供給余力型",
+      "market_type": "需要成長・稼働余力型",
       "rank": 4
     },
     "17": {
@@ -729,7 +739,7 @@
         "demand_per_establishment": 87.0
       },
       "score": 51,
-      "market_type": "需給軟調型",
+      "market_type": "需要減速・稼働余力型",
       "rank": 26
     },
     "18": {
@@ -768,7 +778,7 @@
         "demand_per_establishment": 4.3
       },
       "score": 21,
-      "market_type": "需要成長・供給余力型",
+      "market_type": "需要成長・稼働余力型",
       "rank": 46
     },
     "19": {
@@ -807,7 +817,7 @@
         "demand_per_establishment": 56.5
       },
       "score": 39,
-      "market_type": "需要成長・供給余力型",
+      "market_type": "需要成長・稼働余力型",
       "rank": 32
     },
     "20": {
@@ -846,7 +856,7 @@
         "demand_per_establishment": 10.9
       },
       "score": 26,
-      "market_type": "需要成長・供給余力型",
+      "market_type": "需要成長・稼働余力型",
       "rank": 39
     },
     "21": {
@@ -885,7 +895,7 @@
         "demand_per_establishment": 26.1
       },
       "score": 25,
-      "market_type": "需給軟調型",
+      "market_type": "需要減速・稼働余力型",
       "rank": 44
     },
     "22": {
@@ -924,7 +934,7 @@
         "demand_per_establishment": 60.9
       },
       "score": 50,
-      "market_type": "需要成長・供給余力型",
+      "market_type": "需要成長・稼働余力型",
       "rank": 27
     },
     "23": {
@@ -963,7 +973,7 @@
         "demand_per_establishment": 80.4
       },
       "score": 67,
-      "market_type": "高稼働・成熟型",
+      "market_type": "需要減速・高稼働型",
       "rank": 6
     },
     "24": {
@@ -1002,7 +1012,7 @@
         "demand_per_establishment": 71.7
       },
       "score": 62,
-      "market_type": "需要成長・供給余力型",
+      "market_type": "需要成長・稼働余力型",
       "rank": 15
     },
     "25": {
@@ -1041,7 +1051,7 @@
         "demand_per_establishment": 63.0
       },
       "score": 61,
-      "market_type": "需要成長・供給余力型",
+      "market_type": "需要成長・稼働余力型",
       "rank": 19
     },
     "26": {
@@ -1080,7 +1090,7 @@
         "demand_per_establishment": 93.5
       },
       "score": 63,
-      "market_type": "高稼働・成熟型",
+      "market_type": "需要減速・高稼働型",
       "rank": 14
     },
     "27": {
@@ -1119,7 +1129,7 @@
         "demand_per_establishment": 100.0
       },
       "score": 64,
-      "market_type": "高稼働・成熟型",
+      "market_type": "需要減速・高稼働型",
       "rank": 13
     },
     "28": {
@@ -1158,7 +1168,7 @@
         "demand_per_establishment": 69.6
       },
       "score": 59,
-      "market_type": "需要成長・供給余力型",
+      "market_type": "需要成長・稼働余力型",
       "rank": 21
     },
     "29": {
@@ -1197,7 +1207,7 @@
         "demand_per_establishment": 15.2
       },
       "score": 43,
-      "market_type": "需要成長・供給余力型",
+      "market_type": "需要成長・稼働余力型",
       "rank": 29
     },
     "30": {
@@ -1236,7 +1246,7 @@
         "demand_per_establishment": 54.3
       },
       "score": 35,
-      "market_type": "需要成長・供給余力型",
+      "market_type": "需要成長・稼働余力型",
       "rank": 36
     },
     "31": {
@@ -1275,7 +1285,7 @@
         "demand_per_establishment": 19.6
       },
       "score": 30,
-      "market_type": "需要成長・供給余力型",
+      "market_type": "需要成長・稼働余力型",
       "rank": 37
     },
     "32": {
@@ -1314,7 +1324,7 @@
         "demand_per_establishment": 23.9
       },
       "score": 53,
-      "market_type": "需要成長・供給余力型",
+      "market_type": "需要成長・稼働余力型",
       "rank": 23
     },
     "33": {
@@ -1353,7 +1363,7 @@
         "demand_per_establishment": 58.7
       },
       "score": 42,
-      "market_type": "需給軟調型",
+      "market_type": "需要減速・稼働余力型",
       "rank": 30
     },
     "34": {
@@ -1392,7 +1402,7 @@
         "demand_per_establishment": 78.3
       },
       "score": 62,
-      "market_type": "高稼働・成熟型",
+      "market_type": "需要減速・高稼働型",
       "rank": 15
     },
     "35": {
@@ -1431,7 +1441,7 @@
         "demand_per_establishment": 17.4
       },
       "score": 62,
-      "market_type": "需要成長・供給余力型",
+      "market_type": "需要成長・稼働余力型",
       "rank": 15
     },
     "36": {
@@ -1470,7 +1480,7 @@
         "demand_per_establishment": 39.1
       },
       "score": 27,
-      "market_type": "需給軟調型",
+      "market_type": "需要減速・稼働余力型",
       "rank": 38
     },
     "37": {
@@ -1509,7 +1519,7 @@
         "demand_per_establishment": 76.1
       },
       "score": 73,
-      "market_type": "需要成長・供給余力型",
+      "market_type": "需要成長・稼働余力型",
       "rank": 3
     },
     "38": {
@@ -1548,7 +1558,7 @@
         "demand_per_establishment": 43.5
       },
       "score": 67,
-      "market_type": "需要成長・供給余力型",
+      "market_type": "需要成長・稼働余力型",
       "rank": 6
     },
     "39": {
@@ -1587,7 +1597,7 @@
         "demand_per_establishment": 34.8
       },
       "score": 53,
-      "market_type": "需要成長・供給余力型",
+      "market_type": "需要成長・稼働余力型",
       "rank": 23
     },
     "40": {
@@ -1626,7 +1636,7 @@
         "demand_per_establishment": 89.1
       },
       "score": 66,
-      "market_type": "高稼働・成熟型",
+      "market_type": "需要減速・高稼働型",
       "rank": 10
     },
     "41": {
@@ -1665,7 +1675,7 @@
         "demand_per_establishment": 2.2
       },
       "score": 26,
-      "market_type": "需要成長・供給余力型",
+      "market_type": "需要成長・稼働余力型",
       "rank": 39
     },
     "42": {
@@ -1704,7 +1714,7 @@
         "demand_per_establishment": 65.2
       },
       "score": 61,
-      "market_type": "需要成長・供給余力型",
+      "market_type": "需要成長・稼働余力型",
       "rank": 19
     },
     "43": {
@@ -1743,7 +1753,7 @@
         "demand_per_establishment": 52.2
       },
       "score": 52,
-      "market_type": "需要成長・供給余力型",
+      "market_type": "需要成長・稼働余力型",
       "rank": 25
     },
     "44": {
@@ -1782,7 +1792,7 @@
         "demand_per_establishment": 41.3
       },
       "score": 26,
-      "market_type": "需給軟調型",
+      "market_type": "需要減速・稼働余力型",
       "rank": 39
     },
     "45": {
@@ -1821,7 +1831,7 @@
         "demand_per_establishment": 28.3
       },
       "score": 50,
-      "market_type": "需要成長・供給余力型",
+      "market_type": "需要成長・稼働余力型",
       "rank": 27
     },
     "46": {
@@ -1860,7 +1870,7 @@
         "demand_per_establishment": 45.7
       },
       "score": 37,
-      "market_type": "需要成長・供給余力型",
+      "market_type": "需要成長・稼働余力型",
       "rank": 34
     },
     "47": {
@@ -1899,7 +1909,7 @@
         "demand_per_establishment": 97.8
       },
       "score": 62,
-      "market_type": "需給軟調型",
+      "market_type": "需要減速・稼働余力型",
       "rank": 15
     }
   }

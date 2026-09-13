@@ -121,10 +121,39 @@ def test_analytics_adapter_uses_allowlisted_non_free_text_fields():
 def test_recommended_regional_tool_names_are_visible_with_legacy_context():
     expected = {
         "dx-necessity-analysis.html": ("地域の省人化", "旧「宿泊DX必要度分析」"),
-        "supply-demand-gap-analysis.html": ("需給参考指標", "旧「宿泊市場需給ギャップ分析」"),
+        "supply-demand-gap-analysis.html": ("宿泊市場の成長・稼働ポジション", "供給不足率、将来需要、投資効果を示すものではありません"),
         "tourism-pressure-analysis.html": ("宿泊集中度", "旧「観光負荷・観光依存度分析」"),
     }
     for name, (current, legacy) in expected.items():
         page = soup(name)
         body = page.get_text(" ", strip=True)
         assert current in body and legacy in body
+
+
+def test_supply_position_page_prioritizes_interpretation_over_composite_score():
+    page = soup("supply-demand-gap-analysis.html")
+    body = page.get_text(" ", strip=True)
+    assert "宿泊市場の成長・稼働ポジション" in page.title.string
+    assert page.find(id="growth-difference")
+    assert page.find(id="occupancy-difference")
+    assert page.find(id="scatter-summary")
+    assert page.find(id="scatter-table-body")
+    assert page.find(id="market-actions")
+    assert "追加調査優先度" in body
+    assert "供給不足の確率や程度ではありません" in body
+    assert "需給ひっ迫 参考スコア" not in body
+    assert page.find("script", src="js/cross-analysis.js?v=20260913b")
+
+
+def test_supply_chart_has_four_named_quadrants_and_fixed_size_points():
+    script = (ROOT / "js" / "cross-analysis.js").read_text(encoding="utf-8")
+    for label in (
+        "需要成長・高稼働型",
+        "需要成長・稼働余力型",
+        "需要減速・高稼働型",
+        "需要減速・稼働余力型",
+    ):
+        assert label in script
+    assert "const radius = selected ? 10 : 6" in script
+    assert "Math.sqrt((r.lodging_establishments" not in script
+    assert "scatter-table-body" in script

@@ -91,14 +91,45 @@ def test_ranking_and_missing_value_handling():
 
 
 def test_four_quadrant_classification():
-    assert classify_supply_market(2, 2, 1, 1) == "需給ひっ迫候補"
-    assert classify_supply_market(2, 0, 1, 1) == "需要成長・供給余力型"
-    assert classify_supply_market(0, 2, 1, 1) == "高稼働・成熟型"
-    assert classify_supply_market(0, 0, 1, 1) == "需給軟調型"
+    assert classify_supply_market(2, 2, 1, 1) == "需要成長・高稼働型"
+    assert classify_supply_market(2, 0, 1, 1) == "需要成長・稼働余力型"
+    assert classify_supply_market(0, 2, 1, 1) == "需要減速・高稼働型"
+    assert classify_supply_market(0, 0, 1, 1) == "需要減速・稼働余力型"
+    assert classify_supply_market(1, 1, 1, 1) == "需要成長・高稼働型"
     assert classify_tourism_region(70, 70) == "観光重要度・負荷ともに高い地域"
     assert classify_tourism_region(30, 70) == "観光産業比重型"
     assert classify_tourism_region(70, 30) == "来訪集中型"
     assert classify_tourism_region(30, 30) == "分散型"
+
+
+def test_supply_market_types_match_national_boundaries_for_all_prefectures():
+    data = load("supply-demand-gap.json")
+    national = data["national"]
+    allowed = {
+        "需要成長・高稼働型",
+        "需要成長・稼働余力型",
+        "需要減速・高稼働型",
+        "需要減速・稼働余力型",
+    }
+    for item in data["prefectures"].values():
+        expected = classify_supply_market(
+            item["demand_growth_rate"],
+            item["occupancy_rate"],
+            national["demand_growth_rate"],
+            national["occupancy_rate"],
+        )
+        assert item["market_type"] == expected
+        assert item["market_type"] in allowed
+        assert 1 <= item["rank"] <= 47
+        assert all(0 <= value <= 100 for value in item["percentiles"].values())
+
+
+def test_supply_score_is_explicitly_not_a_shortage_measure():
+    scoring = load("supply-demand-gap.json")["metadata"]["scoring"]
+    assert scoring["display_name"] == "追加調査優先度"
+    assert scoring["basis"] == "prefecture_percentile"
+    assert scoring["is_supply_shortage_measure"] is False
+    assert sum(scoring["weights"].values()) == 1
 
 
 def test_pages_start_with_loading_only_and_keep_noscript():
@@ -133,6 +164,40 @@ def test_pref_query_resolution_and_reload_contract():
         ["node", "-e", script], cwd=ROOT, check=True, capture_output=True, text=True
     )
     assert json.loads(result.stdout) == ["nagano", "", "", "nagano"]
+
+
+def test_supply_position_and_difference_helpers_cover_boundaries():
+    script = (
+        "require('./js/cross-analysis.js');"
+        "const u=globalThis.CrossAnalysisUtils;"
+        "console.log(JSON.stringify(["
+        "u.classifySupplyPosition(2,2,1,1),"
+        "u.classifySupplyPosition(2,0,1,1),"
+        "u.classifySupplyPosition(0,2,1,1),"
+        "u.classifySupplyPosition(0,0,1,1),"
+        "u.classifySupplyPosition(1,1,1,1),"
+        "u.differenceLabel(.051,-.025,'growth'),"
+        "u.differenceLabel(60.5,61.1,'occupancy'),"
+        "u.relativePositionLabel(6.5),"
+        "u.relativePositionLabel(73.9)"
+        "]));"
+    )
+    result = subprocess.run(
+        ["node", "-e", script], cwd=ROOT, check=True, capture_output=True,
+        text=True, encoding="utf-8"
+    )
+    values = json.loads(result.stdout)
+    assert values[:5] == [
+        "需要成長・高稼働型",
+        "需要成長・稼働余力型",
+        "需要減速・高稼働型",
+        "需要減速・稼働余力型",
+        "需要成長・高稼働型",
+    ]
+    assert values[5]["comparison"] == "全国より高い"
+    assert values[6]["comparison"] == "全国より低い"
+    assert values[7] == "6.5百分位（下位約6.5%）"
+    assert values[8] == "73.9百分位（上位約26.1%）"
 
 
 def test_responsive_layout_and_existing_tools_regression():
