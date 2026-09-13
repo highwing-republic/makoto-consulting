@@ -10,6 +10,17 @@ def soup(name):
     return BeautifulSoup((ROOT / name).read_text(encoding="utf-8"), "html.parser")
 
 
+def test_lab_notes_link_is_kept_out_of_headers_and_small_at_page_bottom():
+    pages = [path for path in ROOT.rglob("*.html") if "docs" not in path.parts]
+    assert len(pages) == 17
+    for path in pages:
+        page = BeautifulSoup(path.read_text(encoding="utf-8"), "html.parser")
+        assert not page.select('header a[href="/classics-ai-management/"]'), path
+        footer_links = page.select('footer a[href="/classics-ai-management/"]')
+        assert len(footer_links) == 1, path
+        assert "footer-note-link" in footer_links[0].get("class", []), path
+
+
 def test_home_is_concise_and_groups_all_eight_tools_by_purpose():
     page = soup("index.html")
     assert "宿泊・観光の経営を" in page.find("h1").get_text(" ", strip=True)
