@@ -140,7 +140,9 @@ def test_responsive_layout_and_existing_tools_regression():
     home_css = (ROOT / "css" / "home.css").read_text(encoding="utf-8")
     assert "@media(max-width:900px)" in css
     assert "@media(max-width:620px)" in css
-    assert "repeat(auto-fit,minmax(min(100%,300px),1fr))" in home_css
+    assert ".analysis-grid--regional{grid-template-columns:repeat(4,minmax(0,1fr))}" in home_css
+    assert "@media(max-width:620px)" in home_css
+    assert ".analysis-grid--regional{grid-template-columns:1fr}" in home_css
     assert (ROOT / "dx-diagnosis.html").exists()
     assert (ROOT / "inbound-analysis.html").exists()
     assert 'id="tourism-market-signal"' in (ROOT / "useful.html").read_text(encoding="utf-8")

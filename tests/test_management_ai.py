@@ -140,6 +140,6 @@ def test_responsive_styles_and_tools_01_to_07_regression():
     assert positions == sorted(positions)
     assert "management-ai.html" in source
     home = (ROOT / "index.html").read_text(encoding="utf-8")
-    assert "すべての分析・ツールを見る" in home and "management-ai.html" not in home
+    assert "AIに相談する" in home and "/management-ai.html" in home
     for existing in ("dx-diagnosis.html", "inbound-analysis.html", "dx-necessity-analysis.html", "supply-demand-gap-analysis.html", "tourism-pressure-analysis.html"):
         assert (ROOT / existing).exists()
