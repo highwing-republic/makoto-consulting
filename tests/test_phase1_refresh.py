@@ -142,7 +142,7 @@ def test_supply_position_page_prioritizes_interpretation_over_composite_score():
     assert "追加調査優先度" in body
     assert "供給不足の確率や程度ではありません" in body
     assert "需給ひっ迫 参考スコア" not in body
-    assert page.find("script", src="js/cross-analysis.js?v=20260913b")
+    assert page.find("script", src="js/cross-analysis.js?v=20260914a")
 
 
 def test_supply_chart_has_four_named_quadrants_and_fixed_size_points():
