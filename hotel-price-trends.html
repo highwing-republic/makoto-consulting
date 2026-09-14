@@ -5,16 +5,16 @@
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-QS9HSHCY33');</script>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>宿泊料金トレンド｜上諏訪温泉の料金推移・施設比較｜宿泊DXラボ</title>
-  <meta name="description" content="上諏訪温泉の対象旅館・ホテルについて、大人2名1室の宿泊料金推移、地域中央値、価格ポジションを比較できる無料分析ツールです。">
+  <title>宿泊料金トレンド｜長野県10地域の料金推移・施設比較｜宿泊DXラボ</title>
+  <meta name="description" content="長野県10地域・30施設について、大人2名1室の宿泊料金推移、地域中央値、価格ポジション、楽天トラベル利用者評価を比較できる無料分析ツールです。">
   <meta name="robots" content="index,follow,max-image-preview:large">
   <meta name="theme-color" content="#17324d">
   <link rel="canonical" href="https://lab.ugatta-llc.com/hotel-price-trends.html">
   <link rel="icon" type="image/png" href="favicon.png?v=20260909e">
   <link rel="stylesheet" href="css/useful.css?v=20260913b">
-  <link rel="stylesheet" href="css/hotel-price-trends.css?v=20260913a">
+  <link rel="stylesheet" href="css/hotel-price-trends.css?v=20260914b">
   <meta property="og:type" content="website"><meta property="og:locale" content="ja_JP"><meta property="og:site_name" content="宿泊DXラボ">
-  <meta property="og:title" content="宿泊料金トレンド｜宿泊DXラボ"><meta property="og:description" content="同じ宿泊条件で地域内の料金推移と価格ポジションを比較します。">
+  <meta property="og:title" content="宿泊料金トレンド｜宿泊DXラボ"><meta property="og:description" content="長野県10地域・30施設を、同じ宿泊条件の料金推移と利用者評価で比較します。">
   <meta property="og:url" content="https://lab.ugatta-llc.com/hotel-price-trends.html"><meta property="og:image" content="https://lab.ugatta-llc.com/images/onsen-town.jpg">
   <meta name="twitter:card" content="summary_large_image">
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"宿泊料金トレンド","url":"https://lab.ugatta-llc.com/hotel-price-trends.html","applicationCategory":"BusinessApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"JPY"},"provider":{"@type":"Organization","name":"宿泊DXラボ","url":"https://lab.ugatta-llc.com/"}}</script>
@@ -32,7 +32,7 @@
 
     <section class="page-hero price-trends-hero"><div class="container price-trends-hero__grid">
       <div><p class="eyebrow">HOTEL PRICE TRENDS</p><h1>宿泊料金<br>トレンド</h1><p class="price-trends-hero__lead">同じ条件で、地域の料金と自施設の位置を比べる。</p></div>
-      <aside class="price-trends-scope"><span>比較条件</span><strong>大人2名・1室・1泊</strong><small>初期対象：上諏訪温泉6施設／毎日更新</small></aside>
+      <aside class="price-trends-scope"><span>比較条件</span><strong>大人2名・1室・1泊</strong><small>長野県10地域・30施設／料金は毎日、評価は毎月更新</small></aside>
     </div></section>
 
     <section class="hpt-tool" aria-labelledby="hpt-title"><div class="container">
@@ -51,7 +51,9 @@
       <div class="data-error" id="hpt-error" hidden><strong>データを表示できませんでした</strong><p id="hpt-error-message"></p><button class="button button--outline" id="hpt-retry" type="button">もう一度読み込む</button></div>
 
       <div class="hpt-dashboard" id="hpt-dashboard" hidden>
-        <div class="data-scope-note"><span>DATA SCOPE</span><strong id="hpt-scope-title">上諏訪温泉</strong><p>「販売プランなし」と通信エラーを区別し、取得できた施設だけで中央値を計算します。</p></div>
+        <div class="data-scope-note"><span>DATA SCOPE</span><strong id="hpt-scope-title">選択地域</strong><p>「販売プランなし」と通信エラーを区別し、取得できた施設だけで中央値を計算します。</p></div>
+
+        <section class="hpt-profile" id="hpt-profile" aria-live="polite" aria-label="選択施設の基本情報"></section>
 
         <section class="hpt-section" aria-labelledby="hpt-kpi-title"><div class="hpt-heading"><div><p class="eyebrow">MARKET SNAPSHOT</p><h2 id="hpt-kpi-title">地域と自施設の現在地</h2></div><p>1施設1代表料金で比較</p></div><div class="hpt-kpi-grid" id="hpt-kpis"></div></section>
 
@@ -61,9 +63,15 @@
 
         <section class="hpt-panel" aria-labelledby="hpt-calendar-title"><div class="hpt-heading"><div><p class="eyebrow">30 NIGHT VIEW</p><h2 id="hpt-calendar-title">30日料金カレンダー</h2></div><p>地域中央値に対する価格位置</p></div><div class="hpt-calendar-legend"><span class="hpt-legend-low">中央値の90%未満</span><span class="hpt-legend-mid">中央値付近</span><span class="hpt-legend-high">中央値の110%超</span><span class="hpt-legend-none">比較不可</span></div><div class="hpt-calendar" id="hpt-calendar"></div></section>
 
+        <section class="hpt-panel" aria-labelledby="hpt-ratings-title"><div class="hpt-heading"><div><p class="eyebrow">GUEST RATINGS</p><h2 id="hpt-ratings-title">評価バランス</h2></div><p>楽天トラベル利用者評価を比較</p></div><div class="hpt-ratings" id="hpt-ratings" role="img"></div><div class="hpt-accessible-table" id="hpt-ratings-table"></div></section>
+
+        <section class="hpt-panel" aria-labelledby="hpt-rating-history-title"><div class="hpt-heading"><div><p class="eyebrow">MONTHLY RATING</p><h2 id="hpt-rating-history-title">総合評価の月次推移</h2></div><p>月次取得のため、2か月目から推移を表示</p></div><div class="hpt-chart" id="hpt-rating-history" role="img" aria-label="総合評価の月次推移"></div><div class="hpt-accessible-table" id="hpt-rating-history-table"></div></section>
+
+        <section class="hpt-panel hpt-review-panel" aria-labelledby="hpt-review-title"><div class="hpt-heading"><div><p class="eyebrow">LATEST REVIEW</p><h2 id="hpt-review-title">最新口コミ</h2></div><p>取得時点の最新口コミから120文字以内を掲載</p></div><div class="hpt-review" id="hpt-review"></div></section>
+
         <section class="hpt-panel" aria-labelledby="hpt-position-title"><div class="hpt-heading"><div><p class="eyebrow">MARKET POSITION</p><h2 id="hpt-position-title">施設別価格ポジション</h2></div><p>選択日の代表料金</p></div><div class="hpt-positions" id="hpt-positions"></div></section>
 
-        <section class="hpt-method" aria-labelledby="hpt-method-title"><div><p class="eyebrow">METHODOLOGY</p><h2 id="hpt-method-title">データの見方</h2></div><div><p>料金は楽天トラベル空室検索APIから取得した、指定条件における施設ごとの最低料金です。表示料金は取得時点のもので、在庫・プラン変更により変わる場合があります。</p><p>地域中央値は各施設の代表料金を1施設1値として計算します。販売プランが見つからない状態だけを理由に、満室とは判定しません。表示内容は料金判断の参考情報であり、需要・稼働率・売上を保証するものではありません。</p><p>本ツールは宿泊DXラボ（合同会社UGATTA）が作成・運営しています。</p>
+        <section class="hpt-method" aria-labelledby="hpt-method-title"><div><p class="eyebrow">METHODOLOGY</p><h2 id="hpt-method-title">データの見方</h2></div><div><p>比較料金は楽天トラベル空室検索APIから取得した、大人2名・1室・1泊の指定条件における施設ごとの最低料金です。楽天参考最安料金は施設基本情報に掲載された参考値で、同じ検索条件の料金ではありません。</p><p>地域中央値は各施設の代表料金を1施設1値として計算します。販売プランが見つからない状態だけを理由に、満室とは判定しません。評価と口コミは楽天トラベル利用者による取得時点の情報です。表示内容は料金判断の参考情報であり、需要・稼働率・売上や因果関係を保証するものではありません。</p><p>本ツールは宿泊DXラボ（合同会社UGATTA）が作成・運営しています。</p>
           <!-- Rakuten Web Services Attribution Snippet FROM HERE -->
           <a href="https://developers.rakuten.com/" target="_blank">Supported by Rakuten Developers</a>
           <!-- Rakuten Web Services Attribution Snippet TO HERE -->
@@ -76,6 +84,6 @@
 
   <footer class="site-footer"><div class="container footer-grid"><div><a class="brand brand--footer" href="/"><span class="brand-copy"><strong>宿泊DXラボ</strong><small>データを見る。試す。考える。</small></span></a><p class="footer-lead">宿泊・観光について、データ・AI・DXを使って分析・実験するラボです。</p><small>運営：合同会社UGATTA</small></div><div class="footer-links"><div><p class="footer-heading">LAB</p><a href="/useful.html">分析・ツール</a><a href="/#about-lab">宿泊DXラボについて</a></div><div><p class="footer-heading">CONTACT</p><a data-analytics-event="consultation_click" data-tool-id="hotel-price-trends-footer" href="https://forms.gle/yjinqFdntoXhTmgk7" target="_blank" rel="noopener noreferrer">お問い合わせ ↗</a></div></div></div><div class="container footer-bottom"><span>© 2026 宿泊DXラボ</span><span>料金データは取得時点の参考情報です</span><a class="footer-note-link" href="/classics-ai-management/">ラボノート</a></div></footer>
   <script src="js/site.js?v=20260912a" defer></script>
-  <script src="js/hotel-price-trends.js?v=20260913a" defer></script>
+  <script src="js/hotel-price-trends.js?v=20260914b" defer></script>
 </body>
 </html>

@@ -3,6 +3,7 @@
 
   const DATA_ROOT = "/data/hotel-price-trends/";
   const MEAL_LABELS = {two_meals: "朝夕食付き", breakfast: "朝食付き", room_only: "素泊まり"};
+  const RATING_LABELS = {service:"サービス",location:"立地",room:"部屋",equipment:"設備",bath:"風呂",breakfast:"朝食",dinner:"夕食",cleanliness:"清潔さ"};
   const elements = {
     region: document.querySelector("#hpt-region"), hotel: document.querySelector("#hpt-hotel"),
     stayDate: document.querySelector("#hpt-stay-date"), meal: document.querySelector("#hpt-meal"),
@@ -13,18 +14,25 @@
   let manifest;
   let latest;
   let snapshotHistory = [];
+  let profileData = {properties: []};
+  let profilesByHotel = new Map();
 
   const escapeHtml = (value) => String(value ?? "").replace(/[&<>'"]/g, (char) => ({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"})[char]);
   const yen = (value) => value == null ? "データなし" : `¥${Number(value).toLocaleString("ja-JP")}`;
   const pct = (value) => value == null || !Number.isFinite(value) ? "—" : `${value > 0 ? "+" : ""}${value.toFixed(1)}%`;
   const median = (values) => quantile(values, .5);
-  function quantile(values, q) {
-    const sorted = values.filter((value) => value != null).map(Number).sort((a, b) => a - b);
+  const ratingMedian = (values) => rawQuantile(values, .5);
+  function rawQuantile(values, q) {
+    const sorted = values.filter((value) => value != null).map(Number).filter(Number.isFinite).sort((a, b) => a - b);
     if (!sorted.length) return null;
     const position = (sorted.length - 1) * q;
     const base = Math.floor(position);
     const rest = position - base;
-    return Math.round(sorted[base] + (sorted[base + 1] == null ? 0 : rest * (sorted[base + 1] - sorted[base])));
+    return sorted[base] + (sorted[base + 1] == null ? 0 : rest * (sorted[base + 1] - sorted[base]));
+  }
+  function quantile(values, q) {
+    const value = rawQuantile(values, q);
+    return value == null ? null : Math.round(value);
   }
   function dayDiff(later, earlier) {
     return Math.round((Date.parse(`${later}T00:00:00Z`) - Date.parse(`${earlier}T00:00:00Z`)) / 86400000);
@@ -36,6 +44,7 @@
   }
   function regionFrom(snapshot, code) { return snapshot.regions.find((region) => region.code === code); }
   function selectedRegion() { return regionFrom(latest, elements.region.value); }
+  function selectedProfile() { return profilesByHotel.get(Number(elements.hotel.value)) || null; }
   function ratesFor(snapshot, regionCode, stayDate, mealType) {
     const region = regionFrom(snapshot, regionCode);
     return region ? region.rates.filter((row) => row.stay_date === stayDate && row.meal_type === mealType) : [];
@@ -100,6 +109,59 @@
     ];
     document.querySelector("#hpt-kpis").innerHTML = cards.map(([label, value, note]) => `<article class="hpt-kpi"><span>${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong><small>${escapeHtml(note)}</small></article>`).join("");
   }
+  function ratingComparison(profile) {
+    if (!profile?.latest) return {label:"比較データなし", medians:{}};
+    const regionProfiles=profileData.properties.filter((row)=>row.region_code===elements.region.value&&row.latest);
+    const peers=regionProfiles.length>=3?regionProfiles:profileData.properties.filter((row)=>row.latest);
+    const medians={};
+    Object.keys(RATING_LABELS).forEach((key)=>{medians[key]=ratingMedian(peers.map((row)=>row.latest?.ratings?.[key]).filter((value)=>value!=null))});
+    return {label:regionProfiles.length>=3?`${selectedRegion().name}${regionProfiles.length}施設中央値`:`対象${peers.length}施設中央値`,medians};
+  }
+  function renderProfile(summary) {
+    const profile=selectedProfile(),selected=summary.positions.find((row)=>row.hotel_no===Number(elements.hotel.value));
+    const container=document.querySelector("#hpt-profile");
+    if (!profile) {container.innerHTML='<p class="hpt-empty">この施設の基本情報はまだ取得されていません。料金データは引き続き確認できます。</p>';return;}
+    const latestProfile=profile.latest;
+    const rating=latestProfile?.review_average==null?"—":Number(latestProfile.review_average).toFixed(2);
+    const source=profile.source_url?`<a href="${escapeHtml(profile.source_url)}" target="_blank" rel="noopener noreferrer">楽天トラベルで確認 ↗</a>`:"";
+    container.innerHTML=`<div class="hpt-profile__identity"><p class="eyebrow">PROPERTY PROFILE</p><h2>${escapeHtml(profile.name)}</h2><p>${escapeHtml([profile.prefecture,profile.address].filter(Boolean).join(" "))}</p><small>楽天エリア：${escapeHtml(profile.rakuten_area_name||"—")}</small>${source}</div><div class="hpt-profile__metrics"><article><span>大人2名1室の比較料金</span><strong>${escapeHtml(yen(selected?.min_price_yen))}</strong><small>${escapeHtml(formatDate(elements.stayDate.value))}・${escapeHtml(MEAL_LABELS[elements.meal.value])}</small></article><article><span>楽天参考最安料金</span><strong>${escapeHtml(yen(latestProfile?.reference_min_charge_yen))}</strong><small>条件統一料金ではありません</small></article><article><span>楽天総合評価</span><strong>${escapeHtml(rating)}</strong><small>${latestProfile?`取得月 ${escapeHtml(latestProfile.snapshot_month)}`:"月次データ蓄積中"}</small></article></div>`;
+  }
+  function renderRatings() {
+    const profile=selectedProfile(),container=document.querySelector("#hpt-ratings"),table=document.querySelector("#hpt-ratings-table");
+    if (!profile?.latest) {container.innerHTML='<p class="hpt-empty">評価データを蓄積しています。</p>';table.innerHTML="";return;}
+    const comparison=ratingComparison(profile),rows=Object.entries(RATING_LABELS).map(([key,label])=>({key,label,value:profile.latest.ratings?.[key]??null,median:comparison.medians[key]??null}));
+    container.setAttribute("aria-label",`${profile.name}の楽天評価。比較対象は${comparison.label}`);
+    container.innerHTML=`<p class="hpt-rating-scope">0〜5点 ／ 金色の印：${escapeHtml(comparison.label)}</p>${rows.map((row)=>{const width=row.value==null?0:Math.max(0,Math.min(100,Number(row.value)*20)),marker=row.median==null?null:Math.max(0,Math.min(100,Number(row.median)*20));return `<div class="hpt-rating-row"><span>${escapeHtml(row.label)}</span><div class="hpt-rating-track"><i style="width:${width}%"></i>${marker==null?"":`<b style="left:${marker}%" title="中央値 ${Number(row.median).toFixed(2)}"></b>`}</div><strong>${row.value==null?"—":Number(row.value).toFixed(2)}</strong></div>`}).join("")}`;
+    table.innerHTML=`<details><summary>評価を表で確認</summary><table><thead><tr><th>項目</th><th>選択施設</th><th>${escapeHtml(comparison.label)}</th></tr></thead><tbody>${rows.map((row)=>`<tr><td>${escapeHtml(row.label)}</td><td>${row.value==null?"—":Number(row.value).toFixed(2)}</td><td>${row.median==null?"—":Number(row.median).toFixed(2)}</td></tr>`).join("")}</tbody></table></details>`;
+  }
+  function renderRatingHistory() {
+    const profile=selectedProfile(),rows=(profile?.history||[]).filter((row)=>row.review_average!=null),chart=document.querySelector("#hpt-rating-history"),table=document.querySelector("#hpt-rating-history-table");
+    if (rows.length<2) {chart.innerHTML='<p class="hpt-empty">評価推移は月次データを蓄積中です。2か月分から表示します。</p>';table.innerHTML="";return;}
+    const width=860,height=250,left=54,right=22,top=18,bottom=42,x=(index)=>left+(width-left-right)*(index/(rows.length-1)),y=(value)=>top+(height-top-bottom)*(1-Number(value)/5),points=rows.map((row,index)=>`${x(index)},${y(row.review_average)}`).join(" ");
+    const grid=[0,1,2,3,4,5].map((value)=>`<line class="hpt-grid-line" x1="${left}" x2="${width-right}" y1="${y(value)}" y2="${y(value)}"/><text class="hpt-axis-label" x="${left-9}" y="${y(value)+4}" text-anchor="end">${value}</text>`).join("");
+    const dots=rows.map((row,index)=>`<circle class="hpt-selected-dot" cx="${x(index)}" cy="${y(row.review_average)}" r="4"><title>${escapeHtml(row.snapshot_month)} ${Number(row.review_average).toFixed(2)}</title></circle><text class="hpt-axis-label" x="${x(index)}" y="${height-14}" text-anchor="middle">${escapeHtml(row.snapshot_month.slice(0,7))}</text>`).join("");
+    chart.innerHTML=`<svg viewBox="0 0 ${width} ${height}" aria-hidden="true">${grid}<polyline class="hpt-selected-line" points="${points}"/>${dots}</svg>`;
+    chart.setAttribute("aria-label",`${profile.name}の総合評価月次推移。${rows[0].snapshot_month} ${Number(rows[0].review_average).toFixed(2)}から${rows.at(-1).snapshot_month} ${Number(rows.at(-1).review_average).toFixed(2)}`);
+    table.innerHTML=`<details><summary>評価推移を表で確認</summary><table><thead><tr><th>取得月</th><th>総合評価</th></tr></thead><tbody>${rows.map((row)=>`<tr><td>${escapeHtml(row.snapshot_month)}</td><td>${Number(row.review_average).toFixed(2)}</td></tr>`).join("")}</tbody></table></details>`;
+  }
+  function renderReview() {
+    const profile=selectedProfile(),container=document.querySelector("#hpt-review"),review=profile?.latest?.latest_review_excerpt;
+    if (!profile?.latest) {container.innerHTML='<p class="hpt-empty">口コミデータを蓄積しています。</p>';return;}
+    const source=profile.source_url?`<a href="${escapeHtml(profile.source_url)}" target="_blank" rel="noopener noreferrer">楽天トラベルで全文を確認 ↗</a>`:"";
+    container.innerHTML=review?`<blockquote>${escapeHtml(review)}</blockquote><p>取得月：${escapeHtml(profile.latest.snapshot_month)} ／ 楽天トラベル利用者による最新口コミの抜粋</p>${source}`:`<p class="hpt-empty">取得できる最新口コミはありません。</p>${source}`;
+  }
+  function makeProfileInsights(summary) {
+    const profile=selectedProfile(),latestProfile=profile?.latest,selected=summary.positions.find((row)=>row.hotel_no===Number(elements.hotel.value));
+    if (!latestProfile||latestProfile.review_average==null||selected?.price_index==null) return [];
+    const comparison=ratingComparison(profile),peerRatings=profileData.properties.filter((row)=>row.latest?.review_average!=null&&(comparison.label.startsWith(selectedRegion().name)?row.region_code===elements.region.value:true)),peerMedian=ratingMedian(peerRatings.map((row)=>row.latest.review_average));
+    const items=[];
+    if (peerMedian!=null&&latestProfile.review_average>=peerMedian&&selected.price_index<90) items.push({title:"評価に対して価格が低い可能性があります",body:"評価は比較中央値以上、料金は地域中央値の90%未満です。値上げ余地を需要・在庫と合わせて確認してください。",confidence:"medium",evidence:`総合評価 ${Number(latestProfile.review_average).toFixed(2)} / ${comparison.label} ${Number(peerMedian).toFixed(2)} / 価格指数 ${selected.price_index.toFixed(1)}`});
+    if (peerMedian!=null&&latestProfile.review_average<peerMedian&&selected.price_index>110) items.push({title:"価格差を支える評価か確認が必要です",body:"料金は地域中央値を上回る一方、総合評価は比較中央値を下回ります。販売内容と最新口コミを確認してください。",confidence:"medium",evidence:`総合評価 ${Number(latestProfile.review_average).toFixed(2)} / ${comparison.label} ${Number(peerMedian).toFixed(2)} / 価格指数 ${selected.price_index.toFixed(1)}`});
+    const mealKey=elements.meal.value==="two_meals"?"dinner":elements.meal.value==="breakfast"?"breakfast":null;
+    if (mealKey&&latestProfile.ratings?.[mealKey]!=null&&comparison.medians[mealKey]!=null&&latestProfile.ratings[mealKey]<comparison.medians[mealKey]) items.push({title:`${RATING_LABELS[mealKey]}評価とプラン価格を確認してください`,body:`${MEAL_LABELS[elements.meal.value]}の価格判断では、${RATING_LABELS[mealKey]}の内容が価格差に見合っているか確認する余地があります。`,confidence:"medium",evidence:`${RATING_LABELS[mealKey]}評価 ${Number(latestProfile.ratings[mealKey]).toFixed(2)} / ${comparison.label} ${Number(comparison.medians[mealKey]).toFixed(2)}`});
+    const history=(profile.history||[]).filter((row)=>row.review_average!=null);if(history.length>=2){const delta=Number(history.at(-1).review_average)-Number(history.at(-2).review_average);if(delta<=-.2)items.push({title:"総合評価の変化を確認してください",body:"前月から評価が低下しています。最新口コミと項目別評価を確認し、変化の背景を探ってください。",confidence:"medium",evidence:`総合評価 前月比 ${delta.toFixed(2)}`});}
+    return items;
+  }
   function makeFallbackInsight(summary) {
     const selected = summary.positions.find((row) => row.hotel_no === Number(elements.hotel.value));
     if (summary.successful < 3) return {title:"比較データを蓄積しています",body:"取得成功施設が3施設未満のため、地域比較は参考表示です。次回以降の取得結果も確認してください。",confidence:"low",evidence:`取得成功 ${summary.successful}/${summary.target}施設`};
@@ -111,7 +173,8 @@
   function renderInsights(summary) {
     const region = selectedRegion();
     const exact = region.insights.filter((item) => Number(item.hotel_no) === Number(elements.hotel.value) && item.stay_date === elements.stayDate.value && item.meal_type === elements.meal.value);
-    const items = exact.length ? exact.map((item) => ({title:item.title, body:item.body, confidence:item.confidence, evidence:Object.entries(item.evidence || {}).map(([key,value]) => `${key}=${value ?? "—"}`).join(" / ")})) : [makeFallbackInsight(summary)];
+    const priceItems = exact.length ? exact.map((item) => ({title:item.title, body:item.body, confidence:item.confidence, evidence:Object.entries(item.evidence || {}).map(([key,value]) => `${key}=${value ?? "—"}`).join(" / ")})) : [makeFallbackInsight(summary)];
+    const items=[...makeProfileInsights(summary),...priceItems].slice(0,3);
     document.querySelector("#hpt-insights").innerHTML = items.map((item) => `<article class="hpt-insight"><span class="hpt-insight__meta">信頼度 ${escapeHtml(item.confidence)}</span><h3>${escapeHtml(item.title)}</h3><p>${escapeHtml(item.body)}</p><small>根拠：${escapeHtml(item.evidence)}</small></article>`).join("");
   }
   function buildTrend() {
@@ -150,14 +213,15 @@
     syncUrl();
     const summary=summarize(latest,elements.region.value,elements.stayDate.value,elements.meal.value);
     const previous=snapshotHistory.length>1?summarize(snapshotHistory[snapshotHistory.length-2],elements.region.value,elements.stayDate.value,elements.meal.value):null;
-    renderKpis(summary,previous);renderInsights(summary);renderTrend(buildTrend());renderCalendar();renderPositions(summary);
+    renderProfile(summary);renderKpis(summary,previous);renderInsights(summary);renderTrend(buildTrend());renderCalendar();renderRatings();renderRatingHistory();renderReview();renderPositions(summary);
     document.querySelector("#hpt-scope-title").textContent=`${selectedRegion().name}・${selectedRegion().properties.length}施設`;
     elements.freshness.textContent=`最終取得日：${latest.snapshot_date} ／ 条件：大人2名・1室・1泊・${MEAL_LABELS[elements.meal.value]}`;
   }
   async function init() {
     elements.loading.hidden=false;elements.error.hidden=true;elements.dashboard.hidden=true;
     try {
-      manifest=await getJson(`${DATA_ROOT}manifest.json`);
+      [manifest,profileData]=await Promise.all([getJson(`${DATA_ROOT}manifest.json`),getJson(`${DATA_ROOT}profiles.json`).catch(()=>({properties:[]}))]);
+      profilesByHotel=new Map((profileData.properties||[]).map((profile)=>[Number(profile.hotel_no),profile]));
       latest=await getJson(`${DATA_ROOT}${manifest.snapshots[0].file}`);
       snapshotHistory=(await Promise.all(manifest.snapshots.slice(0,30).reverse().map((item)=>getJson(`${DATA_ROOT}${item.file}`).catch(()=>null)))).filter(Boolean);
       populateControls();render();elements.loading.hidden=true;elements.dashboard.hidden=false;
