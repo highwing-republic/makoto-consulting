@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const DATA_ROOT = "/data/hotel-price-trends/";
+  const DATA_ROOT = "data/hotel-price-trends/";
   const MEAL_LABELS = {two_meals: "朝夕食付き", breakfast: "朝食付き", room_only: "素泊まり"};
   const RATING_LABELS = {service:"サービス",location:"立地",room:"部屋",equipment:"設備",bath:"風呂",breakfast:"朝食",dinner:"夕食",cleanliness:"清潔さ"};
   const elements = {

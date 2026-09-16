@@ -286,11 +286,14 @@ def load_population_stats(session: requests.Session) -> tuple[dict[str, Any], di
     for code in PREFECTURE_BY_CODE:
         current_working = current[code]["working_age_population"]
         previous_working = previous[code]["working_age_population"]
+        change_rate = safe_ratio(current_working, previous_working)
+        if change_rate is not None:
+            change_rate -= 1
         result[code] = {
             "population": current[code]["population"],
             "working_age_population": current_working,
             "working_age_population_previous": previous_working,
-            "working_age_population_change_rate": current_working / previous_working - 1,
+            "working_age_population_change_rate": change_rate,
         }
     metadata = {
         "source_name": "総務省統計局「人口推計」",
