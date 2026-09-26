@@ -1,0 +1,17 @@
+html{scroll-behavior:auto}
+.sunzi-reader .article-hero{padding:40px 0}
+.sunzi-reader .article-hero h1{font-size:clamp(2.4rem,5vw,4rem);margin:12px 0}
+.sunzi-reader .article-hero__lead{margin:12px 0}
+.sunzi-reader .eyebrow,.sunzi-reader .breadcrumb,.sunzi-reader .article-meta,.sunzi-reader .source-citation,.sunzi-reader .reading-note,.sunzi-reader .tags li{font-size:.875rem}
+.sunzi-reader .hero-actions{margin-top:24px}
+.sunzi-reader .article-body a:not(.button){text-decoration:underline;text-underline-offset:4px}
+.sunzi-reader .reader-toc ol{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 24px;list-style:none;padding:0}
+.sunzi-reader .reader-toc a{display:block;padding:12px 0;border-bottom:1px solid var(--line)}
+.sunzi-reader .reader-toc span{color:var(--muted);font-size:.875rem;margin-right:8px}
+.sunzi-reader [id]{scroll-margin-top:100px}
+.sunzi-reader .source-block .vertical-original{height:18rem;min-width:0;font-size:1.25rem;line-height:2.2}
+.sunzi-reader .source-block{background:#eaf1f5}
+.sunzi-reader .back-to-toc{margin-top:24px;text-align:right;font-size:.875rem}
+.sunzi-reader .source-citation{overflow-wrap:anywhere}
+.sunzi-reader a:focus-visible,.sunzi-reader [tabindex]:focus-visible{outline:3px solid var(--gold);outline-offset:4px}
+@media(max-width:620px){.sunzi-reader .reader-toc ol{grid-template-columns:1fr}.sunzi-reader .article-hero{padding:32px 0}.sunzi-reader .source-block .vertical-original{height:20rem}.sunzi-reader .section{padding:32px 0}}
