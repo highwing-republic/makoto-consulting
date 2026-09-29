@@ -25,6 +25,7 @@
 .home-section__heading h2{margin:0;color:var(--accent);font-family:var(--serif);font-size:clamp(36px,4.5vw,58px);font-weight:500;line-height:1.42}
 
 .tool-group{margin-top:70px}
+.tool-group h3[id]{scroll-margin-top:110px}
 .tool-group:first-of-type{margin-top:0}
 .tool-group__heading{display:flex;align-items:flex-start;gap:20px;margin-bottom:25px}
 .tool-group__index{width:34px;margin:10px 0 0;color:#7a878f;font:600 10px/1 var(--latin);letter-spacing:.14em;flex:0 0 auto}
@@ -48,17 +49,17 @@
 .analysis-card--featured .button{border-color:#fff;background:#fff;color:var(--accent-deep)}
 .analysis-card--featured .button:hover{border-color:#e9e7e1;background:#e9e7e1}
 
-.about-lab{background:var(--accent-deep);color:#fff;scroll-margin-top:82px}
+.about-lab{padding:84px 0;border-top:1px solid var(--line);background:var(--paper-light);scroll-margin-top:82px}
 .about-lab__grid{display:grid;grid-template-columns:minmax(240px,.7fr) minmax(0,1.3fr);gap:clamp(48px,9vw,125px)}
-.about-lab .eyebrow{color:#a9b9b1}
-.about-lab h2{margin:0;color:#fff;font-family:var(--serif);font-size:clamp(36px,4.3vw,56px);font-weight:500;line-height:1.45}
+.about-lab h2{margin:0;color:var(--accent);font-family:var(--serif);font-size:clamp(36px,4.3vw,56px);font-weight:500;line-height:1.45}
 .about-lab__body{max-width:720px}
-.about-lab__body p{margin:0 0 18px;color:#d7dfdb;font-family:var(--serif);font-size:clamp(17px,1.6vw,21px);line-height:1.9}
+.about-lab__body p{margin:0 0 18px;color:var(--ink-soft);font-family:var(--serif);font-size:clamp(17px,1.6vw,21px);line-height:1.9}
 .about-lab__body p:last-child{margin-bottom:0}
+.about-lab__questions{display:block;margin:14px 0;padding-left:18px;border-left:2px solid var(--gold);color:var(--accent)}
+.about-lab__body .about-lab__closing{margin-top:32px;color:var(--accent);font-size:clamp(19px,1.9vw,24px)}
 
-.site-footer .footer-lab-description{margin:26px 0 0;max-width:500px;color:#b8c7d2;font-size:12px;line-height:2}
-.footer-links--lab{grid-template-columns:1fr}
-.footer-links--lab>div{display:grid;grid-template-columns:repeat(2,max-content);gap:12px 28px;align-items:start}
+.site-footer .brand--footer+small{display:block;margin-top:22px}
+.footer-note-link+.footer-note-link{margin-left:24px}
 
 @media(max-width:1080px){
   .analysis-grid--regional{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -78,6 +79,8 @@
   .home-hero__lead{font-size:15px;line-height:1.8}
   .home-hero .button{width:100%}
   .home-section{padding:76px 0}
+  .about-lab{padding:64px 0}
+  .footer-note-link+.footer-note-link{margin-left:auto}
   .home-section__heading{margin-bottom:48px}
   .tool-group{margin-top:58px}
   .tool-group-row{margin-top:58px}
@@ -87,7 +90,6 @@
   .analysis-grid--market{grid-template-columns:1fr}
   .analysis-card{min-height:auto;padding:27px 24px}
   .analysis-card .button{width:100%;margin-top:4px}
-  .footer-links--lab>div{grid-template-columns:1fr}
 }
 
 @media print{
