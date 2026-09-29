@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>銘柄詳細 | JPX400 Event Watch</title>
+<style>
+:root{--ink:#172033;--muted:#687386;--line:#e4e9f0;--paper:#fff;--bg:#f4f6f9;--navy:#142a45;--blue:#2563eb;--red:#d13344;--green:#16805b;--grey:#8a93a2}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP","Hiragino Sans",Meiryo,sans-serif;line-height:1.6;overflow-x:hidden}
+.shell{width:min(960px,calc(100% - 32px));margin:auto}
+.top{background:var(--navy);color:#fff;padding:20px 0 22px}
+.top a{color:#9bc2f5;font-size:13px;text-decoration:none}
+.eyebrow{font-size:11px;letter-spacing:.18em;color:#9bc2f5;font-weight:700;margin-top:10px}
+.top h1{font-size:clamp(22px,5vw,32px);margin:4px 0 2px;line-height:1.25;overflow-wrap:anywhere}
+.top .code{color:#cfdae8;font-size:14px}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.main{padding:8px 0 48px}
+.panel{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:18px;margin-top:16px;min-width:0}
+.panel h2{margin:0 0 8px;font-size:18px}
+.note{margin:0 0 12px;color:var(--muted);font-size:12px}
+.banner{display:none;border:1px solid #f0b4ba;background:#fff0f1;color:#8a1f2b;padding:12px 14px;border-radius:12px;margin-top:16px;font-size:14px}
+.banner.show{display:block}
+.badge{display:inline-block;border-radius:999px;padding:3px 9px;font-size:11px;font-weight:700;white-space:nowrap}
+.b-setup{background:#e8f0ff;color:#174da6}
+.b-status{background:#eef1f5;color:#3b4658}
+.st-STRENGTHENING,.st-CONFIRMED{background:#e7f7ef;color:#126345}
+.st-REACTED{background:#fff0d6;color:#8c5200}
+.st-BROKEN,.st-CLOSED{background:#fdecee;color:#9b2432}
+.top .b-setup{background:#dbe8ff}
+ul.plain{margin:0;padding-left:1.2em;font-size:15px}
+ul.plain li{margin:3px 0;overflow-wrap:anywhere}
+.chart{width:100%;height:420px;max-width:100%;overflow:hidden}
+@media(max-width:600px){.chart{height:360px}}
+.chart .tradingview-widget-container,.chart .tradingview-widget-container__widget{width:100%;height:calc(100% - 20px)}
+.chart .tradingview-widget-copyright{font-size:11px;line-height:20px;text-align:center;color:var(--muted)}
+.chart .tradingview-widget-copyright a{color:var(--blue);text-decoration:none}
+.tl{list-style:none;margin:0;padding:0 0 0 14px;border-left:2px solid var(--line)}
+.tl li{position:relative;padding:0 0 14px 12px;font-size:14px}
+.tl li::before{content:"";position:absolute;left:-21px;top:7px;width:10px;height:10px;border-radius:50%;background:#9bb3d1;border:2px solid #fff}
+.tl li.EVENT::before{background:var(--blue)}
+.tl li.STATUS::before{background:var(--green)}
+.tl .d{color:var(--muted);font-size:12px;margin-right:6px}
+.tl .k{font-weight:700;overflow-wrap:anywhere}
+.tl .dt{color:var(--muted);font-size:13px;overflow-wrap:anywhere}
+.tl a{color:var(--blue);font-size:12px;margin-left:6px}
+.labels{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 12px}
+.label{background:#f1f5fb;border:1px solid #dbe4f1;border-radius:10px;padding:6px 12px;font-size:14px;font-weight:600}
+.small{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:6px 12px;font-size:12px;color:var(--muted)}
+.small span b{color:var(--ink);font-weight:600}
+.perf{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(min-width:700px){.perf{grid-template-columns:repeat(3,1fr)}}
+.perf div{border:1px solid var(--line);border-radius:10px;padding:8px 12px;min-width:0}
+.perf span{display:block;font-size:12px;color:var(--muted)}
+.perf b{font-size:17px;overflow-wrap:anywhere}
+.perf b span{display:inline;font-size:inherit}
+table{width:100%;border-collapse:collapse;font-size:13px;margin-top:12px}
+th,td{padding:8px 6px;border-top:1px solid var(--line);text-align:right;vertical-align:top}
+th:first-child,td:first-child{text-align:left}
+th{color:var(--muted);font-weight:600;font-size:12px;border-top:0}
+.pend{color:var(--muted);font-size:12px;font-weight:400}
+.up{color:var(--green);font-weight:700}.down{color:var(--red);font-weight:700}.nil{color:var(--grey)}
+.past{list-style:none;margin:0;padding:0;font-size:14px}
+.past li{padding:8px 0;border-top:1px solid var(--line)}
+.past li:first-child{border-top:0}
+.past small{color:var(--muted);display:block}
+.src a{color:var(--blue)}
+.disc{font-size:12px;color:var(--muted);margin:4px 0}
+.hidden{display:none}
+.empty{color:var(--muted);font-size:14px}
+</style>
+</head>
+<body>
+<header class="top"><div class="shell">
+  <a id="back" href="index.html">← JPX400 Event Watch</a>
+  <div class="eyebrow">EDINET INVESTMENT RADAR</div>
+  <h1 id="name">読み込み中…</h1>
+  <div class="code" id="code"></div>
+  <div class="tags" id="headTags"></div>
+</div></header>
+<main class="main shell">
+  <div id="banner" class="banner" role="alert"></div>
+  <div id="content" class="hidden">
+
+  <section class="panel">
+    <h2>Radarが注目している理由</h2>
+    <div id="reasons"></div>
+  </section>
+
+  <section class="panel">
+    <h2>チャート</h2>
+    <p class="note">TradingViewのチャートは、人間による最終確認用です。Radarの判定には使用していません。</p>
+    <div class="chart" id="chart"></div>
+  </section>
+
+  <section class="panel">
+    <h2>イベントタイムライン</h2>
+    <div id="timeline"></div>
+  </section>
+
+  <section class="panel">
+    <h2>Price Setup</h2>
+    <div id="setup"></div>
+  </section>
+
+  <section class="panel hidden" id="marginPanel">
+    <h2>信用需給</h2>
+    <div id="margin"></div>
+  </section>
+
+  <section class="panel">
+    <h2>Radar成績</h2>
+    <p class="note">比較対象はTOPIX連動ETF（1306）を代理指標としたもので、TOPIX指数そのものではありません。</p>
+    <div id="perf"></div>
+  </section>
+
+  <section class="panel" id="pastPanel">
+    <h2>過去の監視履歴</h2>
+    <div id="past"></div>
+  </section>
+
+  <section class="panel src">
+    <h2>開示書類</h2>
+    <div id="docs"></div>
+  </section>
+  </div>
+
+  <section class="panel">
+    <p class="disc">本ページは公開情報を整理する情報整理ツールであり、特定銘柄の売買を推奨するものではなく、将来の株価を予測するものでもありません。投資判断はご自身の責任で行ってください。</p>
+  </section>
+</main>
+
+<script>
+(function(){
+'use strict';
+var DEFAULT_BASE='https://raw.githubusercontent.com/highwing-republic/stock/main/public/data/watch';
+var RAW='https://raw.githubusercontent.com/highwing-republic/';
+function resolveBase(){
+  var q=new URLSearchParams(location.search).get('data');
+  if(!q)return {base:DEFAULT_BASE,param:null};
+  var ok=false;
+  if(q.indexOf(RAW)===0)ok=/^[A-Za-z0-9_\-.\/]+$/.test(q.slice(RAW.length))&&q.indexOf('..')<0;
+  else ok=/^(\.{1,2}\/)?[A-Za-z0-9_\-.\/]*$/.test(q)&&q.indexOf('//')<0&&q.indexOf(':')<0;
+  if(!ok)return {base:DEFAULT_BASE,param:null};
+  return {base:q.replace(/\/+$/,''),param:q};
+}
+var B=resolveBase();
+function $(id){return document.getElementById(id)}
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function num(v){return typeof v==='number'&&isFinite(v)}
+function pct(v,unit){if(!num(v))return '<span class="nil">—</span>';var s=(v>0?'+':v<0?'−':'')+Math.abs(v).toFixed(1)+(unit||'%');return '<span class="'+(v>0?'up':v<0?'down':'nil')+'">'+s+'</span>'}
+function plain(v,d,unit){return num(v)?v.toFixed(d)+(unit||''):'—'}
+function yen(v){return num(v)?Math.round(v).toLocaleString('ja-JP')+'円':'—'}
+function dstr(s){if(!s)return '—';var m=/^(\d{4})-(\d{2})-(\d{2})/.exec(s);return m?esc(m[1]+'/'+m[2]+'/'+m[3]):esc(s)}
+var SETUP={BREAKOUT:'BREAKOUT WATCH',RECOVERY:'RECOVERY WATCH',TREND:'TREND WATCH'};
+var STATUS_JA={CANDIDATE:'候補',WATCH:'監視中',STRENGTHENING:'強まっている',CONFIRMED:'値動きが確認できた',REACTED:'すでに反応済み',BROKEN:'株価の形が崩れた',CLOSED:'監視終了'};
+var CLOSE_JA={NO_SETUP:'株価の形が整わないまま期限切れ',BROKEN:'株価の形が崩れた',EXPIRED:'監視期間の終了',UNIVERSE_EXIT:'JPX400から除外'};
+function safeUrl(u){return typeof u==='string'&&/^https:\/\/[A-Za-z0-9.\-]+\//.test(u)?u:null}
+function fail(t){$('name').textContent='表示できません';var b=$('banner');b.textContent=t;b.className='banner show'}
+
+var code=(new URLSearchParams(location.search).get('code')||'').trim();
+$('back').href='index.html'+(B.param?'?data='+encodeURIComponent(B.param):'');
+if(!/^[0-9A-Z]{4,5}$/.test(code)){fail('銘柄コードが指定されていないか、形式が正しくありません。')}
+else{
+ fetch(B.base+'/stocks/'+encodeURIComponent(code)+'.json?t='+Date.now()).then(function(r){
+   if(r.status===404)throw new Error('notfound');if(!r.ok)throw new Error(r.status);return r.json()
+ }).then(function(d){
+   if(!d||d.schemaVersion!==1||!d.company)throw new Error('schema');render(d);
+ }).catch(function(e){
+   fail(e.message==='notfound'?'この銘柄の詳細データはありません（監視対象外、または期間が終了した可能性があります）。':'公開データを読み込めませんでした。時間を置いて再度お試しください。');
+ });
+}
+
+function mountChart(sym){
+  var host=$('chart');host.textContent='';
+  var wrap=document.createElement('div');wrap.className='tradingview-widget-container';
+  var w=document.createElement('div');w.className='tradingview-widget-container__widget';wrap.appendChild(w);
+  var c=document.createElement('div');c.className='tradingview-widget-copyright';
+  var a=document.createElement('a');a.href='https://jp.tradingview.com/symbols/'+sym.replace(':','-')+'/';a.rel='noopener nofollow';a.target='_blank';
+  var sp=document.createElement('span');sp.textContent=sym+' チャート（TradingView）';a.appendChild(sp);c.appendChild(a);wrap.appendChild(c);
+  var s=document.createElement('script');s.type='text/javascript';s.src='https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js';s.async=true;
+  s.text=JSON.stringify({autosize:true,symbol:sym,interval:'D',timezone:'Asia/Tokyo',theme:'light',style:'1',locale:'ja',range:'12M',allow_symbol_change:false,hide_side_toolbar:true,withdateranges:true,hide_volume:false,support_host:'https://www.tradingview.com'});
+  wrap.appendChild(s);host.appendChild(wrap);
+}
+
+function render(d){
+  var co=d.company,ep=d.episode||{};
+  document.title=(co.name||code)+'（'+code+'） | JPX400 Event Watch';
+  $('name').textContent=co.name||code;
+  $('code').textContent='証券コード '+(co.securityCode||code);
+  $('headTags').innerHTML=(ep.setupType?'<span class="badge b-setup">'+esc(SETUP[ep.setupType]||ep.setupType)+'</span>':'')+
+    (ep.status?'<span class="badge b-status st-'+esc(ep.status)+'" title="'+esc(STATUS_JA[ep.status]||'')+'">'+esc(ep.status)+'</span>':'')+
+    (ep.status&&STATUS_JA[ep.status]?'<span style="font-size:12px;color:#cfdae8;align-self:center">'+esc(STATUS_JA[ep.status])+'</span>':'')+
+    (ep.overextended?'<span class="badge" style="background:#fff0d6;color:#8c5200">すでに大きく動いた後</span>':'');
+  var rs=(d.reasons||[]).slice(0,4);
+  $('reasons').innerHTML=rs.length?'<ul class="plain">'+rs.map(function(r){return '<li>'+esc(r)+'</li>'}).join('')+'</ul>':'<div class="empty">表示できる理由はありません。</div>';
+  var sym=/^[A-Z]{2,10}:[0-9A-Z]{3,6}$/.test(co.tradingViewSymbol||'')?co.tradingViewSymbol:'TSE:'+code;
+
+  var tl=d.timeline||[];
+  $('timeline').innerHTML=tl.length?'<ul class="tl">'+tl.map(function(t){
+    var u=safeUrl(t.sourceUrl);
+    return '<li class="'+esc(t.kind)+'"><span class="d">'+dstr(t.date)+'</span><span class="k">'+esc(t.label)+'</span>'+
+     (u?'<a href="'+esc(u)+'" target="_blank" rel="noopener nofollow">EDINET</a>':'')+
+     (t.detail?'<div class="dt">'+esc(t.detail)+'</div>':'')+'</li>'}).join('')+'</ul>':'<div class="empty">イベントはまだありません。</div>';
+
+  var ps=d.priceSetup;
+  if(ps){
+    var lab=(ps.labels||[]).map(function(l){return '<span class="label">'+esc(l)+'</span>'}).join('');
+    var atr=ps.atrState?'<span class="label">値動きの大きさ: '+esc(ps.atrState)+'</span>':'';
+    var rp=num(ps.rangePos60)?Math.round(ps.rangePos60*100)+'%':'—';
+    var dh=num(ps.distFrom52wHigh)?(ps.distFrom52wHigh*100).toFixed(1)+'%':'—';
+    $('setup').innerHTML='<div class="labels">'+lab+atr+'</div>'+
+     '<div class="small">'+
+      '<span>MA20 <b>'+plain(ps.ma20,0)+'</b></span><span>MA60 <b>'+plain(ps.ma60,0)+'</b></span><span>MA200 <b>'+plain(ps.ma200,0)+'</b></span>'+
+      '<span>60日レンジ位置 <b>'+rp+'</b></span><span>52週高値まで <b>'+dh+'</b></span>'+
+      '<span>ETF比(20日) <b>'+pct(ps.rel20,'pt')+'</b></span><span>ETF比(60日) <b>'+pct(ps.rel60,'pt')+'</b></span>'+
+      '<span>出来高20日比 <b>'+plain(ps.volumeRatio20,1,'倍')+'</b></span></div>'+
+     '<p class="note" style="margin-top:10px">基準日 '+dstr(ps.asOf)+'（調整後株価ベース）</p>';
+  }else $('setup').innerHTML='<div class="empty">Price Setup の情報はありません。</div>';
+
+  var m=d.margin;
+  if(m){
+    $('marginPanel').classList.remove('hidden');
+    $('margin').innerHTML=(m.labels&&m.labels.length?'<div class="labels">'+m.labels.map(function(l){return '<span class="label">'+esc(l)+'</span>'}).join('')+'</div>':'')+
+     '<div class="small"><span>信用買残 <b>'+plain(m.buyBalance,0,'株')+'</b></span><span>信用売残 <b>'+plain(m.sellBalance,0,'株')+'</b></span><span>信用倍率 <b>'+plain(m.ratio,2,'倍')+'</b></span>'+
+     '<span>買残 前回比 <b>'+pct(m.buyChangePct)+'</b></span><span>売残 前回比 <b>'+pct(m.sellChangePct)+'</b></span></div>'+
+     '<p class="note" style="margin-top:10px">基準日 '+dstr(m.asOf)+'。補助情報であり、判定の必須条件ではありません。</p>';
+  }
+
+  var p=d.performance;
+  if(p){
+    var rows=[['d5','5営業日後'],['d20','20営業日後'],['d60','60営業日後']].map(function(k){
+      var x=p[k[0]];
+      if(!x||!num(x.stockReturn))return '<tr><td>'+k[1]+'</td><td colspan="3" class="pend" style="text-align:right">判定待ち'+(x&&num(x.pendingDays)?'（あと'+x.pendingDays+'営業日）':'')+'</td></tr>';
+      return '<tr><td>'+k[1]+'</td><td>'+pct(x.stockReturn)+'</td><td>'+pct(x.benchReturn)+'</td><td>'+pct(x.excessReturn,'pt')+'</td></tr>';
+    }).join('');
+    $('perf').innerHTML='<div class="perf">'+
+     '<div><span>Radar初登場</span><b>'+dstr(p.initialDate)+'</b><span>'+yen(p.initialPrice)+'</span></div>'+
+     '<div><span>現在</span><b>'+yen(p.currentPrice)+'</b></div>'+
+     '<div><span>株価騰落率</span><b>'+pct(p.stockReturn)+'</b></div>'+
+     '<div><span>TOPIX連動ETF（1306）</span><b>'+pct(p.benchReturn)+'</b></div>'+
+     '<div><span>超過</span><b>'+pct(p.excessReturn,'pt')+'</b></div></div>'+
+     '<table><thead><tr><th></th><th>株価</th><th>ETF(1306)</th><th>超過</th></tr></thead><tbody>'+rows+'</tbody></table>';
+  }else $('perf').innerHTML='<div class="empty">成績はまだありません。</div>';
+
+  var pe=d.pastEpisodes||[];
+  if(pe.length)$('past').innerHTML='<ul class="past">'+pe.map(function(e){
+    return '<li>'+dstr(e.startedAt)+' 〜 '+dstr(e.closedAt)+' '+(e.setupType?'<span class="badge b-setup">'+esc(SETUP[e.setupType]||e.setupType)+'</span>':'')+
+     '<small>終了理由: '+esc(CLOSE_JA[e.closeReason]||e.closeReason||'—')+'</small></li>'}).join('')+'</ul>';
+  else $('pastPanel').classList.add('hidden');
+
+  var docs=tl.filter(function(t){return t.kind==='EVENT'&&safeUrl(t.sourceUrl)});
+  $('docs').innerHTML=docs.length?'<ul class="plain">'+docs.map(function(t){
+    return '<li>'+dstr(t.date)+' '+esc(t.label)+' <a href="'+esc(safeUrl(t.sourceUrl))+'" target="_blank" rel="noopener nofollow">EDINETで原本を見る</a></li>'}).join('')+'</ul>':'<div class="empty">リンクできる開示書類はありません。</div>';
+  $('content').classList.remove('hidden');
+  mountChart(sym);
+}
+})();
+</script>
+</body>
+</html>
