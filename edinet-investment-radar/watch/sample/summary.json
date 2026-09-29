@@ -1,0 +1,162 @@
+{
+ "schemaVersion": 1,
+ "updatedAt": "2026-09-29T21:05:00+09:00",
+ "asOfMarketDate": "2026-09-29",
+ "benchmarkLabel": "TOPIX連動ETF（1306）",
+ "sources": {
+  "edinet": {
+   "status": "ok",
+   "lastSuccessAt": "2026-09-29T21:05:00+09:00"
+  },
+  "prices": {
+   "status": "ok",
+   "lastSuccessAt": "2026-09-29T21:05:00+09:00",
+   "coverage": 0.99
+  },
+  "jpx400": {
+   "status": "ok",
+   "lastSuccessAt": "2026-09-29T21:05:00+09:00",
+   "memberCount": 398
+  },
+  "margin": {
+   "status": "disabled",
+   "asOf": null
+  }
+ },
+ "weekly": {
+  "periodKey": "2026-W40",
+  "entries": [
+   {
+    "rank": 1,
+    "securityCode": "9901",
+    "companyName": "サンプル工業",
+    "setupType": "BREAKOUT",
+    "status": "STRENGTHENING",
+    "reasons": [
+     "新規大量保有 6.4%（サンプル証券）",
+     "60日レンジ上位8%",
+     "20日線上向き",
+     "出来高 1.8倍で60日高値更新"
+    ],
+    "watchStartedAt": "2026-09-03",
+    "returnSinceWatch": 3.8,
+    "excessSinceWatch": 2.1,
+    "rankChange": "up"
+   },
+   {
+    "rank": 2,
+    "securityCode": "9902",
+    "companyName": "サンプル化学",
+    "setupType": "RECOVERY",
+    "status": "WATCH",
+    "reasons": [
+     "2pt買い増し 5.1%→7.1%",
+     "20日線を回復",
+     "TOPIX連動ETF比 +4.2pt（20日）"
+    ],
+    "watchStartedAt": "2026-09-15",
+    "returnSinceWatch": -1.2,
+    "excessSinceWatch": -2.0,
+    "rankChange": "new"
+   },
+   {
+    "rank": 3,
+    "securityCode": "9903",
+    "companyName": "サンプル電機",
+    "setupType": "TREND",
+    "status": "CONFIRMED",
+    "reasons": [
+     "30日以内に2回買い増し",
+     "52週高値まで6%",
+     "信用買残 -14%"
+    ],
+    "watchStartedAt": "2026-09-08",
+    "returnSinceWatch": null,
+    "excessSinceWatch": null,
+    "rankChange": "same"
+   }
+  ]
+ },
+ "monthly": {
+  "periodKey": "2026-09",
+  "entries": [
+   {
+    "rank": 1,
+    "securityCode": "9901",
+    "companyName": "サンプル工業",
+    "setupType": "BREAKOUT",
+    "status": "STRENGTHENING",
+    "reasons": [
+     "新規大量保有 6.4%（サンプル証券）",
+     "60日レンジ上位8%",
+     "20日線上向き",
+     "出来高 1.8倍で60日高値更新"
+    ],
+    "watchStartedAt": "2026-09-03",
+    "returnSinceWatch": 3.8,
+    "excessSinceWatch": 2.1,
+    "rankChange": "up"
+   },
+   {
+    "rank": 2,
+    "securityCode": "9902",
+    "companyName": "サンプル化学",
+    "setupType": "RECOVERY",
+    "status": "WATCH",
+    "reasons": [
+     "2pt買い増し 5.1%→7.1%",
+     "20日線を回復",
+     "TOPIX連動ETF比 +4.2pt（20日）"
+    ],
+    "watchStartedAt": "2026-09-15",
+    "returnSinceWatch": -1.2,
+    "excessSinceWatch": -2.0,
+    "rankChange": "new"
+   },
+   {
+    "rank": 3,
+    "securityCode": "9903",
+    "companyName": "サンプル電機",
+    "setupType": "TREND",
+    "status": "CONFIRMED",
+    "reasons": [
+     "30日以内に2回買い増し",
+     "52週高値まで6%",
+     "信用買残 -14%"
+    ],
+    "watchStartedAt": "2026-09-08",
+    "returnSinceWatch": null,
+    "excessSinceWatch": null,
+    "rankChange": "same"
+   }
+  ]
+ },
+ "stateChanges": [
+  {
+   "date": "2026-09-29",
+   "securityCode": "9901",
+   "companyName": "サンプル工業",
+   "change": "BREAKOUT_CONFIRMED",
+   "setupType": "BREAKOUT",
+   "reason": "60日高値を出来高増で更新"
+  },
+  {
+   "date": "2026-09-25",
+   "securityCode": "9902",
+   "companyName": "サンプル化学",
+   "change": "NEW_WATCH",
+   "setupType": "RECOVERY",
+   "reason": "大量保有の増加後、20日線を回復"
+  },
+  {
+   "date": "2026-09-22",
+   "securityCode": "9904",
+   "companyName": "サンプル商事",
+   "change": "SETUP_BROKEN",
+   "setupType": "TREND",
+   "reason": "20日線を3営業日連続で下回った"
+  }
+ ],
+ "universeCount": 398,
+ "disclaimer": "【サンプルデータ】本ページは情報整理ツールであり、特定銘柄の売買を推奨するものではありません。表示内容は動作確認用の架空データです。"
+}

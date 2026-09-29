@@ -1,0 +1,117 @@
+{
+ "schemaVersion": 1,
+ "updatedAt": "2026-09-29T21:05:00+09:00",
+ "company": {
+  "securityCode": "9903",
+  "name": "サンプル電機",
+  "tradingViewSymbol": "TSE:9903"
+ },
+ "episode": {
+  "id": "9903-2026-09-03",
+  "status": "CONFIRMED",
+  "setupType": "TREND",
+  "setups": [
+   "TREND"
+  ],
+  "watchStartedAt": "2026-09-08",
+  "startedAt": "2026-09-03",
+  "overextended": false,
+  "statusHistory": [
+   {
+    "date": "2026-09-08",
+    "from": "CANDIDATE",
+    "to": "WATCH",
+    "reason_code": "SETUP_OK"
+   }
+  ]
+ },
+ "pastEpisodes": [],
+ "reasons": [
+  "30日以内に2回買い増し",
+  "52週高値まで6%",
+  "信用買残 -14%"
+ ],
+ "timeline": [
+  {
+   "date": "2026-09-03",
+   "kind": "EVENT",
+   "label": "新規大量保有",
+   "detail": "保有割合 6.4%（サンプル証券）",
+   "sourceUrl": "https://disclosure2.edinet-fsa.go.jp/WZEK0040.aspx?S100SAMPLE9903"
+  },
+  {
+   "date": "2026-09-12",
+   "kind": "EVENT",
+   "label": "買い増し",
+   "detail": "6.4% → 7.1%",
+   "sourceUrl": "https://disclosure2.edinet-fsa.go.jp/WZEK0040.aspx?S100SAMPL29903"
+  },
+  {
+   "date": "2026-09-18",
+   "kind": "SETUP",
+   "label": "Price Setup改善",
+   "detail": "RECOVERY → BREAKOUT",
+   "sourceUrl": null
+  },
+  {
+   "date": "2026-09-29",
+   "kind": "STATUS",
+   "label": "STRENGTHENING",
+   "detail": "",
+   "sourceUrl": null
+  }
+ ],
+ "priceSetup": {
+  "asOf": "2026-09-29",
+  "labels": [
+   "20日線の上",
+   "60日レンジ上位20%",
+   "20日線が上向き"
+  ],
+  "ma20": 890,
+  "ma60": 863.3,
+  "ma200": 801.0,
+  "rangePos60": 0.8,
+  "distFrom52wHigh": 0.06,
+  "atrState": "通常",
+  "rel20": 2.0,
+  "rel60": 3.1,
+  "volumeRatio20": 1.0
+ },
+ "margin": null,
+ "performance": {
+  "initialDate": "2026-09-03",
+  "initialPrice": 880,
+  "currentPrice": null,
+  "stockReturn": null,
+  "benchReturn": null,
+  "excessReturn": null,
+  "d5": {
+   "stockReturn": null,
+   "benchReturn": null,
+   "excessReturn": null,
+   "pendingDays": 1
+  },
+  "d20": {
+   "stockReturn": null,
+   "benchReturn": null,
+   "excessReturn": null,
+   "pendingDays": 16
+  },
+  "d60": {
+   "stockReturn": null,
+   "benchReturn": null,
+   "excessReturn": null,
+   "pendingDays": 56
+  }
+ },
+ "eventReactions": [
+  {
+   "eventId": "edinet:S100SAMPLE9903",
+   "d1": 1.2,
+   "d5": null,
+   "d20": null,
+   "excess5": null
+  }
+ ]
+}

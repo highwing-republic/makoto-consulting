@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>JPX400 Event Watch | EDINET投資レーダー</title>
+<style>
+:root{--ink:#172033;--muted:#687386;--line:#e4e9f0;--paper:#fff;--bg:#f4f6f9;--navy:#142a45;--blue:#2563eb;--red:#d13344;--green:#16805b;--amber:#b76b00;--grey:#8a93a2}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP","Hiragino Sans",Meiryo,sans-serif;line-height:1.6;overflow-x:hidden}
+.shell{width:min(1040px,calc(100% - 32px));margin:auto}
+.top{background:var(--navy);color:#fff;padding:32px 0 26px}
+.eyebrow{font-size:12px;letter-spacing:.18em;color:#9bc2f5;font-weight:700}
+.top h1{font-size:clamp(24px,5vw,38px);margin:6px 0 4px;line-height:1.2}
+.top p{margin:0;color:#cfdae8;font-size:13px}
+.main{padding:20px 0 48px}
+.panel{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:18px;margin-top:16px}
+.panel h2{margin:0 0 4px;font-size:18px}
+.note{margin:0 0 14px;color:var(--muted);font-size:13px}
+.about ul{margin:6px 0 0;padding-left:1.2em;font-size:14px}
+.about li{margin:3px 0}
+.banner{display:none;border:1px solid #f0d18b;background:#fff8e7;color:#684900;padding:12px 14px;border-radius:12px;margin-top:16px;font-size:14px}
+.banner.show{display:block}
+.banner.err{border-color:#f0b4ba;background:#fff0f1;color:#8a1f2b}
+.cards{display:grid;grid-template-columns:1fr;gap:12px}
+@media(min-width:760px){.cards{grid-template-columns:1fr 1fr}}
+.card{border:1px solid var(--line);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.card-head{display:flex;gap:12px;align-items:flex-start}
+.rank{flex:none;width:34px;height:34px;border-radius:50%;background:var(--navy);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center}
+.who{min-width:0;flex:1}
+.name{font-weight:700;font-size:16px;overflow-wrap:anywhere}
+.code{color:var(--muted);font-size:12px}
+.tags{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.badge{display:inline-block;border-radius:999px;padding:3px 9px;font-size:11px;font-weight:700;white-space:nowrap}
+.b-setup{background:#e8f0ff;color:#174da6}
+.b-status{background:#eef1f5;color:#3b4658}
+.st-STRENGTHENING,.st-CONFIRMED{background:#e7f7ef;color:#126345}
+.st-REACTED{background:#fff0d6;color:#8c5200}
+.st-BROKEN,.st-CLOSED{background:#fdecee;color:#9b2432}
+.rc-new{background:#fff0d6;color:#8c5200}.rc-up{background:#e7f7ef;color:#126345}.rc-down{background:#fdecee;color:#9b2432}.rc-same{background:#eef1f5;color:#5a6577}
+.reasons{margin:0;padding-left:1.2em;font-size:14px}
+.reasons li{margin:2px 0;overflow-wrap:anywhere}
+.metrics{display:grid;grid-template-columns:1fr;gap:6px;border-top:1px dashed var(--line);padding-top:8px;font-size:13px}
+.metrics div{display:flex;justify-content:space-between;gap:10px}
+.metrics span{color:var(--muted)}
+.metrics b{white-space:nowrap}
+.detail{margin-top:auto;align-self:flex-start;color:#fff;background:var(--blue);text-decoration:none;font-size:14px;font-weight:600;padding:8px 16px;border-radius:9px}
+.up{color:var(--green);font-weight:700}.down{color:var(--red);font-weight:700}.nil{color:var(--grey)}
+.list{list-style:none;margin:0;padding:0}
+.list li{display:grid;grid-template-columns:28px 1fr auto;gap:4px 10px;align-items:center;padding:10px 0;border-top:1px solid var(--line);font-size:14px}
+.list li:first-child{border-top:0}
+.list .n{color:var(--muted);font-weight:700;text-align:center}
+.list a{color:var(--ink);font-weight:600;text-decoration:none;overflow-wrap:anywhere}
+.list a:hover{color:var(--blue)}
+.list .sub{grid-column:2 / 4;display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:12px;color:var(--muted)}
+.chg{list-style:none;margin:0;padding:0}
+.chg li{padding:9px 0;border-top:1px solid var(--line);font-size:14px}
+.chg li:first-child{border-top:0}
+.chg .d{color:var(--muted);font-size:12px;margin-right:6px}
+.chg .r{color:var(--muted);font-size:13px;display:block;overflow-wrap:anywhere}
+.chg a{color:var(--ink);font-weight:600;text-decoration:none}
+.src{display:grid;grid-template-columns:1fr;gap:8px;font-size:13px}
+@media(min-width:600px){.src{grid-template-columns:1fr 1fr}}
+.src>div{border:1px solid var(--line);border-radius:10px;padding:9px 12px;min-width:0}
+.src b{display:block;font-size:13px}
+.src small{color:var(--muted);display:block}
+.pill{display:inline-block;border-radius:999px;padding:1px 8px;font-size:11px;font-weight:700;margin-left:6px}
+.pill.ok{background:#e7f7ef;color:#126345}.pill.warn{background:#fff0d6;color:#8c5200}.pill.bad{background:#fdecee;color:#9b2432}.pill.off{background:#eef1f5;color:#5a6577}
+.meta{margin-top:12px;font-size:13px;color:var(--muted)}
+.empty{text-align:center;padding:24px 8px;color:var(--muted);font-size:14px}
+.empty strong{display:block;color:var(--ink);font-size:16px;margin-bottom:6px}
+.disc{font-size:12px;color:var(--muted);margin:4px 0}
+.skeleton{color:var(--muted);font-size:14px}
+</style>
+</head>
+<body>
+<header class="top"><div class="shell">
+  <div class="eyebrow">EDINET INVESTMENT RADAR</div>
+  <h1>JPX400 Event Watch</h1>
+  <p id="updated">読み込み中…</p>
+</div></header>
+<main class="main shell">
+  <div id="banner" class="banner" role="status"></div>
+
+  <section class="panel about">
+    <h2>このページで分かること</h2>
+    <ul>
+      <li>JPX400 構成銘柄のうち、意味のある大量保有報告（EDINET）があり、かつ株価の形（Price Setup）が整っている銘柄だけを並べます。</li>
+      <li>毎日すべての開示を見る必要はありません。今週・今月に確認したい銘柄と、状態の変化だけが分かります。</li>
+      <li>気になる銘柄は [詳細を見る] から、チャートとイベント履歴で確認できます。</li>
+    </ul>
+  </section>
+
+  <section class="panel">
+    <h2>今週の注目 TOP5</h2>
+    <p class="note" id="weeklyNote"></p>
+    <div id="weekly" class="cards"><div class="skeleton">読み込み中…</div></div>
+  </section>
+
+  <section class="panel">
+    <h2>今月の注目 TOP10</h2>
+    <p class="note" id="monthlyNote"></p>
+    <div id="monthly"><div class="skeleton">読み込み中…</div></div>
+  </section>
+
+  <section class="panel">
+    <h2>状態変化</h2>
+    <p class="note">直近の更新のみ表示します。</p>
+    <div id="changes"><div class="skeleton">読み込み中…</div></div>
+  </section>
+
+  <section class="panel">
+    <h2>データ更新状況</h2>
+    <div id="sources"><div class="skeleton">読み込み中…</div></div>
+    <div class="meta" id="meta"></div>
+  </section>
+
+  <section class="panel">
+    <p class="disc" id="disclaimer">本ページは公開情報を整理する情報整理ツールであり、特定銘柄の売買を推奨するものではなく、将来の株価を予測するものでもありません。投資判断はご自身の責任で行ってください。</p>
+    <p class="disc">騰落率の比較対象には、TOPIX連動ETF（1306）を代理指標として使用しています（TOPIX指数そのものではありません）。</p>
+  </section>
+</main>
+
+<script>
+(function(){
+'use strict';
+var DEFAULT_BASE='https://raw.githubusercontent.com/highwing-republic/stock/main/public/data/watch';
+var RAW='https://raw.githubusercontent.com/highwing-republic/';
+function resolveBase(){
+  var q=new URLSearchParams(location.search).get('data');
+  if(!q)return {base:DEFAULT_BASE,param:null,rejected:false};
+  var ok=false;
+  if(q.indexOf(RAW)===0)ok=/^[A-Za-z0-9_\-.\/]+$/.test(q.slice(RAW.length))&&q.indexOf('..')<0;
+  else ok=/^(\.{1,2}\/)?[A-Za-z0-9_\-.\/]*$/.test(q)&&q.indexOf('//')<0&&q.indexOf(':')<0;
+  if(!ok)return {base:DEFAULT_BASE,param:null,rejected:true};
+  return {base:q.replace(/\/+$/,''),param:q,rejected:false};
+}
+var B=resolveBase(), BASE=B.base;
+function $(id){return document.getElementById(id)}
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function num(v){return typeof v==='number'&&isFinite(v)}
+function pct(v,unit){if(!num(v))return '<span class="nil">—</span>';var s=(v>0?'+':v<0?'−':'')+Math.abs(v).toFixed(1)+(unit||'%');return '<span class="'+(v>0?'up':v<0?'down':'nil')+'">'+s+'</span>'}
+function dstr(s){if(!s)return '—';var m=/^(\d{4})-(\d{2})-(\d{2})/.exec(s);return m?esc(m[2]+'/'+m[3]):esc(s)}
+function dfull(s){if(!s)return '—';var d=new Date(s);return isNaN(d)?String(s):d.toLocaleString('ja-JP',{timeZone:'Asia/Tokyo',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'})}
+var SETUP={BREAKOUT:'BREAKOUT WATCH',RECOVERY:'RECOVERY WATCH',TREND:'TREND WATCH'};
+var STATUS_JA={CANDIDATE:'候補',WATCH:'監視中',STRENGTHENING:'強まっている',CONFIRMED:'値動きが確認できた',REACTED:'すでに反応済み',BROKEN:'株価の形が崩れた',CLOSED:'監視終了'};
+var CHANGE={NEW_WATCH:'NEW WATCH',STRENGTHENING:'STRENGTHENING',BREAKOUT_CONFIRMED:'BREAKOUT CONFIRMED',REACTED:'REACTED',SETUP_BROKEN:'SETUP BROKEN',CLOSED:'CLOSED'};
+var RC={'new':['NEW','rc-new'],up:['▲ 上昇','rc-up'],down:['▼ 下降','rc-down'],same:['― 変わらず','rc-same']};
+function detailHref(code){return 'stock.html?code='+encodeURIComponent(code)+(B.param?'&data='+encodeURIComponent(B.param):'')}
+function setupBadge(t){return t?'<span class="badge b-setup">'+esc(SETUP[t]||t)+'</span>':''}
+function statusBadge(s){return s?'<span class="badge b-status st-'+esc(s)+'" title="'+esc(STATUS_JA[s]||'')+'">'+esc(s)+'</span>':''}
+function rcBadge(r){var x=RC[r];return x?'<span class="badge '+x[1]+'">'+x[0]+'</span>':''}
+function link(e){return '<a href="'+esc(detailHref(e.securityCode))+'">'+esc(e.companyName||e.securityCode)+'</a>'}
+function empty(title,body){return '<div class="empty"><strong>'+esc(title)+'</strong>'+esc(body)+'</div>'}
+var EMPTY_BODY='このレーダーは、JPX400 の銘柄のうち、意味のある大量保有報告（新規・大幅な買い増しなど）があり、かつ株価の形（Price Setup）が整った銘柄だけを掲載します。条件を満たす銘柄がまだ無いときは、何も表示されません。';
+
+function card(e,i){
+  var reasons=(e.reasons||[]).slice(0,4).map(function(r){return '<li>'+esc(r)+'</li>'}).join('');
+  return '<article class="card">'+
+   '<div class="card-head"><div class="rank" aria-label="順位">'+esc(e.rank||i+1)+'</div>'+
+   '<div class="who"><div class="name">'+esc(e.companyName)+'</div><div class="code">'+esc(e.securityCode)+'</div></div>'+rcBadge(e.rankChange)+'</div>'+
+   '<div class="tags">'+setupBadge(e.setupType)+statusBadge(e.status)+'</div>'+
+   (reasons?'<ul class="reasons">'+reasons+'</ul>':'')+
+   '<div class="metrics">'+
+    '<div><span>監視開始日</span><b>'+dstr(e.watchStartedAt)+'</b></div>'+
+    '<div><span>初登場後リターン</span><b>'+pct(e.returnSinceWatch)+'</b></div>'+
+    '<div><span>TOPIX連動ETF（1306）比</span><b>'+pct(e.excessSinceWatch,'pt')+'</b></div>'+
+   '</div>'+
+   '<a class="detail" href="'+esc(detailHref(e.securityCode))+'">詳細を見る</a></article>';
+}
+function row(e,i){
+  return '<li><span class="n">'+esc(e.rank||i+1)+'</span><span>'+link(e)+' <span class="code">'+esc(e.securityCode)+'</span></span><span>'+pct(e.returnSinceWatch)+'</span>'+
+   '<span class="sub">'+setupBadge(e.setupType)+statusBadge(e.status)+rcBadge(e.rankChange)+(e.reasons&&e.reasons[0]?'<span>'+esc(e.reasons[0])+'</span>':'')+'</span></li>';
+}
+var SRCJA={edinet:'EDINET（大量保有報告）',prices:'株価',jpx400:'JPX400 構成銘柄',margin:'信用需給（補助情報）'};
+var STJA={ok:['正常','ok'],stale:['更新が古い','warn'],failed:['取得失敗','bad'],disabled:['無効','off'],partial:['一部のみ','warn']};
+function srcCell(k,s){
+  s=s||{};var st=STJA[s.status]||[s.status||'不明','off'];var d=[];
+  if(s.lastSuccessAt)d.push('最終成功 '+esc(dfull(s.lastSuccessAt)));
+  if(num(s.coverage))d.push('カバー率 '+Math.round(s.coverage*100)+'%');
+  if(num(s.memberCount))d.push('構成銘柄 '+s.memberCount+'件');
+  if(s.asOf)d.push('基準日 '+esc(s.asOf));
+  if(k==='margin'&&(s.status==='disabled'||s.status==='failed'||s.status==='stale'))d.push('補助情報のため、ランキングの必須条件にはしていません');
+  return '<div><b>'+esc(SRCJA[k]||k)+'<span class="pill '+st[1]+'">'+esc(st[0])+'</span></b>'+(d.length?'<small>'+d.join('<br>')+'</small>':'')+'</div>';
+}
+function banner(t,err){var b=$('banner');b.textContent=t;b.className='banner show'+(err?' err':'')}
+function render(s){
+  $('updated').textContent=s.updatedAt?'最終更新 '+dfull(s.updatedAt):'未更新';
+  var w=(s.weekly&&s.weekly.entries)||[], m=(s.monthly&&s.monthly.entries)||[];
+  $('weeklyNote').textContent=s.weekly&&s.weekly.periodKey?'対象期間 '+s.weekly.periodKey:'';
+  $('monthlyNote').textContent=s.monthly&&s.monthly.periodKey?'対象期間 '+s.monthly.periodKey:'';
+  $('weekly').innerHTML=w.length?w.slice(0,5).map(card).join(''):empty('今週の注目銘柄はまだありません',EMPTY_BODY);
+  $('monthly').innerHTML=m.length?'<ul class="list">'+m.slice(0,10).map(row).join('')+'</ul>':empty('今月の注目銘柄はまだありません',EMPTY_BODY);
+  var c=s.stateChanges||[];
+  $('changes').innerHTML=c.length?'<ul class="chg">'+c.slice(0,20).map(function(x){
+    return '<li><span class="d">'+dstr(x.date)+'</span><span class="badge b-status">'+esc(CHANGE[x.change]||x.change)+'</span> '+
+     link(x)+' '+setupBadge(x.setupType)+(x.reason?'<span class="r">'+esc(x.reason)+'</span>':'')+'</li>'}).join('')+'</ul>':empty('最近の状態変化はありません','');
+  var src=s.sources||{};
+  $('sources').innerHTML='<div class="src">'+['edinet','prices','jpx400','margin'].map(function(k){return srcCell(k,src[k])}).join('')+'</div>';
+  var mt=[];
+  if(s.asOfMarketDate)mt.push('株価の基準日 '+esc(s.asOfMarketDate));
+  if(s.updatedAt)mt.push('更新 '+esc(dfull(s.updatedAt)));
+  if(num(s.universeCount))mt.push('対象 JPX400 銘柄数 '+s.universeCount+'件');
+  $('meta').innerHTML=mt.join(' ／ ');
+  if(s.disclaimer)$('disclaimer').textContent=s.disclaimer;
+  var warn=[];
+  if(src.prices&&src.prices.status&&src.prices.status!=='ok')warn.push('株価データの更新に問題があります。表示は前回の内容の可能性があります。');
+  if(src.edinet&&src.edinet.status&&src.edinet.status!=='ok')warn.push('EDINET データの更新に問題があります。');
+  if(warn.length)banner(warn.join(' '),false);
+}
+if(B.rejected)banner('data パラメータが許可されていない形式のため、既定のデータ元を使用しています。',false);
+fetch(BASE+'/summary.json?t='+Date.now()).then(function(r){if(!r.ok)throw new Error(r.status);return r.json()}).then(function(s){
+  if(!s||typeof s!=='object'||s.schemaVersion!==1)throw new Error('schema');
+  render(s);
+}).catch(function(){
+  $('updated').textContent='データ取得エラー';
+  banner('公開データを読み込めませんでした。時間を置いて再度お試しください。',true);
+  var e=empty('データを表示できません','公開データの準備がまだの可能性があります。');
+  ['weekly','monthly','changes','sources'].forEach(function(id){$(id).innerHTML=e});
+});
+})();
+</script>
+</body>
+</html>
