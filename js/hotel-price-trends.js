@@ -4,6 +4,7 @@
   const DATA_ROOT = "data/hotel-price-trends/";
   const MEAL_LABELS = {two_meals: "朝夕食付き", breakfast: "朝食付き", room_only: "素泊まり"};
   const RATING_LABELS = {service:"サービス",location:"立地",room:"部屋",equipment:"設備",bath:"風呂",breakfast:"朝食",dinner:"夕食",cleanliness:"清潔さ"};
+  const model = window.HotelPriceTrendsModel;
   const elements = {
     region: document.querySelector("#hpt-region"), hotel: document.querySelector("#hpt-hotel"),
     stayDate: document.querySelector("#hpt-stay-date"), meal: document.querySelector("#hpt-meal"),
@@ -18,9 +19,8 @@
   let profilesByHotel = new Map();
 
   const escapeHtml = (value) => String(value ?? "").replace(/[&<>'"]/g, (char) => ({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"})[char]);
-  const yen = (value) => value == null ? "データなし" : `¥${Number(value).toLocaleString("ja-JP")}`;
-  const pct = (value) => value == null || !Number.isFinite(value) ? "—" : `${value > 0 ? "+" : ""}${value.toFixed(1)}%`;
-  const median = (values) => quantile(values, .5);
+  const yen = (value) => model.isFinitePositive(value) ? `¥${Number(value).toLocaleString("ja-JP")}` : "料金未確認";
+  const pct = (value) => model.signedPercent(value);
   const ratingMedian = (values) => rawQuantile(values, .5);
   function rawQuantile(values, q) {
     const sorted = values.filter((value) => value != null).map(Number).filter(Number.isFinite).sort((a, b) => a - b);
@@ -29,10 +29,6 @@
     const base = Math.floor(position);
     const rest = position - base;
     return sorted[base] + (sorted[base + 1] == null ? 0 : rest * (sorted[base + 1] - sorted[base]));
-  }
-  function quantile(values, q) {
-    const value = rawQuantile(values, q);
-    return value == null ? null : Math.round(value);
   }
   function dayDiff(later, earlier) {
     return Math.round((Date.parse(`${later}T00:00:00Z`) - Date.parse(`${earlier}T00:00:00Z`)) / 86400000);
@@ -45,28 +41,8 @@
   function regionFrom(snapshot, code) { return snapshot.regions.find((region) => region.code === code); }
   function selectedRegion() { return regionFrom(latest, elements.region.value); }
   function selectedProfile() { return profilesByHotel.get(Number(elements.hotel.value)) || null; }
-  function ratesFor(snapshot, regionCode, stayDate, mealType) {
-    const region = regionFrom(snapshot, regionCode);
-    return region ? region.rates.filter((row) => row.stay_date === stayDate && row.meal_type === mealType) : [];
-  }
   function summarize(snapshot, regionCode, stayDate, mealType) {
-    const region = regionFrom(snapshot, regionCode);
-    const rows = ratesFor(snapshot, regionCode, stayDate, mealType);
-    const successful = rows.filter((row) => row.status === "success" && row.min_price_yen != null);
-    const prices = successful.map((row) => row.min_price_yen);
-    const marketMedian = median(prices);
-    const names = new Map((region?.properties || []).map((property) => [Number(property.hotel_no), property.name]));
-    const byHotel = new Map(rows.map((row) => [Number(row.hotel_no), row]));
-    const positions = (region?.properties || []).map((property) => {
-      const row = byHotel.get(Number(property.hotel_no));
-      const price = row?.min_price_yen ?? null;
-      return {
-        hotel_no: Number(property.hotel_no), name: names.get(Number(property.hotel_no)),
-        min_price_yen: price, plan_count: row?.plan_count || 0, status: row?.status || "no_data",
-        price_index: price != null && marketMedian ? price / marketMedian * 100 : null
-      };
-    });
-    return {marketMedian, p25: quantile(prices, .25), p75: quantile(prices, .75), successful: successful.length, target: region?.properties.length || 0, planCount: successful.reduce((sum, row) => sum + Number(row.plan_count || 0), 0), positions};
+    return model.summarize(snapshot, regionCode, stayDate, mealType);
   }
   function syncUrl() {
     const params = new URLSearchParams({region: elements.region.value, hotel_no: elements.hotel.value, stay_date: elements.stayDate.value, meal_type: elements.meal.value});
@@ -92,20 +68,25 @@
     if (preferred && dates.includes(preferred)) elements.stayDate.value = preferred;
   }
   function formatDate(value) {
-    const parsed = new Date(`${value}T00:00:00+09:00`);
-    return new Intl.DateTimeFormat("ja-JP", {month:"numeric", day:"numeric", weekday:"short"}).format(parsed);
+    return model.formatJapaneseDate(value);
   }
-  function renderKpis(summary, previousSummary) {
+  function formatGeneratedAt(value) {
+    if (!value || !/(Z|[+-]\d\d:\d\d)$/.test(value) || Number.isNaN(Date.parse(value))) return null;
+    return new Intl.DateTimeFormat("ja-JP", {timeZone:"Asia/Tokyo", year:"numeric",month:"numeric",day:"numeric",hour:"2-digit",minute:"2-digit"}).format(new Date(value));
+  }
+  function renderKpis(summary, comparison) {
     const selected = summary.positions.find((row) => row.hotel_no === Number(elements.hotel.value));
-    const previousSelected = previousSummary?.positions.find((row) => row.hotel_no === Number(elements.hotel.value));
-    const marketChange = summary.marketMedian != null && previousSummary?.marketMedian ? (summary.marketMedian / previousSummary.marketMedian - 1) * 100 : null;
-    const selectedChange = selected?.min_price_yen != null && previousSelected?.min_price_yen ? (selected.min_price_yen / previousSelected.min_price_yen - 1) * 100 : null;
+    const rank = model.priceRank(summary, elements.hotel.value);
+    const comparisonNote = summary.comparisonReady ? "対象施設との差を表示" : "3施設未満のため比較しません";
+    const confirmationValue = summary.observations === 0 ? "観測なし" : `${summary.successful}/${summary.target}`;
+    const medianNote = summary.observations === 0 ? "指定条件の観測なし" : summary.comparisonReady ? `料金確認 ${summary.successful}/${summary.target}施設` : `料金確認 ${summary.successful}/${summary.target}施設（参考表示）`;
     const cards = [
-      ["地域市場中央値", yen(summary.marketMedian), MEAL_LABELS[elements.meal.value]],
-      ["選択施設の代表料金", yen(selected?.min_price_yen), `前回取得比 ${pct(selectedChange)}`],
-      ["価格指数", selected?.price_index == null ? "—" : selected.price_index.toFixed(1), "地域中央値＝100"],
-      ["取得成功施設", `${summary.successful}/${summary.target}`, "3施設未満は比較注意"],
-      ["市場中央値の前回比", pct(marketChange), previousSummary?.marketMedian ? `前回 ${yen(previousSummary.marketMedian)}` : "比較データ蓄積中"]
+      ["対象施設の中央値", yen(summary.marketMedian), medianNote],
+      ["選択施設の料金", yen(selected?.min_price_yen), comparison?.previousSelected?.min_price_yen != null ? `7日前 ${yen(comparison.previousSelected.min_price_yen)}` : "7日前の料金は比較データなし"],
+      ["対象中央値との差", summary.comparisonReady && selected?.price_index != null ? pct(selected.price_index - 100) : "比較不足", comparisonNote],
+      ["中央値の7日前比", comparison?.marketChange != null ? pct(comparison.marketChange) : "比較データなし", comparison?.marketChange != null ? `7日前 ${yen(comparison.prior.marketMedian)}` : "正確な7日前・同条件のデータが必要"],
+      ...(rank ? [["価格順位", `高い方から${rank.rank}番目`, `料金確認${rank.total}施設中${rank.equal > 1 ? "・同額あり" : ""}`]] : []),
+      ["料金確認", confirmationValue, summary.observations === 0 ? "指定条件の観測なし" : summary.successful === 0 ? "観測あり・成功0件" : "未確認を満室とは判定しません"]
     ];
     document.querySelector("#hpt-kpis").innerHTML = cards.map(([label, value, note]) => `<article class="hpt-kpi"><span>${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong><small>${escapeHtml(note)}</small></article>`).join("");
   }
@@ -150,32 +131,10 @@
     const source=profile.source_url?`<a href="${escapeHtml(profile.source_url)}" target="_blank" rel="noopener noreferrer">楽天トラベルで全文を確認 ↗</a>`:"";
     container.innerHTML=review?`<blockquote>${escapeHtml(review)}</blockquote><p>取得月：${escapeHtml(profile.latest.snapshot_month)} ／ 楽天トラベル利用者による最新口コミの抜粋</p>${source}`:`<p class="hpt-empty">取得できる最新口コミはありません。</p>${source}`;
   }
-  function makeProfileInsights(summary) {
-    const profile=selectedProfile(),latestProfile=profile?.latest,selected=summary.positions.find((row)=>row.hotel_no===Number(elements.hotel.value));
-    if (!latestProfile||latestProfile.review_average==null||selected?.price_index==null) return [];
-    const comparison=ratingComparison(profile),peerRatings=profileData.properties.filter((row)=>row.latest?.review_average!=null&&(comparison.label.startsWith(selectedRegion().name)?row.region_code===elements.region.value:true)),peerMedian=ratingMedian(peerRatings.map((row)=>row.latest.review_average));
-    const items=[];
-    if (peerMedian!=null&&latestProfile.review_average>=peerMedian&&selected.price_index<90) items.push({title:"評価に対して価格が低い可能性があります",body:"評価は比較中央値以上、料金は地域中央値の90%未満です。値上げ余地を需要・在庫と合わせて確認してください。",confidence:"medium",evidence:`総合評価 ${Number(latestProfile.review_average).toFixed(2)} / ${comparison.label} ${Number(peerMedian).toFixed(2)} / 価格指数 ${selected.price_index.toFixed(1)}`});
-    if (peerMedian!=null&&latestProfile.review_average<peerMedian&&selected.price_index>110) items.push({title:"価格差を支える評価か確認が必要です",body:"料金は地域中央値を上回る一方、総合評価は比較中央値を下回ります。販売内容と最新口コミを確認してください。",confidence:"medium",evidence:`総合評価 ${Number(latestProfile.review_average).toFixed(2)} / ${comparison.label} ${Number(peerMedian).toFixed(2)} / 価格指数 ${selected.price_index.toFixed(1)}`});
-    const mealKey=elements.meal.value==="two_meals"?"dinner":elements.meal.value==="breakfast"?"breakfast":null;
-    if (mealKey&&latestProfile.ratings?.[mealKey]!=null&&comparison.medians[mealKey]!=null&&latestProfile.ratings[mealKey]<comparison.medians[mealKey]) items.push({title:`${RATING_LABELS[mealKey]}評価とプラン価格を確認してください`,body:`${MEAL_LABELS[elements.meal.value]}の価格判断では、${RATING_LABELS[mealKey]}の内容が価格差に見合っているか確認する余地があります。`,confidence:"medium",evidence:`${RATING_LABELS[mealKey]}評価 ${Number(latestProfile.ratings[mealKey]).toFixed(2)} / ${comparison.label} ${Number(comparison.medians[mealKey]).toFixed(2)}`});
-    const history=(profile.history||[]).filter((row)=>row.review_average!=null);if(history.length>=2){const delta=Number(history.at(-1).review_average)-Number(history.at(-2).review_average);if(delta<=-.2)items.push({title:"総合評価の変化を確認してください",body:"前月から評価が低下しています。最新口コミと項目別評価を確認し、変化の背景を探ってください。",confidence:"medium",evidence:`総合評価 前月比 ${delta.toFixed(2)}`});}
-    return items;
-  }
-  function makeFallbackInsight(summary) {
-    const selected = summary.positions.find((row) => row.hotel_no === Number(elements.hotel.value));
-    if (summary.successful < 3) return {title:"比較データを蓄積しています",body:"取得成功施設が3施設未満のため、地域比較は参考表示です。次回以降の取得結果も確認してください。",confidence:"low",evidence:`取得成功 ${summary.successful}/${summary.target}施設`};
-    if (!selected || selected.min_price_yen == null) return {title:"選択日に販売プランを確認できません",body:"今回の取得では該当条件のプランが見つかりませんでした。満室とは限らないため、公式販売画面や在庫設定も併せて確認してください。",confidence:"medium",evidence:"取得結果: 販売プランなし"};
-    if (selected.price_index < 90) return {title:"地域中央値を下回る価格位置です",body:"選択施設の代表料金は地域中央値の90%未満です。意図した価格差か、需要・在庫・客室条件と合わせて確認する余地があります。",confidence:"medium",evidence:`価格指数 ${selected.price_index.toFixed(1)}`};
-    if (selected.price_index > 110) return {title:"地域中央値を上回る価格位置です",body:"選択施設の代表料金は地域中央値の110%を超えています。付加価値が料金差として伝わる販売内容かを確認してください。",confidence:"medium",evidence:`価格指数 ${selected.price_index.toFixed(1)}`};
-    return {title:"地域中央値に近い価格位置です",body:"選択施設の代表料金は地域中央値の前後10%以内です。今後の取得で変化幅と販売プラン数の推移を観察してください。",confidence:"medium",evidence:`価格指数 ${selected.price_index.toFixed(1)}`};
-  }
-  function renderInsights(summary) {
-    const region = selectedRegion();
-    const exact = region.insights.filter((item) => Number(item.hotel_no) === Number(elements.hotel.value) && item.stay_date === elements.stayDate.value && item.meal_type === elements.meal.value);
-    const priceItems = exact.length ? exact.map((item) => ({title:item.title, body:item.body, confidence:item.confidence, evidence:Object.entries(item.evidence || {}).map(([key,value]) => `${key}=${value ?? "—"}`).join(" / ")})) : [makeFallbackInsight(summary)];
-    const items=[...makeProfileInsights(summary),...priceItems].slice(0,3);
-    document.querySelector("#hpt-insights").innerHTML = items.map((item) => `<article class="hpt-insight"><span class="hpt-insight__meta">信頼度 ${escapeHtml(item.confidence)}</span><h3>${escapeHtml(item.title)}</h3><p>${escapeHtml(item.body)}</p><small>根拠：${escapeHtml(item.evidence)}</small></article>`).join("");
+  function renderInsights(summary, comparison) {
+    const lines = model.insightLines(summary, comparison, elements.hotel.value);
+    const titleFor = (line) => line.includes("7日前比") ? "対象中央値の変化" : line.includes("選択施設") ? "選択施設の位置" : "料金確認の範囲";
+    document.querySelector("#hpt-insights").innerHTML = lines.map((line) => `<article class="hpt-insight"><h3>${escapeHtml(titleFor(line))}</h3><p>${escapeHtml(line)}</p></article>`).join("");
   }
   function buildTrend() {
     return snapshotHistory.map((snapshot) => {
@@ -203,19 +162,28 @@
   function renderCalendar() {
     const region=selectedRegion();
     const dates=[...new Set(region.rates.map((row)=>row.stay_date))].sort();
-    document.querySelector("#hpt-calendar").innerHTML=dates.map((stayDate)=>{const summary=summarize(latest,elements.region.value,stayDate,elements.meal.value),selected=summary.positions.find((row)=>row.hotel_no===Number(elements.hotel.value)),index=selected?.price_index;const level=index==null?"none":index<90?"low":index>110?"high":"mid";return `<article class="hpt-calendar-cell hpt-calendar-cell--${level}" title="${escapeHtml(stayDate)}"><time datetime="${escapeHtml(stayDate)}">${escapeHtml(formatDate(stayDate))}</time><strong>${escapeHtml(yen(selected?.min_price_yen))}</strong><span>${index==null?"比較不可":`指数 ${index.toFixed(1)}`}</span></article>`}).join("");
+    document.querySelector("#hpt-calendar").innerHTML=dates.map((stayDate)=>{const summary=summarize(latest,elements.region.value,stayDate,elements.meal.value),selected=summary.positions.find((row)=>row.hotel_no===Number(elements.hotel.value)),difference=summary.comparisonReady&&selected?.price_index!=null?selected.price_index-100:null,level=difference==null?"none":difference<=-10?"low":difference>=10?"high":"mid";return `<article class="hpt-calendar-cell hpt-calendar-cell--${level}" title="${escapeHtml(stayDate)}"><time datetime="${escapeHtml(stayDate)}">${escapeHtml(formatDate(stayDate))}</time><strong>選択 ${escapeHtml(yen(selected?.min_price_yen))}</strong><span>中央値 ${escapeHtml(yen(summary.marketMedian))}</span><span>${difference==null?"比較不足":`差 ${escapeHtml(pct(difference))}`}</span></article>`}).join("");
   }
   function renderPositions(summary) {
     const available=summary.positions.filter((row)=>row.min_price_yen!=null),max=Math.max(...available.map((row)=>row.min_price_yen),1);
-    document.querySelector("#hpt-positions").innerHTML=summary.positions.map((row)=>{const selected=row.hotel_no===Number(elements.hotel.value),width=row.min_price_yen==null?0:Math.max(row.min_price_yen/max*100,2);return `<div class="hpt-position ${selected?"hpt-position--selected":""}"><div class="hpt-position__name">${escapeHtml(row.name)}</div><div class="hpt-position__track"><div class="hpt-position__bar" style="width:${width}%"></div></div><div class="hpt-position__value">${escapeHtml(yen(row.min_price_yen))}<small>${row.price_index==null?"比較不可":`指数 ${row.price_index.toFixed(1)}`}</small></div></div>`}).join("");
+    document.querySelector("#hpt-positions").innerHTML=summary.positions.map((row)=>{const selected=row.hotel_no===Number(elements.hotel.value),width=row.min_price_yen==null?0:Math.max(row.min_price_yen/max*100,2);return `<div class="hpt-position ${selected?"hpt-position--selected":""}"><div class="hpt-position__name">${escapeHtml(row.name)}${selected?"（選択施設）":""}</div><div class="hpt-position__track"><div class="hpt-position__bar" style="width:${width}%"></div></div><div class="hpt-position__value">${escapeHtml(yen(row.min_price_yen))}<small>${summary.comparisonReady&&row.price_index!=null?`中央値との差 ${pct(row.price_index-100)}`:"比較不足"}</small></div></div>`}).join("");
   }
   function render() {
     syncUrl();
     const summary=summarize(latest,elements.region.value,elements.stayDate.value,elements.meal.value);
-    const previous=snapshotHistory.length>1?summarize(snapshotHistory[snapshotHistory.length-2],elements.region.value,elements.stayDate.value,elements.meal.value):null;
-    renderProfile(summary);renderKpis(summary,previous);renderInsights(summary);renderTrend(buildTrend());renderCalendar();renderRatings();renderRatingHistory();renderReview();renderPositions(summary);
+    const selected=summary.positions.find((row)=>row.hotel_no===Number(elements.hotel.value));
+    const comparison=model.sevenDayComparison(latest,snapshotHistory,{regionCode:elements.region.value,hotelNo:elements.hotel.value,stayDate:elements.stayDate.value,mealType:elements.meal.value});
+    renderProfile(summary);renderKpis(summary,comparison);renderInsights(summary,comparison);renderTrend(buildTrend());renderCalendar();renderRatings();renderRatingHistory();renderReview();renderPositions(summary);
     document.querySelector("#hpt-scope-title").textContent=`${selectedRegion().name}・${selectedRegion().properties.length}施設`;
-    elements.freshness.textContent=`最終取得日：${latest.snapshot_date} ／ 条件：大人2名・1室・1泊・${MEAL_LABELS[elements.meal.value]}`;
+    document.querySelector("#hpt-selection-meta").textContent=`地域：${selectedRegion().name} ／ 選択施設：${selected?.name || "—"} ／ 宿泊日：${formatDate(elements.stayDate.value)} ／ 条件：大人2名・1室・1泊・${MEAL_LABELS[elements.meal.value]} ／ 取得日：${latest.snapshot_date}`;
+    const trendComparison=document.querySelector("#hpt-trend-comparison");
+    const comparisonParts=[];
+    if (comparison.selectedChange != null) comparisonParts.push(`選択施設：7日前 ${yen(comparison.previousSelected.min_price_yen)} → 現在 ${yen(selected?.min_price_yen)}（${pct(comparison.selectedChange)}）`);
+    if (comparison.marketChange != null) comparisonParts.push(`対象中央値：7日前 ${yen(comparison.prior.marketMedian)} → 現在 ${yen(summary.marketMedian)}（${pct(comparison.marketChange)}）`);
+    trendComparison.hidden=!comparisonParts.length;
+    trendComparison.textContent=comparisonParts.join(" ／ ");
+    const generatedAt=formatGeneratedAt(latest.generated_at);
+    elements.freshness.textContent=`取得日：${latest.snapshot_date} ／ 条件：大人2名・1室・1泊・${MEAL_LABELS[elements.meal.value]}${generatedAt?` ／ データ生成日時（日本時間）：${generatedAt}`:""}`;
   }
   async function init() {
     elements.loading.hidden=false;elements.error.hidden=true;elements.dashboard.hidden=true;
@@ -223,7 +191,9 @@
       [manifest,profileData]=await Promise.all([getJson(`${DATA_ROOT}manifest.json`),getJson(`${DATA_ROOT}profiles.json`).catch(()=>({properties:[]}))]);
       profilesByHotel=new Map((profileData.properties||[]).map((profile)=>[Number(profile.hotel_no),profile]));
       latest=await getJson(`${DATA_ROOT}${manifest.snapshots[0].file}`);
-      snapshotHistory=(await Promise.all(manifest.snapshots.slice(0,30).reverse().map((item)=>getJson(`${DATA_ROOT}${item.file}`).catch(()=>null)))).filter(Boolean);
+      const historyItems=manifest.snapshots.slice(0,30).filter((item)=>item.date!==latest.snapshot_date&&item.file!==manifest.snapshots[0].file);
+      const olderSnapshots=(await Promise.all(historyItems.map((item)=>getJson(`${DATA_ROOT}${item.file}`).catch(()=>null)))).filter(Boolean);
+      snapshotHistory=[latest,...olderSnapshots].sort((left,right)=>left.snapshot_date.localeCompare(right.snapshot_date));
       populateControls();render();elements.loading.hidden=true;elements.dashboard.hidden=false;
       if (window.gtag) window.gtag("event","analysis_result_view",{tool_id:"hotel-price-trends",dataset_version:latest.snapshot_date});
     } catch (error) {elements.loading.hidden=true;elements.error.hidden=false;elements.errorMessage.textContent=error.message || "時間をおいて再度お試しください。";elements.freshness.textContent="データ取得エラー";}
