@@ -40,16 +40,29 @@ def test_home_is_concise_and_groups_all_tools_by_purpose():
     assert market.select_one('a[href="/edinet-investment-radar/watch/"]')
 
 
-def test_tool_directory_describes_scope_input_result_and_conditions_for_all_eight():
+def test_tool_directory_describes_scope_input_result_and_conditions_for_all_tools():
     page = soup("useful.html")
     cards = page.select(".tool-directory-card")
-    assert len(cards) == 8
+    assert len(cards) == 9
     for card in cards:
         labels = {item.get_text(strip=True) for item in card.select(".tool-meta dt")}
         assert labels == {"対象", "入力", "結果", "条件"}
     research = page.find(id="tourism-market-signal")
     assert research and "research" in research.get("class", [])[-1]
     assert page.find(id="regional-tools")
+    assert page.select_one('#edinet-investment-radar a[href="/edinet-investment-radar/watch/"]')
+
+
+def test_edinet_radar_top_is_indexable_and_listed_while_detail_stays_noindex():
+    top = soup("edinet-investment-radar/watch/index.html")
+    assert top.find("meta", attrs={"name": "robots"})["content"] == "index,follow"
+    assert top.find("link", rel="canonical")["href"] == "https://lab.ugatta-llc.com/edinet-investment-radar/watch/"
+    assert top.select_one('a.lab-back[href="/#market-tools"]')
+    detail = soup("edinet-investment-radar/watch/stock.html")
+    assert "noindex" in detail.find("meta", attrs={"name": "robots"})["content"]
+    sitemap = (ROOT / "sitemap.xml").read_text(encoding="utf-8")
+    assert "https://lab.ugatta-llc.com/edinet-investment-radar/watch/</loc>" in sitemap
+    assert "edinet-investment-radar/watch/stock.html" not in sitemap
 
 
 def test_hotel_price_trends_has_controls_disclosures_and_rakuten_credit():
