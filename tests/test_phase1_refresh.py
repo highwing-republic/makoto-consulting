@@ -21,11 +21,11 @@ def test_lab_notes_link_is_kept_out_of_headers_and_small_at_page_bottom():
         assert "footer-note-link" in footer_links[0].get("class", []), path
 
 
-def test_home_is_concise_and_groups_all_eight_tools_by_purpose():
+def test_home_is_concise_and_groups_all_tools_by_purpose():
     page = soup("index.html")
     assert "宿泊・観光の経営を" in page.find("h1").get_text(" ", strip=True)
     assert "データとAIでもう少しわかりやすく" in page.find("h1").get_text(" ", strip=True)
-    assert len(page.select("#analysis-tools .analysis-card")) == 8
+    assert len(page.select("#analysis-tools .analysis-card")) == 9
     assert len(page.select("#analysis-tools .tool-group")) == 4
     assert not page.find(id="lab-notes")
     assert page.find(id="about-lab")
@@ -36,6 +36,8 @@ def test_home_is_concise_and_groups_all_eight_tools_by_purpose():
     assert page.select_one('a[href="#analysis-tools"]')
     assert page.select_one('a[href="/management-ai.html"]')
     assert page.select_one('a[href="/hotel-price-trends.html"]')
+    market = page.find(id="market-tools").find_parent("section")
+    assert market.select_one('a[href="/edinet-investment-radar/watch/"]')
 
 
 def test_tool_directory_describes_scope_input_result_and_conditions_for_all_eight():
