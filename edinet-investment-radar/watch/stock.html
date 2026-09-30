@@ -32,11 +32,11 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,Bl
 .top .b-setup{background:#dbe8ff}
 ul.plain{margin:0;padding-left:1.2em;font-size:15px}
 ul.plain li{margin:3px 0;overflow-wrap:anywhere}
-.chart{width:100%;height:420px;max-width:100%;overflow:hidden}
+.chart{width:100%;height:420px;max-width:100%;overflow:visible}
 @media(max-width:600px){.chart{height:360px}}
-.chart .tradingview-widget-container,.chart .tradingview-widget-container__widget{width:100%;height:calc(100% - 20px)}
-.chart .tradingview-widget-copyright{font-size:11px;line-height:20px;text-align:center;color:var(--muted)}
-.chart .tradingview-widget-copyright a{color:var(--blue);text-decoration:none}
+.chart .msg{height:100%;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:14px;text-align:center;padding:0 12px}
+.btn{display:block;width:fit-content;margin-top:12px;padding:8px 16px;border:1px solid var(--blue);border-radius:10px;color:var(--blue);font-size:14px;font-weight:600;text-decoration:none}
+.credit{margin:8px 0 0;font-size:11px;color:var(--muted)}
 .tl{list-style:none;margin:0;padding:0 0 0 14px;border-left:2px solid var(--line)}
 .tl li{position:relative;padding:0 0 14px 12px;font-size:14px}
 .tl li::before{content:"";position:absolute;left:-21px;top:7px;width:10px;height:10px;border-radius:50%;background:#9bb3d1;border:2px solid #fff}
@@ -71,6 +71,7 @@ th{color:var(--muted);font-weight:600;font-size:12px;border-top:0}
 .hidden{display:none}
 .empty{color:var(--muted);font-size:14px}
 </style>
+<script src="https://cdn.jsdelivr.net/npm/lightweight-charts@5.0.9/dist/lightweight-charts.standalone.production.js"></script>
 </head>
 <body>
 <header class="top"><div class="shell">
@@ -91,8 +92,10 @@ th{color:var(--muted);font-weight:600;font-size:12px;border-top:0}
 
   <section class="panel">
     <h2>チャート</h2>
-    <p class="note">TradingViewのチャートは、人間による最終確認用です。Radarの判定には使用していません。</p>
+    <p class="note">チャートは本サイトの株価データ（Yahoo Finance / yfinance、分割・配当調整済み）で描画した確認用です。</p>
     <div class="chart" id="chart"></div>
+    <a class="btn" id="tvLink" href="https://jp.tradingview.com/chart/" target="_blank" rel="noopener noreferrer">TradingViewで詳しく見る</a>
+    <p class="credit">チャート: TradingView Lightweight Charts / 株価: Yahoo Finance / yfinance</p>
   </section>
 
   <section class="panel">
@@ -173,16 +176,52 @@ else{
  });
 }
 
-function mountChart(sym){
-  var host=$('chart');host.textContent='';
-  var wrap=document.createElement('div');wrap.className='tradingview-widget-container';
-  var w=document.createElement('div');w.className='tradingview-widget-container__widget';wrap.appendChild(w);
-  var c=document.createElement('div');c.className='tradingview-widget-copyright';
-  var a=document.createElement('a');a.href='https://jp.tradingview.com/symbols/'+sym.replace(':','-')+'/';a.rel='noopener nofollow';a.target='_blank';
-  var sp=document.createElement('span');sp.textContent=sym+' チャート（TradingView）';a.appendChild(sp);c.appendChild(a);wrap.appendChild(c);
-  var s=document.createElement('script');s.type='text/javascript';s.src='https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js';s.async=true;
-  s.text=JSON.stringify({autosize:true,symbol:sym,interval:'D',timezone:'Asia/Tokyo',theme:'light',style:'1',locale:'ja',range:'12M',allow_symbol_change:false,hide_side_toolbar:true,withdateranges:true,hide_volume:false,support_host:'https://www.tradingview.com'});
-  wrap.appendChild(s);host.appendChild(wrap);
+var V1BASE=B.base.replace(/\/watch$/,'');
+if(V1BASE===B.base)V1BASE=B.base+'/v1';
+var chartObj=null;
+function chartMsg(t){var host=$('chart');host.textContent='';var m=document.createElement('div');m.className='msg';m.textContent=t;host.appendChild(m)}
+function nextDay(dates,d){
+  var lo=0,hi=dates.length;
+  while(lo<hi){var mid=(lo+hi)>>1;if(dates[mid]<d)lo=mid+1;else hi=mid}
+  return lo<dates.length?dates[lo]:null;
+}
+function mountChart(sym,tl,ep){
+  var host=$('chart');
+  $('tvLink').href='https://jp.tradingview.com/chart/?symbol='+encodeURIComponent(sym);
+  chartMsg('チャートを読み込み中…');
+  fetch(V1BASE+'/stocks/'+encodeURIComponent(code)+'.json?t='+Date.now()).then(function(r){
+    if(!r.ok)throw new Error(r.status);return r.json();
+  }).then(function(v){
+    if(typeof LightweightCharts==='undefined')throw new Error('lib');
+    var rows=(v&&v.prices||[]).filter(function(p){return p&&typeof p.trade_date==='string'&&num(p.open)&&num(p.high)&&num(p.low)&&num(p.close)&&p.close>0&&num(p.adj_close)})
+      .sort(function(a,b){return a.trade_date<b.trade_date?-1:a.trade_date>b.trade_date?1:0});
+    if(!rows.length)throw new Error('empty');
+    var last=new Date(rows[rows.length-1].trade_date+'T00:00:00Z');last.setUTCFullYear(last.getUTCFullYear()-1);
+    var cut=last.toISOString().slice(0,10);
+    rows=rows.filter(function(p){return p.trade_date>=cut});
+    host.textContent='';
+    if(chartObj){chartObj.remove();chartObj=null}
+    var chart=chartObj=LightweightCharts.createChart(host,{autoSize:true,layout:{background:{color:'#fff'},textColor:'#596579',attributionLogo:true},grid:{vertLines:{color:'#f0f2f5'},horzLines:{color:'#f0f2f5'}},timeScale:{borderColor:'#dfe4ea'},rightPriceScale:{borderColor:'#dfe4ea'}});
+    var candles=chart.addSeries(LightweightCharts.CandlestickSeries,{upColor:'#16805b',downColor:'#dc3545',wickUpColor:'#16805b',wickDownColor:'#dc3545',borderVisible:false});
+    candles.setData(rows.map(function(p){var f=p.adj_close/p.close;return {time:p.trade_date,open:p.open*f,high:p.high*f,low:p.low*f,close:p.adj_close}}));
+    var vol=chart.addSeries(LightweightCharts.HistogramSeries,{priceFormat:{type:'volume'},priceScaleId:'volume',color:'#9aacbf'});
+    vol.priceScale().applyOptions({scaleMargins:{top:.8,bottom:0}});
+    vol.setData(rows.map(function(p){var f=p.adj_close/p.close;return {time:p.trade_date,value:num(p.volume)?p.volume:0,color:p.adj_close>=p.open*f?'rgba(22,128,91,.45)':'rgba(220,53,69,.4)'}}));
+    var dates=rows.map(function(p){return p.trade_date});
+    var ms=[];
+    (tl||[]).forEach(function(t){
+      if(t.kind!=='EVENT'||typeof t.date!=='string')return;
+      var d=nextDay(dates,t.date.slice(0,10));if(!d)return;
+      ms.push({time:d,position:'aboveBar',color:'#2563eb',shape:'arrowDown',text:String(t.label||'').slice(0,6)});
+    });
+    if(ep&&typeof ep.watchStartedAt==='string'){
+      var w=nextDay(dates,ep.watchStartedAt.slice(0,10));
+      if(w)ms.push({time:w,position:'belowBar',color:'#16805b',shape:'arrowUp',text:'監視開始'});
+    }
+    ms.sort(function(a,b){return a.time<b.time?-1:a.time>b.time?1:0});
+    if(ms.length)LightweightCharts.createSeriesMarkers(candles,ms);
+    chart.timeScale().fitContent();
+  }).catch(function(){chartMsg('チャートデータを取得できませんでした')});
 }
 
 function render(d){
@@ -255,7 +294,7 @@ function render(d){
   $('docs').innerHTML=docs.length?'<ul class="plain">'+docs.map(function(t){
     return '<li>'+dstr(t.date)+' '+esc(t.label)+' <a href="'+esc(safeUrl(t.sourceUrl))+'" target="_blank" rel="noopener nofollow">EDINETで原本を見る</a></li>'}).join('')+'</ul>':'<div class="empty">リンクできる開示書類はありません。</div>';
   $('content').classList.remove('hidden');
-  mountChart(sym);
+  mountChart(sym,tl,ep);
 }
 })();
 </script>
