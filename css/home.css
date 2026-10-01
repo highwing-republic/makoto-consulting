@@ -1,24 +1,37 @@
+.site-header .brand{align-items:center;gap:12px}
+.brand__mark{display:block;flex:0 0 auto;object-fit:contain}
+
 .home-hero{
+  --accent:#064d46;
+  --signal:#326c60;
+  --ink-soft:#586b63;
   position:relative;
+  isolation:isolate;
   min-height:540px;
   display:flex;
   align-items:center;
   overflow:hidden;
-  background:linear-gradient(135deg,#f3f7f9 0%,#e8f0f4 100%);
+  background:#f7f6ef;
+  border-bottom:1px solid #e4e8df;
 }
 .home-hero:before{
   content:"";
   position:absolute;
   inset:0;
-  background:radial-gradient(circle at 82% 20%,rgba(23,100,125,.14),transparent 38%);
+  background:radial-gradient(ellipse at 84% 45%,rgba(157,183,152,.16),transparent 58%);
 }
-.home-hero__inner{position:relative;z-index:1;padding:88px 0 96px}
-.home-hero__copy{position:relative;max-width:1100px;padding-left:30px}
+.home-hero__inner{position:relative;display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);align-items:center;gap:52px;padding:72px 0 80px}
+.home-hero__copy{position:relative;min-width:0;padding-left:26px}
 .home-hero__copy:before{content:"";position:absolute;left:0;top:4px;bottom:4px;width:4px;border-radius:4px;background:var(--gold)}
 .home-hero .eyebrow{margin-bottom:17px;color:var(--signal)}
-.home-hero h1{margin:0;color:var(--accent);font-family:var(--serif);font-size:clamp(42px,4.6vw,58px);font-weight:500;line-height:1.38;letter-spacing:.025em}
+.home-hero h1{margin:0;color:var(--accent);font-family:var(--serif);font-size:clamp(32px,3vw,42px);font-weight:500;line-height:1.55;letter-spacing:.025em}
+.home-hero__message{display:block;text-wrap:balance}
 .home-hero__lead{max-width:680px;margin:25px 0 0;color:var(--ink-soft);font-size:16px;line-height:1.9}
 .home-hero .button{margin-top:31px}
+.home-hero .button:hover{background:#033d37;border-color:#033d37}
+/* Keep the supplied artwork intact; frame its generous outer whitespace in CSS. */
+.home-hero__visual{position:relative;width:100%;max-width:490px;aspect-ratio:1.05;justify-self:center;overflow:hidden;mix-blend-mode:multiply}
+.home-hero__logo{position:absolute;display:block;width:140%;max-width:none;height:auto;left:-20%;top:-27%}
 
 .home-section{padding:108px 0;scroll-margin-top:82px}
 .home-section__heading{margin-bottom:56px}
@@ -66,16 +79,22 @@
 }
 @media(max-width:900px){
   .home-hero{min-height:520px}
+  .home-hero__inner{gap:26px;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);padding:56px 0 64px}
+  .home-hero__copy{padding-left:20px}
+  .home-hero h1{font-size:32px}
   .about-lab__grid{grid-template-columns:1fr;gap:28px}
   .tool-group-row{grid-template-columns:1fr;gap:58px}
   .analysis-grid--single{grid-template-columns:1fr}
 }
 @media(max-width:620px){
-  .home-hero{min-height:500px}
-  .home-hero:before{background:radial-gradient(circle at 80% 12%,rgba(23,100,125,.12),transparent 48%)}
+  .site-header .brand{gap:9px}
+  .brand__mark{width:36px;height:36px}
+  .home-hero{min-height:0}
+  .home-hero:before{background:radial-gradient(ellipse at 50% 12%,rgba(157,183,152,.16),transparent 58%)}
   .home-hero__copy{min-width:0;padding-left:20px;overflow-wrap:anywhere}
-  .home-hero__inner{padding:68px 0 76px}
-  .home-hero h1{font-size:clamp(28px,8.2vw,34px);line-height:1.5;overflow-wrap:anywhere}
+  .home-hero__inner{grid-template-columns:minmax(0,1fr);gap:28px;padding:28px 0 48px}
+  .home-hero__visual{grid-row:1;width:220px;max-width:76%}
+  .home-hero h1{font-size:clamp(25px,7.2vw,30px);line-height:1.5;overflow-wrap:anywhere}
   .home-hero__lead{font-size:15px;line-height:1.8}
   .home-hero .button{width:100%}
   .home-section{padding:76px 0}

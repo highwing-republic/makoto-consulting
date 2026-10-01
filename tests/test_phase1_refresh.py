@@ -23,8 +23,8 @@ def test_lab_notes_link_is_kept_out_of_headers_and_small_at_page_bottom():
 
 def test_home_is_concise_and_groups_all_tools_by_purpose():
     page = soup("index.html")
-    assert "宿泊・観光の経営を" in page.find("h1").get_text(" ", strip=True)
-    assert "データとAIでもう少しわかりやすく" in page.find("h1").get_text(" ", strip=True)
+    assert "宿泊・観光の経営を" in page.find("h1").get_text("", strip=True)
+    assert "データとAIでもう少しわかりやすく" in page.find("h1").get_text("", strip=True)
     assert len(page.select("#analysis-tools .analysis-card")) == 9
     assert len(page.select("#analysis-tools .tool-group")) == 4
     assert not page.find(id="lab-notes")
