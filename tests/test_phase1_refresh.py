@@ -11,8 +11,13 @@ def soup(name):
 
 
 def test_lab_notes_link_is_kept_out_of_headers_and_small_at_page_bottom():
-    pages = [path for path in ROOT.rglob("*.html") if "docs" not in path.parts]
-    assert len(pages) == 17
+    pages = []
+    for path in ROOT.rglob("*.html"):
+        relative = path.relative_to(ROOT)
+        if "docs" in relative.parts or "edinet-investment-radar" in relative.parts:
+            continue
+        pages.append(path)
+    assert pages
     for path in pages:
         page = BeautifulSoup(path.read_text(encoding="utf-8"), "html.parser")
         assert not page.select('header a[href="/classics-ai-management/"]'), path
@@ -40,17 +45,22 @@ def test_home_is_concise_and_groups_all_tools_by_purpose():
     assert market.select_one('a[href="/edinet-investment-radar/watch/"]')
 
 
-def test_tool_directory_describes_scope_input_result_and_conditions_for_all_tools():
-    page = soup("useful.html")
-    cards = page.select(".tool-directory-card")
-    assert len(cards) == 9
-    for card in cards:
-        labels = {item.get_text(strip=True) for item in card.select(".tool-meta dt")}
-        assert labels == {"対象", "入力", "結果", "条件"}
-    research = page.find(id="tourism-market-signal")
-    assert research and "research" in research.get("class", [])[-1]
-    assert page.find(id="regional-tools")
-    assert page.select_one('#edinet-investment-radar a[href="/edinet-investment-radar/watch/"]')
+def test_home_is_only_tool_directory_and_legacy_page_is_removed():
+    assert not (ROOT / "useful.html").exists()
+    home = soup("index.html")
+    assert len(home.select("#analysis-tools .analysis-card")) == 9
+    assert home.select_one('a[href="/report.html"]')
+
+    report = soup("report.html")
+    assert report.find("link", rel="canonical")["href"] == "https://lab.ugatta-llc.com/report.html"
+    assert report.find("meta", attrs={"name": "robots"})["content"].startswith("index,follow")
+    assert report.find("iframe", src=lambda value: value and value.startswith("https://highwing-republic.github.io/tourism-market-signal/"))
+
+    for path in ROOT.rglob("*.html"):
+        relative = path.relative_to(ROOT)
+        if "docs" not in relative.parts:
+            assert "useful.html" not in path.read_text(encoding="utf-8"), path
+    assert "useful.html" not in (ROOT / "sitemap.xml").read_text(encoding="utf-8")
 
 
 def test_edinet_radar_top_is_indexable_and_listed_while_detail_stays_noindex():

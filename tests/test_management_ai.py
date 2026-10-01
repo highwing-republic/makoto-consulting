@@ -130,16 +130,13 @@ def test_ga4_events_exclude_free_text_and_rules_are_separated():
     assert "url.searchParams.set('pref'" in source and "url.searchParams.set('topic'" in source
 
 
-def test_responsive_styles_and_tools_01_to_07_regression():
+def test_responsive_styles_and_home_tool_regression():
     css = (ROOT / "css" / "useful.css").read_text(encoding="utf-8")
     assert ".management-topic-grid" in css
     assert "@media(max-width:760px)" in css
     assert "@media(max-width:620px)" in css
-    source = (ROOT / "useful.html").read_text(encoding="utf-8")
-    positions = [source.index(f">{number:02d}<") for number in range(1, 8)]
-    assert positions == sorted(positions)
-    assert "management-ai.html" in source
     home = (ROOT / "index.html").read_text(encoding="utf-8")
+    assert "/report.html" in home
     assert "AIに相談する" in home and "/management-ai.html" in home
     for existing in ("dx-diagnosis.html", "inbound-analysis.html", "dx-necessity-analysis.html", "supply-demand-gap-analysis.html", "tourism-pressure-analysis.html"):
         assert (ROOT / existing).exists()

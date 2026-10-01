@@ -144,12 +144,16 @@ def test_pages_start_with_loading_only_and_keep_noscript():
         assert "サンプルデータ" not in source
 
 
-def test_home_and_directory_list_tools_in_order():
+def test_home_lists_tools_in_order():
     home = (ROOT / "index.html").read_text(encoding="utf-8")
     assert all(label in home for label in ("旅館・ホテル", "インバウンド宿泊者分析", "観光株シグナル"))
     assert 'id="analysis-tools"' in home
-    source = (ROOT / "useful.html").read_text(encoding="utf-8")
-    positions = [source.index(f'>{number:02d}<') for number in range(1, 7)]
+    tool_ids = [
+        "dx-diagnosis", "inbound", "dx-necessity", "supply-demand",
+        "tourism-pressure", "market-signal", "hotel-price-trends",
+        "edinet-investment-radar", "management-issue-organizer",
+    ]
+    positions = [home.index(f'data-tool-id="{tool_id}"') for tool_id in tool_ids]
     assert positions == sorted(positions)
 
 
@@ -210,7 +214,8 @@ def test_responsive_layout_and_existing_tools_regression():
     assert ".analysis-grid--regional{grid-template-columns:1fr}" in home_css
     assert (ROOT / "dx-diagnosis.html").exists()
     assert (ROOT / "inbound-analysis.html").exists()
-    assert 'id="tourism-market-signal"' in (ROOT / "useful.html").read_text(encoding="utf-8")
+    report = (ROOT / "report.html").read_text(encoding="utf-8")
+    assert "https://highwing-republic.github.io/tourism-market-signal/" in report
 
 
 def test_source_metadata_has_official_ids_and_periods():
