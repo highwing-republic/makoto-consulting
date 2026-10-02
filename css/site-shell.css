@@ -1,6 +1,6 @@
-@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap");
-/* DotGothic16 is only for LAB numbers, so request just those glyphs. */
-@import url("https://fonts.googleapis.com/css2?family=DotGothic16&text=LAB%200123456789&display=swap");
+/* Web fonts are linked from each page's <head> (not @import here) so the
+   browser can request them in parallel with this stylesheet. DotGothic16 is
+   linked only on pages with LAB numbers, subset to "LAB 0-9". */
 
 /* Lab brand and data tokens. Loaded on every page (classics included), so every
    name is prefixed: pages keep their own --serif / --sans. */
