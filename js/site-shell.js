@@ -28,7 +28,7 @@
           <a class="brand brand--footer" href="/">
             <span class="brand-copy"><strong>宿泊DXラボ</strong><small>データを見る。試す。考える。</small></span>
           </a>
-          <small>運営：合同会社UGATTA</small>
+          <small>運営：<a href="https://ugatta-llc.com/">合同会社UGATTA</a></small>
         </div>
       </div>
       <div class="container footer-bottom">
