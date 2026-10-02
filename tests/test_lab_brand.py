@@ -12,10 +12,15 @@ SHELL_CSS = ROOT / "css" / "site-shell.css"
 # Data colors carry analytical meaning. A brand change must not alter them.
 EXPECTED_DATA_COLORS = {
     "--data-self": "#b8913f",
+    "--data-market": "#6f8c99",
+    "--data-market-band": "rgba(43, 100, 116, .1)",
+    "--data-other": "#7f9aa6",
     "--data-low": "#dcecef",
     "--data-mid": "#eee8d9",
     "--data-high": "#f0d8cc",
     "--data-unavailable": "#e8edef",
+    "--data-grid": "#dce4e7",
+    "--data-axis": "#5a6875",
 }
 
 
@@ -94,3 +99,30 @@ def test_classics_pages_keep_their_own_typography() -> None:
         hrefs = [link.get("href", "") for link in page.find_all("link", rel="stylesheet")]
         assert not any("useful.css" in href for href in hrefs), path
         assert any("classics.css" in href for href in hrefs), path
+
+
+def test_hotel_gold_only_identifies_the_selected_property() -> None:
+    css = (ROOT / "css/hotel-price-trends.css").read_text(encoding="utf-8")
+    gold_selectors = set()
+    for selector, declarations in re.findall(r"([^{}]+)\{([^{}]*)\}", css):
+        assert not re.search(r"#(?:b8913f|c79832)|var\(--gold\)", declarations), selector
+        if "var(--data-self)" in declarations:
+            gold_selectors.add(selector.strip())
+            assert not re.search(r"(?:^|;)color:var\(--data-self\)", declarations)
+    assert gold_selectors == {
+        ".hpt-profile", ".hpt-selected-line", ".hpt-selected-dot",
+        ".hpt-chart-legend .selected", ".hpt-position--selected .hpt-position__bar",
+        ".hpt-rating-track i",
+    }
+    assert ".hpt-rating-track b{" in css
+    marker = re.search(r"\.hpt-rating-track b\{([^}]+)\}", css).group(1)
+    assert "background:var(--data-market)" in marker
+    js = (ROOT / "js/hotel-price-trends.js").read_text(encoding="utf-8")
+    assert "金色の印" not in js
+    assert "金色の棒：選択施設 ／ 線の印：" in js
+
+
+def test_hotel_calendar_and_legend_share_fixed_semantic_tokens() -> None:
+    css = (ROOT / "css/hotel-price-trends.css").read_text(encoding="utf-8")
+    for level, token in [("low", "low"), ("mid", "mid"), ("high", "high"), ("none", "unavailable")]:
+        assert f".hpt-legend-{level}:before,.hpt-calendar-cell--{level}{{background:var(--data-{token})}}" in css
