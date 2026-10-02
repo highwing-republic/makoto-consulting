@@ -86,9 +86,16 @@ def test_home_is_only_tool_directory_and_legacy_page_is_removed():
     report = soup("report.html")
     assert report.find("link", rel="canonical")["href"] == "https://lab.ugatta-llc.com/report.html"
     assert report.find("meta", attrs={"name": "robots"})["content"].startswith("index,follow")
-    assert report.find("iframe", src=lambda value: value and value.startswith("https://highwing-republic.github.io/tourism-market-signal/"))
+    frame = report.find("iframe", src=lambda value: value and value.startswith("https://highwing-republic.github.io/tourism-market-signal/"))
+    assert frame and frame.get("scrolling") == "no" and frame.has_attr("data-report-frame")
+    assert report.find("script", src="/js/report-embed.js?v=20261002a")
     assert not report.select_one(".external-link")
     assert "外部レポートを開く" not in report.get_text(" ", strip=True)
+
+    embed_script = (ROOT / "js" / "report-embed.js").read_text(encoding="utf-8")
+    assert "event.origin !== reportOrigin" in embed_script
+    assert "event.source !== frame.contentWindow" in embed_script
+    assert "frame.style.height" in embed_script
 
     for path in ROOT.rglob("*.html"):
         relative = path.relative_to(ROOT)
