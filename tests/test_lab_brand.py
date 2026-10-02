@@ -132,6 +132,7 @@ def test_analysis_lab_numbers_match_the_home_groups() -> None:
     for filename, number in {
         "hotel-price-trends.html": "03",
         "dx-diagnosis.html": "01",
+        "management-ai.html": "04",
         "inbound-analysis.html": "02",
         "dx-necessity-analysis.html": "02",
         "supply-demand-gap-analysis.html": "02",
@@ -152,3 +153,21 @@ def test_caution_notes_are_labeled_without_gold_decoration() -> None:
         page = BeautifulSoup((ROOT / filename).read_text(encoding="utf-8"), "html.parser")
         for note in page.select(".survey-change-note"):
             assert note.get_text().startswith("注意：")
+
+
+def test_analysis_styles_use_loaded_weights_and_keep_dot_font_in_lab_labels() -> None:
+    for filename in ["useful.css", "hotel-price-trends.css", "dx-diagnosis.css"]:
+        css = (ROOT / "css" / filename).read_text(encoding="utf-8")
+        assert not re.search(r"font(?:-weight)?:600", css)
+        assert "font-size:9px" not in css
+        for selector, declarations in re.findall(r"([^{}]+)\{([^{}]*)\}", css):
+            if "font-family:var(--lab-font-dot)" in declarations:
+                assert selector.strip().endswith(".lab-code")
+            assert not re.search(r"(?:^|;)color:var\(--(?:data-self|gold)\)", declarations)
+
+
+def test_diagnosis_gold_is_limited_to_own_score_visuals() -> None:
+    css = (ROOT / "css/dx-diagnosis.css").read_text(encoding="utf-8")
+    assert "var(--gold)" not in css
+    assert {selector.strip() for selector, body in re.findall(r"([^{}]+)\{([^{}]*)\}", css)
+            if "var(--data-self)" in body} == {".dx-score-ring", ".dx-radar-point"}
