@@ -215,7 +215,8 @@ def test_responsive_layout_and_existing_tools_regression():
     assert (ROOT / "dx-diagnosis.html").exists()
     assert (ROOT / "inbound-analysis.html").exists()
     report = (ROOT / "report.html").read_text(encoding="utf-8")
-    assert "https://highwing-republic.github.io/tourism-market-signal/" in report
+    assert 'src="/tourism-market-signal/index.html' in report
+    assert "github.io" not in report
 
 
 def test_source_metadata_has_official_ids_and_periods():

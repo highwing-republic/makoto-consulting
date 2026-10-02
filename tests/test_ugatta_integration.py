@@ -20,7 +20,11 @@ def tracked_public_html() -> list[str]:
         text=True,
         encoding="utf-8",
     )
-    return [path for path in result.stdout.splitlines() if not path.startswith("docs/")]
+    return [
+        path
+        for path in result.stdout.splitlines()
+        if not path.startswith(("docs/", "tourism-market-signal/"))
+    ]
 
 
 def read(relative: str) -> str:
@@ -101,3 +105,13 @@ def test_legacy_edinet_pages_are_removed() -> None:
     assert not (ROOT / "edinet-investment-radar/index.html").exists()
     assert not (ROOT / "edinet-investment-radar/stock.html").exists()
     assert (ROOT / "edinet-investment-radar/watch/index.html").exists()
+
+
+def test_tourism_signal_is_served_from_the_lab_domain() -> None:
+    assert (ROOT / "tourism-market-signal/index.html").exists()
+    assert (ROOT / "tourism-market-signal/assets/embed.js").exists()
+    assert 'src="/tourism-market-signal/index.html' in read("report.html")
+    workflow = read(".github/workflows/sync-tourism-signal.yml")
+    assert "repository: highwing-republic/tourism-market-signal" in workflow
+    assert "rsync -a --delete" in workflow
+    assert "git push" in workflow

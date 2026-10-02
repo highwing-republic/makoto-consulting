@@ -14,7 +14,7 @@ def test_lab_notes_link_is_kept_out_of_headers_and_small_at_page_bottom():
     pages = []
     for path in ROOT.rglob("*.html"):
         relative = path.relative_to(ROOT)
-        if "docs" in relative.parts or "edinet-investment-radar" in relative.parts:
+        if {"docs", "edinet-investment-radar", "tourism-market-signal"} & set(relative.parts):
             continue
         pages.append(path)
     assert pages
@@ -27,7 +27,7 @@ def test_lab_notes_link_is_kept_out_of_headers_and_small_at_page_bottom():
 
 
 def test_every_html_page_loads_the_canonical_site_shell():
-    pages = [path for path in ROOT.rglob("*.html") if ".git" not in path.parts]
+    pages = [path for path in ROOT.rglob("*.html") if not {".git", "tourism-market-signal"} & set(path.parts)]
     assert len(pages) == 19
     for path in pages:
         page = BeautifulSoup(path.read_text(encoding="utf-8"), "html.parser")
@@ -84,7 +84,7 @@ def test_home_is_only_tool_directory_and_legacy_page_is_removed():
     report = soup("report.html")
     assert report.find("link", rel="canonical")["href"] == "https://lab.ugatta-llc.com/report.html"
     assert report.find("meta", attrs={"name": "robots"})["content"].startswith("index,follow")
-    frame = report.find("iframe", src=lambda value: value and value.startswith("https://highwing-republic.github.io/tourism-market-signal/"))
+    frame = report.find("iframe", src=lambda value: value and value.startswith("/tourism-market-signal/index.html"))
     assert frame and frame.get("scrolling") == "no" and frame.has_attr("data-report-frame")
     assert report.find("script", src="/js/report-embed.js?v=20261002a")
     assert not report.select_one(".external-link")
