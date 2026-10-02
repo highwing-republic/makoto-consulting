@@ -26,6 +26,38 @@ def test_lab_notes_link_is_kept_out_of_headers_and_small_at_page_bottom():
         assert "footer-note-link" in footer_links[0].get("class", []), path
 
 
+def test_every_html_page_loads_the_canonical_site_shell():
+    pages = [path for path in ROOT.rglob("*.html") if ".git" not in path.parts]
+    assert len(pages) == 21
+    for path in pages:
+        page = BeautifulSoup(path.read_text(encoding="utf-8"), "html.parser")
+        assert page.find("link", href="/css/site-shell.css?v=20261002b"), path
+        assert page.find("script", src="/js/site-shell.js?v=20261002b"), path
+
+    for name in (
+        "report.html",
+        "edinet-investment-radar/index.html",
+        "edinet-investment-radar/stock.html",
+        "edinet-investment-radar/watch/index.html",
+        "edinet-investment-radar/watch/stock.html",
+    ):
+        assert soup(name).find("script", src="/js/site.js?v=20261002-shell"), name
+
+    shell = (ROOT / "js" / "site-shell.js").read_text(encoding="utf-8")
+    for href in (
+        "/#facility-tools",
+        "/#regional-tools",
+        "/#market-tools",
+        "/#ai-tools",
+        "/#about-lab",
+        "https://forms.gle/yjinqFdntoXhTmgk7",
+        "/classics-ai-management/",
+    ):
+        assert href in shell
+    assert "body > header:not(.top)" in shell
+    assert "pageFooter.matches('.shell.footer')" in shell
+
+
 def test_home_is_concise_and_groups_all_tools_by_purpose():
     page = soup("index.html")
     assert "宿泊・観光の経営を" in page.find("h1").get_text("", strip=True)
