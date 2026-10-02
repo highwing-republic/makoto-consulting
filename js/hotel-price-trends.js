@@ -81,14 +81,14 @@
     const confirmationValue = summary.observations === 0 ? "観測なし" : `${summary.successful}/${summary.target}`;
     const medianNote = summary.observations === 0 ? "指定条件の観測なし" : summary.comparisonReady ? `料金確認 ${summary.successful}/${summary.target}施設` : `料金確認 ${summary.successful}/${summary.target}施設（参考表示）`;
     const cards = [
-      ["対象施設の中央値", yen(summary.marketMedian), medianNote],
-      ["選択施設の料金", yen(selected?.min_price_yen), comparison?.previousSelected?.min_price_yen != null ? `7日前 ${yen(comparison.previousSelected.min_price_yen)}` : "7日前の料金は比較データなし"],
-      ["対象中央値との差", summary.comparisonReady && selected?.price_index != null ? pct(selected.price_index - 100) : "比較不足", comparisonNote],
-      ["中央値の7日前比", comparison?.marketChange != null ? pct(comparison.marketChange) : "比較データなし", comparison?.marketChange != null ? `7日前 ${yen(comparison.prior.marketMedian)}` : "正確な7日前・同条件のデータが必要"],
-      ...(rank ? [["価格順位", `高い方から${rank.rank}番目`, `料金確認${rank.total}施設中${rank.equal > 1 ? "・同額あり" : ""}`]] : []),
-      ["料金確認", confirmationValue, summary.observations === 0 ? "指定条件の観測なし" : summary.successful === 0 ? "観測あり・成功0件" : "未確認を満室とは判定しません"]
+      ["対象施設の中央値", yen(summary.marketMedian), medianNote, model.isFinitePositive(summary.marketMedian) ? "numeric" : "status"],
+      ["選択施設の料金", yen(selected?.min_price_yen), comparison?.previousSelected?.min_price_yen != null ? `7日前 ${yen(comparison.previousSelected.min_price_yen)}` : "7日前の料金は比較データなし", model.isFinitePositive(selected?.min_price_yen) ? "numeric" : "status"],
+      ["対象中央値との差", summary.comparisonReady && selected?.price_index != null ? pct(selected.price_index - 100) : "比較不足", comparisonNote, summary.comparisonReady && selected?.price_index != null ? "numeric" : "status"],
+      ["中央値の7日前比", comparison?.marketChange != null ? pct(comparison.marketChange) : "比較データなし", comparison?.marketChange != null ? `7日前 ${yen(comparison.prior.marketMedian)}` : "正確な7日前・同条件のデータが必要", comparison?.marketChange != null ? "numeric" : "status"],
+      ...(rank ? [["価格順位", `高い方から${rank.rank}番目`, `料金確認${rank.total}施設中${rank.equal > 1 ? "・同額あり" : ""}`, "status"]] : []),
+      ["料金確認", confirmationValue, summary.observations === 0 ? "指定条件の観測なし" : summary.successful === 0 ? "観測あり・成功0件" : "未確認を満室とは判定しません", summary.observations === 0 ? "status" : "numeric"]
     ];
-    document.querySelector("#hpt-kpis").innerHTML = cards.map(([label, value, note]) => `<article class="hpt-kpi"><span>${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong><small>${escapeHtml(note)}</small></article>`).join("");
+    document.querySelector("#hpt-kpis").innerHTML = cards.map(([label, value, note, kind]) => `<article class="hpt-kpi"><span>${escapeHtml(label)}</span><strong class="hpt-kpi__value hpt-kpi__value--${kind}">${escapeHtml(value)}</strong><small>${escapeHtml(note)}</small></article>`).join("");
   }
   function ratingComparison(profile) {
     if (!profile?.latest) return {label:"比較データなし", medians:{}};
@@ -112,7 +112,7 @@
     if (!profile?.latest) {container.innerHTML='<p class="hpt-empty">評価データを蓄積しています。</p>';table.innerHTML="";return;}
     const comparison=ratingComparison(profile),rows=Object.entries(RATING_LABELS).map(([key,label])=>({key,label,value:profile.latest.ratings?.[key]??null,median:comparison.medians[key]??null}));
     container.setAttribute("aria-label",`${profile.name}の楽天評価。比較対象は${comparison.label}`);
-    container.innerHTML=`<p class="hpt-rating-scope">0〜5点 ／ 金色の印：${escapeHtml(comparison.label)}</p>${rows.map((row)=>{const width=row.value==null?0:Math.max(0,Math.min(100,Number(row.value)*20)),marker=row.median==null?null:Math.max(0,Math.min(100,Number(row.median)*20));return `<div class="hpt-rating-row"><span>${escapeHtml(row.label)}</span><div class="hpt-rating-track"><i style="width:${width}%"></i>${marker==null?"":`<b style="left:${marker}%" title="中央値 ${Number(row.median).toFixed(2)}"></b>`}</div><strong>${row.value==null?"—":Number(row.value).toFixed(2)}</strong></div>`}).join("")}`;
+    container.innerHTML=`<p class="hpt-rating-scope">0〜5点 ／ 金色の棒：選択施設 ／ 線の印：${escapeHtml(comparison.label)}</p>${rows.map((row)=>{const width=row.value==null?0:Math.max(0,Math.min(100,Number(row.value)*20)),marker=row.median==null?null:Math.max(0,Math.min(100,Number(row.median)*20));return `<div class="hpt-rating-row"><span>${escapeHtml(row.label)}</span><div class="hpt-rating-track"><i style="width:${width}%"></i>${marker==null?"":`<b style="left:${marker}%" title="中央値 ${Number(row.median).toFixed(2)}"></b>`}</div><strong>${row.value==null?"—":Number(row.value).toFixed(2)}</strong></div>`}).join("")}`;
     table.innerHTML=`<details><summary>評価を表で確認</summary><table><thead><tr><th>項目</th><th>選択施設</th><th>${escapeHtml(comparison.label)}</th></tr></thead><tbody>${rows.map((row)=>`<tr><td>${escapeHtml(row.label)}</td><td>${row.value==null?"—":Number(row.value).toFixed(2)}</td><td>${row.median==null?"—":Number(row.median).toFixed(2)}</td></tr>`).join("")}</tbody></table></details>`;
   }
   function renderRatingHistory() {

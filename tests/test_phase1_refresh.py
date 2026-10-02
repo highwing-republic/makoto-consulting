@@ -129,7 +129,7 @@ def test_hotel_price_trends_has_controls_disclosures_and_rakuten_credit():
     credit = page.find("a", href="https://developers.rakuten.com/")
     assert credit and credit.get_text(strip=True) == "Supported by Rakuten Developers"
     assert page.find("script", src="js/hotel-price-trends-model.js?v=20260929a")
-    assert page.find("script", src="js/hotel-price-trends.js?v=20260929a")
+    assert page.find("script", src="js/hotel-price-trends.js?v=20261002brand2")
 
 
 def test_hotel_price_trends_script_keeps_browser_history_available():
