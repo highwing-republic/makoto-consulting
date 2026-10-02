@@ -15,7 +15,8 @@
 .dx-panel{padding:clamp(28px,5vw,64px);border:1px solid var(--line);border-top:4px solid var(--gold);border-radius:18px;background:#fff;box-shadow:0 14px 40px rgba(23,50,77,.07)}
 .dx-panel-heading{max-width:770px}
 .dx-panel-heading .eyebrow,.dx-result-heading .eyebrow,.dx-overview .eyebrow,.dx-comment .eyebrow,.dx-time-panel .eyebrow,.dx-consultation .eyebrow{margin-bottom:8px}
-.dx-panel-heading h3{margin:0;font-family:var(--serif);font-size:clamp(28px,3.5vw,44px);font-weight:500;line-height:1.45}
+.dx-panel-heading h3{min-width:0;margin:0;font-family:var(--serif);font-size:clamp(28px,3.5vw,44px);font-weight:500;line-height:1.45;overflow-wrap:anywhere}
+.dx-panel-heading h3[tabindex="-1"]:focus{outline:0}
 .dx-panel-heading>p:last-child{margin:12px 0 0;color:var(--ink-soft);font-size:14px}
 .dx-privacy-note{display:flex;align-items:center;gap:14px;margin:34px 0;padding:15px 18px;border:1px solid #c8dce5;border-radius:10px;background:#eef5f7;color:#4a6170;font-size:12px;line-height:1.7}
 .dx-privacy-note strong{flex:none;padding:3px 8px;border-radius:4px;background:var(--dx-blue);color:#fff;font-size:10px;letter-spacing:.04em}
