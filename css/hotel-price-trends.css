@@ -39,7 +39,4 @@
 /* State text must remain smaller than a numeric KPI, including on dark cards. */
 .hpt-kpi .hpt-kpi__value--status{font-size:clamp(17px,1.6vw,20px);color:var(--lab-ink-soft)}
 .hpt-kpi:first-child .hpt-kpi__value--status{color:#c5d2dc}
-.lab-eyebrow{display:flex;align-items:center;gap:14px;flex-wrap:wrap;font-size:11px;font-weight:500}
-.lab-eyebrow .lab-code{font-size:24px}
-.lab-eyebrow .lab-code+span{padding-left:14px;border-left:1px solid var(--lab-border)}
 @media(max-width:620px){.price-trends-hero h1{font-size:32px}.hpt-calendar-cell span{font-size:10px}}
