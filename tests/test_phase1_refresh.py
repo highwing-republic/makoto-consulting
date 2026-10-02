@@ -143,15 +143,34 @@ def test_hotel_price_trends_script_keeps_browser_history_available():
     assert "latest_review_excerpt" in script
 
 
-def test_external_diagnosis_is_disclosed_and_opens_in_a_new_tab():
+def test_diagnosis_is_native_and_does_not_contact_the_external_app():
     page = soup("dx-diagnosis.html")
-    notice = page.select_one(".external-tool-notice")
-    assert notice and "外部ツール" in notice.get_text()
-    alternative = notice.find("a", target="_blank")
-    assert alternative and alternative["href"].startswith("https://ugatta-dx-diagnosis.")
-    assert "noopener" in alternative.get("rel", [])
+    assert page.select_one("#dx-diagnosis-app")
+    scripts = [script.get("src") for script in page.find_all("script", src=True)]
+    assert scripts.index("js/dx-diagnosis-model.js?v=20261002a") < scripts.index("js/dx-diagnosis.js?v=20261002a")
     assert page.find("iframe") is None
-    assert "chatgpt.site" not in notice.get_text()
+    assert "chatgpt.site" not in page.decode()
+    assert page.select_one(".external-tool-notice") is None
+    contact_url = "https://forms.gle/yjinqFdntoXhTmgk7"
+    for name in ("js/dx-diagnosis-model.js", "js/dx-diagnosis.js"):
+        script = (ROOT / name).read_text(encoding="utf-8")
+        assert "fetch(" not in script
+        assert "XMLHttpRequest" not in script
+        assert "http://" not in script
+        # The consultation link is the only URL allowed; it is a link target, not a request.
+        assert "https://" not in script.replace(contact_url, "")
+
+    ui = (ROOT / "js" / "dx-diagnosis.js").read_text(encoding="utf-8")
+    # Analytics go through the lab allowlist with allowed events and no diagnosis values.
+    assert "window.gtag" not in ui
+    assert 'window.LabAnalytics.track(eventName, { tool_id: "dx-diagnosis" })' in ui
+    for event in ("analysis_run", "analysis_result_view", "consultation_click"):
+        assert f'track("{event}")' in ui
+    assert "dx_total_score" not in ui and "dx_top_priority" not in ui
+    # Validation errors mark the field and move focus to the first invalid input.
+    assert ui.count('invalidAttr("') == 6
+    assert "app.querySelector('[aria-invalid=\"true\"]')" in ui
+    assert f'const CONTACT_URL = "{contact_url}"' in ui
 
 
 def test_analysis_pages_hide_initial_error_and_offer_copy_print_and_rich_noscript():
