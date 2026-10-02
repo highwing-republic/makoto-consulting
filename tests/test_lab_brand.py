@@ -46,14 +46,29 @@ def test_zen_kaku_is_no_longer_loaded_anywhere() -> None:
         assert "Zen+Kaku" not in text and "Zen Kaku" not in text, path
 
 
-def test_shell_loads_noto_weights_and_subsets_dotgothic() -> None:
-    css = SHELL_CSS.read_text(encoding="utf-8")
-    imports = re.findall(r'@import url\("([^"]+)"\);', css)
-    noto = [url for url in imports if "Noto+Sans+JP" in url]
-    dot = [url for url in imports if "DotGothic16" in url]
-    assert noto == ["https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap"]
-    assert len(dot) == 1
-    assert "text=" in dot[0] and "wght" not in dot[0] and "display=swap" in dot[0]
+NOTO_URL = "https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap"
+
+
+def test_pages_link_web_fonts_in_head_instead_of_css_import() -> None:
+    assert not re.search(r"@import\s+url", SHELL_CSS.read_text(encoding="utf-8"))
+    shell_pages = [path for path in public_files(".html") if "site-shell.css" in path.read_text(encoding="utf-8")]
+    assert len(shell_pages) == 19
+    for path in shell_pages:
+        head = BeautifulSoup(path.read_text(encoding="utf-8"), "html.parser").head
+        preconnects = [link.get("href") for link in head.find_all("link", rel="preconnect")]
+        assert preconnects == ["https://fonts.googleapis.com", "https://fonts.gstatic.com"], path
+        assert head.find("link", rel="preconnect", href="https://fonts.gstatic.com").has_attr("crossorigin"), path
+
+        stylesheets = [link.get("href", "") for link in head.find_all("link", rel="stylesheet")]
+        fonts = [href for href in stylesheets if "fonts.googleapis.com" in href]
+        dot = [href for href in fonts if "DotGothic16" in href]
+        # Font CSS must be discoverable before any site stylesheet.
+        assert stylesheets[: len(fonts)] == fonts, path
+        assert fonts[0] == NOTO_URL, path
+        has_lab_mark = bool(BeautifulSoup(path.read_text(encoding="utf-8"), "html.parser").select(".lab-code"))
+        assert len(dot) == (1 if has_lab_mark else 0), path
+        for href in dot:
+            assert "text=" in href and "wght" not in href and "display=swap" in href
 
 
 def test_shell_tokens_do_not_override_page_font_variables() -> None:
