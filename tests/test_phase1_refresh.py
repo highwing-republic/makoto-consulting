@@ -145,14 +145,15 @@ def test_hotel_price_trends_script_keeps_browser_history_available():
     assert "latest_review_excerpt" in script
 
 
-def test_external_diagnosis_is_disclosed_and_has_a_persistent_alternative_link():
+def test_external_diagnosis_is_disclosed_and_opens_in_a_new_tab():
     page = soup("dx-diagnosis.html")
     notice = page.select_one(".external-tool-notice")
     assert notice and "外部ツール" in notice.get_text()
     alternative = notice.find("a", target="_blank")
     assert alternative and alternative["href"].startswith("https://ugatta-dx-diagnosis.")
-    frame = page.find("iframe")
-    assert frame and frame.get("loading") == "lazy" and frame.get("title")
+    assert "noopener" in alternative.get("rel", [])
+    assert page.find("iframe") is None
+    assert "chatgpt.site" not in notice.get_text()
 
 
 def test_analysis_pages_hide_initial_error_and_offer_copy_print_and_rich_noscript():

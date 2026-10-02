@@ -86,3 +86,16 @@ def test_site_shell_cache_busters_are_consistent() -> None:
     assert len(shell_pages) == 21
     assert js_versions == {"20261002c"}
     assert css_versions == {"20261002c"}
+
+
+def test_repository_only_files_are_excluded_from_pages_build():
+    config = read("_config.yml")
+    excluded = {line.strip()[2:].strip().strip('"') for line in config.splitlines() if line.strip().startswith("- ")}
+    assert {"docs/", "tests/", "scripts/", "requirements.txt", "*.md"} <= excluded
+
+
+def test_account_names_are_not_shown_in_visible_text_or_source_links():
+    assert "github.com/highwing-republic" not in read("classics-ai-management/sunzi/shikei/index.html")
+    diagnosis = read("dx-diagnosis.html")
+    assert "<iframe" not in diagnosis
+    assert '<span lang="en">ugatta-dx-diagnosis' not in diagnosis
