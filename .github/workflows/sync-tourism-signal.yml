@@ -1,0 +1,55 @@
+name: Sync tourism market signal
+
+on:
+  schedule:
+    # Every 20 minutes, Mon-Fri 05:00-10:59 JST. GitHub cron is UTC:
+    # Sun-Thu 20:00-23:59 UTC = Mon-Fri 05:00-08:59 JST
+    - cron: "7,27,47 20-23 * * 0-4"
+    # Mon-Fri 00:00-01:59 UTC = Mon-Fri 09:00-10:59 JST
+    - cron: "7,27,47 0-1 * * 1-5"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sync-tourism-signal
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Checkout tourism market signal report
+        uses: actions/checkout@v4
+        with:
+          repository: highwing-republic/tourism-market-signal
+          path: .signal-source
+          sparse-checkout: docs
+          persist-credentials: false
+
+      - name: Copy report into the lab site
+        run: |
+          rsync -a --delete --exclude .nojekyll .signal-source/docs/ tourism-market-signal/
+          rm -rf .signal-source
+
+      - name: Commit and push when the report changed
+        shell: bash
+        run: |
+          if [ -z "$(git status --porcelain -- tourism-market-signal)" ]; then
+            echo "No report changes"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tourism-market-signal
+          git commit -m "Sync tourism market signal report"
+          for attempt in 1 2 3; do
+            git pull --rebase origin main && git push && exit 0
+            sleep 10
+          done
+          exit 1
