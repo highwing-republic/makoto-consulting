@@ -153,12 +153,26 @@ def test_diagnosis_is_native_and_does_not_contact_the_external_app():
     assert page.find("iframe") is None
     assert "chatgpt.site" not in page.decode()
     assert page.select_one(".external-tool-notice") is None
+    contact_url = "https://forms.gle/yjinqFdntoXhTmgk7"
     for name in ("js/dx-diagnosis-model.js", "js/dx-diagnosis.js"):
         script = (ROOT / name).read_text(encoding="utf-8")
         assert "fetch(" not in script
         assert "XMLHttpRequest" not in script
         assert "http://" not in script
-        assert "https://" not in script
+        # The consultation link is the only URL allowed; it is a link target, not a request.
+        assert "https://" not in script.replace(contact_url, "")
+
+    ui = (ROOT / "js" / "dx-diagnosis.js").read_text(encoding="utf-8")
+    # Analytics go through the lab allowlist with allowed events and no diagnosis values.
+    assert "window.gtag" not in ui
+    assert 'window.LabAnalytics.track(eventName, { tool_id: "dx-diagnosis" })' in ui
+    for event in ("analysis_run", "analysis_result_view", "consultation_click"):
+        assert f'track("{event}")' in ui
+    assert "dx_total_score" not in ui and "dx_top_priority" not in ui
+    # Validation errors mark the field and move focus to the first invalid input.
+    assert ui.count('invalidAttr("') == 6
+    assert "app.querySelector('[aria-invalid=\"true\"]')" in ui
+    assert f'const CONTACT_URL = "{contact_url}"' in ui
 
 
 def test_analysis_pages_hide_initial_error_and_offer_copy_print_and_rich_noscript():
