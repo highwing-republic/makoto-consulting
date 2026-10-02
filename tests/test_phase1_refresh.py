@@ -28,7 +28,7 @@ def test_lab_notes_link_is_kept_out_of_headers_and_small_at_page_bottom():
 
 def test_every_html_page_loads_the_canonical_site_shell():
     pages = [path for path in ROOT.rglob("*.html") if ".git" not in path.parts]
-    assert len(pages) == 21
+    assert len(pages) == 19
     for path in pages:
         page = BeautifulSoup(path.read_text(encoding="utf-8"), "html.parser")
         assert page.find("link", href="/css/site-shell.css?v=20261002c"), path
@@ -36,8 +36,6 @@ def test_every_html_page_loads_the_canonical_site_shell():
 
     for name in (
         "report.html",
-        "edinet-investment-radar/index.html",
-        "edinet-investment-radar/stock.html",
         "edinet-investment-radar/watch/index.html",
         "edinet-investment-radar/watch/stock.html",
     ):

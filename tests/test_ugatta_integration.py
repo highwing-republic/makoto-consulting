@@ -6,10 +6,6 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-LEGACY_EDINET = {
-    "edinet-investment-radar/index.html",
-    "edinet-investment-radar/stock.html",
-}
 LAB_CONFIG = "gtag('config','G-QS9HSHCY33')"
 UGATTA_CONFIG = "gtag('config','GT-M3S9S5D7')"
 UGATTA_LINK = '<a href="https://ugatta-llc.com/">合同会社UGATTA</a>'
@@ -32,7 +28,7 @@ def read(relative: str) -> str:
 
 
 def test_all_public_pages_send_to_both_google_tags_once() -> None:
-    pages = [path for path in tracked_public_html() if path not in LEGACY_EDINET]
+    pages = tracked_public_html()
     assert len(pages) == 19
     for path in pages:
         content = read(path)
@@ -83,7 +79,7 @@ def test_site_shell_cache_busters_are_consistent() -> None:
         assert css_match, path
         js_versions.add(js_match.group(1))
         css_versions.add(css_match.group(1))
-    assert len(shell_pages) == 21
+    assert len(shell_pages) == 19
     assert js_versions == {"20261002c"}
     assert css_versions == {"20261002c"}
 
@@ -99,3 +95,9 @@ def test_account_names_are_not_shown_in_visible_text_or_source_links():
     diagnosis = read("dx-diagnosis.html")
     assert "<iframe" not in diagnosis
     assert '<span lang="en">ugatta-dx-diagnosis' not in diagnosis
+
+
+def test_legacy_edinet_pages_are_removed() -> None:
+    assert not (ROOT / "edinet-investment-radar/index.html").exists()
+    assert not (ROOT / "edinet-investment-radar/stock.html").exists()
+    assert (ROOT / "edinet-investment-radar/watch/index.html").exists()
