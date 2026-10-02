@@ -1,18 +1,19 @@
+/* Brand and data tokens (--lab-*, --data-*) live in /css/site-shell.css. */
 :root{
-  --ink:#24313d;
-  --ink-soft:#63727f;
-  --accent:#17324d;
-  --accent-deep:#10263a;
-  --gold:#c79832;
-  --signal:#17647d;
-  --paper:#f3f7f9;
-  --paper-soft:#eaf1f5;
-  --paper-light:#fff;
+  --ink:var(--lab-ink);
+  --ink-soft:var(--lab-ink-soft);
+  --accent:var(--lab-navy);
+  --accent-deep:var(--lab-navy-deep);
+  --gold:var(--data-self);
+  --signal:var(--lab-teal);
+  --paper:var(--lab-surface);
+  --paper-soft:var(--lab-surface-soft);
+  --paper-light:var(--lab-card);
   --white:#fff;
-  --line:#d8e2e8;
-  --serif:"Yu Mincho","Hiragino Mincho ProN",serif;
-  --sans:-apple-system,BlinkMacSystemFont,"Noto Sans JP","Yu Gothic UI","Hiragino Kaku Gothic ProN",Meiryo,sans-serif;
-  --latin:"Helvetica Neue",Arial,sans-serif;
+  --line:var(--lab-border);
+  --serif:var(--lab-font-sans);
+  --sans:var(--lab-font-sans);
+  --latin:var(--lab-font-sans);
   --container:1180px;
 }
 *{box-sizing:border-box}
@@ -26,6 +27,8 @@ button{font:inherit}
 .skip-link:focus{top:16px}
 
 .eyebrow{margin:0 0 20px;color:var(--signal);font-family:var(--latin);font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase}
+/* LAB number mark: DotGothic16 only for "LAB 01" style codes, never for Japanese. */
+.lab-code{font-family:var(--lab-font-dot);font-weight:400;font-synthesis:none;letter-spacing:0;line-height:1;white-space:nowrap;color:var(--lab-teal)}
 .lead-copy{font-family:var(--serif);font-size:clamp(22px,2.25vw,31px);line-height:1.75;font-weight:500}
 .section{padding:144px 0}
 .section--tint{background:var(--paper-soft)}

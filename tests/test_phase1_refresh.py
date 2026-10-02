@@ -31,8 +31,8 @@ def test_every_html_page_loads_the_canonical_site_shell():
     assert len(pages) == 19
     for path in pages:
         page = BeautifulSoup(path.read_text(encoding="utf-8"), "html.parser")
-        assert page.find("link", href="/css/site-shell.css?v=20261002c"), path
-        assert page.find("script", src="/js/site-shell.js?v=20261002c"), path
+        assert page.find("link", href="/css/site-shell.css?v=20261002brand"), path
+        assert page.find("script", src="/js/site-shell.js?v=20261002brand"), path
 
     for name in (
         "report.html",
