@@ -126,3 +126,26 @@ def test_hotel_calendar_and_legend_share_fixed_semantic_tokens() -> None:
     css = (ROOT / "css/hotel-price-trends.css").read_text(encoding="utf-8")
     for level, token in [("low", "low"), ("mid", "mid"), ("high", "high"), ("none", "unavailable")]:
         assert f".hpt-legend-{level}:before,.hpt-calendar-cell--{level}{{background:var(--data-{token})}}" in css
+
+
+def test_analysis_lab_numbers_match_the_home_groups() -> None:
+    for filename, number in {
+        "hotel-price-trends.html": "03",
+        "inbound-analysis.html": "02",
+        "dx-necessity-analysis.html": "02",
+    }.items():
+        page = BeautifulSoup((ROOT / filename).read_text(encoding="utf-8"), "html.parser")
+        assert [node.get_text() for node in page.select(".page-hero .lab-code")] == [f"LAB {number}"]
+        assert not re.search(r"(?:CROSS ANALYSIS|ISSUE ORGANIZER) 0[4-7]", page.get_text())
+
+
+def test_caution_notes_are_labeled_without_gold_decoration() -> None:
+    css = (ROOT / "css/useful.css").read_text(encoding="utf-8")
+    for selector in [".survey-change-note", ".state-warning", ".trend-boundary-line"]:
+        rule = re.search(re.escape(selector) + r"\{([^}]+)\}", css).group(1)
+        assert "var(--lab-navy)" in rule
+        assert "--gold" not in rule and "--data-self" not in rule
+    for filename in ["inbound-analysis.html", "dx-necessity-analysis.html"]:
+        page = BeautifulSoup((ROOT / filename).read_text(encoding="utf-8"), "html.parser")
+        for note in page.select(".survey-change-note"):
+            assert note.get_text().startswith("注意：")

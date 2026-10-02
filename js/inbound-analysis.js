@@ -112,6 +112,10 @@
     byId('selected-area-name').textContent = area;
     byId('kpi-total').textContent = formatNumber(record.foreign_guest_nights);
     byId('kpi-total-unit').textContent = '人泊';
+    byId('kpi-total').classList.toggle('kpi-value--status', !Number.isFinite(record.foreign_guest_nights));
+    byId('kpi-national-share').classList.toggle('kpi-value--status', !Number.isFinite(nationalShare));
+    byId('kpi-largest-market').classList.add('kpi-value--status');
+    byId('kpi-specialized-market').classList.add('kpi-value--status');
     byId('kpi-national-share').textContent = area === '全国' ? '100.0%' : formatPercent(nationalShare);
     byId('kpi-share-note').textContent = area === '全国' ? '分析対象の全国計' : '全国値に占める割合';
     byId('kpi-largest-market').textContent = largest ? largest.name : '—';
@@ -170,7 +174,7 @@
 
       if (item.year === 2026 && item.month === 1) {
         svg.appendChild(createSvgElement('line', { x1: x - groupWidth * 0.2, y1: padding.top, x2: x - groupWidth * 0.2, y2: padding.top + plotHeight, class: 'trend-boundary-line' }));
-        svg.appendChild(createSvgElement('text', { x: x - groupWidth * 0.2 + 5, y: padding.top + 11, class: 'trend-boundary-label' }, '基準変更'));
+        svg.appendChild(createSvgElement('text', { x: x - groupWidth * 0.2 + 5, y: padding.top + 11, class: 'trend-boundary-label' }, '注意：基準変更'));
       }
 
       const valueItem = document.createElement('div');
