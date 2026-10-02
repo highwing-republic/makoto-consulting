@@ -2,23 +2,20 @@
 .brand__mark{display:block;flex:0 0 auto;object-fit:contain}
 
 .home-hero{
-  --accent:#064d46;
-  --signal:#326c60;
-  --ink-soft:#586b63;
   position:relative;
   isolation:isolate;
   min-height:540px;
   display:flex;
   align-items:center;
   overflow:hidden;
-  background:#f7f6ef;
-  border-bottom:1px solid #e4e8df;
+  background:var(--paper);
+  border-bottom:1px solid var(--line);
 }
 .home-hero:before{
   content:"";
   position:absolute;
   inset:0;
-  background:radial-gradient(ellipse at 84% 45%,rgba(157,183,152,.16),transparent 58%);
+  background:radial-gradient(ellipse at 84% 45%,rgba(43,100,116,.06),transparent 58%);
 }
 .home-hero__inner{position:relative;display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);align-items:center;gap:52px;padding:72px 0 80px}
 .home-hero__copy{position:relative;min-width:0;padding-left:26px}
@@ -28,7 +25,7 @@
 .home-hero__message{display:block;text-wrap:balance}
 .home-hero__lead{max-width:680px;margin:25px 0 0;color:var(--ink-soft);font-size:16px;line-height:1.9}
 .home-hero .button{margin-top:31px}
-.home-hero .button:hover{background:#033d37;border-color:#033d37}
+.home-hero .button:hover{background:var(--accent-deep);border-color:var(--accent-deep)}
 /* Keep the supplied artwork intact; frame its generous outer whitespace in CSS. */
 .home-hero__visual{position:relative;width:100%;max-width:490px;aspect-ratio:1.05;justify-self:center;overflow:hidden;mix-blend-mode:multiply}
 .home-hero__logo{position:absolute;display:block;width:140%;max-width:none;height:auto;left:-20%;top:-27%}

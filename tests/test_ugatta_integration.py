@@ -84,8 +84,8 @@ def test_site_shell_cache_busters_are_consistent() -> None:
         js_versions.add(js_match.group(1))
         css_versions.add(css_match.group(1))
     assert len(shell_pages) == 19
-    assert js_versions == {"20261002c"}
-    assert css_versions == {"20261002c"}
+    assert js_versions == {"20261002brand"}
+    assert css_versions == {"20261002brand"}
 
 
 def test_repository_only_files_are_excluded_from_pages_build():
