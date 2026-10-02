@@ -76,7 +76,14 @@
   const nf1 = new Intl.NumberFormat('ja-JP', { maximumFractionDigits: 1 });
   let dataset;
 
-  function setText(id, value) { const node = $(id); if (node) node.textContent = value; }
+  function setText(id, value) {
+    const node = $(id);
+    if (!node) return;
+    node.textContent = value;
+    if (node.matches('.metric-grid strong, .market-comparison-grid strong, .score-card>strong, .attention-card>strong')) {
+      node.classList.toggle('kpi-value--status', ['公表値なし', '算出不可', '比較不可', '—'].includes(value));
+    }
+  }
   function pct(value) { return value == null ? '公表値なし' : `${value >= 0 ? '+' : ''}${nf1.format(value * 100)}%`; }
   function rate(value) { return value == null ? '公表値なし' : `${nf1.format(value)}%`; }
   function number(value, unit = '') { return value == null ? '公表値なし' : `${nf0.format(value)}${unit}`; }
