@@ -131,6 +131,7 @@ def test_hotel_calendar_and_legend_share_fixed_semantic_tokens() -> None:
 def test_analysis_lab_numbers_match_the_home_groups() -> None:
     for filename, number in {
         "hotel-price-trends.html": "03",
+        "dx-diagnosis.html": "01",
         "inbound-analysis.html": "02",
         "dx-necessity-analysis.html": "02",
         "supply-demand-gap-analysis.html": "02",
