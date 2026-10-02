@@ -133,6 +133,8 @@ def test_analysis_lab_numbers_match_the_home_groups() -> None:
         "hotel-price-trends.html": "03",
         "inbound-analysis.html": "02",
         "dx-necessity-analysis.html": "02",
+        "supply-demand-gap-analysis.html": "02",
+        "tourism-pressure-analysis.html": "02",
     }.items():
         page = BeautifulSoup((ROOT / filename).read_text(encoding="utf-8"), "html.parser")
         assert [node.get_text() for node in page.select(".page-hero .lab-code")] == [f"LAB {number}"]
