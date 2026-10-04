@@ -39,7 +39,25 @@ test('no observations, zero successful observations and small samples retain dis
   assert.deepEqual(zero.at(-1), {kind:'numeric',value:'0/3'});
   const small = render(summary([10000]));
   assert.deepEqual(small.map(v=>v.kind), ['numeric','numeric','status','status','numeric']);
-  assert.equal(small[2].value,'比較不足');
+  assert.equal(small[2].value,'比較データ不足');
+});
+test('Phase 1 cohort renders 3/5 as reference and hides the median at 0-2/5', () => {
+  const makeSnapshot = (prices) => ({
+    snapshot_date:'2026-10-04', conditions:{adults:2,rooms:1,nights:1},
+    regions:[{code:'area',cohort_version:'area-v1',expected_core_count:5,
+      properties:[1,2,3,4,5].map(hotel_no=>({hotel_no,name:`H${hotel_no}`})),
+      rates:prices.map((price,index)=>({hotel_no:index+1,stay_date:'2026-10-05',meal_type:'two_meals',min_price_yen:price,plan_count:1,status:'success'}))}]
+  });
+  const three=model.summarize(makeSnapshot([10000,20000,30000]),'area','2026-10-05','two_meals');
+  const two=model.summarize(makeSnapshot([10000,20000]),'area','2026-10-05','two_meals');
+  const threeValues=render(three);
+  const twoValues=render(two);
+  assert.equal(threeValues[0].value,'¥20,000');
+  assert.equal(threeValues[4].value,'高い方から3番目');
+  assert.equal(twoValues[0].value,'比較データ不足');
+  assert.equal(twoValues[2].value,'比較データ不足');
+  assert.equal(twoValues.some(item=>item.value.startsWith('高い方から')),false);
+  assert.equal(twoValues.at(-1).value,'2/5');
 });
 test('missing selected property does not style its missing price as a number', () => {
   const data=summary([10000,20000,30000]);
