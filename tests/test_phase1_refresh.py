@@ -145,6 +145,13 @@ def test_hotel_price_trends_script_keeps_browser_history_available():
     assert "latest_review_excerpt" in script
 
 
+def test_hotel_price_trends_hides_uncollected_phase1_markets():
+    script = (ROOT / "js" / "hotel-price-trends.js").read_text(encoding="utf-8")
+    assert "function availableRegions()" in script
+    assert "cohort.propertyIds.every" in script
+    assert "表示可能な市場データがありません" in script
+
+
 def test_diagnosis_is_native_and_does_not_contact_the_external_app():
     page = soup("dx-diagnosis.html")
     assert page.select_one("#dx-diagnosis-app")

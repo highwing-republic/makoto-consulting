@@ -42,6 +42,16 @@
   function selectedRegion() { return regionFrom(latest, elements.region.value); }
   function selectedProperties() { return model.cohortMetadata(selectedRegion()).properties; }
   function selectedProfile() { return profilesByHotel.get(Number(elements.hotel.value)) || null; }
+  function availableRegions() {
+    const latestByCode = new Map((latest?.regions || []).map((region) => [region.code, region]));
+    return (manifest?.regions || []).filter((manifestRegion) => {
+      if (!manifestRegion.cohort_version) return latestByCode.has(manifestRegion.code);
+      const snapshotRegion = latestByCode.get(manifestRegion.code);
+      const cohort = model.cohortMetadata(snapshotRegion);
+      const observed = new Set((snapshotRegion?.rates || []).map((row) => String(row.hotel_no)));
+      return cohort.valid && cohort.propertyIds.every((hotelNo) => observed.has(hotelNo));
+    });
+  }
   function summarize(snapshot, regionCode, stayDate, mealType) {
     return model.summarize(snapshot, regionCode, stayDate, mealType);
   }
@@ -51,8 +61,10 @@
   }
   function populateControls() {
     const params = new URLSearchParams(location.search);
-    elements.region.innerHTML = manifest.regions.map((region) => `<option value="${escapeHtml(region.code)}">${escapeHtml(region.name)}</option>`).join("");
-    if (params.get("region") && manifest.regions.some((region) => region.code === params.get("region"))) elements.region.value = params.get("region");
+    const regions = availableRegions();
+    if (!regions.length) throw new Error("表示可能な市場データがありません");
+    elements.region.innerHTML = regions.map((region) => `<option value="${escapeHtml(region.code)}">${escapeHtml(region.name)}</option>`).join("");
+    if (params.get("region") && regions.some((region) => region.code === params.get("region"))) elements.region.value = params.get("region");
     populateHotels(params.get("hotel_no"));
     populateDates(params.get("stay_date"));
     if (params.get("meal_type") && MEAL_LABELS[params.get("meal_type")]) elements.meal.value = params.get("meal_type");
