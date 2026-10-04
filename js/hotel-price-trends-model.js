@@ -120,8 +120,16 @@
     const marketChange = marketComparable && current.comparisonReady && prior.comparisonReady && current.marketMedian != null && prior.marketMedian != null
       ? (current.marketMedian / prior.marketMedian - 1) * 100 : null;
     const status = !cohortVersionsMatch ? "cohort_version_mismatch" : propertySetsMatch ? "available" : "property_set_mismatch";
-    return {status, previous, current, prior, currentSelected, previousSelected, selectedChange, marketChange};
+    return {status, previous, current, prior, currentSelected, previousSelected: cohortVersionsMatch ? previousSelected : undefined, selectedChange, marketChange};
   }
+
+  const MIN_RATING_PEERS = 3;
+  function ratingPeers(regionProfiles, allProfiles, cohortActive) {
+    if (regionProfiles.length >= MIN_RATING_PEERS) return {peers: regionProfiles, scope: "region"};
+    if (cohortActive) return {peers: [], scope: "insufficient"};
+    return {peers: allProfiles, scope: "all"};
+  }
+  const showPositionBars = (summary) => !summary?.cohortActive || Boolean(summary.comparisonReady);
 
   const signedPercent = (value) => {
     if (!Number.isFinite(value)) return "—";
@@ -136,6 +144,7 @@
   function insightLines(summary, comparison, hotelNo) {
     const selected = summary.positions.find((row) => Number(row.hotel_no) === Number(hotelNo));
     const lines = [];
+    if (summary.region && !(summary.region.rates || []).length) return ["この市場の料金データはまだありません（取得開始前）。"];
     const hasComparableObservations = comparison?.status === "available" && comparison.prior?.observations > 0 && summary.observations > 0;
     if (comparison?.marketChange != null) {
       const direction = changeLabel(comparison.marketChange);
@@ -162,5 +171,5 @@
     return lines.slice(0, 3);
   }
 
-  return {addDays, changeLabel, cohortMetadata, conditionsMatch, formatJapaneseDate, insightLines, isFinitePositive, median, priceRank, qualityForCount, rawQuantile, regionFrom, sevenDayComparison, signedPercent, summarize};
+  return {addDays, changeLabel, cohortMetadata, conditionsMatch, formatJapaneseDate, insightLines, isFinitePositive, median, priceRank, qualityForCount, ratingPeers, rawQuantile, regionFrom, sevenDayComparison, showPositionBars, signedPercent, summarize};
 });

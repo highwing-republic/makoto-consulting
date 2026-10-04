@@ -130,8 +130,8 @@ def test_hotel_price_trends_has_controls_disclosures_and_rakuten_credit():
     assert "楽天参考最安料金" in body
     credit = page.find("a", href="https://developers.rakuten.com/")
     assert credit and credit.get_text(strip=True) == "Supported by Rakuten Developers"
-    assert page.find("script", src="js/hotel-price-trends-model.js?v=20261004cohort1")
-    assert page.find("script", src="js/hotel-price-trends.js?v=20261004cohort1")
+    assert page.find("script", src="js/hotel-price-trends-model.js?v=20261004review1")
+    assert page.find("script", src="js/hotel-price-trends.js?v=20261004review1")
 
 
 def test_hotel_price_trends_script_keeps_browser_history_available():

@@ -165,7 +165,7 @@ test("small-sample insights retain comparable prior confirmation counts", () => 
 });
 
 test("insights distinguish no observations, zero success, and equal price", () => {
-  const noObservation = model.summarize(snapshot("2026-09-16", []), "area", "2026-10-01", "two_meals");
+  const noObservation = model.summarize(snapshot("2026-09-16", [{...row(1, 10000), stay_date: "2026-10-02"}]), "area", "2026-10-01", "two_meals");
   const zeroSuccess = model.summarize(snapshot("2026-09-16", [row(1, null, "no_plan")]), "area", "2026-10-01", "two_meals");
   const equal = model.summarize(snapshot("2026-09-16", [row(1, 20000), row(2, 20000), row(3, 20000)]), "area", "2026-10-01", "two_meals");
   assert.match(model.insightLines(noObservation, null, 1).join(" "), /観測行/);
@@ -183,4 +183,35 @@ test("insights remain at most three sentences when the selected price is missing
   assert.equal(lines.length, 3);
   assert.equal((lines.join("").match(/。/g) || []).length, 3);
   assert.match(lines[1], /料金未確認は満室を意味しません/);
+});
+
+test("a market without any collected rates says collection has not started", () => {
+  const empty = model.summarize(cohortSnapshot("2026-10-04", []), "area", "", "two_meals");
+  assert.deepEqual(model.insightLines(empty, null, 1), ["この市場の料金データはまだありません（取得開始前）。"]);
+});
+
+test("selected property's 7-day price is withheld across cohort versions", () => {
+  const prior = cohortSnapshot("2026-09-09", [row(1, 10000), row(2, 20000), row(3, 30000)], "area-v1");
+  const current = cohortSnapshot("2026-09-16", [row(1, 12000), row(2, 24000), row(3, 36000)], "area-v2");
+  const result = model.sevenDayComparison(current, [prior], {regionCode: "area", hotelNo: 1, stayDate: "2026-10-01", mealType: "two_meals"});
+  assert.equal(result.status, "cohort_version_mismatch");
+  assert.equal(result.previousSelected, undefined);
+  assert.equal(result.selectedChange, null);
+});
+
+test("rating peers require three profiles in a Phase 1 market", () => {
+  const profile = (hotel_no) => ({hotel_no, latest: {ratings: {service: 4}}});
+  const all = [1, 2, 3, 4, 5, 6].map(profile);
+  assert.deepEqual(model.ratingPeers([profile(1)], all, true), {peers: [], scope: "insufficient"});
+  assert.equal(model.ratingPeers([1, 2, 3].map(profile), all, true).scope, "region");
+  assert.deepEqual(model.ratingPeers([profile(1)], all, false), {peers: all, scope: "all"});
+});
+
+test("position bars are hidden when a Phase 1 market has two or fewer prices", () => {
+  const two = model.summarize(cohortSnapshot("2026-09-16", [row(1, 10000), row(2, 30000)]), "area", "2026-10-01", "two_meals");
+  const three = model.summarize(cohortSnapshot("2026-09-16", [1, 2, 3].map((id) => row(id, id * 10000))), "area", "2026-10-01", "two_meals");
+  const legacyTwo = model.summarize(snapshot("2026-09-16", [row(1, 10000), row(2, 30000)]), "area", "2026-10-01", "two_meals");
+  assert.equal(model.showPositionBars(two), false);
+  assert.equal(model.showPositionBars(three), true);
+  assert.equal(model.showPositionBars(legacyTwo), true);
 });
