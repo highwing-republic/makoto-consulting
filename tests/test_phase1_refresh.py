@@ -122,14 +122,16 @@ def test_hotel_price_trends_has_controls_disclosures_and_rakuten_credit():
     body = page.get_text(" ", strip=True)
     assert "大人2名・1室・1泊" in body
     assert "満室とは判定しません" in body
-    assert "長野県10地域・30施設" in body
+    assert "固定した比較施設群" in body
+    assert "5施設中3施設の日は参考値" in body
+    assert "BACKUPは日次の穴埋めには使わず" in body
     for section_id in ("hpt-profile", "hpt-ratings", "hpt-rating-history", "hpt-review"):
         assert page.find(id=section_id)
     assert "楽天参考最安料金" in body
     credit = page.find("a", href="https://developers.rakuten.com/")
     assert credit and credit.get_text(strip=True) == "Supported by Rakuten Developers"
-    assert page.find("script", src="js/hotel-price-trends-model.js?v=20260929a")
-    assert page.find("script", src="js/hotel-price-trends.js?v=20261002brand2")
+    assert page.find("script", src="js/hotel-price-trends-model.js?v=20261004cohort1")
+    assert page.find("script", src="js/hotel-price-trends.js?v=20261004cohort1")
 
 
 def test_hotel_price_trends_script_keeps_browser_history_available():

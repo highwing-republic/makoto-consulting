@@ -33,22 +33,38 @@
   };
   const median = (values) => quantile(values, 0.5);
   const regionFrom = (snapshot, code) => snapshot?.regions?.find((region) => region.code === code) || null;
+  const cohortMetadata = (region) => {
+    const version = typeof region?.cohort_version === "string" && region.cohort_version.trim() ? region.cohort_version.trim() : null;
+    const expectedCount = Number(region?.expected_core_count);
+    const sourceProperties = Array.isArray(region?.properties) ? region.properties : [];
+    const hasRoles = sourceProperties.some((property) => property.role != null);
+    const declared = Boolean(version || region?.expected_core_count != null || hasRoles);
+    const properties = declared && hasRoles
+      ? sourceProperties.filter((property) => String(property.role || "").toLowerCase() === "core")
+      : sourceProperties;
+    const propertyIds = properties.map((property) => String(property.hotel_no));
+    const valid = !declared || Boolean(version && expectedCount === 5 && properties.length === 5 && new Set(propertyIds).size === 5);
+    return {active: declared, expectedCount: declared ? 5 : properties.length, properties, propertyIds, valid, version};
+  };
+  const qualityForCount = (successful) => successful >= 5 ? "sufficient" : successful === 4 ? "comparable" : successful === 3 ? "reference" : "insufficient";
   const conditionsMatch = (current, candidate) => ["adults", "rooms", "nights"].every((key) =>
     current?.conditions?.[key] != null && candidate?.conditions?.[key] != null &&
     Number(current.conditions[key]) === Number(candidate.conditions[key])
   );
-  const idsFor = (region) => new Set((region?.properties || []).map((property) => String(property.hotel_no)));
+  const idsFor = (positions) => new Set((positions || []).map((property) => String(property.hotel_no)));
   const sameIds = (left, right) => left.size === right.size && [...left].every((id) => right.has(id));
 
   function summarize(snapshot, regionCode, stayDate, mealType) {
     const region = regionFrom(snapshot, regionCode);
-    const observations = (region?.rates || []).filter((row) => row.stay_date === stayDate && row.meal_type === mealType);
+    const cohort = cohortMetadata(region);
+    const propertyIds = new Set(cohort.propertyIds);
+    const observations = (region?.rates || []).filter((row) => propertyIds.has(String(row.hotel_no)) && row.stay_date === stayDate && row.meal_type === mealType);
     const rowsByHotel = new Map();
     observations.forEach((row) => {
       const id = String(row.hotel_no);
       if (!rowsByHotel.has(id)) rowsByHotel.set(id, row);
     });
-    const positions = (region?.properties || []).map((property) => {
+    const positions = cohort.properties.map((property) => {
       const row = rowsByHotel.get(String(property.hotel_no));
       const valid = row?.status === "success" && isFinitePositive(row?.min_price_yen);
       return {
@@ -59,16 +75,19 @@
       };
     });
     const prices = positions.map((position) => position.min_price_yen).filter(isFinitePositive);
-    const marketMedian = median(prices);
+    const successful = prices.length;
+    const dataQuality = cohort.active ? qualityForCount(successful) : successful >= 3 ? "legacy_comparable" : "legacy_reference";
+    const comparisonReady = cohort.active ? cohort.valid && dataQuality !== "insufficient" : successful >= 3;
+    const marketMedian = cohort.active && !comparisonReady ? null : median(prices);
     positions.forEach((position) => {
       position.price_index = marketMedian != null && position.min_price_yen != null ? position.min_price_yen / marketMedian * 100 : null;
     });
-    const successful = prices.length;
     return {
-      region, observations: observations.length, successful, target: positions.length,
-      marketMedian, p25: quantile(prices, .25), p75: quantile(prices, .75),
+      region, observations: observations.length, successful, target: cohort.expectedCount,
+      marketMedian, p25: cohort.active && !comparisonReady ? null : quantile(prices, .25), p75: cohort.active && !comparisonReady ? null : quantile(prices, .75),
       planCount: positions.reduce((sum, row) => sum + row.plan_count, 0), positions,
-      comparisonReady: successful >= 3
+      comparisonReady, dataQuality, cohortActive: cohort.active, cohortValid: cohort.valid,
+      cohortVersion: cohort.version, propertyIds: cohort.propertyIds
     };
   }
 
@@ -87,19 +106,21 @@
     const previous = (history || []).find((snapshot) => snapshot?.snapshot_date === targetDate);
     if (!previous) return {status: "missing_snapshot", previous: null};
     if (!conditionsMatch(currentSnapshot, previous)) return {status: "conditions_mismatch", previous};
-    const currentRegion = regionFrom(currentSnapshot, selection.regionCode);
     const previousRegion = regionFrom(previous, selection.regionCode);
     if (!previousRegion) return {status: "missing_region", previous};
     const current = summarize(currentSnapshot, selection.regionCode, selection.stayDate, selection.mealType);
     const prior = summarize(previous, selection.regionCode, selection.stayDate, selection.mealType);
     const currentSelected = current.positions.find((row) => Number(row.hotel_no) === Number(selection.hotelNo));
     const previousSelected = prior.positions.find((row) => Number(row.hotel_no) === Number(selection.hotelNo));
-    const selectedChange = currentSelected?.min_price_yen != null && previousSelected?.min_price_yen != null
+    const cohortVersionsMatch = current.cohortVersion === prior.cohortVersion;
+    const selectedChange = cohortVersionsMatch && currentSelected?.min_price_yen != null && previousSelected?.min_price_yen != null
       ? (currentSelected.min_price_yen / previousSelected.min_price_yen - 1) * 100 : null;
-    const propertySetsMatch = sameIds(idsFor(currentRegion), idsFor(previousRegion));
-    const marketChange = propertySetsMatch && current.comparisonReady && prior.comparisonReady && current.marketMedian != null && prior.marketMedian != null
+    const propertySetsMatch = sameIds(idsFor(current.positions), idsFor(prior.positions));
+    const marketComparable = cohortVersionsMatch && propertySetsMatch && current.cohortValid && prior.cohortValid;
+    const marketChange = marketComparable && current.comparisonReady && prior.comparisonReady && current.marketMedian != null && prior.marketMedian != null
       ? (current.marketMedian / prior.marketMedian - 1) * 100 : null;
-    return {status: propertySetsMatch ? "available" : "property_set_mismatch", previous, current, prior, currentSelected, previousSelected, selectedChange, marketChange};
+    const status = !cohortVersionsMatch ? "cohort_version_mismatch" : propertySetsMatch ? "available" : "property_set_mismatch";
+    return {status, previous, current, prior, currentSelected, previousSelected, selectedChange, marketChange};
   }
 
   const signedPercent = (value) => {
@@ -118,21 +139,28 @@
     const hasComparableObservations = comparison?.status === "available" && comparison.prior?.observations > 0 && summary.observations > 0;
     if (comparison?.marketChange != null) {
       const direction = changeLabel(comparison.marketChange);
-      lines.push(`対象中央値は7日前比 ${signedPercent(comparison.marketChange)}（${direction}）です。`);
+      lines.push(`比較施設群中央値は7日前比 ${signedPercent(comparison.marketChange)}（${direction}）です。`);
     }
-    if (!summary.comparisonReady) {
-      lines.push(summary.observations === 0 ? "指定条件の観測行はありません。料金確認数は表示しません。" : hasComparableObservations ? `料金確認は7日前${comparison.prior.successful}/${comparison.prior.target}施設、現在${summary.successful}/${summary.target}施設です。3施設未満のため地域比較は参考表示です。` : summary.successful === 0 ? `指定条件の観測はありますが、料金確認は0/${summary.target}施設です。` : `料金確認は${summary.successful}/${summary.target}施設です。3施設未満のため地域比較は参考表示です。`);
+    if (summary.cohortActive && !summary.cohortValid) {
+      lines.push("比較施設群の構成を確認できないため、中央値・順位を表示しません。");
+    } else if (!summary.comparisonReady) {
+      const legacyLine = summary.observations === 0 ? "指定条件の観測行はありません。料金確認数は表示しません。" : hasComparableObservations ? `料金確認は7日前${comparison.prior.successful}/${comparison.prior.target}施設、現在${summary.successful}/${summary.target}施設です。3施設未満のため地域比較は参考表示です。` : summary.successful === 0 ? `指定条件の観測はありますが、料金確認は0/${summary.target}施設です。` : `料金確認は${summary.successful}/${summary.target}施設です。3施設未満のため地域比較は参考表示です。`;
+      const cohortLine = summary.observations === 0 ? `指定条件の観測行はありません。料金確認は0/${summary.target}施設で、比較施設群中央値・順位は表示しません。` : hasComparableObservations ? `料金確認は7日前${comparison.prior.successful}/${comparison.prior.target}施設、現在${summary.successful}/${summary.target}施設です。2施設以下のため比較施設群中央値・順位は表示しません。` : `料金確認は${summary.successful}/${summary.target}施設です。2施設以下のため比較施設群中央値・順位は表示しません。`;
+      lines.push(summary.cohortActive ? cohortLine : legacyLine);
     } else if (selected?.price_index != null) {
       const difference = selected.price_index - 100;
-      lines.push(Math.round(difference * 10) === 0 ? "選択施設は対象中央値と同水準です。" : `選択施設は対象中央値より${Math.abs(difference).toFixed(1)}%${difference > 0 ? "高く" : "低く"}、${positionLabel(selected.price_index)}です。`);
+      const reference = summary.dataQuality === "reference" ? `（${summary.successful}/${summary.target}施設の参考値）` : "";
+      lines.push(Math.round(difference * 10) === 0 ? `選択施設は比較施設群中央値と同水準です${reference}。` : `選択施設は比較施設群中央値より${Math.abs(difference).toFixed(1)}%${difference > 0 ? "高く" : "低く"}、${positionLabel(selected.price_index)}です${reference}。`);
     } else {
       lines.push("選択施設の料金は今回確認できませんでした（料金未確認は満室を意味しません）。");
     }
     if (summary.comparisonReady) {
-      lines.push(hasComparableObservations ? `料金確認は7日前${comparison.prior.successful}/${comparison.prior.target}施設、現在${summary.successful}/${summary.target}施設です。` : `料金確認は${summary.successful}/${summary.target}施設です。`);
+      const quality = summary.dataQuality === "sufficient" ? "十分" : summary.dataQuality === "comparable" ? "比較可能" : summary.dataQuality === "reference" ? "参考値" : null;
+      const suffix = quality ? `（${quality}）` : "";
+      lines.push(hasComparableObservations ? `料金確認は7日前${comparison.prior.successful}/${comparison.prior.target}施設、現在${summary.successful}/${summary.target}施設です${suffix}。` : `料金確認は${summary.successful}/${summary.target}施設です${suffix}。`);
     }
     return lines.slice(0, 3);
   }
 
-  return {addDays, changeLabel, conditionsMatch, formatJapaneseDate, insightLines, isFinitePositive, median, priceRank, rawQuantile, regionFrom, sevenDayComparison, signedPercent, summarize};
+  return {addDays, changeLabel, cohortMetadata, conditionsMatch, formatJapaneseDate, insightLines, isFinitePositive, median, priceRank, qualityForCount, rawQuantile, regionFrom, sevenDayComparison, signedPercent, summarize};
 });

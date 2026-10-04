@@ -6,6 +6,11 @@ const snapshot = (date, rates, properties = [{hotel_no: 1, name: "A"}, {hotel_no
   snapshot_date: date, conditions, regions: [{code: "area", properties, rates}]
 });
 const row = (hotel_no, min_price_yen, status = "success") => ({hotel_no, stay_date: "2026-10-01", meal_type: "two_meals", min_price_yen, plan_count: 1, status});
+const cohortSnapshot = (date, rates, version = "area-v1", properties = [1, 2, 3, 4, 5].map((hotel_no) => ({hotel_no, name: `H${hotel_no}`}))) => ({
+  snapshot_date: date,
+  conditions: {adults: 2, rooms: 1, nights: 1},
+  regions: [{code: "area", cohort_version: version, expected_core_count: 5, properties, rates}]
+});
 
 test("summarize accepts only positive finite numeric success prices once per property", () => {
   const data = snapshot("2026-09-16", [row(1, 10000), row(1, 50000), row(2, 0), row(3, Infinity), row(4, 20000), row(2, 25000, "no_plan")]);
@@ -36,6 +41,60 @@ test("small samples retain a reference median but suppress comparisons and ranks
   assert.equal(model.priceRank(result, 1), null);
 });
 
+test("Phase 1 cohort quality follows the fixed 5/4/3/0-2 display rules", () => {
+  const five = model.summarize(cohortSnapshot("2026-09-16", [1, 2, 3, 4, 5].map((id) => row(id, id * 10000))), "area", "2026-10-01", "two_meals");
+  const four = model.summarize(cohortSnapshot("2026-09-16", [1, 2, 3, 4].map((id) => row(id, id * 10000))), "area", "2026-10-01", "two_meals");
+  const three = model.summarize(cohortSnapshot("2026-09-16", [1, 2, 3].map((id) => row(id, id * 10000))), "area", "2026-10-01", "two_meals");
+  const two = model.summarize(cohortSnapshot("2026-09-16", [row(1, 10000), row(2, 30000)]), "area", "2026-10-01", "two_meals");
+  assert.deepEqual([five.dataQuality, four.dataQuality, three.dataQuality, two.dataQuality], ["sufficient", "comparable", "reference", "insufficient"]);
+  assert.equal(three.marketMedian, 20000);
+  assert.deepEqual(model.priceRank(three, 1), {rank: 3, total: 3, equal: 1});
+  assert.equal(two.marketMedian, null);
+  assert.equal(two.p25, null);
+  assert.equal(two.p75, null);
+  assert.equal(model.priceRank(two, 1), null);
+});
+
+test("BACKUP and LUXURY_REFERENCE never enter the Phase 1 denominator or median", () => {
+  const properties = [
+    ...[1, 2, 3, 4, 5].map((hotel_no) => ({hotel_no, name: `CORE${hotel_no}`, role: "core"})),
+    {hotel_no: 6, name: "BACKUP", role: "backup"},
+    {hotel_no: 7, name: "LUXURY", role: "luxury_reference"}
+  ];
+  const rates = [row(1, 10000), row(2, 20000), row(3, 30000), row(4, 40000), row(6, 1), row(7, 999999)];
+  const result = model.summarize(cohortSnapshot("2026-09-16", rates, "area-v1", properties), "area", "2026-10-01", "two_meals");
+  assert.equal(result.target, 5);
+  assert.equal(result.successful, 4);
+  assert.equal(result.marketMedian, 25000);
+  assert.deepEqual(result.positions.map((item) => item.hotel_no), [1, 2, 3, 4, 5]);
+});
+
+test("a malformed Phase 1 cohort suppresses comparisons", () => {
+  const properties = [1, 2, 3, 4].map((hotel_no) => ({hotel_no}));
+  const result = model.summarize(cohortSnapshot("2026-09-16", [1, 2, 3, 4].map((id) => row(id, id * 10000)), "area-v1", properties), "area", "2026-10-01", "two_meals");
+  assert.equal(result.cohortValid, false);
+  assert.equal(result.target, 5);
+  assert.equal(result.marketMedian, null);
+  assert.equal(result.comparisonReady, false);
+});
+
+test("partial cohort metadata fails closed instead of falling back to legacy comparison", () => {
+  const properties = [1, 2, 3, 4, 5].map((hotel_no) => ({hotel_no, role: "core"}));
+  const rates = properties.map(({hotel_no}) => row(hotel_no, hotel_no * 10000));
+  const missingVersion = cohortSnapshot("2026-09-16", rates, null, properties);
+  const wrongCount = cohortSnapshot("2026-09-16", rates, "area-v1", properties);
+  delete missingVersion.regions[0].cohort_version;
+  wrongCount.regions[0].expected_core_count = 4;
+  for (const data of [missingVersion, wrongCount]) {
+    const result = model.summarize(data, "area", "2026-10-01", "two_meals");
+    assert.equal(result.cohortActive, true);
+    assert.equal(result.cohortValid, false);
+    assert.equal(result.target, 5);
+    assert.equal(result.marketMedian, null);
+    assert.equal(result.comparisonReady, false);
+  }
+});
+
 test("price rank uses competition ranking and recognizes equal prices", () => {
   const result = model.summarize(snapshot("2026-09-16", [row(1, 30000), row(2, 30000), row(3, 20000)]), "area", "2026-10-01", "two_meals");
   assert.deepEqual(model.priceRank(result, 1), {rank: 1, total: 3, equal: 2});
@@ -58,6 +117,15 @@ test("property-set changes suppress market comparison but retain a same-property
   assert.equal(result.status, "property_set_mismatch");
   assert.equal(result.marketChange, null);
   assert.ok(Math.abs(result.selectedChange - 20) < 0.000001);
+});
+
+test("cohort version changes suppress both market and selected-property history", () => {
+  const current = cohortSnapshot("2026-09-16", [1, 2, 3, 4, 5].map((id) => row(id, id * 12000)), "area-v2");
+  const prior = cohortSnapshot("2026-09-09", [1, 2, 3, 4, 5].map((id) => row(id, id * 10000)), "area-v1");
+  const result = model.sevenDayComparison(current, [prior], {regionCode: "area", hotelNo: 1, stayDate: "2026-10-01", mealType: "two_meals"});
+  assert.equal(result.status, "cohort_version_mismatch");
+  assert.equal(result.marketChange, null);
+  assert.equal(result.selectedChange, null);
 });
 
 test("date display inputs are calendar-safe at month and leap-year boundaries", () => {
