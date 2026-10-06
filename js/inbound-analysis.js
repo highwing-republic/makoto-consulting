@@ -299,15 +299,15 @@
     const specialized = markets.slice().sort(function (a, b) { return b.specialization - a.specialization; })[0];
     const first = document.createElement('p');
     const second = document.createElement('p');
-    const third = document.createElement('p');
-    first.textContent = area + 'では、' + largest.name + 'からの宿泊者数が最も多く、' + formatNumber(largest.value) + '人泊となっています。';
+    first.textContent = area + 'で最も多いのは' + largest.name + '（' + formatNumber(largest.value) + '人泊、外国人延べ宿泊者数の' + formatPercent(largest.localShare) + '）。自施設でも多い市場か、同じ月の実績と比べてみてください。';
     if (area === '全国') {
-      second.textContent = '都道府県を選択すると、全国の構成比との差から、その地域で相対的に強い市場を確認できます。';
+      second.textContent = '全国の傾向を表示しています。宿のある都道府県を選ぶと、地域に多い市場と全国との違いを確認できます。';
+    } else if (specialized.specialization > 1) {
+      second.textContent = specialized.name + 'の構成比は全国の' + specialized.specialization.toFixed(2) + '倍（地域内' + formatPercent(specialized.localShare) + '、' + formatNumber(specialized.value) + '人泊）。' + (specialized.name === largest.name ? '規模・構成比の両面から、自施設の販売経路を確認する候補です。' : '規模も確かめながら、自施設の販売経路を確認する候補に。');
     } else {
-      second.textContent = '全国平均との差を見ると、' + specialized.name + '市場の地域特化度は' + specialized.specialization.toFixed(2) + 'で、相対的に特徴のある市場候補です。';
+      second.textContent = '表示対象の市場に、全国より構成比が高い市場はありません。まずは宿泊人泊の多い市場から、自施設の客層や販売経路との違いを確認してください。';
     }
-    third.textContent = '単純な宿泊者数に加えて「全国より相対的に強い市場」を見ることで、集客施策の優先順位を考える材料になります。';
-    container.append(first, second, third);
+    container.append(first, second);
   }
 
   function updateUrl(area) {
