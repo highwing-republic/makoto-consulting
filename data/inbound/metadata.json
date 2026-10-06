@@ -2,16 +2,16 @@
   "metadata": {
     "source": "観光庁 宿泊旅行統計調査",
     "source_url": "https://www.mlit.go.jp/kankocho/tokei_hakusyo/shukuhakutokei.html",
-    "excel_url": "https://www.mlit.go.jp/kankocho/content/002018998.xlsx",
+    "excel_url": "https://www.mlit.go.jp/kankocho/content/002024478.xlsx",
     "year": 2026,
-    "month": 6,
+    "month": 7,
     "release_type": "第2次速報",
-    "updated_at": "2026-08-31",
+    "updated_at": "2026-09-30",
     "unit": "人泊",
     "survey_note": "2026年1月から集計・層化基準変更",
     "survey_scope": "客室数20室以上の施設",
     "nationality_coverage": "国籍（出身地）別集計表に掲載された国・地域",
-    "sheet_name": "参考第1表(6月)"
+    "sheet_name": "参考第1表(7月)"
   },
   "available_prefectures": [
     "北海道",
@@ -65,10 +65,6 @@
   "available_months": [
     {
       "year": 2025,
-      "month": 7
-    },
-    {
-      "year": 2025,
       "month": 8
     },
     {
@@ -110,6 +106,10 @@
     {
       "year": 2026,
       "month": 6
+    },
+    {
+      "year": 2026,
+      "month": 7
     }
   ]
 }
