@@ -125,13 +125,21 @@ def test_hotel_price_trends_has_controls_disclosures_and_rakuten_credit():
     assert "固定した比較施設群" in body
     assert "5施設中3施設の日は参考値" in body
     assert "BACKUPは日次の穴埋めには使わず" in body
-    for section_id in ("hpt-profile", "hpt-ratings", "hpt-rating-history", "hpt-review"):
+    for section_id in ("hpt-market-trend", "hpt-core-facilities", "hpt-map", "hpt-profile", "hpt-ratings", "hpt-rating-history"):
         assert page.find(id=section_id)
+    # Review text is no longer shown; profile, rating and stay-date detail live in toggles.
+    assert page.find(id="hpt-review") is None
+    assert "LATEST REVIEW" not in body
+    assert page.select_one("#hpt-detail-price #hpt-stay-date")
+    assert page.select_one("#hpt-detail-profile #hpt-profile")
+    assert page.select_one("#hpt-detail-ratings #hpt-ratings")
+    assert not page.select_one(".hpt-filter-grid #hpt-stay-date")
+    assert "25〜75%" not in page.decode()
     assert "楽天参考最安料金" in body
     credit = page.find("a", href="https://developers.rakuten.com/")
     assert credit and credit.get_text(strip=True) == "Supported by Rakuten Developers"
-    assert page.find("script", src="js/hotel-price-trends-model.js?v=20261004review1")
-    assert page.find("script", src="js/hotel-price-trends.js?v=20261004review1")
+    assert page.find("script", src="js/hotel-price-trends-model.js?v=20261005trend1")
+    assert page.find("script", src="js/hotel-price-trends.js?v=20261005trend1")
 
 
 def test_hotel_price_trends_script_keeps_browser_history_available():
@@ -142,13 +150,15 @@ def test_hotel_price_trends_script_keeps_browser_history_available():
     assert 'getJson(`${DATA_ROOT}profiles.json`)' in script
     assert "HotelPriceTrendsModel" in script
     assert "makeProfileInsights" not in script
-    assert "latest_review_excerpt" in script
+    assert "latest_review_excerpt" not in script
 
 
 def test_hotel_price_trends_hides_uncollected_phase1_markets():
     script = (ROOT / "js" / "hotel-price-trends.js").read_text(encoding="utf-8")
-    assert "function availableRegions()" in script
-    assert "cohort.propertyIds.every" in script
+    model = (ROOT / "js" / "hotel-price-trends-model.js").read_text(encoding="utf-8")
+    assert "function selectableRegions(manifest, snapshot)" in model
+    assert "cohort.propertyIds.every" in model
+    assert "model.selectableRegions(manifest, latest)" in script
     assert "表示可能な市場データがありません" in script
 
 

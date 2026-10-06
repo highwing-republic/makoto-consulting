@@ -26,7 +26,7 @@ def main(destination):
     base = f'http://127.0.0.1:{server.server_port}/'
     manifest = json.loads((ROOT / 'data/hotel-price-trends/manifest.json').read_text(encoding='utf-8'))
     snapshot = json.loads((ROOT / 'data/hotel-price-trends' / manifest['snapshots'][0]['file']).read_text(encoding='utf-8'))
-    region = next(item for item in snapshot['regions'] if item['code'] == 'kamisuwa-onsen')
+    region = next(item for item in snapshot['regions'] if item['code'] == 'noboribetsu-onsen')
     stay_date = min(row['stay_date'] for row in region['rates'])
     results = []
     with sync_playwright() as p:
@@ -50,33 +50,45 @@ def main(destination):
 
         for width in (1440, 768, 390):
             page.set_viewport_size({'width': width, 'height': 1000})
-            visit(f'hotel-price-trends.html?region=kamisuwa-onsen&hotel_no=28001&stay_date={stay_date}&meal_type=two_meals')
+            visit(f'hotel-price-trends.html?region=noboribetsu-onsen&hotel_no=30109&stay_date={stay_date}&meal_type=two_meals')
             assert page.locator('#hpt-dashboard').is_visible()
-            assert page.locator('#hpt-region').input_value() == 'kamisuwa-onsen'
-            assert page.locator('#hpt-hotel').input_value() == '28001'
+            assert page.locator('#hpt-region').input_value() == 'noboribetsu-onsen'
+            assert page.locator('#hpt-hotel').input_value() == '30109'
+            # A shared stay_date opens the price detail with that date selected.
+            assert page.locator('#hpt-detail-price').evaluate('(e)=>e.open')
             assert page.locator('#hpt-stay-date').input_value() == stay_date
             assert page.locator('#hpt-meal').input_value() == 'two_meals'
+            assert page.locator('#hpt-market-trend').is_visible()
+            assert page.locator('#hpt-core-list .hpt-core-row').count() == 5
+            assert page.locator('#hpt-core-list .hpt-core-row--selected').count() == 1
             assert page.locator('#hpt-calendar .hpt-calendar-cell').count() > 0
+            assert page.locator('#hpt-review').count() == 0
+            assert page.locator('.hpt-market-band').count() == 0
+            # Legacy Nagano regions stay in the data but are not offered in the UI.
+            options = page.locator('#hpt-region option').evaluate_all('(es)=>es.map(e=>e.value)')
+            assert 'nagano-city' not in options and 'kamisuwa-onsen' not in options
+            assert page.locator('#hpt-market-chips [data-region]').count() == len(options)
+            page.locator('#hpt-detail-ratings summary').click()
             for selector, prop, expected in [
                 ('.hpt-selected-line', 'stroke', 'rgb(184, 145, 63)'),
                 ('.hpt-market-line', 'stroke', 'rgb(111, 140, 153)'),
                 ('.hpt-rating-track i', 'backgroundColor', 'rgb(184, 145, 63)'),
                 ('.hpt-rating-track b', 'backgroundColor', 'rgb(111, 140, 153)'),
             ]:
-                assert page.locator(selector).first.evaluate('(e,p)=>getComputedStyle(e)[p]', prop) == expected
-            assert page.locator('.hpt-market-line').evaluate('(e)=>getComputedStyle(e).strokeDasharray') != 'none'
+                if page.locator(selector).count():
+                    assert page.locator(selector).first.evaluate('(e,p)=>getComputedStyle(e)[p]', prop) == expected
             for node in page.locator('.hpt-kpi__value--status').all():
                 assert float(node.evaluate('(e)=>getComputedStyle(e).fontSize').replace('px','')) <= 20
-            capture('hotel-many-properties', width)
-            page.select_option('#hpt-region', 'nagano-city')
-            for selector in ('#hpt-hotel', '#hpt-stay-date'):
-                options = page.locator(selector + ' option').evaluate_all('(es)=>es.map(e=>e.value)')
-                page.select_option(selector, options[-1])
+            capture('hotel-phase1-market', width)
+            page.locator('#hpt-market-chips [data-region]').last.click()
+            assert page.locator('#hpt-region').input_value() == options[-1]
             for meal in ('breakfast', 'room_only'):
                 page.select_option('#hpt-meal', meal)
                 assert f'meal_type={meal}' in page.url
-            assert '比較不足' in page.locator('#hpt-kpis').inner_text()
-            capture('hotel-small-sample', width)
+            capture('hotel-market-switch', width)
+            visit('hotel-price-trends.html?region=kamisuwa-onsen&hotel_no=28001&meal_type=two_meals')
+            assert page.locator('#hpt-region').input_value() == options[0]
+            assert 'stay_date=' not in page.url
 
             for name in ('inbound-analysis', 'dx-necessity-analysis', 'supply-demand-gap-analysis', 'tourism-pressure-analysis'):
                 visit(name + '.html?pref=nagano')

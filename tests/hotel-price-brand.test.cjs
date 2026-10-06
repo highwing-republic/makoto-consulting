@@ -15,7 +15,7 @@ function render(summary, comparison = {}) {
   const source = fs.readFileSync(path.join(__dirname, '../js/hotel-price-trends.js'), 'utf8');
   const instrumented = source.replace(/  init\(\);\s*\}\)\(\);\s*$/, '  window.renderKpis = renderKpis;\n})();');
   assert.notEqual(instrumented, source, 'renderer test hook must replace only the startup call');
-  const context = {document, window: {HotelPriceTrendsModel: model}, Map, Intl};
+  const context = {document, window: {HotelPriceTrendsModel: model, addEventListener() {}}, Map, Intl};
   vm.runInNewContext(instrumented, context);
   context.window.renderKpis(summary, comparison);
   return [...elements.get('#hpt-kpis').innerHTML.matchAll(/<strong class="hpt-kpi__value hpt-kpi__value--(numeric|status)">([^<]+)<\/strong>/g)].map((m) => ({kind:m[1], value:m[2]}));

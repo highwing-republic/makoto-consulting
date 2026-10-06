@@ -127,7 +127,9 @@ def test_hotel_gold_only_identifies_the_selected_property() -> None:
     assert gold_selectors == {
         ".hpt-profile", ".hpt-selected-line", ".hpt-selected-dot",
         ".hpt-chart-legend .selected", ".hpt-position--selected .hpt-position__bar",
-        ".hpt-rating-track i",
+        ".hpt-rating-track i", ".hpt-core-row--selected",
+        ".hpt-core-row--selected .hpt-core-row__index",
+        ".hpt-core-row--selected .hpt-spark-line", ".hpt-core-row--selected .hpt-spark-dot",
     }
     assert ".hpt-rating-track b{" in css
     marker = re.search(r"\.hpt-rating-track b\{([^}]+)\}", css).group(1)

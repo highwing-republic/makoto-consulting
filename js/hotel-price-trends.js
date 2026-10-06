@@ -3,20 +3,40 @@
 
   const DATA_ROOT = "data/hotel-price-trends/";
   const MEAL_LABELS = {two_meals: "朝夕食付き", breakfast: "朝食付き", room_only: "素泊まり"};
+  const TREND_MEAL = "two_meals";
   const RATING_LABELS = {service:"サービス",location:"立地",room:"部屋",equipment:"設備",bath:"風呂",breakfast:"朝食",dinner:"夕食",cleanliness:"清潔さ"};
+  const COVERAGE_LABELS = {valid: "比較可能", reference: "参考", insufficient: "比較データ不足"};
+  // Approximate market centres [lat, lon] for the simplified observed-markets map.
+  const MARKET_LOCATIONS = {
+    "noboribetsu-onsen": [42.49, 141.15], "atami": [35.10, 139.07], "karuizawa-saku-komoro": [36.35, 138.60],
+    "hakuba": [36.70, 137.86], "kaga-onsenkyo": [36.30, 136.33], "gero-onsen": [35.81, 137.24],
+    "ise-shima": [34.45, 136.85], "beppu": [33.28, 131.49], "kirishima": [31.87, 130.85]
+  };
+  // Hand-simplified coastline [lon, lat] vertices drawn for this page (not traced from a third-party map).
+  const JAPAN_OUTLINE = [
+    [[141.2,45.5],[142.0,45.3],[143.3,44.3],[144.8,43.9],[145.6,43.3],[145.2,43.0],[143.3,42.0],[141.7,42.6],[140.9,41.9],[140.1,41.5],[139.9,42.2],[140.5,42.6],[139.9,42.9],[140.5,43.3],[141.4,43.4],[141.6,44.3]],
+    [[141.4,41.4],[141.5,40.6],[142.0,39.6],[141.6,38.4],[141.0,37.9],[141.0,36.9],[140.6,35.7],[140.0,35.0],[139.8,35.3],[139.2,35.2],[138.8,34.6],[138.2,34.6],[137.0,34.6],[136.8,34.3],[136.3,33.9],[135.8,33.5],[135.1,33.9],[135.2,34.6],[134.2,34.7],[133.0,34.4],[132.2,34.0],[131.0,34.0],[130.9,34.3],[131.4,34.5],[132.6,35.4],[133.4,35.5],[134.6,35.6],[135.5,35.5],[136.0,35.7],[136.7,36.4],[136.8,37.1],[137.3,37.5],[137.3,36.8],[138.3,37.1],[139.0,37.9],[139.6,38.6],[140.0,39.4],[140.0,40.3],[140.3,41.2],[140.9,41.2]],
+    [[132.4,33.4],[132.9,34.0],[133.7,34.3],[134.6,34.2],[134.7,33.8],[134.2,33.3],[133.0,32.7],[132.5,32.9]],
+    [[129.8,33.5],[130.5,33.9],[131.0,33.9],[131.6,33.6],[131.9,32.9],[131.4,31.4],[130.7,31.0],[130.2,31.3],[130.2,32.1],[130.6,32.8],[130.2,32.8],[129.7,32.6],[129.6,33.2]]
+  ];
+  const MAP = {lonMin: 129.3, latMax: 45.8, lonScale: 0.79, unit: 18, width: 240, height: 272};
   const model = window.HotelPriceTrendsModel;
   const elements = {
     region: document.querySelector("#hpt-region"), hotel: document.querySelector("#hpt-hotel"),
     stayDate: document.querySelector("#hpt-stay-date"), meal: document.querySelector("#hpt-meal"),
     loading: document.querySelector("#hpt-loading"), error: document.querySelector("#hpt-error"),
     errorMessage: document.querySelector("#hpt-error-message"), retry: document.querySelector("#hpt-retry"),
-    dashboard: document.querySelector("#hpt-dashboard"), freshness: document.querySelector("#hpt-freshness")
+    dashboard: document.querySelector("#hpt-dashboard"), freshness: document.querySelector("#hpt-freshness"),
+    priceDetail: document.querySelector("#hpt-detail-price")
   };
   let manifest;
   let latest;
   let snapshotHistory = [];
   let profileData = {properties: []};
   let profilesByHotel = new Map();
+  let regions = [];
+  // stay_date is only written back to the URL once it was shared in or chosen in the detail view.
+  let stayDateExplicit = false;
 
   const escapeHtml = (value) => String(value ?? "").replace(/[&<>'"]/g, (char) => ({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"})[char]);
   const yen = (value) => model.isFinitePositive(value) ? `¥${Number(value).toLocaleString("ja-JP")}` : "料金未確認";
@@ -42,31 +62,24 @@
   function selectedRegion() { return regionFrom(latest, elements.region.value); }
   function selectedProperties() { return model.cohortMetadata(selectedRegion()).properties; }
   function selectedProfile() { return profilesByHotel.get(Number(elements.hotel.value)) || null; }
-  function availableRegions() {
-    const latestByCode = new Map((latest?.regions || []).map((region) => [region.code, region]));
-    return (manifest?.regions || []).filter((manifestRegion) => {
-      if (!manifestRegion.cohort_version) return latestByCode.has(manifestRegion.code);
-      const snapshotRegion = latestByCode.get(manifestRegion.code);
-      const cohort = model.cohortMetadata(snapshotRegion);
-      const observed = new Set((snapshotRegion?.rates || []).map((row) => String(row.hotel_no)));
-      return cohort.valid && cohort.propertyIds.every((hotelNo) => observed.has(hotelNo));
-    });
-  }
   function summarize(snapshot, regionCode, stayDate, mealType) {
     return model.summarize(snapshot, regionCode, stayDate, mealType);
   }
   function syncUrl() {
-    const params = new URLSearchParams({region: elements.region.value, hotel_no: elements.hotel.value, stay_date: elements.stayDate.value, meal_type: elements.meal.value});
+    const params = new URLSearchParams({region: elements.region.value, hotel_no: elements.hotel.value});
+    if (stayDateExplicit && elements.stayDate.value) params.set("stay_date", elements.stayDate.value);
+    params.set("meal_type", elements.meal.value);
     window.history.replaceState(null, "", `${location.pathname}?${params}`);
   }
   function populateControls() {
     const params = new URLSearchParams(location.search);
-    const regions = availableRegions();
+    regions = model.selectableRegions(manifest, latest);
     if (!regions.length) throw new Error("表示可能な市場データがありません");
     elements.region.innerHTML = regions.map((region) => `<option value="${escapeHtml(region.code)}">${escapeHtml(region.name)}</option>`).join("");
     if (params.get("region") && regions.some((region) => region.code === params.get("region"))) elements.region.value = params.get("region");
     populateHotels(params.get("hotel_no"));
-    populateDates(params.get("stay_date"));
+    stayDateExplicit = populateDates(params.get("stay_date"));
+    if (stayDateExplicit) elements.priceDetail.open = true;
     if (params.get("meal_type") && MEAL_LABELS[params.get("meal_type")]) elements.meal.value = params.get("meal_type");
   }
   function populateHotels(preferred) {
@@ -74,11 +87,13 @@
     elements.hotel.innerHTML = properties.map((property) => `<option value="${property.hotel_no}">${escapeHtml(property.name)}</option>`).join("");
     if (preferred && properties.some((property) => String(property.hotel_no) === String(preferred))) elements.hotel.value = String(preferred);
   }
+  // Returns whether the preferred stay date was available and selected.
   function populateDates(preferred) {
     const region = selectedRegion();
     const dates = [...new Set(region.rates.map((row) => row.stay_date))].sort();
     elements.stayDate.innerHTML = dates.length ? dates.map((value) => `<option value="${value}">${escapeHtml(formatDate(value))}</option>`).join("") : '<option value="">取得開始前</option>';
-    if (preferred && dates.includes(preferred)) elements.stayDate.value = preferred;
+    if (preferred && dates.includes(preferred)) { elements.stayDate.value = preferred; return true; }
+    return false;
   }
   function formatDate(value) {
     return model.formatJapaneseDate(value);
@@ -87,6 +102,116 @@
     if (!value || !/(Z|[+-]\d\d:\d\d)$/.test(value) || Number.isNaN(Date.parse(value))) return null;
     return new Intl.DateTimeFormat("ja-JP", {timeZone:"Asia/Tokyo", year:"numeric",month:"numeric",day:"numeric",hour:"2-digit",minute:"2-digit"}).format(new Date(value));
   }
+
+  function chartWidth(container, fallback) {
+    return Math.round(container?.clientWidth || 0) || fallback;
+  }
+  function polylines(points, x, y, className) {
+    return model.trendSegments(points).map((segment) => segment.length === 1 ? "" :
+      `<polyline class="${className}" points="${segment.map((point) => `${x(point.index).toFixed(1)},${y(point.value).toFixed(1)}`).join(" ")}"/>`).join("");
+  }
+  function directionBadge(direction) {
+    return direction ? `<span class="hpt-direction hpt-direction--${escapeHtml(direction.code)}">${escapeHtml(direction.label)}</span>` : "";
+  }
+  function renderMarketTrend(view) {
+    const region = selectedRegion();
+    const chart = document.querySelector("#hpt-market-chart");
+    const market = view.market;
+    const usable = market.status !== "insufficient";
+    document.querySelector("#hpt-trend-market-name").textContent = region.name;
+    document.querySelector("#hpt-market-trend").dataset.coverage = market.status;
+    const coverage = `比較可能 ${market.validCount}/${market.expectedCount}施設`;
+    document.querySelector("#hpt-trend-result").innerHTML = usable
+      ? `<span class="hpt-trend-result__label">7日前比${market.status === "reference" ? '<em class="hpt-reference-badge">参考</em>' : ""}</span><strong class="hpt-trend-result__value">${escapeHtml(pct(market.changePct))}</strong><span class="hpt-trend-result__meta">${directionBadge(market.direction)}<small>${escapeHtml(coverage)}</small></span>`
+      : `<span class="hpt-trend-result__label">7日前比</span><strong class="hpt-trend-result__value hpt-trend-result__value--status">比較データ不足</strong><span class="hpt-trend-result__meta"><small>${escapeHtml(coverage)}</small></span>`;
+
+    const width = chartWidth(chart, 900);
+    const narrow = width < 560;
+    const height = narrow ? 240 : 300;
+    const left = narrow ? 40 : 54, right = narrow ? 14 : 26, top = 26, bottom = 40;
+    const axis = model.trendAxis(market.points.map((point) => point.value));
+    const x = (index) => left + index * ((width - left - right) / (model.DAILY_TREND_LABELS.length - 1));
+    const y = (value) => top + (axis.max - value) * ((height - top - bottom) / (axis.max - axis.min));
+    const last = model.DAILY_TREND_LABELS.length - 1;
+    const grid = axis.ticks.map((value) => `<line class="${value === 0 ? "hpt-mt-zero" : "hpt-mt-grid"}" x1="${left}" x2="${width - right}" y1="${y(value)}" y2="${y(value)}"/><text class="hpt-mt-axis" x="${left - 8}" y="${y(value) + 4}" text-anchor="end">${value > 0 ? "+" : ""}${value}%</text>`).join("");
+    const days = model.DAILY_TREND_LABELS.map((label, index) => `<text class="hpt-mt-axis${index === last ? " hpt-mt-axis--today" : ""}" x="${x(index)}" y="${height - 14}" text-anchor="middle">${label}</text>`).join("");
+    let body = "";
+    if (usable) {
+      const segments = model.trendSegments(market.points);
+      const area = segments.filter((segment) => segment.length > 1).map((segment) => `<polygon class="hpt-mt-area" points="${x(segment[0].index)},${y(axis.min)} ${segment.map((point) => `${x(point.index).toFixed(1)},${y(point.value).toFixed(1)}`).join(" ")} ${x(segment.at(-1).index)},${y(axis.min)}"/>`).join("");
+      const dots = market.points.map((point, index) => point.value == null ? "" : `<circle class="hpt-mt-dot${index === last ? " hpt-mt-dot--today" : ""}" cx="${x(index)}" cy="${y(point.value)}" r="${index === last ? 6 : 4.5}" data-point="${index + 1}"><title>${escapeHtml(point.label)} ${escapeHtml(pct(point.value))}</title></circle>`).join("");
+      const values = market.points.map((point, index) => point.value == null || (narrow && index !== last && index !== 0) ? "" : `<text class="hpt-mt-value${index === last ? " hpt-mt-value--today" : ""}" x="${x(index)}" y="${y(point.value) - 13}" text-anchor="middle">${escapeHtml(pct(point.value))}</text>`).join("");
+      body = `${area}${polylines(market.points, x, y, "hpt-mt-shadow")}${polylines(market.points, x, y, "hpt-mt-line")}${dots}${values}`;
+    }
+    const empty = usable ? "" : `<p class="hpt-mt-empty"><strong>比較データ不足</strong>${escapeHtml(view.reasonText)}<br>不足している日を0%として線は描きません。</p>`;
+    chart.innerHTML = `<svg viewBox="0 0 ${width} ${height}" width="${width}" height="${height}" aria-hidden="true">${grid}${days}${body}</svg>${empty}`;
+    chart.setAttribute("aria-label", usable
+      ? `${region.name}の7日前から今日までの8点の日次変化率。${market.points.map((point) => `${point.label} ${point.value == null ? "データなし" : pct(point.value)}`).join("、")}`
+      : `${region.name}の7日間の値動きは比較データ不足のため表示しません。`);
+
+    const captions = [`<span>${escapeHtml(coverage)}${market.status === "reference" ? "（参考値）" : ""}</span>`, `<span>条件：大人2名・1室・1泊・${MEAL_LABELS[TREND_MEAL]}</span>`];
+    if (elements.meal.value !== TREND_MEAL) captions.push(`<span class="hpt-trend-caption__note">7日トレンドは${MEAL_LABELS[TREND_MEAL]}で集計しています。選択中の${MEAL_LABELS[elements.meal.value]}は「料金を詳しく見る」に反映されます。</span>`);
+    document.querySelector("#hpt-trend-caption").innerHTML = captions.join("");
+    document.querySelector("#hpt-market-table").innerHTML = usable ? `<details><summary>値動きを表で確認</summary><table><thead><tr><th>観測日</th><th>7日前比</th></tr></thead><tbody>${market.points.map((point) => `<tr><td>${escapeHtml(point.label)}${point.snapshotDate ? `（${escapeHtml(formatDate(point.snapshotDate))}）` : ""}</td><td>${point.value == null ? "データなし" : escapeHtml(pct(point.value))}</td></tr>`).join("")}</tbody></table></details>` : "";
+  }
+
+  function renderCoreFacilities(view) {
+    const list = document.querySelector("#hpt-core-list");
+    const selectedNo = Number(elements.hotel.value);
+    list.innerHTML = view.facilities.map((facility, index) => {
+      const selected = facility.hotel_no === selectedNo;
+      const usable = facility.coverage !== "insufficient";
+      const coverageText = facility.coverage === "insufficient"
+        ? `比較データ不足（共通宿泊日 ${facility.commonStayDates}泊）`
+        : `${COVERAGE_LABELS[facility.coverage]} ${facility.commonStayDates}宿泊日`;
+      return `<article class="hpt-core-row${selected ? " hpt-core-row--selected" : ""} hpt-core-row--${facility.coverage}" data-hotel-no="${facility.hotel_no}" data-coverage="${facility.coverage}">
+        <div class="hpt-core-row__name"><span class="hpt-core-row__index">${index + 1}</span><div><strong>${escapeHtml(facility.name)}</strong><small>${selected ? "選択施設 / CORE" : "CORE"}</small></div></div>
+        <div class="hpt-core-row__spark"><div class="hpt-spark" data-spark-index="${index}"></div><div class="hpt-spark-axis" aria-hidden="true"><span>7日前</span><span>今日</span></div></div>
+        <div class="hpt-core-row__change">${usable ? `<strong>${escapeHtml(pct(facility.changePct))}</strong>${facility.coverage === "reference" ? '<em class="hpt-reference-badge">参考</em>' : ""}${directionBadge(facility.direction)}` : '<strong class="hpt-core-row__status">比較データ不足</strong>'}<small>7日前比</small></div>
+        <div class="hpt-core-row__coverage">${escapeHtml(coverageText)}</div>
+      </article>`;
+    }).join("");
+    // One shared scale so the shapes of the five facilities can be compared directly.
+    const axis = model.trendAxis(view.facilities.flatMap((facility) => facility.points.map((point) => point.value)), {floor: -3, ceiling: 3, headroom: 0});
+    list.querySelectorAll(".hpt-spark").forEach((container) => {
+      const facility = view.facilities[Number(container.dataset.sparkIndex)];
+      const width = chartWidth(container, 280), height = 52, pad = 6;
+      const last = model.DAILY_TREND_LABELS.length - 1;
+      const x = (index) => pad + index * ((width - pad * 2) / last);
+      const y = (value) => pad + (axis.max - value) * ((height - pad * 2) / (axis.max - axis.min));
+      const base = `<line class="hpt-spark-base" x1="${pad}" x2="${width - pad}" y1="${y(0)}" y2="${y(0)}"/>`;
+      if (facility.coverage === "insufficient") {
+        container.innerHTML = `<svg viewBox="0 0 ${width} ${height}" width="${width}" height="${height}" aria-hidden="true">${base}</svg><span class="hpt-spark-empty">線は表示しません</span>`;
+        container.setAttribute("role", "img");
+        container.setAttribute("aria-label", `${facility.name}は比較データ不足のため値動きを表示しません`);
+        return;
+      }
+      const dots = facility.points.map((point, index) => point.value == null ? "" : `<circle class="hpt-spark-dot" cx="${x(index)}" cy="${y(point.value)}" r="${index === last ? 3.2 : 2.1}" data-point="${index + 1}"/>`).join("");
+      container.innerHTML = `<svg viewBox="0 0 ${width} ${height}" width="${width}" height="${height}" aria-hidden="true">${base}${polylines(facility.points, x, y, "hpt-spark-line")}${dots}</svg>`;
+      container.setAttribute("role", "img");
+      container.setAttribute("aria-label", `${facility.name}の8点推移。${facility.points.map((point) => `${point.label} ${point.value == null ? "データなし" : pct(point.value)}`).join("、")}`);
+    });
+  }
+
+  function mapPoint([lat, lon]) {
+    return [(lon - MAP.lonMin) * MAP.lonScale * MAP.unit, (MAP.latMax - lat) * MAP.unit];
+  }
+  function renderMarkets() {
+    const active = elements.region.value;
+    const outline = JAPAN_OUTLINE.map((shape) => `<polygon points="${shape.map(([lon, lat]) => mapPoint([lat, lon]).map((value) => value.toFixed(1)).join(",")).join(" ")}"/>`).join("");
+    const points = regions.filter((region) => MARKET_LOCATIONS[region.code]).map((region) => {
+      const [px, py] = mapPoint(MARKET_LOCATIONS[region.code]);
+      return `<button type="button" class="hpt-map-point${region.code === active ? " is-active" : ""}" data-region="${escapeHtml(region.code)}" style="left:${(px / MAP.width * 100).toFixed(2)}%;top:${(py / MAP.height * 100).toFixed(2)}%" tabindex="-1" aria-hidden="true" title="${escapeHtml(region.name)}"><span>${escapeHtml(region.name)}</span></button>`;
+    }).join("");
+    document.querySelector("#hpt-map").innerHTML = `<svg viewBox="0 0 ${MAP.width} ${MAP.height}" aria-hidden="true"><g class="hpt-map-land">${outline}</g></svg>${points}`;
+    document.querySelector("#hpt-market-chips").innerHTML = regions.map((region) => `<button type="button" class="hpt-market-chip${region.code === active ? " is-active" : ""}" data-region="${escapeHtml(region.code)}" aria-pressed="${region.code === active}">${escapeHtml(region.name)}</button>`).join("");
+  }
+  function renderTrendSection() {
+    const view = model.dailyTrendView(selectedRegion());
+    renderMarketTrend(view);
+    renderCoreFacilities(view);
+  }
+
   function renderKpis(summary, comparison) {
     const selected = summary.positions.find((row) => row.hotel_no === Number(elements.hotel.value));
     const rank = model.priceRank(summary, elements.hotel.value);
@@ -144,12 +269,6 @@
     chart.setAttribute("aria-label",`${profile.name}の総合評価月次推移。${rows[0].snapshot_month} ${Number(rows[0].review_average).toFixed(2)}から${rows.at(-1).snapshot_month} ${Number(rows.at(-1).review_average).toFixed(2)}`);
     table.innerHTML=`<details><summary>評価推移を表で確認</summary><table><thead><tr><th>取得月</th><th>総合評価</th></tr></thead><tbody>${rows.map((row)=>`<tr><td>${escapeHtml(row.snapshot_month)}</td><td>${Number(row.review_average).toFixed(2)}</td></tr>`).join("")}</tbody></table></details>`;
   }
-  function renderReview() {
-    const profile=selectedProfile(),container=document.querySelector("#hpt-review"),review=profile?.latest?.latest_review_excerpt;
-    if (!profile?.latest) {container.innerHTML='<p class="hpt-empty">口コミデータを蓄積しています。</p>';return;}
-    const source=profile.source_url?`<a href="${escapeHtml(profile.source_url)}" target="_blank" rel="noopener noreferrer">楽天トラベルで全文を確認 ↗</a>`:"";
-    container.innerHTML=review?`<blockquote>${escapeHtml(review)}</blockquote><p>取得月：${escapeHtml(profile.latest.snapshot_month)} ／ 楽天トラベル利用者による最新口コミの抜粋</p>${source}`:`<p class="hpt-empty">取得できる最新口コミはありません。</p>${source}`;
-  }
   function renderInsights(summary, comparison) {
     const lines = model.insightLines(summary, comparison, elements.hotel.value);
     const titleFor = (line) => line.includes("7日前比") ? "比較施設群中央値の変化" : line.includes("選択施設") ? "選択施設の位置" : "料金確認の範囲";
@@ -161,26 +280,24 @@
     return snapshotHistory.map((snapshot) => {
       const summary = summarize(snapshot, elements.region.value, elements.stayDate.value, elements.meal.value);
       const selected = summary.positions.find((row) => row.hotel_no === Number(elements.hotel.value));
-      return {snapshot_date:snapshot.snapshot_date, lead_days:dayDiff(elements.stayDate.value, snapshot.snapshot_date), selected_price:selected?.min_price_yen ?? null, median:summary.marketMedian, p25:summary.p25, p75:summary.p75, plan_count:selected?.plan_count || 0, cohort_version:summary.cohortVersion, cohort_valid:summary.cohortValid, property_ids:[...summary.propertyIds].sort().join(",")};
+      return {snapshot_date:snapshot.snapshot_date, lead_days:dayDiff(elements.stayDate.value, snapshot.snapshot_date), selected_price:selected?.min_price_yen ?? null, median:summary.marketMedian, plan_count:selected?.plan_count || 0, cohort_version:summary.cohortVersion, cohort_valid:summary.cohortValid, property_ids:[...summary.propertyIds].sort().join(",")};
     }).filter((row) => row.lead_days >= 0 && (!latestSummary.cohortActive || row.cohort_valid && row.cohort_version === latestSummary.cohortVersion && row.property_ids === expectedIds)).sort((a,b) => a.snapshot_date.localeCompare(b.snapshot_date));
   }
   function renderTrend(rows) {
     const chart = document.querySelector("#hpt-trend-chart");
-    const values = rows.flatMap((row) => [row.selected_price,row.median,row.p25,row.p75]).filter((value) => value != null);
+    const values = rows.flatMap((row) => [row.selected_price,row.median]).filter((value) => value != null);
     if (!values.length) { chart.innerHTML = '<p class="hpt-empty">この条件の推移データはまだありません。</p>'; document.querySelector("#hpt-trend-table").innerHTML = ""; return; }
     const width=920,height=340,left=72,right=24,top=22,bottom=52;
     const minValue=Math.floor(Math.min(...values)*.9/1000)*1000,maxValue=Math.ceil(Math.max(...values)*1.1/1000)*1000;
     const x=(index)=>left+(width-left-right)*(rows.length===1?.5:index/(rows.length-1));
     const y=(value)=>top+(height-top-bottom)*(1-(value-minValue)/Math.max(maxValue-minValue,1));
     const segments=(key)=>{const groups=[];let current=[];rows.forEach((row,index)=>{if(row[key]==null){if(current.length)groups.push(current);current=[]}else current.push(`${x(index)},${y(row[key])}`)});if(current.length)groups.push(current);return groups};
-    const bandGroups=[];let currentBand=[];rows.forEach((row,index)=>{if(row.p25==null||row.p75==null){if(currentBand.length)bandGroups.push(currentBand);currentBand=[]}else currentBand.push({index,p25:row.p25,p75:row.p75})});if(currentBand.length)bandGroups.push(currentBand);
     const grid=[0,.25,.5,.75,1].map((ratio)=>{const value=Math.round(maxValue-(maxValue-minValue)*ratio),yy=top+(height-top-bottom)*ratio;return `<line class="hpt-grid-line" x1="${left}" x2="${width-right}" y1="${yy}" y2="${yy}"/><text class="hpt-axis-label" x="${left-9}" y="${yy+4}" text-anchor="end">${escapeHtml(yen(value))}</text>`}).join("");
     const labels=rows.map((row,index)=>index%Math.max(Math.ceil(rows.length/6),1)===0?`<text class="hpt-axis-label" x="${x(index)}" y="${height-18}" text-anchor="middle">${row.lead_days}日前</text>`:"").join("");
     const dots=rows.map((row,index)=>row.selected_price==null?"":`<circle class="hpt-selected-dot" cx="${x(index)}" cy="${y(row.selected_price)}" r="4"><title>${escapeHtml(row.snapshot_date)} ${escapeHtml(yen(row.selected_price))}</title></circle>`).join("");
     const medianLines=segments("median").map((points)=>`<polyline class="hpt-market-line" points="${points.join(" ")}"/>`).join("");
     const selectedLines=segments("selected_price").map((points)=>`<polyline class="hpt-selected-line" points="${points.join(" ")}"/>`).join("");
-    const bands=bandGroups.map((group)=>{const upper=group.map((item)=>`${x(item.index)},${y(item.p75)}`),lower=[...group].reverse().map((item)=>`${x(item.index)},${y(item.p25)}`);return `<polygon class="hpt-market-band" points="${upper.concat(lower).join(" ")}"/>`}).join("");
-    chart.innerHTML=`<div class="hpt-chart-legend"><span><i class="selected"></i>選択施設</span><span><i class="market"></i>比較施設群中央値</span><span>帯：比較施設群25〜75%</span></div><svg viewBox="0 0 ${width} ${height}" aria-hidden="true">${grid}${bands}${medianLines}${selectedLines}${dots}${labels}</svg>`;
+    chart.innerHTML=`<div class="hpt-chart-legend"><span><i class="selected"></i>選択施設</span><span><i class="market"></i>比較施設群中央値</span></div><svg viewBox="0 0 ${width} ${height}" aria-hidden="true">${grid}${medianLines}${selectedLines}${dots}${labels}</svg>`;
     document.querySelector("#hpt-trend-table").innerHTML=`<details><summary>推移を表で確認</summary><table><thead><tr><th>取得日</th><th>残日数</th><th>選択施設</th><th>比較施設群中央値</th><th>プラン数</th></tr></thead><tbody>${rows.map((row)=>`<tr><td>${escapeHtml(row.snapshot_date)}</td><td>${row.lead_days}日</td><td>${escapeHtml(yen(row.selected_price))}</td><td>${escapeHtml(row.median==null?"比較データ不足":yen(row.median))}</td><td>${row.plan_count}</td></tr>`).join("")}</tbody></table></details>`;
   }
   function renderCalendar() {
@@ -195,13 +312,15 @@
   }
   function render() {
     syncUrl();
+    renderMarkets();
+    renderTrendSection();
     const summary=summarize(latest,elements.region.value,elements.stayDate.value,elements.meal.value);
     const selected=summary.positions.find((row)=>row.hotel_no===Number(elements.hotel.value));
     const comparison=model.sevenDayComparison(latest,snapshotHistory,{regionCode:elements.region.value,hotelNo:elements.hotel.value,stayDate:elements.stayDate.value,mealType:elements.meal.value});
-    renderProfile(summary);renderKpis(summary,comparison);renderInsights(summary,comparison);renderTrend(buildTrend());renderCalendar();renderRatings();renderRatingHistory();renderReview();renderPositions(summary);
-    document.querySelector("#hpt-scope-title").textContent=summary.cohortActive?`${selectedRegion().name}・比較${summary.target}施設`:`${selectedRegion().name}・${selectedRegion().properties.length}施設`;
+    renderProfile(summary);renderKpis(summary,comparison);renderInsights(summary,comparison);renderTrend(buildTrend());renderCalendar();renderRatings();renderRatingHistory();renderPositions(summary);
+    document.querySelector("#hpt-scope-title").textContent=`${selectedRegion().name}・比較${summary.target}施設`;
     const cohortMeta=summary.cohortActive?` ／ 比較施設群：${summary.cohortVersion}`:"";
-    document.querySelector("#hpt-selection-meta").textContent=`地域：${selectedRegion().name}${cohortMeta} ／ 選択施設：${selected?.name || "—"} ／ 宿泊日：${formatDate(elements.stayDate.value)} ／ 条件：大人2名・1室・1泊・${MEAL_LABELS[elements.meal.value]} ／ 取得日：${latest.snapshot_date}`;
+    document.querySelector("#hpt-selection-meta").textContent=`市場：${selectedRegion().name}${cohortMeta} ／ 選択施設：${selected?.name || "—"} ／ 宿泊日：${formatDate(elements.stayDate.value)} ／ 条件：大人2名・1室・1泊・${MEAL_LABELS[elements.meal.value]} ／ 取得日：${latest.snapshot_date}`;
     const trendComparison=document.querySelector("#hpt-trend-comparison");
     const comparisonParts=[];
     if (comparison.selectedChange != null) comparisonParts.push(`選択施設：7日前 ${yen(comparison.previousSelected.min_price_yen)} → 現在 ${yen(selected?.min_price_yen)}（${pct(comparison.selectedChange)}）`);
@@ -210,6 +329,11 @@
     trendComparison.textContent=comparisonParts.join(" ／ ");
     const generatedAt=formatGeneratedAt(latest.generated_at);
     elements.freshness.textContent=`取得日：${latest.snapshot_date} ／ 条件：大人2名・1室・1泊・${MEAL_LABELS[elements.meal.value]}${generatedAt?` ／ データ生成日時（日本時間）：${generatedAt}`:""}`;
+  }
+  function selectRegion(code) {
+    if (!regions.some((region) => region.code === code) || code === elements.region.value) return;
+    elements.region.value = code;
+    elements.region.dispatchEvent(new Event("change"));
   }
   async function init() {
     elements.loading.hidden=false;elements.error.hidden=true;elements.dashboard.hidden=true;
@@ -220,12 +344,28 @@
       const historyItems=manifest.snapshots.slice(0,30).filter((item)=>item.date!==latest.snapshot_date&&item.file!==manifest.snapshots[0].file);
       const olderSnapshots=(await Promise.all(historyItems.map((item)=>getJson(`${DATA_ROOT}${item.file}`).catch(()=>null)))).filter(Boolean);
       snapshotHistory=[latest,...olderSnapshots].sort((left,right)=>left.snapshot_date.localeCompare(right.snapshot_date));
-      populateControls();render();elements.loading.hidden=true;elements.dashboard.hidden=false;
+      populateControls();
+      // Charts are sized from their containers, so the dashboard must be visible before rendering.
+      elements.loading.hidden=true;elements.dashboard.hidden=false;
+      render();
       if (window.gtag) window.gtag("event","analysis_result_view",{tool_id:"hotel-price-trends",dataset_version:latest.snapshot_date});
-    } catch (error) {elements.loading.hidden=true;elements.error.hidden=false;elements.errorMessage.textContent=error.message || "時間をおいて再度お試しください。";elements.freshness.textContent="データ取得エラー";}
+    } catch (error) {elements.loading.hidden=true;elements.dashboard.hidden=true;elements.error.hidden=false;elements.errorMessage.textContent=error.message || "時間をおいて再度お試しください。";elements.freshness.textContent="データ取得エラー";}
   }
-  elements.region.addEventListener("change",()=>{populateHotels();populateDates();render()});
-  [elements.hotel,elements.stayDate,elements.meal].forEach((control)=>control.addEventListener("change",render));
+  elements.region.addEventListener("change",()=>{populateHotels();stayDateExplicit=populateDates(stayDateExplicit?elements.stayDate.value:null);render()});
+  elements.stayDate.addEventListener("change",()=>{stayDateExplicit=true;render()});
+  [elements.hotel,elements.meal].forEach((control)=>control.addEventListener("change",render));
+  document.querySelector("#hpt-dashboard").addEventListener("click",(event)=>{
+    const target=event.target.closest("[data-region]");
+    if (target) selectRegion(target.dataset.region);
+  });
+  let resizeFrame=0;
+  let lastWidth=window.innerWidth;
+  window.addEventListener("resize",()=>{
+    if (!latest || window.innerWidth===lastWidth) return;
+    lastWidth=window.innerWidth;
+    cancelAnimationFrame(resizeFrame);
+    resizeFrame=requestAnimationFrame(renderTrendSection);
+  });
   elements.retry.addEventListener("click",init);
   init();
 })();

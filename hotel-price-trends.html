@@ -6,7 +6,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>宿泊料金トレンド｜比較施設群の料金推移・施設比較｜宿泊DXラボ</title>
-  <meta name="description" content="大人2名1室の同一条件で継続観測する比較施設群について、宿泊料金推移、比較施設群中央値、価格ポジション、楽天トラベル利用者評価を確認できる無料分析ツールです。">
+  <meta name="description" content="全国9市場の固定比較施設群を大人2名1室の同一条件で毎日観測し、直近7日間の宿泊料金の値動きを市場と施設ごとに確認できる無料分析ツールです。">
   <meta name="robots" content="index,follow,max-image-preview:large">
   <meta name="theme-color" content="#17324d">
   <link rel="canonical" href="https://lab.ugatta-llc.com/hotel-price-trends.html">
@@ -16,9 +16,9 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&amp;display=swap">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DotGothic16&amp;text=LAB%200123456789&amp;display=swap">
   <link rel="stylesheet" href="css/useful.css?v=20261002brand3">
-  <link rel="stylesheet" href="css/hotel-price-trends.css?v=20261004review1">
+  <link rel="stylesheet" href="css/hotel-price-trends.css?v=20261005trend1">
   <meta property="og:type" content="website"><meta property="og:locale" content="ja_JP"><meta property="og:site_name" content="宿泊DXラボ">
-  <meta property="og:title" content="宿泊料金トレンド｜宿泊DXラボ"><meta property="og:description" content="継続観測する比較施設群を、同じ宿泊条件の料金推移と利用者評価で比較します。">
+  <meta property="og:title" content="宿泊料金トレンド｜宿泊DXラボ"><meta property="og:description" content="この1週間、市場は上げたか。下げたか。全国9市場・比較45施設の宿泊料金の値動きを可視化します。">
   <meta property="og:url" content="https://lab.ugatta-llc.com/hotel-price-trends.html"><meta property="og:image" content="https://lab.ugatta-llc.com/images/og-lab.jpg">
   <meta name="twitter:card" content="summary_large_image">
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"宿泊料金トレンド","url":"https://lab.ugatta-llc.com/hotel-price-trends.html","applicationCategory":"BusinessApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"JPY"},"provider":{"@type":"Organization","name":"宿泊DXラボ","url":"https://lab.ugatta-llc.com/","logo":"https://lab.ugatta-llc.com/images/lab-logo.png"}}</script>
@@ -37,17 +37,16 @@
     <nav class="breadcrumb container" aria-label="パンくずリスト"><ol><li><a href="/">ホーム</a></li><li><a href="/#analysis-tools">分析・ツール</a></li><li aria-current="page">宿泊料金トレンド</li></ol></nav>
 
     <section class="page-hero price-trends-hero"><div class="container price-trends-hero__grid">
-      <div><p class="eyebrow lab-eyebrow"><span class="lab-code">LAB 03</span><span>HOTEL PRICE TRENDS</span></p><h1>宿泊料金<br>トレンド</h1><p class="price-trends-hero__lead">同じ条件で、地域の料金と自施設の位置を比べる。</p></div>
-      <aside class="price-trends-scope"><span>比較条件</span><strong>大人2名・1室・1泊</strong><small>固定した比較施設群／料金は毎日、評価は毎月更新</small></aside>
+      <div><p class="eyebrow lab-eyebrow"><span class="lab-code">LAB 03</span><span>HOTEL PRICE TRENDS</span></p><h1>宿泊料金<br>トレンド</h1><p class="price-trends-hero__copy">この1週間、市場は上げたか。下げたか。</p><p class="price-trends-hero__lead">同じ宿泊条件の料金を継続観測し、直近7日間でどう動いたかを可視化します。</p></div>
+      <aside class="price-trends-scope"><span>OBSERVATION SCOPE</span><strong>全国9市場・比較45施設</strong><small>大人2名・1室・1泊／固定した比較施設群を毎日観測</small></aside>
     </div></section>
 
     <section class="hpt-tool" aria-labelledby="hpt-title"><div class="container">
       <div class="hpt-controls" id="hpt-title">
-        <div class="hpt-controls__intro"><p class="eyebrow">SELECT CONDITIONS</p><h2>表示条件を選ぶ</h2><p>宿泊日と食事条件をそろえて、施設別の代表料金を比較します。</p></div>
+        <div class="hpt-controls__intro"><p class="eyebrow">SELECT CONDITIONS</p><h2>表示条件を選ぶ</h2><p>市場と施設を選ぶと、比較施設群の直近7日間の値動きを表示します。</p></div>
         <div class="hpt-filter-grid">
-          <label>地域<select id="hpt-region" aria-label="地域"></select></label>
-          <label>対象施設<select id="hpt-hotel" aria-label="対象施設"></select></label>
-          <label>宿泊日<select id="hpt-stay-date" aria-label="宿泊日"></select></label>
+          <label>市場<select id="hpt-region" aria-label="市場"></select></label>
+          <label>選択施設<select id="hpt-hotel" aria-label="選択施設"></select></label>
           <label>食事条件<select id="hpt-meal" aria-label="食事条件"><option value="two_meals">朝夕食付き</option><option value="breakfast">朝食付き</option><option value="room_only">素泊まり</option></select></label>
         </div>
         <p class="hpt-freshness" id="hpt-freshness" aria-live="polite">データを読み込んでいます…</p>
@@ -57,27 +56,55 @@
       <div class="data-error" id="hpt-error" hidden><strong>データを表示できませんでした</strong><p id="hpt-error-message"></p><button class="button button--outline" id="hpt-retry" type="button">もう一度読み込む</button></div>
 
       <div class="hpt-dashboard" id="hpt-dashboard" hidden>
-        <div class="data-scope-note"><span>DATA SCOPE</span><strong id="hpt-scope-title">選択地域</strong><p id="hpt-scope-detail">宿泊DXラボが継続観測する固定比較施設群を、1施設1料金として集計します。料金は各施設の指定条件の最低料金で、客室・プラン内容は同一ではありません。</p></div>
+        <section class="hpt-markets" aria-labelledby="hpt-markets-title">
+          <div class="hpt-markets__copy"><p class="eyebrow">OBSERVED MARKETS</p><h2 id="hpt-markets-title">観測中の市場</h2><p>地図の点または市場名を選ぶと切り替わります。</p></div>
+          <div class="hpt-map" id="hpt-map"></div>
+          <div class="hpt-market-chips" id="hpt-market-chips" role="group" aria-label="市場を選ぶ"></div>
+        </section>
 
-        <section class="hpt-section" aria-labelledby="hpt-kpi-title"><div class="hpt-heading"><div><p class="eyebrow">MARKET SNAPSHOT</p><h2 id="hpt-kpi-title">選択した宿泊日の料金状況</h2></div><p>1施設1代表料金で比較</p></div><p class="hpt-selection-meta" id="hpt-selection-meta"></p><div class="hpt-kpi-grid" id="hpt-kpis"></div></section>
+        <section class="hpt-trend-hero" id="hpt-market-trend" aria-labelledby="hpt-market-trend-title" data-test="market-daily-trend">
+          <div class="hpt-trend-hero__head">
+            <div><p class="eyebrow">7 DAY MARKET TREND</p><h2 id="hpt-market-trend-title"><span id="hpt-trend-market-name">市場</span>の直近7日の値動き</h2><p class="hpt-trend-hero__lead">7日前から今日までの8回の観測を使用。共通の宿泊日だけで比べた、CORE施設ごとの変化率の中央値です。</p></div>
+            <div class="hpt-trend-result" id="hpt-trend-result" aria-live="polite"></div>
+          </div>
+          <div class="hpt-trend-chart" id="hpt-market-chart" role="img" aria-label="市場の7日間の値動き"></div>
+          <div class="hpt-trend-caption" id="hpt-trend-caption"></div>
+          <div class="hpt-accessible-table hpt-accessible-table--dark" id="hpt-market-table"></div>
+        </section>
 
-        <section class="hpt-panel hpt-insight-panel" aria-labelledby="hpt-insight-title"><div class="hpt-heading"><div><p class="eyebrow">DATA INSIGHT</p><h2 id="hpt-insight-title">データから読み取れること</h2></div></div><div class="hpt-insights" id="hpt-insights"></div><p class="hpt-insight-disclaimer">料金データだけでは需要や稼働状況は判断できません。自施設の予約状況とあわせてご確認ください。</p></section>
+        <section class="hpt-panel hpt-core" id="hpt-core-facilities" aria-labelledby="hpt-core-title" data-test="core-facility-list">
+          <div class="hpt-heading"><div><p class="eyebrow">CORE 5 FACILITIES</p><h2 id="hpt-core-title">比較施設群の7日間</h2></div><p>各施設も同じ8回の観測です。縦軸は5施設共通で、値動きの形を比べられます。</p></div>
+          <div class="hpt-core-list" id="hpt-core-list"></div>
+        </section>
 
-        <section class="hpt-panel" aria-labelledby="hpt-trend-title"><div class="hpt-heading"><div><p class="eyebrow">MARKET MOVEMENT</p><h2 id="hpt-trend-title">同じ宿泊日の価格変化</h2></div><p id="hpt-trend-comparison" hidden></p></div><p class="hpt-trend-note">同じ宿泊日の料金を取得日ごとに表示します。</p><p class="hpt-trend-note">比較施設群はバージョン単位で固定し、異なるバージョン間は比較しません。料金未確認のCOREをBACKUPで日次補充することもありません。</p><div class="hpt-chart" id="hpt-trend-chart" role="img" aria-label="選択施設と比較施設群中央値の料金推移"></div><div class="hpt-accessible-table" id="hpt-trend-table"></div></section>
+        <div class="hpt-details">
+          <details class="hpt-detail" id="hpt-detail-price"><summary><span>料金を詳しく見る</span><small>宿泊日別の料金・30日カレンダー・価格ポジション</small></summary><div class="hpt-detail__body">
+            <div class="hpt-detail-controls"><label>宿泊日<select id="hpt-stay-date" aria-label="宿泊日"></select></label></div>
+            <div class="data-scope-note"><span>DATA SCOPE</span><strong id="hpt-scope-title">選択市場</strong><p id="hpt-scope-detail">宿泊DXラボが継続観測する固定比較施設群を、1施設1料金として集計します。料金は各施設の指定条件の最低料金で、客室・プラン内容は同一ではありません。</p></div>
 
-        <section class="hpt-panel" aria-labelledby="hpt-calendar-title"><div class="hpt-heading"><div><p class="eyebrow">30 NIGHT VIEW</p><h2 id="hpt-calendar-title">30日料金カレンダー</h2></div><p>比較施設群中央値に対する価格位置</p></div><div class="hpt-calendar-legend"><span class="hpt-legend-low">中央値より10%以上低い</span><span class="hpt-legend-mid">中央値付近</span><span class="hpt-legend-high">中央値より10%以上高い</span><span class="hpt-legend-reference">3/5・参考値</span><span class="hpt-legend-none">比較データ不足</span></div><div class="hpt-calendar" id="hpt-calendar"></div></section>
+            <section class="hpt-section" aria-labelledby="hpt-kpi-title"><div class="hpt-heading"><div><p class="eyebrow">MARKET SNAPSHOT</p><h2 id="hpt-kpi-title">選択した宿泊日の料金状況</h2></div><p>1施設1代表料金で比較</p></div><p class="hpt-selection-meta" id="hpt-selection-meta"></p><div class="hpt-kpi-grid" id="hpt-kpis"></div></section>
 
-        <section class="hpt-panel" aria-labelledby="hpt-position-title"><div class="hpt-heading"><div><p class="eyebrow">MARKET POSITION</p><h2 id="hpt-position-title">施設別価格ポジション</h2></div><p>選択日の代表料金</p></div><div class="hpt-positions" id="hpt-positions"></div></section>
+            <section class="hpt-panel hpt-insight-panel" aria-labelledby="hpt-insight-title"><div class="hpt-heading"><div><p class="eyebrow">DATA INSIGHT</p><h2 id="hpt-insight-title">データから読み取れること</h2></div></div><div class="hpt-insights" id="hpt-insights"></div><p class="hpt-insight-disclaimer">料金データだけでは需要や稼働状況は判断できません。自施設の予約状況とあわせてご確認ください。</p></section>
 
-        <section class="hpt-profile" id="hpt-profile" aria-live="polite" aria-label="選択施設の基本情報"></section>
+            <section class="hpt-panel" aria-labelledby="hpt-trend-title"><div class="hpt-heading"><div><p class="eyebrow">MARKET MOVEMENT</p><h2 id="hpt-trend-title">選択した宿泊日の価格変化</h2></div><p id="hpt-trend-comparison" hidden></p></div><p class="hpt-trend-note">選択した宿泊日の料金を取得日ごとに表示します。</p><p class="hpt-trend-note">比較施設群はバージョン単位で固定し、異なるバージョン間は比較しません。料金未確認のCOREをBACKUPで日次補充することもありません。</p><div class="hpt-chart" id="hpt-trend-chart" role="img" aria-label="選択施設と比較施設群中央値の料金推移"></div><div class="hpt-accessible-table" id="hpt-trend-table"></div></section>
 
-        <section class="hpt-panel" aria-labelledby="hpt-ratings-title"><div class="hpt-heading"><div><p class="eyebrow">GUEST RATINGS</p><h2 id="hpt-ratings-title">評価バランス</h2></div><p>楽天トラベル利用者評価を比較</p></div><div class="hpt-ratings" id="hpt-ratings" role="img"></div><div class="hpt-accessible-table" id="hpt-ratings-table"></div></section>
+            <section class="hpt-panel" aria-labelledby="hpt-calendar-title"><div class="hpt-heading"><div><p class="eyebrow">30 NIGHT VIEW</p><h2 id="hpt-calendar-title">宿泊日別の料金カレンダー</h2></div><p>比較施設群中央値に対する価格位置</p></div><div class="hpt-calendar-legend"><span class="hpt-legend-low">中央値より10%以上低い</span><span class="hpt-legend-mid">中央値付近</span><span class="hpt-legend-high">中央値より10%以上高い</span><span class="hpt-legend-reference">3/5・参考値</span><span class="hpt-legend-none">比較データ不足</span></div><div class="hpt-calendar" id="hpt-calendar"></div></section>
 
-        <section class="hpt-panel" aria-labelledby="hpt-rating-history-title"><div class="hpt-heading"><div><p class="eyebrow">MONTHLY RATING</p><h2 id="hpt-rating-history-title">総合評価の月次推移</h2></div><p>月次取得のため、2か月目から推移を表示</p></div><div class="hpt-chart" id="hpt-rating-history" role="img" aria-label="総合評価の月次推移"></div><div class="hpt-accessible-table" id="hpt-rating-history-table"></div></section>
+            <section class="hpt-panel" aria-labelledby="hpt-position-title"><div class="hpt-heading"><div><p class="eyebrow">MARKET POSITION</p><h2 id="hpt-position-title">施設別価格ポジション</h2></div><p>選択日の代表料金</p></div><div class="hpt-positions" id="hpt-positions"></div></section>
+          </div></details>
 
-        <section class="hpt-panel hpt-review-panel" aria-labelledby="hpt-review-title"><div class="hpt-heading"><div><p class="eyebrow">LATEST REVIEW</p><h2 id="hpt-review-title">最新口コミ</h2></div><p>取得時点の最新口コミから120文字以内を掲載</p></div><div class="hpt-review" id="hpt-review"></div></section>
+          <details class="hpt-detail" id="hpt-detail-profile"><summary><span>施設情報を見る</span><small>選択施設の所在地・楽天参考最安料金</small></summary><div class="hpt-detail__body">
+            <section class="hpt-profile" id="hpt-profile" aria-live="polite" aria-label="選択施設の基本情報"></section>
+          </div></details>
 
-        <section class="hpt-method" aria-labelledby="hpt-method-title"><div><p class="eyebrow">METHODOLOGY</p><h2 id="hpt-method-title">データの見方</h2></div><div><p>比較料金は楽天トラベル空室検索APIから取得した、大人2名・1室・1泊の指定条件における施設ごとの最低料金です。楽天参考最安料金は施設基本情報に掲載された参考値で、同じ検索条件の料金ではありません。</p><p>比較施設群中央値は、宿泊DXラボが同一条件で継続観測する固定CORE施設の代表料金を1施設1値として計算します。5施設中3施設の日は参考値、0〜2施設の日は中央値と順位を表示しません。BACKUPは日次の穴埋めには使わず、正式入替時は比較施設群のバージョンを更新します。販売プランが見つからない状態だけを理由に、満室とは判定しません。</p><p>評価と口コミは楽天トラベル利用者による取得時点の情報です。表示内容は料金判断の参考情報であり、需要・稼働率・売上や因果関係を保証するものではありません。</p><p>本ツールは宿泊DXラボ（合同会社UGATTA）が作成・運営しています。</p>
+          <details class="hpt-detail" id="hpt-detail-ratings"><summary><span>施設評価を見る</span><small>楽天トラベル利用者評価・月次推移</small></summary><div class="hpt-detail__body">
+            <section class="hpt-panel" aria-labelledby="hpt-ratings-title"><div class="hpt-heading"><div><p class="eyebrow">GUEST RATINGS</p><h2 id="hpt-ratings-title">評価バランス</h2></div><p>楽天トラベル利用者評価を比較</p></div><div class="hpt-ratings" id="hpt-ratings" role="img"></div><div class="hpt-accessible-table" id="hpt-ratings-table"></div></section>
+
+            <section class="hpt-panel" aria-labelledby="hpt-rating-history-title"><div class="hpt-heading"><div><p class="eyebrow">MONTHLY RATING</p><h2 id="hpt-rating-history-title">総合評価の月次推移</h2></div><p>月次取得のため、2か月目から推移を表示</p></div><div class="hpt-chart" id="hpt-rating-history" role="img" aria-label="総合評価の月次推移"></div><div class="hpt-accessible-table" id="hpt-rating-history-table"></div></section>
+          </div></details>
+        </div>
+
+        <section class="hpt-method" aria-labelledby="hpt-method-title"><div><p class="eyebrow">METHODOLOGY</p><h2 id="hpt-method-title">データの見方</h2></div><div><p>比較料金は楽天トラベル空室検索APIから取得した、大人2名・1室・1泊の指定条件における施設ごとの最低料金です。楽天参考最安料金は施設基本情報に掲載された参考値で、同じ検索条件の料金ではありません。</p><p>7日トレンドは、7日前から今日までの8回の観測すべてで料金を確認できた宿泊日（共通宿泊日）だけを使い、施設ごとに7日前からの変化率の中央値を求めます。共通宿泊日が10泊以上で比較可能、5〜9泊は参考、4泊以下は比較データ不足です。市場の値は比較可能なCORE施設の中央値で、4施設以上で表示、3施設は参考、2施設以下は表示しません。±3%以上の変化を上昇傾向・低下傾向とします。7日トレンドは朝夕食付きの料金で集計しています。</p><p>比較施設群中央値は、宿泊DXラボが同一条件で継続観測する固定CORE施設の代表料金を1施設1値として計算します。5施設中3施設の日は参考値、0〜2施設の日は中央値と順位を表示しません。BACKUPは日次の穴埋めには使わず、正式入替時は比較施設群のバージョンを更新します。販売プランが見つからない状態だけを理由に、満室とは判定しません。</p><p>評価は楽天トラベル利用者による取得時点の情報です。表示内容は料金判断の参考情報であり、需要・稼働率・売上や因果関係を保証するものではありません。</p><p>本ツールは宿泊DXラボ（合同会社UGATTA）が作成・運営しています。</p>
           <!-- Rakuten Web Services Attribution Snippet FROM HERE -->
           <a href="https://developers.rakuten.com/" target="_blank">Supported by Rakuten Developers</a>
           <!-- Rakuten Web Services Attribution Snippet TO HERE -->
@@ -90,7 +117,7 @@
 
   <footer class="site-footer"><div class="container footer-grid"><div><a class="brand brand--footer" href="/"><span class="brand-copy"><strong>宿泊DXラボ</strong><small>データを見る。試す。考える。</small></span></a><p class="footer-lead">宿泊・観光について、データ・AI・DXを使って分析・実験するラボです。</p><small>運営：<a href="https://ugatta-llc.com/">合同会社UGATTA</a></small></div><div class="footer-links"><div><p class="footer-heading">LAB</p><a href="/#analysis-tools">分析・ツール</a><a href="/#about-lab">宿泊DXラボについて</a></div><div><p class="footer-heading">CONTACT</p><a data-analytics-event="consultation_click" data-tool-id="hotel-price-trends-footer" href="https://forms.gle/yjinqFdntoXhTmgk7" target="_blank" rel="noopener noreferrer">お問い合わせ ↗</a></div></div></div><div class="container footer-bottom"><span>© 2026 宿泊DXラボ</span><span>料金データは取得時点の参考情報です</span><a class="footer-note-link" href="/classics-ai-management/">ラボノート</a></div></footer>
   <script src="js/site.js?v=20260912a" defer></script>
-  <script src="js/hotel-price-trends-model.js?v=20261004review1" defer></script>
-  <script src="js/hotel-price-trends.js?v=20261004review1" defer></script>
+  <script src="js/hotel-price-trends-model.js?v=20261005trend1" defer></script>
+  <script src="js/hotel-price-trends.js?v=20261005trend1" defer></script>
 </body>
 </html>

@@ -171,5 +171,98 @@
     return lines.slice(0, 3);
   }
 
-  return {addDays, changeLabel, cohortMetadata, conditionsMatch, formatJapaneseDate, insightLines, isFinitePositive, median, priceRank, qualityForCount, ratingPeers, rawQuantile, regionFrom, sevenDayComparison, showPositionBars, signedPercent, summarize};
+  // Legacy regions (no cohort_version) keep being collected and exported, but only
+  // Phase 1 markets whose CORE set is fully observed are offered in the UI.
+  function selectableRegions(manifest, snapshot) {
+    const snapshotByCode = new Map((snapshot?.regions || []).map((region) => [region.code, region]));
+    return (manifest?.regions || []).filter((manifestRegion) => {
+      if (!manifestRegion.cohort_version) return false;
+      const snapshotRegion = snapshotByCode.get(manifestRegion.code);
+      const cohort = cohortMetadata(snapshotRegion);
+      const observed = new Set((snapshotRegion?.rates || []).map((row) => String(row.hotel_no)));
+      return cohort.active && cohort.valid && cohort.version === manifestRegion.cohort_version &&
+        cohort.propertyIds.every((hotelNo) => observed.has(hotelNo));
+    });
+  }
+
+  // The 7-day trend is calculated by the export (app/daily_trends.py). These helpers
+  // only shape that payload for display and must not recompute any change rate.
+  const DAILY_TREND_LABELS = ["7日前", "6日前", "5日前", "4日前", "3日前", "2日前", "昨日", "今日"];
+  const TREND_COVERAGES = ["valid", "reference", "insufficient"];
+  const TREND_REASON_TEXT = {
+    not_exported: "7日トレンドは集計準備中です。",
+    missing_cohort_version: "比較施設群のバージョンを確認できないため表示しません。",
+    cohort_version_mismatch: "期間中に比較施設群のバージョンが変わったため比較しません。",
+    core_set_mismatch: "期間中のCORE施設の観測がそろっていないため表示しません。",
+    missing_baseline_snapshot: "7日前の観測がないため、まだ比較できません。",
+    missing_snapshot: "7日前から今日までの8回分の観測がそろっていません。",
+    insufficient_valid_facilities: "比較可能なCORE施設が2施設以下のため、市場の値動きを表示しません。"
+  };
+  const finiteOrNull = (value) => typeof value === "number" && Number.isFinite(value) ? value : null;
+  const coverageOf = (value) => TREND_COVERAGES.includes(value) ? value : "insufficient";
+  const trendPoints = (series) => DAILY_TREND_LABELS.map((label, index) => ({
+    label, snapshotDate: series?.[index]?.snapshot_date || null, value: finiteOrNull(series?.[index]?.change_pct)
+  }));
+
+  function dailyTrendView(region) {
+    const cohort = cohortMetadata(region);
+    const source = region?.daily_trend || null;
+    const versionMatches = Boolean(source && cohort.version && source.cohort_version === cohort.version);
+    const marketCoverage = source?.market?.trendCoverage || {};
+    const status = versionMatches ? coverageOf(marketCoverage.status ?? source.status) : "insufficient";
+    const usableMarket = status !== "insufficient";
+    const reason = !source ? "not_exported" : !versionMatches ? "cohort_version_mismatch"
+      : usableMarket ? null : source.reason || "insufficient_valid_facilities";
+    const facilityRows = new Map((versionMatches ? source.facilities || [] : []).map((row) => [String(row.hotel_no), row]));
+    const facilities = cohort.properties.map((property) => {
+      const row = facilityRows.get(String(property.hotel_no));
+      const coverage = coverageOf(row?.trendCoverage?.status);
+      const usable = coverage !== "insufficient";
+      return {
+        hotel_no: Number(property.hotel_no), name: property.name, coverage,
+        commonStayDates: Number(row?.trendCoverage?.common_stay_date_count) || 0,
+        points: trendPoints(usable ? row.series : []),
+        changePct: usable ? finiteOrNull(row.series?.at(-1)?.change_pct) : null,
+        direction: usable ? row.trend || null : null
+      };
+    });
+    return {
+      status, reason, reasonText: reason ? TREND_REASON_TEXT[reason] || TREND_REASON_TEXT.missing_snapshot : null,
+      cohortVersion: cohort.version, snapshotDates: source?.snapshot_dates || [],
+      market: {
+        status, points: trendPoints(usableMarket ? source.market.series : []),
+        changePct: usableMarket ? finiteOrNull(source.market.series?.at(-1)?.change_pct) : null,
+        direction: usableMarket ? source.market.trend || null : null,
+        validCount: versionMatches ? Number(marketCoverage.valid_facility_count) || 0 : 0,
+        expectedCount: Number(marketCoverage.expected_facility_count) || cohort.expectedCount
+      },
+      facilities
+    };
+  }
+
+  // Missing values split the line; they are never drawn as 0%.
+  function trendSegments(points) {
+    const segments = [];
+    let current = [];
+    (points || []).forEach((point, index) => {
+      if (point.value == null) { if (current.length) segments.push(current); current = []; }
+      else current.push({...point, index});
+    });
+    if (current.length) segments.push(current);
+    return segments;
+  }
+
+  function trendAxis(values, {floor = -2, ceiling = 4, headroom = 1} = {}) {
+    const finite = values.filter((value) => typeof value === "number" && Number.isFinite(value));
+    const low = Math.min(floor, ...finite.map((value) => value - headroom));
+    const high = Math.max(ceiling, ...finite.map((value) => value + headroom));
+    const step = [1, 2, 5, 10, 20, 50, 100].find((candidate) => (high - low) / candidate <= 5) || 200;
+    const min = Math.floor(low / step) * step;
+    const max = Math.ceil(high / step) * step;
+    const ticks = [];
+    for (let value = max; value >= min; value -= step) ticks.push(value);
+    return {min, max, step, ticks};
+  }
+
+  return {DAILY_TREND_LABELS, addDays, changeLabel, cohortMetadata, conditionsMatch, dailyTrendView, formatJapaneseDate, insightLines, isFinitePositive, median, priceRank, qualityForCount, ratingPeers, rawQuantile, regionFrom, selectableRegions, sevenDayComparison, showPositionBars, signedPercent, summarize, trendAxis, trendSegments};
 });

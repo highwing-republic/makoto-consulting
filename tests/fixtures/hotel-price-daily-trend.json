@@ -1,0 +1,719 @@
+{
+ "_comment": "Generated from hotel-price-trends app/daily_trends.calculate_daily_trends; do not edit by hand.",
+ "valid": {
+  "status": "valid",
+  "reason": null,
+  "cohort_version": "noboribetsu-v1",
+  "core_hotel_nos": [
+   9691,
+   12568,
+   28637,
+   30109,
+   39175
+  ],
+  "snapshot_dates": [
+   "2026-10-04",
+   "2026-10-05",
+   "2026-10-06",
+   "2026-10-07",
+   "2026-10-08",
+   "2026-10-09",
+   "2026-10-10",
+   "2026-10-11"
+  ],
+  "facilities": [
+   {
+    "hotel_no": 9691,
+    "series": [
+     {
+      "snapshot_date": "2026-10-04",
+      "raw_change_pct": 0.0,
+      "change_pct": 0.0
+     },
+     {
+      "snapshot_date": "2026-10-05",
+      "raw_change_pct": -1.0000000000000009,
+      "change_pct": -1.0
+     },
+     {
+      "snapshot_date": "2026-10-06",
+      "raw_change_pct": -1.0000000000000009,
+      "change_pct": -1.0
+     },
+     {
+      "snapshot_date": "2026-10-07",
+      "raw_change_pct": -2.0000000000000018,
+      "change_pct": -2.0
+     },
+     {
+      "snapshot_date": "2026-10-08",
+      "raw_change_pct": -2.0000000000000018,
+      "change_pct": -2.0
+     },
+     {
+      "snapshot_date": "2026-10-09",
+      "raw_change_pct": -3.0000000000000027,
+      "change_pct": -3.0
+     },
+     {
+      "snapshot_date": "2026-10-10",
+      "raw_change_pct": -3.0000000000000027,
+      "change_pct": -3.0
+     },
+     {
+      "snapshot_date": "2026-10-11",
+      "raw_change_pct": -4.0000000000000036,
+      "change_pct": -4.0
+     }
+    ],
+    "trend": {
+     "code": "falling",
+     "label": "低下傾向"
+    },
+    "trendCoverage": {
+     "common_stay_date_count": 3,
+     "status": "insufficient"
+    }
+   },
+   {
+    "hotel_no": 12568,
+    "series": [
+     {
+      "snapshot_date": "2026-10-04",
+      "raw_change_pct": 0.0,
+      "change_pct": 0.0
+     },
+     {
+      "snapshot_date": "2026-10-05",
+      "raw_change_pct": -1.0000000000000009,
+      "change_pct": -1.0
+     },
+     {
+      "snapshot_date": "2026-10-06",
+      "raw_change_pct": -2.0000000000000018,
+      "change_pct": -2.0
+     },
+     {
+      "snapshot_date": "2026-10-07",
+      "raw_change_pct": -2.0000000000000018,
+      "change_pct": -2.0
+     },
+     {
+      "snapshot_date": "2026-10-08",
+      "raw_change_pct": -1.0000000000000009,
+      "change_pct": -1.0
+     },
+     {
+      "snapshot_date": "2026-10-09",
+      "raw_change_pct": 0.0,
+      "change_pct": 0.0
+     },
+     {
+      "snapshot_date": "2026-10-10",
+      "raw_change_pct": 2.0000000000000018,
+      "change_pct": 2.0
+     },
+     {
+      "snapshot_date": "2026-10-11",
+      "raw_change_pct": 4.0000000000000036,
+      "change_pct": 4.0
+     }
+    ],
+    "trend": {
+     "code": "rising",
+     "label": "上昇傾向"
+    },
+    "trendCoverage": {
+     "common_stay_date_count": 12,
+     "status": "valid"
+    }
+   },
+   {
+    "hotel_no": 28637,
+    "series": [
+     {
+      "snapshot_date": "2026-10-04",
+      "raw_change_pct": 0.0,
+      "change_pct": 0.0
+     },
+     {
+      "snapshot_date": "2026-10-05",
+      "raw_change_pct": 0.0,
+      "change_pct": 0.0
+     },
+     {
+      "snapshot_date": "2026-10-06",
+      "raw_change_pct": 0.0,
+      "change_pct": 0.0
+     },
+     {
+      "snapshot_date": "2026-10-07",
+      "raw_change_pct": 0.0,
+      "change_pct": 0.0
+     },
+     {
+      "snapshot_date": "2026-10-08",
+      "raw_change_pct": 0.0,
+      "change_pct": 0.0
+     },
+     {
+      "snapshot_date": "2026-10-09",
+      "raw_change_pct": 0.0,
+      "change_pct": 0.0
+     },
+     {
+      "snapshot_date": "2026-10-10",
+      "raw_change_pct": 1.0000000000000009,
+      "change_pct": 1.0
+     },
+     {
+      "snapshot_date": "2026-10-11",
+      "raw_change_pct": 1.0000000000000009,
+      "change_pct": 1.0
+     }
+    ],
+    "trend": {
+     "code": "flat",
+     "label": "横ばい"
+    },
+    "trendCoverage": {
+     "common_stay_date_count": 12,
+     "status": "valid"
+    }
+   },
+   {
+    "hotel_no": 30109,
+    "series": [
+     {
+      "snapshot_date": "2026-10-04",
+      "raw_change_pct": 0.0,
+      "change_pct": 0.0
+     },
+     {
+      "snapshot_date": "2026-10-05",
+      "raw_change_pct": 0.0,
+      "change_pct": 0.0
+     },
+     {
+      "snapshot_date": "2026-10-06",
+      "raw_change_pct": 1.0000000000000009,
+      "change_pct": 1.0
+     },
+     {
+      "snapshot_date": "2026-10-07",
+      "raw_change_pct": 2.0000000000000018,
+      "change_pct": 2.0
+     },
+     {
+      "snapshot_date": "2026-10-08",
+      "raw_change_pct": 4.0000000000000036,
+      "change_pct": 4.0
+     },
+     {
+      "snapshot_date": "2026-10-09",
+      "raw_change_pct": 5.000000000000004,
+      "change_pct": 5.0
+     },
+     {
+      "snapshot_date": "2026-10-10",
+      "raw_change_pct": 6.000000000000005,
+      "change_pct": 6.0
+     },
+     {
+      "snapshot_date": "2026-10-11",
+      "raw_change_pct": 8.000000000000007,
+      "change_pct": 8.0
+     }
+    ],
+    "trend": {
+     "code": "rising",
+     "label": "上昇傾向"
+    },
+    "trendCoverage": {
+     "common_stay_date_count": 12,
+     "status": "valid"
+    }
+   },
+   {
+    "hotel_no": 39175,
+    "series": [
+     {
+      "snapshot_date": "2026-10-04",
+      "raw_change_pct": 0.0,
+      "change_pct": 0.0
+     },
+     {
+      "snapshot_date": "2026-10-05",
+      "raw_change_pct": 0.0,
+      "change_pct": 0.0
+     },
+     {
+      "snapshot_date": "2026-10-06",
+      "raw_change_pct": 0.0,
+      "change_pct": 0.0
+     },
+     {
+      "snapshot_date": "2026-10-07",
+      "raw_change_pct": 0.0,
+      "change_pct": 0.0
+     },
+     {
+      "snapshot_date": "2026-10-08",
+      "raw_change_pct": 0.0,
+      "change_pct": 0.0
+     },
+     {
+      "snapshot_date": "2026-10-09",
+      "raw_change_pct": 1.0000000000000009,
+      "change_pct": 1.0
+     },
+     {
+      "snapshot_date": "2026-10-10",
+      "raw_change_pct": 1.0000000000000009,
+      "change_pct": 1.0
+     },
+     {
+      "snapshot_date": "2026-10-11",
+      "raw_change_pct": 6.000000000000005,
+      "change_pct": 6.0
+     }
+    ],
+    "trend": {
+     "code": "rising",
+     "label": "上昇傾向"
+    },
+    "trendCoverage": {
+     "common_stay_date_count": 12,
+     "status": "valid"
+    }
+   }
+  ],
+  "market": {
+   "series": [
+    {
+     "snapshot_date": "2026-10-04",
+     "raw_change_pct": 0.0,
+     "change_pct": 0.0
+    },
+    {
+     "snapshot_date": "2026-10-05",
+     "raw_change_pct": 0.0,
+     "change_pct": 0.0
+    },
+    {
+     "snapshot_date": "2026-10-06",
+     "raw_change_pct": 0.0,
+     "change_pct": 0.0
+    },
+    {
+     "snapshot_date": "2026-10-07",
+     "raw_change_pct": 0.0,
+     "change_pct": 0.0
+    },
+    {
+     "snapshot_date": "2026-10-08",
+     "raw_change_pct": 0.0,
+     "change_pct": 0.0
+    },
+    {
+     "snapshot_date": "2026-10-09",
+     "raw_change_pct": 0.5000000000000004,
+     "change_pct": 0.5
+    },
+    {
+     "snapshot_date": "2026-10-10",
+     "raw_change_pct": 1.5000000000000013,
+     "change_pct": 1.5
+    },
+    {
+     "snapshot_date": "2026-10-11",
+     "raw_change_pct": 5.000000000000004,
+     "change_pct": 5.0
+    }
+   ],
+   "trend": {
+    "code": "rising",
+    "label": "上昇傾向"
+   },
+   "trendCoverage": {
+    "valid_facility_count": 4,
+    "expected_facility_count": 5,
+    "status": "valid"
+   }
+  }
+ },
+ "reference": {
+  "status": "reference",
+  "reason": null,
+  "cohort_version": "noboribetsu-v1",
+  "core_hotel_nos": [
+   9691,
+   12568,
+   28637,
+   30109,
+   39175
+  ],
+  "snapshot_dates": [
+   "2026-10-04",
+   "2026-10-05",
+   "2026-10-06",
+   "2026-10-07",
+   "2026-10-08",
+   "2026-10-09",
+   "2026-10-10",
+   "2026-10-11"
+  ],
+  "facilities": [
+   {
+    "hotel_no": 9691,
+    "series": [
+     {
+      "snapshot_date": "2026-10-04",
+      "raw_change_pct": 0.0,
+      "change_pct": 0.0
+     },
+     {
+      "snapshot_date": "2026-10-05",
+      "raw_change_pct": -1.0000000000000009,
+      "change_pct": -1.0
+     },
+     {
+      "snapshot_date": "2026-10-06",
+      "raw_change_pct": -1.0000000000000009,
+      "change_pct": -1.0
+     },
+     {
+      "snapshot_date": "2026-10-07",
+      "raw_change_pct": -2.0000000000000018,
+      "change_pct": -2.0
+     },
+     {
+      "snapshot_date": "2026-10-08",
+      "raw_change_pct": -2.0000000000000018,
+      "change_pct": -2.0
+     },
+     {
+      "snapshot_date": "2026-10-09",
+      "raw_change_pct": -3.0000000000000027,
+      "change_pct": -3.0
+     },
+     {
+      "snapshot_date": "2026-10-10",
+      "raw_change_pct": -3.0000000000000027,
+      "change_pct": -3.0
+     },
+     {
+      "snapshot_date": "2026-10-11",
+      "raw_change_pct": -4.0000000000000036,
+      "change_pct": -4.0
+     }
+    ],
+    "trend": {
+     "code": "falling",
+     "label": "低下傾向"
+    },
+    "trendCoverage": {
+     "common_stay_date_count": 3,
+     "status": "insufficient"
+    }
+   },
+   {
+    "hotel_no": 12568,
+    "series": [
+     {
+      "snapshot_date": "2026-10-04",
+      "raw_change_pct": 0.0,
+      "change_pct": 0.0
+     },
+     {
+      "snapshot_date": "2026-10-05",
+      "raw_change_pct": -1.0000000000000009,
+      "change_pct": -1.0
+     },
+     {
+      "snapshot_date": "2026-10-06",
+      "raw_change_pct": -2.0000000000000018,
+      "change_pct": -2.0
+     },
+     {
+      "snapshot_date": "2026-10-07",
+      "raw_change_pct": -2.0000000000000018,
+      "change_pct": -2.0
+     },
+     {
+      "snapshot_date": "2026-10-08",
+      "raw_change_pct": -1.0000000000000009,
+      "change_pct": -1.0
+     },
+     {
+      "snapshot_date": "2026-10-09",
+      "raw_change_pct": 0.0,
+      "change_pct": 0.0
+     },
+     {
+      "snapshot_date": "2026-10-10",
+      "raw_change_pct": 2.0000000000000018,
+      "change_pct": 2.0
+     },
+     {
+      "snapshot_date": "2026-10-11",
+      "raw_change_pct": 4.0000000000000036,
+      "change_pct": 4.0
+     }
+    ],
+    "trend": {
+     "code": "rising",
+     "label": "上昇傾向"
+    },
+    "trendCoverage": {
+     "common_stay_date_count": 7,
+     "status": "reference"
+    }
+   },
+   {
+    "hotel_no": 28637,
+    "series": [
+     {
+      "snapshot_date": "2026-10-04",
+      "raw_change_pct": 0.0,
+      "change_pct": 0.0
+     },
+     {
+      "snapshot_date": "2026-10-05",
+      "raw_change_pct": 0.0,
+      "change_pct": 0.0
+     },
+     {
+      "snapshot_date": "2026-10-06",
+      "raw_change_pct": 0.0,
+      "change_pct": 0.0
+     },
+     {
+      "snapshot_date": "2026-10-07",
+      "raw_change_pct": 0.0,
+      "change_pct": 0.0
+     },
+     {
+      "snapshot_date": "2026-10-08",
+      "raw_change_pct": 0.0,
+      "change_pct": 0.0
+     },
+     {
+      "snapshot_date": "2026-10-09",
+      "raw_change_pct": 0.0,
+      "change_pct": 0.0
+     },
+     {
+      "snapshot_date": "2026-10-10",
+      "raw_change_pct": 1.0000000000000009,
+      "change_pct": 1.0
+     },
+     {
+      "snapshot_date": "2026-10-11",
+      "raw_change_pct": 1.0000000000000009,
+      "change_pct": 1.0
+     }
+    ],
+    "trend": {
+     "code": "flat",
+     "label": "横ばい"
+    },
+    "trendCoverage": {
+     "common_stay_date_count": 12,
+     "status": "valid"
+    }
+   },
+   {
+    "hotel_no": 30109,
+    "series": [
+     {
+      "snapshot_date": "2026-10-04",
+      "raw_change_pct": 0.0,
+      "change_pct": 0.0
+     },
+     {
+      "snapshot_date": "2026-10-05",
+      "raw_change_pct": 0.0,
+      "change_pct": 0.0
+     },
+     {
+      "snapshot_date": "2026-10-06",
+      "raw_change_pct": 1.0000000000000009,
+      "change_pct": 1.0
+     },
+     {
+      "snapshot_date": "2026-10-07",
+      "raw_change_pct": 2.0000000000000018,
+      "change_pct": 2.0
+     },
+     {
+      "snapshot_date": "2026-10-08",
+      "raw_change_pct": 4.0000000000000036,
+      "change_pct": 4.0
+     },
+     {
+      "snapshot_date": "2026-10-09",
+      "raw_change_pct": 5.000000000000004,
+      "change_pct": 5.0
+     },
+     {
+      "snapshot_date": "2026-10-10",
+      "raw_change_pct": 6.000000000000005,
+      "change_pct": 6.0
+     },
+     {
+      "snapshot_date": "2026-10-11",
+      "raw_change_pct": 8.000000000000007,
+      "change_pct": 8.0
+     }
+    ],
+    "trend": {
+     "code": "rising",
+     "label": "上昇傾向"
+    },
+    "trendCoverage": {
+     "common_stay_date_count": 12,
+     "status": "valid"
+    }
+   },
+   {
+    "hotel_no": 39175,
+    "series": [
+     {
+      "snapshot_date": "2026-10-04",
+      "raw_change_pct": 0.0,
+      "change_pct": 0.0
+     },
+     {
+      "snapshot_date": "2026-10-05",
+      "raw_change_pct": 0.0,
+      "change_pct": 0.0
+     },
+     {
+      "snapshot_date": "2026-10-06",
+      "raw_change_pct": 0.0,
+      "change_pct": 0.0
+     },
+     {
+      "snapshot_date": "2026-10-07",
+      "raw_change_pct": 0.0,
+      "change_pct": 0.0
+     },
+     {
+      "snapshot_date": "2026-10-08",
+      "raw_change_pct": 0.0,
+      "change_pct": 0.0
+     },
+     {
+      "snapshot_date": "2026-10-09",
+      "raw_change_pct": 1.0000000000000009,
+      "change_pct": 1.0
+     },
+     {
+      "snapshot_date": "2026-10-10",
+      "raw_change_pct": 1.0000000000000009,
+      "change_pct": 1.0
+     },
+     {
+      "snapshot_date": "2026-10-11",
+      "raw_change_pct": 6.000000000000005,
+      "change_pct": 6.0
+     }
+    ],
+    "trend": {
+     "code": "rising",
+     "label": "上昇傾向"
+    },
+    "trendCoverage": {
+     "common_stay_date_count": 12,
+     "status": "valid"
+    }
+   }
+  ],
+  "market": {
+   "series": [
+    {
+     "snapshot_date": "2026-10-04",
+     "raw_change_pct": 0.0,
+     "change_pct": 0.0
+    },
+    {
+     "snapshot_date": "2026-10-05",
+     "raw_change_pct": 0.0,
+     "change_pct": 0.0
+    },
+    {
+     "snapshot_date": "2026-10-06",
+     "raw_change_pct": 0.0,
+     "change_pct": 0.0
+    },
+    {
+     "snapshot_date": "2026-10-07",
+     "raw_change_pct": 0.0,
+     "change_pct": 0.0
+    },
+    {
+     "snapshot_date": "2026-10-08",
+     "raw_change_pct": 0.0,
+     "change_pct": 0.0
+    },
+    {
+     "snapshot_date": "2026-10-09",
+     "raw_change_pct": 1.0000000000000009,
+     "change_pct": 1.0
+    },
+    {
+     "snapshot_date": "2026-10-10",
+     "raw_change_pct": 1.0000000000000009,
+     "change_pct": 1.0
+    },
+    {
+     "snapshot_date": "2026-10-11",
+     "raw_change_pct": 6.000000000000005,
+     "change_pct": 6.0
+    }
+   ],
+   "trend": {
+    "code": "rising",
+    "label": "上昇傾向"
+   },
+   "trendCoverage": {
+    "valid_facility_count": 3,
+    "expected_facility_count": 5,
+    "status": "reference"
+   }
+  }
+ },
+ "missing_baseline": {
+  "status": "insufficient",
+  "reason": "missing_baseline_snapshot",
+  "cohort_version": "noboribetsu-v1",
+  "core_hotel_nos": [
+   9691,
+   12568,
+   28637,
+   30109,
+   39175
+  ],
+  "snapshot_dates": [
+   "2026-10-04",
+   "2026-10-05",
+   "2026-10-06",
+   "2026-10-07",
+   "2026-10-08",
+   "2026-10-09",
+   "2026-10-10",
+   "2026-10-11"
+  ],
+  "facilities": [],
+  "market": {
+   "series": [],
+   "trend": null,
+   "trendCoverage": {
+    "valid_facility_count": 0,
+    "expected_facility_count": 5,
+    "status": "insufficient"
+   }
+  }
+ }
+}
