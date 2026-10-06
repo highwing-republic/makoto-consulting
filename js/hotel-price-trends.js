@@ -118,12 +118,13 @@
     const chart = document.querySelector("#hpt-market-chart");
     const market = view.market;
     const usable = market.status !== "insufficient";
+    const statusLabel = view.accumulating ? "データ蓄積中" : "比較データ不足";
     document.querySelector("#hpt-trend-market-name").textContent = region.name;
     document.querySelector("#hpt-market-trend").dataset.coverage = market.status;
     const coverage = `比較可能 ${market.validCount}/${market.expectedCount}施設`;
     document.querySelector("#hpt-trend-result").innerHTML = usable
       ? `<span class="hpt-trend-result__label">7日前比${market.status === "reference" ? '<em class="hpt-reference-badge">参考</em>' : ""}</span><strong class="hpt-trend-result__value">${escapeHtml(pct(market.changePct))}</strong><span class="hpt-trend-result__meta">${directionBadge(market.direction)}<small>${escapeHtml(coverage)}</small></span>`
-      : `<span class="hpt-trend-result__label">7日前比</span><strong class="hpt-trend-result__value hpt-trend-result__value--status">比較データ不足</strong><span class="hpt-trend-result__meta"><small>${escapeHtml(coverage)}</small></span>`;
+      : `<span class="hpt-trend-result__label">7日前比</span><strong class="hpt-trend-result__value hpt-trend-result__value--status">${statusLabel}</strong><span class="hpt-trend-result__meta"><small>${escapeHtml(coverage)}</small></span>`;
 
     const width = chartWidth(chart, 900);
     const narrow = width < 560;
@@ -143,11 +144,11 @@
       const values = market.points.map((point, index) => point.value == null || (narrow && index !== last && index !== 0) ? "" : `<text class="hpt-mt-value${index === last ? " hpt-mt-value--today" : ""}" x="${x(index)}" y="${y(point.value) - 13}" text-anchor="middle">${escapeHtml(pct(point.value))}</text>`).join("");
       body = `${area}${polylines(market.points, x, y, "hpt-mt-shadow")}${polylines(market.points, x, y, "hpt-mt-line")}${dots}${values}`;
     }
-    const empty = usable ? "" : `<p class="hpt-mt-empty"><strong>比較データ不足</strong>${escapeHtml(view.reasonText)}<br>不足している日を0%として線は描きません。</p>`;
+    const empty = usable ? "" : `<p class="hpt-mt-empty"><strong>${statusLabel}</strong>${escapeHtml(view.reasonText)}${view.accumulating ? "" : "<br>不足している日を0%として線は描きません。"}</p>`;
     chart.innerHTML = `<svg viewBox="0 0 ${width} ${height}" width="${width}" height="${height}" aria-hidden="true">${grid}${days}${body}</svg>${empty}`;
     chart.setAttribute("aria-label", usable
       ? `${region.name}の7日前から今日までの8点の日次変化率。${market.points.map((point) => `${point.label} ${point.value == null ? "データなし" : pct(point.value)}`).join("、")}`
-      : `${region.name}の7日間の値動きは比較データ不足のため表示しません。`);
+      : `${region.name}の7日間の値動きは${statusLabel}のため表示しません。`);
 
     const captions = [`<span>${escapeHtml(coverage)}${market.status === "reference" ? "（参考値）" : ""}</span>`, `<span>条件：大人2名・1室・1泊・${MEAL_LABELS[TREND_MEAL]}</span>`];
     if (elements.meal.value !== TREND_MEAL) captions.push(`<span class="hpt-trend-caption__note">7日トレンドは${MEAL_LABELS[TREND_MEAL]}で集計しています。選択中の${MEAL_LABELS[elements.meal.value]}は「料金を詳しく見る」に反映されます。</span>`);
@@ -162,12 +163,12 @@
       const selected = facility.hotel_no === selectedNo;
       const usable = facility.coverage !== "insufficient";
       const coverageText = facility.coverage === "insufficient"
-        ? `比較データ不足（共通宿泊日 ${facility.commonStayDates}泊）`
+        ? view.accumulating ? "7日前の観測を蓄積中" : `比較データ不足（共通宿泊日 ${facility.commonStayDates}泊）`
         : `${COVERAGE_LABELS[facility.coverage]} ${facility.commonStayDates}宿泊日`;
       return `<article class="hpt-core-row${selected ? " hpt-core-row--selected" : ""} hpt-core-row--${facility.coverage}" data-hotel-no="${facility.hotel_no}" data-coverage="${facility.coverage}">
         <div class="hpt-core-row__name"><span class="hpt-core-row__index">${index + 1}</span><div><strong>${escapeHtml(facility.name)}</strong><small>${selected ? "選択施設 / CORE" : "CORE"}</small></div></div>
         <div class="hpt-core-row__spark"><div class="hpt-spark" data-spark-index="${index}"></div><div class="hpt-spark-axis" aria-hidden="true"><span>7日前</span><span>今日</span></div></div>
-        <div class="hpt-core-row__change">${usable ? `<strong>${escapeHtml(pct(facility.changePct))}</strong>${facility.coverage === "reference" ? '<em class="hpt-reference-badge">参考</em>' : ""}${directionBadge(facility.direction)}` : '<strong class="hpt-core-row__status">比較データ不足</strong>'}<small>7日前比</small></div>
+        <div class="hpt-core-row__change">${usable ? `<strong>${escapeHtml(pct(facility.changePct))}</strong>${facility.coverage === "reference" ? '<em class="hpt-reference-badge">参考</em>' : ""}${directionBadge(facility.direction)}` : `<strong class="hpt-core-row__status">${view.accumulating ? "データ蓄積中" : "比較データ不足"}</strong>`}<small>7日前比</small></div>
         <div class="hpt-core-row__coverage">${escapeHtml(coverageText)}</div>
       </article>`;
     }).join("");

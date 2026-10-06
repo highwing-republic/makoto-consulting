@@ -72,7 +72,8 @@ test("insufficient market data never becomes a 0% line", () => {
   const view = model.dailyTrendView(region(fixture.missing_baseline));
   assert.equal(view.status, "insufficient");
   assert.equal(view.reason, "missing_baseline_snapshot");
-  assert.match(view.reasonText, /7日前の観測がない/);
+  assert.equal(view.accumulating, true);
+  assert.match(view.reasonText, /蓄積中/);
   assert.equal(view.market.points.length, 8);
   assert.ok(view.market.points.every((point) => point.value === null));
   assert.equal(view.market.changePct, null);
@@ -175,4 +176,24 @@ test("URLs without a usable stay_date do not invent one, and legacy regions fall
   const legacy = loadControls("?region=kamisuwa-onsen&hotel_no=28001&stay_date=2026-10-12");
   assert.equal(legacy.get("#hpt-region").value, "noboribetsu-onsen");
   assert.match(legacy.url, /region=noboribetsu-onsen/);
+});
+
+test("missing Phase 1 baselines read as accumulating only before the first 7-day comparison date", () => {
+  const withDates = (reason, lastDate) => ({...clone(fixture.missing_baseline), reason,
+    snapshot_dates: [...fixture.missing_baseline.snapshot_dates.slice(0, 7), lastDate]});
+  const before = model.dailyTrendView(region(withDates("missing_baseline_snapshot", "2026-10-11")));
+  assert.equal(before.accumulating, true);
+  assert.equal(before.reasonText, "7日比較データを蓄積中です（10/12から表示予定）。");
+  // Hakuba's baseline before 10-12 is the pre-Phase 1 cohort, which is also still accumulating.
+  const hakuba = model.dailyTrendView(region(withDates("cohort_version_mismatch", "2026-10-06")));
+  assert.equal(hakuba.accumulating, true);
+  const after = model.dailyTrendView(region(withDates("missing_baseline_snapshot", "2026-10-12")));
+  assert.equal(after.accumulating, false);
+  assert.match(after.reasonText, /7日前の観測がない/);
+  const lowCoverage = model.dailyTrendView(region(withDates("insufficient_valid_facilities", "2026-10-06")));
+  assert.equal(lowCoverage.accumulating, false);
+  // A payload for a different cohort than the page shows is a real mismatch, not accumulation.
+  const otherCohort = model.dailyTrendView(region(withDates("missing_baseline_snapshot", "2026-10-06"), {cohort_version: "noboribetsu-v2"}));
+  assert.equal(otherCohort.accumulating, false);
+  assert.equal(otherCohort.reason, "cohort_version_mismatch");
 });

@@ -198,6 +198,11 @@
     missing_snapshot: "7日前から今日までの8回分の観測がそろっていません。",
     insufficient_valid_facilities: "比較可能なCORE施設が2施設以下のため、市場の値動きを表示しません。"
   };
+  // Phase 1 collection started 2026-10-05, so the first 7-day comparison is 10-12.
+  // Before then, a missing or pre-Phase 1 baseline means the data is still accumulating.
+  const PHASE1_FIRST_TREND_DATE = "2026-10-12";
+  const ACCUMULATING_REASONS = ["missing_baseline_snapshot", "missing_snapshot", "cohort_version_mismatch"];
+  const ACCUMULATING_TEXT = "7日比較データを蓄積中です（10/12から表示予定）。";
   const finiteOrNull = (value) => typeof value === "number" && Number.isFinite(value) ? value : null;
   const coverageOf = (value) => TREND_COVERAGES.includes(value) ? value : "insufficient";
   const trendPoints = (series) => DAILY_TREND_LABELS.map((label, index) => ({
@@ -226,8 +231,13 @@
         direction: usable ? row.trend || null : null
       };
     });
+    const latestSnapshot = source?.snapshot_dates?.at(-1) || "";
+    const accumulating = Boolean(versionMatches && reason && latestSnapshot
+      && latestSnapshot < PHASE1_FIRST_TREND_DATE && ACCUMULATING_REASONS.includes(reason));
     return {
-      status, reason, reasonText: reason ? TREND_REASON_TEXT[reason] || TREND_REASON_TEXT.missing_snapshot : null,
+      status, reason, accumulating,
+      reasonText: accumulating ? ACCUMULATING_TEXT
+        : reason ? TREND_REASON_TEXT[reason] || TREND_REASON_TEXT.missing_snapshot : null,
       cohortVersion: cohort.version, snapshotDates: source?.snapshot_dates || [],
       market: {
         status, points: trendPoints(usableMarket ? source.market.series : []),
