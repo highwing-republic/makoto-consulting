@@ -20,6 +20,8 @@ jobs:
   sync:
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    outputs:
+      changed: ${{ steps.commit.outputs.changed }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -41,6 +43,7 @@ jobs:
         run: python3 scripts/prepare_signal_report.py
 
       - name: Commit and push when the report changed
+        id: commit
         shell: bash
         run: |
           if [ -z "$(git status --porcelain -- tourism-market-signal)" ]; then
@@ -52,7 +55,24 @@ jobs:
           git add tourism-market-signal
           git commit -m "Sync tourism market signal report"
           for attempt in 1 2 3; do
-            git pull --rebase origin main && git push && exit 0
+            if git pull --rebase origin main && git push; then
+              echo "changed=true" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
             sleep 10
           done
           exit 1
+
+  publish:
+    needs: sync
+    if: needs.sync.outputs.changed == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      pages: write
+    steps:
+      # GITHUB_TOKEN pushes do not trigger a Pages build automatically.
+      - name: Publish the synced report
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh api --method POST "repos/$GITHUB_REPOSITORY/pages/builds"
