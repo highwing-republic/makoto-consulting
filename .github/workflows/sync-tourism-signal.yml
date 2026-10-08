@@ -37,6 +37,9 @@ jobs:
           rsync -a --delete --exclude .nojekyll .signal-source/docs/ tourism-market-signal/
           rm -rf .signal-source
 
+      - name: Apply compact Lab report presentation
+        run: python3 scripts/prepare_signal_report.py
+
       - name: Commit and push when the report changed
         shell: bash
         run: |

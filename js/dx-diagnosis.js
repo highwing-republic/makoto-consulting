@@ -11,6 +11,8 @@
   let result = null;
   let errors = {};
   let chartView = "bars";
+  let runTracked = false;
+  let resultTracked = false;
 
   const formatNumber = function (value) { return Number(value).toLocaleString("ja-JP"); };
   const escapeHtml = function (value) {
@@ -97,7 +99,10 @@
       if (firstInvalid) firstInvalid.focus();
       return;
     }
-    track("analysis_run");
+    if (!runTracked) {
+      runTracked = true;
+      track("analysis_run");
+    }
     goToStep(2);
   }
 
@@ -118,7 +123,10 @@
     form.addEventListener("submit", function (event) {
       event.preventDefault();
       result = model.buildResult(answers, facility);
-      track("analysis_result_view");
+      if (!resultTracked) {
+        resultTracked = true;
+        track("analysis_result_view");
+      }
       goToStep(3);
     });
   }
@@ -225,6 +233,8 @@
     result = null;
     errors = {};
     chartView = "bars";
+    runTracked = false;
+    resultTracked = false;
     goToStep(1);
   }
 
