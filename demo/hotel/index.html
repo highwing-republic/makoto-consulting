@@ -4,255 +4,268 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>多言語旅館サイトデモ｜宿泊DXラボ</title>
-<meta name="description" content="架空の宿「ホテル翠蓮」の多言語公式サイトデモ（日英中韓）。予約エンジンデモ・簡易PMSデモと連動し、海外ゲストの予約動線まで体験できます。">
+<meta name="description" content="架空の宿「ホテル翠蓮」の多言語公式サイトデモ(日英中韓)。予約エンジンデモ・簡易PMSデモと連動し、海外ゲストの予約動線まで体験できます。">
 <link rel="canonical" href="https://lab.ugatta-llc.com/demo/hotel/">
 <link rel="icon" type="image/png" href="/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@500;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;500;600&family=Noto+Sans+JP:wght@400;500&display=swap">
 <style>
-/* Layout: single-page inn site — hero / rooms / bath / dining / access, i18n via dictionary */
+/* Layout: photo-led inn site in the spirit of classic onsen-ryokan sites —
+   white ground, serif voice, EN eyebrows, alternating photo/text rows */
 :root{
-  --bg:#f7f4ed;
-  --panel:#ffffff;
-  --fg:#262a26;
-  --muted:#68705f;
-  --line:#ddd7c8;
-  --deep:#2e4639;        /* 深緑 — brand */
-  --deep-soft:#e3eae4;
-  --gold:#8a703d;
-  --warn:#a8552c;
-  --warn-soft:#f7e6db;
-  --font-serif:"Noto Serif JP",serif;
-  --font-body:"Noto Sans JP","Hiragino Kaku Gothic ProN",Meiryo,system-ui,sans-serif;
+  --bg:#ffffff;
+  --bg2:#f7f5f0;
+  --fg:#3c3a36;
+  --muted:#8c877d;
+  --line:#e6e2d8;
+  --ink:#1f2b28;          /* 深い墨緑 — ヒーロー帯・フッター */
+  --gold:#9b8352;         /* 金茶 — 英字見出し・罫 */
+  --font-serif:"Noto Serif JP","Hiragino Mincho ProN",serif;
+  --font-sans:"Noto Sans JP","Hiragino Kaku Gothic ProN",Meiryo,system-ui,sans-serif;
 }
 *{box-sizing:border-box}
-body{background:var(--bg);color:var(--fg);font-family:var(--font-body);margin:0;padding:0 16px 40px;font-size:14px;line-height:1.9}
-.demo-band{background:var(--warn-soft);color:var(--warn);font-size:12px;text-align:center;padding:6px 10px;margin:0 -16px;font-weight:600}
-.demo-band a{color:inherit}
-.wrap{max-width:900px;margin:0 auto}
-header.site{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center;padding:18px 0 6px}
-.brand{display:flex;flex-direction:column}
-.brand b{font-family:var(--font-serif);font-size:24px;letter-spacing:.14em}
-.brand small{color:var(--muted);font-size:11px;letter-spacing:.3em}
-nav.ln{margin-left:auto;display:flex;gap:4px;flex-wrap:wrap}
-nav.ln button{appearance:none;border:1px solid var(--line);background:var(--panel);color:var(--muted);font:inherit;font-size:12px;border-radius:999px;padding:4px 12px;cursor:pointer}
-nav.ln button.on{background:var(--deep);border-color:var(--deep);color:#fff;font-weight:600}
-nav.ln button:focus-visible{outline:2px solid var(--deep);outline-offset:2px}
-.hero{position:relative;border-radius:14px;overflow:hidden;background:
-  radial-gradient(90% 120% at 85% -10%, #4e6b57 0%, transparent 60%),
-  radial-gradient(70% 100% at 10% 110%, #22382d 0%, transparent 55%),
-  linear-gradient(160deg,#35543f,#1f332a);
-  color:#f2efe4;padding:52px 28px;margin-top:10px}
-.hero .svg-lotus{position:absolute;right:-30px;bottom:-40px;opacity:.16;width:300px;height:300px}
-.hero h1{font-family:var(--font-serif);font-size:30px;margin:0 0 4px;letter-spacing:.18em;font-weight:600}
-.hero .sub{letter-spacing:.34em;font-size:12px;opacity:.75}
-.hero p.lead{max-width:30em;font-size:14px;margin:18px 0 24px;opacity:.95}
-.cta{display:inline-block;background:#f2efe4;color:var(--deep);font-weight:700;border-radius:6px;padding:12px 30px;text-decoration:none;letter-spacing:.08em}
-.cta:hover{background:#fff}
-section.block{margin-top:34px}
-section.block h2{font-family:var(--font-serif);font-size:20px;letter-spacing:.12em;margin:0 0 4px;display:flex;align-items:baseline;gap:12px}
-section.block h2::after{content:"";flex:1;height:1px;background:var(--line)}
-section.block .en-h{font-size:11px;color:var(--gold);letter-spacing:.3em;margin:0 0 14px}
-.rooms{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
-.room{background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:hidden;display:flex;flex-direction:column}
-.room .ph{height:110px;display:flex;align-items:center;justify-content:center;font-family:var(--font-serif);font-size:18px;letter-spacing:.2em;color:#f2efe4}
-.room:nth-child(1) .ph{background:linear-gradient(135deg,#55706077,#2e463988),linear-gradient(315deg,#8a703d33,transparent),#3c5747}
-.room:nth-child(2) .ph{background:linear-gradient(135deg,#4c666f77,#2d3f4788),#415860}
-.room:nth-child(3) .ph{background:linear-gradient(135deg,#6f664c77,#473f2d88),#5d5540}
-.room .bd{padding:14px 16px 16px;display:flex;flex-direction:column;gap:6px;flex:1}
-.room h3{font-family:var(--font-serif);font-size:16px;margin:0;letter-spacing:.08em}
-.room p{margin:0;font-size:12.5px;color:var(--muted)}
-.room .pr{margin-top:auto;padding-top:8px;font-variant-numeric:tabular-nums;font-weight:700}
-.room .pr small{font-weight:400;color:var(--muted)}
-.duo{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
-.duo .card,.plain{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:18px 20px}
-.duo h3{font-family:var(--font-serif);font-size:15px;margin:0 0 6px;letter-spacing:.08em;color:var(--deep)}
-.duo p,.plain p{margin:0;font-size:13px;color:var(--muted)}
-.info{display:flex;flex-wrap:wrap;gap:6px 22px;font-size:13px;margin-top:10px}
-.info span{white-space:nowrap;color:var(--muted)}
-.info b{color:var(--fg);font-weight:600}
-.bookbar{position:sticky;bottom:0;margin:34px -16px 0;padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px));background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(6px);border-top:1px solid var(--line);display:flex;justify-content:center;gap:12px;align-items:center}
-.bookbar a.cta{background:var(--deep);color:#f2efe4;padding:11px 36px}
-footer.ft{margin-top:26px;color:var(--muted);font-size:11px;line-height:1.8}
-footer.ft a{color:var(--deep)}
-@media (max-width:480px){ .hero{padding:36px 20px} .hero h1{font-size:24px} }
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-serif);margin:0;font-size:14px;line-height:2;letter-spacing:.04em}
+img{max-width:100%;display:block}
+.demo-band{background:#f3ece2;color:#8a6a3c;font-family:var(--font-sans);font-size:11.5px;text-align:center;padding:6px 14px;letter-spacing:.06em}
+/* ---- header ---- */
+header.top{max-width:1120px;margin:0 auto;padding:20px 20px 14px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{display:flex;align-items:baseline;gap:10px;text-decoration:none;color:var(--fg)}
+.brand b{font-size:25px;font-weight:500;letter-spacing:.3em}
+.brand small{font-family:var(--font-sans);font-size:10px;color:var(--muted);letter-spacing:.28em}
+.topnav{margin-left:auto;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.lnsw{display:flex;gap:2px;font-family:var(--font-sans)}
+.lnsw button{appearance:none;border:none;background:none;color:var(--muted);font:inherit;font-size:11.5px;padding:3px 8px;cursor:pointer;letter-spacing:.05em;border-bottom:2px solid transparent}
+.lnsw button.on{color:var(--fg);border-bottom-color:var(--gold)}
+.lnsw button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+a.bookbtn{font-family:var(--font-sans);font-size:13px;font-weight:500;letter-spacing:.14em;color:#fff;background:var(--ink);text-decoration:none;padding:10px 26px;border-radius:2px}
+a.bookbtn:hover{background:#31443f}
+/* ---- hero ---- */
+.hero{position:relative;overflow:hidden}
+.hero img{width:100%;height:min(76vh,620px);object-fit:cover}
+.hero .veil{position:absolute;inset:0;background:linear-gradient(180deg,rgba(15,20,25,.25),rgba(15,20,25,.05) 40%,rgba(15,20,25,.45));display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:#fdfdf9;padding:20px}
+.hero .catch{font-size:clamp(22px,4.2vw,34px);font-weight:500;letter-spacing:.28em;text-shadow:0 1px 14px rgba(0,0,0,.45);margin:0}
+.hero .sub{font-family:var(--font-sans);font-size:11px;letter-spacing:.42em;opacity:.85;margin-top:14px}
+/* ---- sections ---- */
+main{display:block}
+section.row{max-width:1120px;margin:0 auto;padding:72px 20px 0;display:grid;grid-template-columns:7fr 5fr;gap:48px;align-items:center}
+section.row.rev{grid-template-columns:5fr 7fr}
+section.row.rev .ph{order:2}
+section.row .ph img{width:100%;aspect-ratio:3/2;object-fit:cover}
+.eyebrow{font-family:var(--font-sans);color:var(--gold);font-size:11px;letter-spacing:.42em;margin:0 0 14px}
+section.row h2{font-size:23px;font-weight:500;letter-spacing:.2em;margin:0 0 18px;text-wrap:balance}
+section.row p.copy{margin:0;color:#55524b;font-size:13.5px}
+.rates{width:100%;border-collapse:collapse;margin-top:22px;font-variant-numeric:tabular-nums}
+.rates td{border-top:1px solid var(--line);padding:10px 4px;font-size:13px}
+.rates tr:last-child td{border-bottom:1px solid var(--line)}
+.rates td:last-child{text-align:right;white-space:nowrap}
+.rates .cap{color:var(--muted);font-size:11.5px;font-family:var(--font-sans);margin-left:8px}
+.rates .note{color:var(--muted);font-size:11px;font-family:var(--font-sans)}
+/* ---- info ---- */
+.infowrap{background:var(--bg2);margin-top:76px;padding:56px 20px}
+.info{max-width:1120px;margin:0 auto}
+.info .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px 40px;margin-top:18px}
+.info dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:4px 18px;font-size:13px;align-content:start}
+.info dt{color:var(--muted);font-family:var(--font-sans);font-size:12px;white-space:nowrap;padding-top:2px}
+.info dd{margin:0}
+/* ---- cta ---- */
+.cta{background:var(--ink);color:#f4f2ea;text-align:center;padding:64px 20px}
+.cta h2{font-size:20px;font-weight:500;letter-spacing:.3em;margin:0 0 10px}
+.cta p{font-family:var(--font-sans);font-size:12px;opacity:.75;margin:0 0 26px;letter-spacing:.1em}
+.cta a.bookbtn{background:#f4f2ea;color:var(--ink);font-weight:600}
+.cta a.bookbtn:hover{background:#fff}
+/* ---- footer ---- */
+footer{max-width:1120px;margin:0 auto;padding:30px 20px 46px;font-family:var(--font-sans);font-size:11px;color:var(--muted);line-height:1.9}
+footer a{color:var(--gold)}
+footer .links{margin-top:8px}
+@media (max-width:760px){
+  section.row,section.row.rev{grid-template-columns:1fr;gap:22px;padding-top:52px}
+  section.row.rev .ph{order:0}
+  .hero img{height:min(62vh,440px)}
+  header.top{padding-top:14px}
+  .brand b{font-size:21px}
+}
 </style>
 </head>
 <body>
-<div class="demo-band" data-i18n="band">これは宿泊DXラボの体験デモです。実在しない架空の宿で、実際の予約はできません</div>
-<div class="wrap">
-  <header class="site">
-    <div class="brand"><b>翠蓮</b><small>HOTEL SUIREN</small></div>
-    <nav class="ln" aria-label="Language">
+<div class="demo-band" data-i18n="band">これは宿泊DXラボの体験デモです。実在しない架空の宿で、実際の予約はできません。</div>
+
+<header class="top">
+  <a class="brand" href="#"><b>翠蓮</b><small>HOTEL SUIREN</small></a>
+  <div class="topnav">
+    <nav class="lnsw" aria-label="Language">
       <button data-lang="ja" class="on">日本語</button>
-      <button data-lang="en">English</button>
+      <button data-lang="en">ENGLISH</button>
       <button data-lang="zh">繁體中文</button>
       <button data-lang="ko">한국어</button>
     </nav>
-  </header>
-
-  <div class="hero">
-    <svg class="svg-lotus" viewBox="0 0 100 100" aria-hidden="true"><g fill="#f2efe4"><ellipse cx="50" cy="62" rx="34" ry="9"/><path d="M50 18c6 10 9 20 9 28 0 8-4 14-9 14s-9-6-9-14c0-8 3-18 9-28z"/><path d="M28 30c9 5 15 12 18 19 3 7 2 14-2 16-4 2-10-2-13-9-3-7-4-16-3-26z"/><path d="M72 30c-9 5-15 12-18 19-3 7-2 14 2 16 4 2 10-2 13-9 3-7 4-16 3-26z"/></g></svg>
-    <h1 data-i18n="heroTitle">ホテル翠蓮</h1>
-    <div class="sub">SINCE 1952 — SUIREN</div>
-    <p class="lead" data-i18n="heroLead">蓮池のほとりに佇む、全20室の小さな宿。四季のお風呂と土地の恵みを、静かな時間とともにお届けします。</p>
-    <a class="cta" id="ctaTop" href="/demo/booking/" data-i18n="ctaBook">宿泊予約</a>
+    <a class="bookbtn cta-book" href="/demo/booking/" data-i18n="btnBook">ご予約</a>
   </div>
+</header>
 
-  <section class="block">
-    <h2 data-i18n="roomsH">お部屋</h2>
-    <p class="en-h">ROOMS</p>
-    <div class="rooms">
-      <div class="room"><div class="ph">和室</div><div class="bd">
-        <h3 data-i18n="r1n">和室</h3><p data-i18n="r1d">畳30㎡のお部屋で、ご家族・グループでゆったりと。蓮池を望むお部屋もございます。（定員4名）</p>
-        <div class="pr">¥24,000<small data-i18n="prNote">／1泊1室・税込</small></div></div></div>
-      <div class="room"><div class="ph">TWIN</div><div class="bd">
-        <h3 data-i18n="r2n">ツイン</h3><p data-i18n="r2d">ベッド2台・22㎡のスタンダードルーム。ご夫婦やご友人との旅に。（定員2名）</p>
-        <div class="pr">¥16,000<small data-i18n="prNote2">／1泊1室・税込</small></div></div></div>
-      <div class="room"><div class="ph">SINGLE</div><div class="bd">
-        <h3 data-i18n="r3n">シングル</h3><p data-i18n="r3d">落ち着いた14㎡のお部屋。ひとり旅やご出張に。（定員1名）</p>
-        <div class="pr">¥8,000<small data-i18n="prNote3">／1泊1室・税込</small></div></div></div>
-    </div>
-  </section>
-
-  <section class="block">
-    <h2 data-i18n="stayH">お風呂とお食事</h2>
-    <p class="en-h">BATH &amp; DINING</p>
-    <div class="duo">
-      <div class="card"><h3 data-i18n="bathH">大浴場「蓮の湯」</h3><p data-i18n="bathP">夜は星を眺めながら、朝はやわらかな光に包まれて。男女別の大浴場を毎朝清掃・入れ替えしております。営業時間 15:00〜24:00／6:00〜9:00。</p></div>
-      <div class="card"><h3 data-i18n="dineH">お食事</h3><p data-i18n="dineP">地の野菜と近海の幸を使った季節の料理をご用意します。朝食は和定食（7:00〜9:00、食事処「睡蓮」にて）。朝食付きプランはご予約時にお選びいただけます。</p></div>
-    </div>
-  </section>
-
-  <section class="block">
-    <h2 data-i18n="accH">ご案内・アクセス</h2>
-    <p class="en-h">INFORMATION</p>
-    <div class="plain">
-      <div class="info">
-        <span data-i18n="infoIn"><b>チェックイン</b> 15:00〜22:00</span>
-        <span data-i18n="infoOut"><b>チェックアウト</b> 〜10:00</span>
-        <span data-i18n="infoWifi"><b>Wi-Fi</b> 全室無料</span>
-        <span data-i18n="infoPark"><b>駐車場</b> 20台・無料</span>
-      </div>
-      <p style="margin-top:10px" data-i18n="accP">〒000-0000 架空県蓮池市翠蓮1-2-3（蓮池駅から徒歩8分／蓮池ICから車で10分）※実在しない住所です</p>
-    </div>
-  </section>
-
-  <div class="bookbar">
-    <a class="cta" id="ctaBottom" href="/demo/booking/" data-i18n="ctaBook2">宿泊予約</a>
+<div class="hero">
+  <img src="img/hero.jpg" alt="" width="1920" height="1080" fetchpriority="high">
+  <div class="veil">
+    <h1 class="catch" data-i18n="catch">湯のあかりに、心ほどける。</h1>
+    <div class="sub">HOTEL SUIREN — JAPANESE AUBERGE</div>
   </div>
-
-  <footer class="ft">
-    <span data-i18n="ftNote">本ページは宿泊DXラボの体験デモです。「ホテル翠蓮」は架空の宿であり、写真・料金・住所を含むすべての情報はデモ用の創作です。予約ボタンの先の予約エンジンデモで取った予約は、フロント業務画面（簡易PMSデモ）に連動します（お使いのブラウザ内のみ）。</span><br>
-    <a href="/" >宿泊DXラボ</a> ／ <a href="/demo/booking/" data-i18n="ftBooking">予約エンジンデモ</a> ／ <a href="/demo/mini-pms/" data-i18n="ftPms">フロント業務画面（簡易PMSデモ・日本語）</a>
-  </footer>
 </div>
+
+<main>
+  <section class="row">
+    <div class="ph"><img src="img/food.jpg" alt="" loading="lazy" width="1500" height="1125"></div>
+    <div>
+      <p class="eyebrow">CUISINE</p>
+      <h2 data-i18n="cuiH">旬を、ひと皿ずつ</h2>
+      <p class="copy" data-i18n="cuiP">山の菜、近海の幸。その日いちばんの食材を、器とともに仕立てる季節の会席です。朝は食事処「睡蓮」で、炊きたての土鍋ごはんと和の朝食を。</p>
+    </div>
+  </section>
+
+  <section class="row rev">
+    <div class="ph"><img src="img/room.jpg" alt="" loading="lazy" width="1500" height="1000"></div>
+    <div>
+      <p class="eyebrow">ROOMS</p>
+      <h2 data-i18n="roomH">寛ぎの間</h2>
+      <p class="copy" data-i18n="roomP">全20室。縁側ごしに庭を眺める和室から、ひとり旅のための静かな一室まで。どの部屋にも、余白のある時間を用意しています。</p>
+      <table class="rates">
+        <tr><td><span data-i18n="r1">和室</span><span class="cap" data-i18n="r1c">30㎡・定員4名</span></td><td>¥24,000<span class="note" data-i18n="rn1">／泊・室</span></td></tr>
+        <tr><td><span data-i18n="r2">ツイン</span><span class="cap" data-i18n="r2c">22㎡・定員2名</span></td><td>¥16,000<span class="note" data-i18n="rn2">／泊・室</span></td></tr>
+        <tr><td><span data-i18n="r3">シングル</span><span class="cap" data-i18n="r3c">14㎡・定員1名</span></td><td>¥8,000<span class="note" data-i18n="rn3">／泊・室</span></td></tr>
+      </table>
+    </div>
+  </section>
+
+  <section class="row">
+    <div class="ph"><img src="img/bath.jpg" alt="" loading="lazy" width="1500" height="1000"></div>
+    <div>
+      <p class="eyebrow">ONSEN</p>
+      <h2 data-i18n="bathH">翠の湯</h2>
+      <p class="copy" data-i18n="bathP">湯船に満ちる、やわらかな翠色のにごり湯。夜は湯けむりの向こうに星を、朝は木々の光を眺めながら。男女別の大浴場と露天風呂は15:00〜24:00、6:00〜9:00にご利用いただけます。（架空の温泉です）</p>
+    </div>
+  </section>
+
+  <div class="infowrap">
+    <div class="info">
+      <p class="eyebrow">INFORMATION</p>
+      <div class="cols">
+        <dl>
+          <dt data-i18n="iIn">チェックイン</dt><dd>15:00 − 22:00</dd>
+          <dt data-i18n="iOut">チェックアウト</dt><dd>− 10:00</dd>
+          <dt data-i18n="iRooms">客室数</dt><dd data-i18n="iRoomsV">全20室（和室・ツイン・シングル）</dd>
+        </dl>
+        <dl>
+          <dt data-i18n="iWifi">Wi-Fi</dt><dd data-i18n="iWifiV">全館無料</dd>
+          <dt data-i18n="iPark">駐車場</dt><dd data-i18n="iParkV">20台・無料</dd>
+          <dt data-i18n="iAddr">所在地</dt><dd data-i18n="iAddrV">〒000-0000 架空県蓮池市翠蓮1-2-3（実在しない住所です）</dd>
+        </dl>
+      </div>
+    </div>
+  </div>
+
+  <div class="cta">
+    <h2 data-i18n="ctaH">ご予約</h2>
+    <p data-i18n="ctaP">空室の確認からご予約まで、オンラインで承ります。</p>
+    <a class="bookbtn cta-book" href="/demo/booking/" data-i18n="ctaBtn">空室を検索する</a>
+  </div>
+</main>
+
+<footer>
+  <span data-i18n="ftNote">本ページは宿泊DXラボの体験デモです。「ホテル翠蓮」は架空の宿であり、料金・住所などの情報はデモ用の創作です。予約ボタンの先の予約エンジンデモで確定した予約は、フロント業務画面（簡易PMSデモ）に連動します（お使いのブラウザ内のみ）。写真は雰囲気をお伝えするためのイメージで、実在の場所であり当デモの宿とは関係ありません。</span>
+  <div class="links">
+    <span data-i18n="ftPhoto">写真</span>:
+    <a href="https://commons.wikimedia.org/wiki/File:Evening_twilight_in_Ginzan_Onsen_town_January_2022_B.jpg" target="_blank" rel="noopener">さかおり (CC BY-SA 4.0)</a> /
+    <a href="https://commons.wikimedia.org/wiki/File:Kaiseki_001.jpg" target="_blank" rel="noopener">Yuya Tamai (CC BY 2.0)</a> /
+    <a href="https://commons.wikimedia.org/wiki/File:Garden_and_engawa_in_Japan_(158).jpg" target="_blank" rel="noopener">Savannah Rivka (CC BY-SA 4.0)</a> /
+    <a href="https://commons.wikimedia.org/wiki/File:%E3%81%AB%E3%81%94%E3%82%8A%E6%B9%AF%E6%BA%90%E6%B3%89%E3%81%8B%E3%81%91%E6%B5%81%E3%81%97%E7%A1%AB%E9%BB%84%E6%B3%89.jpg" target="_blank" rel="noopener">Oden1215 (CC BY-SA 3.0)</a>
+    — via Wikimedia Commons
+  </div>
+  <div class="links"><a href="/">宿泊DXラボ</a> ／ <a href="/demo/booking/" data-i18n="ftBooking">予約エンジンデモ</a> ／ <a href="/demo/mini-pms/" data-i18n="ftPms">フロント業務画面（簡易PMSデモ・日本語）</a></div>
+</footer>
 
 <script>
 "use strict";
 const I18N = {
-ja:{ band:"これは宿泊DXラボの体験デモです。実在しない架空の宿で、実際の予約はできません",
-heroTitle:"ホテル翠蓮",
-heroLead:"蓮池のほとりに佇む、全20室の小さな宿。四季のお風呂と土地の恵みを、静かな時間とともにお届けします。",
-ctaBook:"宿泊予約", ctaBook2:"宿泊予約",
-roomsH:"お部屋",
-r1n:"和室", r1d:"畳30㎡のお部屋で、ご家族・グループでゆったりと。蓮池を望むお部屋もございます。（定員4名）",
-r2n:"ツイン", r2d:"ベッド2台・22㎡のスタンダードルーム。ご夫婦やご友人との旅に。（定員2名）",
-r3n:"シングル", r3d:"落ち着いた14㎡のお部屋。ひとり旅やご出張に。（定員1名）",
-prNote:"／1泊1室・税込", prNote2:"／1泊1室・税込", prNote3:"／1泊1室・税込",
-stayH:"お風呂とお食事",
-bathH:"大浴場「蓮の湯」",
-bathP:"夜は星を眺めながら、朝はやわらかな光に包まれて。男女別の大浴場を毎朝清掃・入れ替えしております。営業時間 15:00〜24:00／6:00〜9:00。",
-dineH:"お食事",
-dineP:"地の野菜と近海の幸を使った季節の料理をご用意します。朝食は和定食（7:00〜9:00、食事処「睡蓮」にて）。朝食付きプランはご予約時にお選びいただけます。",
-accH:"ご案内・アクセス",
-infoIn:"チェックイン 15:00〜22:00", infoOut:"チェックアウト 〜10:00", infoWifi:"Wi-Fi 全室無料", infoPark:"駐車場 20台・無料",
-accP:"〒000-0000 架空県蓮池市翠蓮1-2-3（蓮池駅から徒歩8分／蓮池ICから車で10分）※実在しない住所です",
-ftNote:"本ページは宿泊DXラボの体験デモです。「ホテル翠蓮」は架空の宿であり、写真・料金・住所を含むすべての情報はデモ用の創作です。予約ボタンの先の予約エンジンデモで取った予約は、フロント業務画面（簡易PMSデモ）に連動します（お使いのブラウザ内のみ）。",
-ftBooking:"予約エンジンデモ", ftPms:"フロント業務画面（簡易PMSデモ・日本語）" },
-en:{ band:"This is a hands-on demo by Shukuhaku DX Lab. The inn is fictional and no real reservations are accepted.",
-heroTitle:"Hotel Suiren",
-heroLead:"A small 20-room inn on the shore of a lotus pond. Seasonal baths and local flavors, served with quiet time.",
-ctaBook:"Book your stay", ctaBook2:"Book your stay",
-roomsH:"Rooms",
-r1n:"Japanese-style room", r1d:"A 30 m² tatami room for families and groups, some overlooking the lotus pond. (Sleeps 4)",
-r2n:"Twin room", r2d:"A 22 m² standard room with two beds — for couples and friends. (Sleeps 2)",
-r3n:"Single room", r3d:"A calm 14 m² room for solo travelers and business trips. (Sleeps 1)",
-prNote:" / night / room, tax incl.", prNote2:" / night / room, tax incl.", prNote3:" / night / room, tax incl.",
-stayH:"Bath & Dining",
-bathH:"Grand bath “Hasu-no-yu”",
-bathP:"Stargaze at night and soak in soft morning light. Gender-separated grand baths, cleaned and refilled every morning. Hours: 15:00–24:00 / 6:00–9:00.",
-dineH:"Dining",
-dineP:"Seasonal dishes made with local vegetables and seafood. Japanese breakfast is served 7:00–9:00 at our dining room “Suiren”. A breakfast plan can be selected when you book.",
-accH:"Information & Access",
-infoIn:"Check-in 15:00–22:00", infoOut:"Check-out by 10:00", infoWifi:"Free Wi-Fi in all rooms", infoPark:"Free parking (20 cars)",
-accP:"1-2-3 Suiren, Hasuike City, Kaku Prefecture 000-0000, Japan (8 min walk from Hasuike Sta.) — a fictional address.",
-ftNote:"This page is a hands-on demo by Shukuhaku DX Lab. Hotel Suiren is fictional; all photos, rates and addresses are invented for the demo. Reservations made through the booking demo appear in the front-desk demo (mini PMS) — within your browser only.",
-ftBooking:"Booking engine demo", ftPms:"Front-desk demo (mini PMS, Japanese)" },
-zh:{ band:"這是住宿DX實驗室的體驗示範。此旅館為虛構，無法進行真實訂房。",
-heroTitle:"翠蓮旅館",
-heroLead:"佇立於蓮池畔、僅有20間客房的小旅館。四季湯浴與在地美味，伴您度過寧靜時光。",
-ctaBook:"立即訂房", ctaBook2:"立即訂房",
-roomsH:"客房",
-r1n:"和室", r1d:"30平方公尺的榻榻米客房，適合家庭與團體，部分客房可眺望蓮池。（可住4人）",
-r2n:"雙床房", r2d:"22平方公尺、兩張單人床的標準客房，適合夫妻或朋友同行。（可住2人）",
-r3n:"單人房", r3d:"沉穩舒適的14平方公尺客房，適合獨旅與出差。（可住1人）",
-prNote:"／每晚每房・含稅", prNote2:"／每晚每房・含稅", prNote3:"／每晚每房・含稅",
-stayH:"湯浴與餐飲",
-bathH:"大浴場「蓮之湯」",
-bathP:"夜晚仰望星空，清晨沐浴於柔和晨光。男女分開的大浴場每日清晨清潔換水。開放時間 15:00〜24:00／6:00〜9:00。",
-dineH:"餐飲",
-dineP:"選用在地蔬菜與近海海產的季節料理。早餐為日式定食（7:00〜9:00，於餐廳「睡蓮」供應）。訂房時可選擇含早餐方案。",
-accH:"資訊・交通",
-infoIn:"入住 15:00〜22:00", infoOut:"退房 〜10:00", infoWifi:"全館免費Wi-Fi", infoPark:"免費停車場（20輛）",
-accP:"〒000-0000 架空縣蓮池市翠蓮1-2-3（蓮池車站步行8分鐘）※此為虛構地址",
-ftNote:"本頁為住宿DX實驗室的體驗示範。「翠蓮旅館」為虛構旅館，照片、價格與地址均為示範用創作。透過訂房示範完成的預約，將同步顯示於櫃台業務畫面（簡易PMS示範）——僅限於您的瀏覽器內。",
-ftBooking:"訂房引擎示範", ftPms:"櫃台業務畫面（簡易PMS示範・日文）" },
-ko:{ band:"이 페이지는 숙박DX랩의 체험 데모입니다. 가상의 숙소이며 실제 예약은 불가합니다.",
-heroTitle:"호텔 스이렌",
-heroLead:"연꽃 연못가에 자리한 객실 20실의 작은 숙소. 사계절의 온욕과 지역의 미식을 고요한 시간과 함께 전합니다.",
-ctaBook:"숙박 예약", ctaBook2:"숙박 예약",
-roomsH:"객실",
-r1n:"일본식 객실", r1d:"다다미 30㎡의 객실로 가족・단체 여행에 여유롭게. 연못 전망 객실도 있습니다. (정원 4명)",
-r2n:"트윈룸", r2d:"침대 2개, 22㎡의 스탠다드 룸. 부부・친구와의 여행에. (정원 2명)",
-r3n:"싱글룸", r3d:"차분한 14㎡의 객실. 혼자 여행이나 출장에. (정원 1명)",
-prNote:"／1박 1실・세금 포함", prNote2:"／1박 1실・세금 포함", prNote3:"／1박 1실・세금 포함",
-stayH:"온욕과 식사",
-bathH:"대욕장 「하스노유」",
-bathP:"밤에는 별을 바라보며, 아침에는 부드러운 빛 속에서. 남녀 구분 대욕장을 매일 아침 청소・물갈이합니다. 이용 시간 15:00〜24:00／6:00〜9:00.",
-dineH:"식사",
-dineP:"지역 채소와 근해의 해산물을 사용한 계절 요리를 준비합니다. 조식은 일본식 정식(7:00〜9:00, 식당 「수련」). 조식 포함 플랜은 예약 시 선택하실 수 있습니다.",
-accH:"안내・오시는 길",
-infoIn:"체크인 15:00〜22:00", infoOut:"체크아웃 〜10:00", infoWifi:"전 객실 무료 Wi-Fi", infoPark:"무료 주차장(20대)",
-accP:"〒000-0000 가쿠현 하스이케시 스이렌 1-2-3(하스이케역 도보 8분) ※실재하지 않는 주소입니다",
-ftNote:"본 페이지는 숙박DX랩의 체험 데모입니다. '호텔 스이렌'은 가상의 숙소이며 사진・요금・주소 등 모든 정보는 데모용 창작입니다. 예약 데모에서 완료한 예약은 프런트 업무 화면(간이 PMS 데모)에 연동됩니다(사용 중인 브라우저 내에서만).",
-ftBooking:"예약 엔진 데모", ftPms:"프런트 업무 화면(간이 PMS 데모・일본어)" }
+ja:{band:"これは宿泊DXラボの体験デモです。実在しない架空の宿で、実際の予約はできません。",
+btnBook:"ご予約",
+catch:"湯のあかりに、心ほどける。",
+cuiH:"旬を、ひと皿ずつ",
+cuiP:"山の菜、近海の幸。その日いちばんの食材を、器とともに仕立てる季節の会席です。朝は食事処「睡蓮」で、炊きたての土鍋ごはんと和の朝食を。",
+roomH:"寛ぎの間",
+roomP:"全20室。縁側ごしに庭を眺める和室から、ひとり旅のための静かな一室まで。どの部屋にも、余白のある時間を用意しています。",
+r1:"和室", r1c:"30㎡・定員4名", r2:"ツイン", r2c:"22㎡・定員2名", r3:"シングル", r3c:"14㎡・定員1名",
+rn1:"／泊・室", rn2:"／泊・室", rn3:"／泊・室",
+bathH:"翠の湯",
+bathP:"湯船に満ちる、やわらかな翠色のにごり湯。夜は湯けむりの向こうに星を、朝は木々の光を眺めながら。男女別の大浴場と露天風呂は15:00〜24:00、6:00〜9:00にご利用いただけます。（架空の温泉です）",
+iIn:"チェックイン", iOut:"チェックアウト", iRooms:"客室数", iRoomsV:"全20室（和室・ツイン・シングル）",
+iWifi:"Wi-Fi", iWifiV:"全館無料", iPark:"駐車場", iParkV:"20台・無料",
+iAddr:"所在地", iAddrV:"〒000-0000 架空県蓮池市翠蓮1-2-3（実在しない住所です）",
+ctaH:"ご予約", ctaP:"空室の確認からご予約まで、オンラインで承ります。", ctaBtn:"空室を検索する",
+ftNote:"本ページは宿泊DXラボの体験デモです。「ホテル翠蓮」は架空の宿であり、料金・住所などの情報はデモ用の創作です。予約ボタンの先の予約エンジンデモで確定した予約は、フロント業務画面（簡易PMSデモ）に連動します（お使いのブラウザ内のみ）。写真は雰囲気をお伝えするためのイメージで、実在の場所であり当デモの宿とは関係ありません。",
+ftPhoto:"写真", ftBooking:"予約エンジンデモ", ftPms:"フロント業務画面（簡易PMSデモ・日本語）"},
+en:{band:"A hands-on demo by Shukuhaku DX Lab. This inn is fictional and no real reservations are accepted.",
+btnBook:"Reserve",
+catch:"Unwind in the glow of the baths.",
+cuiH:"The season, course by course",
+cuiP:"Mountain vegetables and seafood from nearby waters — the day's best, composed dish by dish. Mornings bring a Japanese breakfast with clay-pot rice at our dining room, Suiren.",
+roomH:"Rooms for quiet hours",
+roomP:"Twenty rooms in all: tatami rooms that open onto the garden veranda, and calm single rooms for the solo traveler. Every room is designed around unhurried time.",
+r1:"Japanese-style room", r1c:"30 m² · sleeps 4", r2:"Twin room", r2c:"22 m² · sleeps 2", r3:"Single room", r3c:"14 m² · sleeps 1",
+rn1:" / night / room", rn2:" / night / room", rn3:" / night / room",
+bathH:"The Jade Bath",
+bathP:"A soft, jade-green hot spring fills the baths. Stars above the steam at night; morning light through the trees at dawn. Gender-separated grand baths and open-air baths, 15:00–24:00 and 6:00–9:00. (A fictional hot spring.)",
+iIn:"Check-in", iOut:"Check-out", iRooms:"Rooms", iRoomsV:"20 rooms (Japanese-style, twin, single)",
+iWifi:"Wi-Fi", iWifiV:"Free throughout", iPark:"Parking", iParkV:"20 cars, free",
+iAddr:"Address", iAddrV:"1-2-3 Suiren, Hasuike City, Kaku Pref. 000-0000, Japan (a fictional address)",
+ctaH:"Reservations", ctaP:"Check availability and book online.", ctaBtn:"Search availability",
+ftNote:"This page is a hands-on demo by Shukuhaku DX Lab. Hotel Suiren is fictional; rates and addresses are invented for the demo. Bookings made through the booking demo flow into the front-desk demo (mini PMS), within your browser only. Photos are for atmosphere; they show real places unrelated to this fictional inn.",
+ftPhoto:"Photos", ftBooking:"Booking engine demo", ftPms:"Front-desk demo (mini PMS, Japanese)"},
+zh:{band:"這是住宿DX實驗室的體驗示範。此旅館為虛構，無法進行真實訂房。",
+btnBook:"立即訂房",
+catch:"湯煙燈影，身心舒展。",
+cuiH:"當季食材，逐皿呈現",
+cuiP:"山間時蔬與近海鮮味——以當日最好的食材，連同器皿一道一道細心烹製的季節會席。早晨在餐廳「睡蓮」享用砂鍋炊飯與日式早餐。",
+roomH:"靜謐客房",
+roomP:"全館20間客房：有隔著緣廊眺望庭園的和室，也有為獨旅而備的安靜單人房。每間客房，都為您留有從容的時光。",
+r1:"和室", r1c:"30㎡・可住4人", r2:"雙床房", r2c:"22㎡・可住2人", r3:"單人房", r3c:"14㎡・可住1人",
+rn1:"／每晚每房", rn2:"／每晚每房", rn3:"／每晚每房",
+bathH:"翠之湯",
+bathP:"浴池中盈滿柔和的翠綠色濁湯。夜晚隔著湯煙仰望星空，清晨在林間光影中入浴。男女分開的大浴場與露天風呂，開放時間為15:00〜24:00、6:00〜9:00。（虛構溫泉）",
+iIn:"入住", iOut:"退房", iRooms:"客房數", iRoomsV:"全20間（和室・雙床房・單人房）",
+iWifi:"Wi-Fi", iWifiV:"全館免費", iPark:"停車場", iParkV:"20輛・免費",
+iAddr:"地址", iAddrV:"〒000-0000 架空縣蓮池市翠蓮1-2-3（虛構地址）",
+ctaH:"線上訂房", ctaP:"查詢空房與訂房，皆可線上完成。", ctaBtn:"查詢空房",
+ftNote:"本頁為住宿DX實驗室的體驗示範。「翠蓮旅館」為虛構旅館，價格與地址均為示範用創作。透過訂房示範完成的預約，將同步顯示於櫃台業務畫面（簡易PMS示範），僅限於您的瀏覽器內。照片僅供氛圍參考，為與本虛構旅館無關的真實地點。",
+ftPhoto:"照片", ftBooking:"訂房引擎示範", ftPms:"櫃台業務畫面（簡易PMS示範・日文）"},
+ko:{band:"숙박DX랩의 체험 데모입니다. 가상의 숙소이며 실제 예약은 불가합니다.",
+btnBook:"예약하기",
+catch:"온천의 불빛에, 마음이 풀리다.",
+cuiH:"제철을, 한 접시씩",
+cuiP:"산나물과 가까운 바다의 해산물 — 그날 가장 좋은 식재료를 그릇과 함께 정성껏 차려내는 계절 가이세키입니다. 아침에는 식당 '수련'에서 뚝배기 솥밥과 일본식 조식을.",
+roomH:"쉼의 방",
+roomP:"전 20실. 툇마루 너머 정원을 바라보는 일본식 객실부터 혼자 여행자를 위한 조용한 싱글룸까지. 모든 객실에 여유로운 시간을 준비했습니다.",
+r1:"일본식 객실", r1c:"30㎡・정원 4명", r2:"트윈룸", r2c:"22㎡・정원 2명", r3:"싱글룸", r3c:"14㎡・정원 1명",
+rn1:"／1박 1실", rn2:"／1박 1실", rn3:"／1박 1실",
+bathH:"비취의 탕",
+bathP:"욕조 가득 부드러운 비취빛 탁탕. 밤에는 수증기 너머 별을, 아침에는 나무 사이 빛을 바라보며. 남녀 구분 대욕장과 노천탕은 15:00〜24:00, 6:00〜9:00에 이용하실 수 있습니다. (가상의 온천입니다)",
+iIn:"체크인", iOut:"체크아웃", iRooms:"객실 수", iRoomsV:"전 20실(일본식・트윈・싱글)",
+iWifi:"Wi-Fi", iWifiV:"전관 무료", iPark:"주차장", iParkV:"20대・무료",
+iAddr:"주소", iAddrV:"〒000-0000 가쿠현 하스이케시 스이렌 1-2-3(실재하지 않는 주소입니다)",
+ctaH:"예약", ctaP:"공실 확인부터 예약까지 온라인으로.", ctaBtn:"공실 검색",
+ftNote:"본 페이지는 숙박DX랩의 체험 데모입니다. '호텔 스이렌'은 가상의 숙소이며 요금・주소 등은 데모용 창작입니다. 예약 데모에서 완료한 예약은 프런트 업무 화면(간이 PMS 데모)에 연동됩니다(사용 중인 브라우저 내에서만). 사진은 분위기 전달용 이미지로, 본 데모의 숙소와 무관한 실제 장소입니다.",
+ftPhoto:"사진", ftBooking:"예약 엔진 데모", ftPms:"프런트 업무 화면(간이 PMS 데모・일본어)"}
 };
 const HTMLLANG = { ja:"ja", en:"en", zh:"zh-Hant", ko:"ko" };
 function apply(lang){
   const d = I18N[lang] || I18N.ja;
   document.documentElement.lang = HTMLLANG[lang] || "ja";
   document.querySelectorAll("[data-i18n]").forEach(el => {
-    const t = d[el.dataset.i18n];
-    if(t != null) el.textContent = t;
+    const v = d[el.dataset.i18n];
+    if(v != null) el.textContent = v;
   });
-  // 情報行は <b>ラベル</b> 値 の形を保つため分割して再構成
-  const info = { infoIn:d.infoIn, infoOut:d.infoOut, infoWifi:d.infoWifi, infoPark:d.infoPark };
-  Object.entries(info).forEach(([k,v]) => {
-    const el = document.querySelector('[data-i18n="'+k+'"]');
-    if(!el) return;
-    const sp = v.indexOf(" ");
-    el.textContent = "";
-    const b = document.createElement("b");
-    b.textContent = sp > 0 ? v.slice(0, sp) : v;
-    el.appendChild(b);
-    if(sp > 0) el.appendChild(document.createTextNode(" " + v.slice(sp+1)));
-  });
-  document.querySelectorAll("nav.ln button").forEach(b => b.classList.toggle("on", b.dataset.lang === lang));
+  document.querySelectorAll(".lnsw button").forEach(b => b.classList.toggle("on", b.dataset.lang === lang));
   const href = "/demo/booking/?lang=" + (lang === "ja" ? "ja" : "en");
-  document.getElementById("ctaTop").href = href;
-  document.getElementById("ctaBottom").href = href;
+  document.querySelectorAll("a.cta-book").forEach(a => a.href = href);
   try{ localStorage.setItem("suiren-lang", lang); }catch(e){}
 }
 let lang = "ja";
@@ -260,7 +273,7 @@ try{
   const p = new URLSearchParams(location.search).get("lang");
   lang = p && I18N[p] ? p : (I18N[localStorage.getItem("suiren-lang")] ? localStorage.getItem("suiren-lang") : "ja");
 }catch(e){}
-document.querySelectorAll("nav.ln button").forEach(b =>
+document.querySelectorAll(".lnsw button").forEach(b =>
   b.addEventListener("click", () => apply(b.dataset.lang)));
 apply(lang);
 </script>
