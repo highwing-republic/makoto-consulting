@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>簡易PMSデモ｜宿泊DXラボ</title>
-<meta name="description" content="予約登録・部屋割り・客室状況表・当日台帳までを、架空ホテル（全40室）を舞台にブラウザだけで体験できる簡易PMSデモです。">
+<meta name="description" content="予約登録・部屋割り・客室状況表・当日台帳までを、架空ホテル（全20室）を舞台にブラウザだけで体験できる簡易PMSデモです。">
 <link rel="canonical" href="https://lab.ugatta-llc.com/demo/mini-pms/">
 <link rel="icon" type="image/png" href="/favicon.png">
 <style>
@@ -223,7 +223,8 @@ footer.note{max-width:1100px;margin:14px auto 0;color:var(--muted);font-size:11p
 </main>
 
 <footer class="note">
-  架空ホテル（2〜5階・各階10室＝シングル3／ツイン4／和室3、全40室）のデモです。
+  架空ホテル（2〜5階・各階5室＝ツイン2／シングル2／和室1、全20室）のデモです。
+  部屋の空きは滞在期間の全泊（画面に見えない先の日程を含む）で判定します。
   予約は「予約→チェックイン済→チェックアウト済」のステータスで管理し、キャンセルは履歴として残ります（削除はキャンセル済のみ可）。
   自動割当ルール（デモ用）：7泊以上の長期滞在はシングル→ツインの順で優先／人数が定員を超える部屋は候補外／ブロック中の部屋は候補外。
   表示順は 5階→4階→3階→2階。料金・精算・OTA連携は含みません。
@@ -247,9 +248,9 @@ const ST_PILL  = { booked:"ok", in:"in", out:"out", cancelled:"cxl" };
 const ROOMS = [];
 const addRooms = (floor, nos, type, cap) => nos.forEach(no => ROOMS.push({no, floor, type, cap}));
 ["5","4","3","2"].forEach(f => {
-  addRooms(f+"階", [f+"01",f+"02",f+"03"], "シングル", 1);
-  addRooms(f+"階", [f+"04",f+"05",f+"06",f+"07"], "ツイン", 2);
-  addRooms(f+"階", [f+"08",f+"09",f+"10"], "和室", 4);
+  addRooms(f+"階", [f+"01",f+"02"], "ツイン", 2);
+  addRooms(f+"階", [f+"03",f+"04"], "シングル", 1);
+  addRooms(f+"階", [f+"05"], "和室", 4);
 });
 const FLOOR_ORDER = ["5階","4階","3階","2階"];
 
@@ -261,9 +262,9 @@ let selectedBlockId = null; // 選択中のブロック
 function seed(){
   return { nextId: 9, nextBlockId: 2,
     reservations: [
-      { id:1, name:"田中物産 佐藤様", pax:1, inDate:addDays(T0,-3), outDate:addDays(T0,25), typePref:"シングル", memo:"長期法人。請求書は月末まとめ（サンプル）", room:"301", status:"in" },
-      { id:2, name:"高橋様", pax:2, inDate:addDays(T0,-1), outDate:addDays(T0,1), typePref:"ツイン", memo:"レンタカー21時返却予定（サンプル）", room:"504", status:"in" },
-      { id:3, name:"Smith様", pax:1, inDate:T0, outDate:addDays(T0,1), typePref:"シングル", memo:"英語対応（サンプル）", room:"203", status:"booked" },
+      { id:1, name:"田中物産 佐藤様", pax:1, inDate:addDays(T0,-3), outDate:addDays(T0,25), typePref:"シングル", memo:"長期法人。請求書は月末まとめ（サンプル）", room:"303", status:"in" },
+      { id:2, name:"高橋様", pax:2, inDate:addDays(T0,-1), outDate:addDays(T0,1), typePref:"ツイン", memo:"レンタカー21時返却予定（サンプル）", room:"501", status:"in" },
+      { id:3, name:"Smith様", pax:1, inDate:T0, outDate:addDays(T0,1), typePref:"シングル", memo:"英語対応（サンプル）", room:"204", status:"booked" },
       { id:4, name:"山田様", pax:2, inDate:T0, outDate:addDays(T0,2), typePref:"ツイン", memo:"記念日。眺望良い部屋希望（サンプル）", room:null, status:"booked" },
       { id:5, name:"鈴木様ご家族", pax:4, inDate:addDays(T0,1), outDate:addDays(T0,3), typePref:"和室", memo:"お子様2名添い寝（サンプル）", room:null, status:"booked" },
       { id:6, name:"南海電装 中村様", pax:1, inDate:addDays(T0,2), outDate:addDays(T0,12), typePref:"", memo:"工事関係・長期（サンプル）", room:null, status:"booked" },
@@ -271,17 +272,17 @@ function seed(){
       { id:8, name:"渡辺様", pax:2, inDate:addDays(T0,1), outDate:addDays(T0,2), typePref:"ツイン", memo:"電話にて取消連絡あり（サンプル）", room:null, status:"cancelled" }
     ],
     blocks: [
-      { id:1, room:"510", fromDate:T0, toDate:addDays(T0,5), reason:"空調故障" }
+      { id:1, room:"405", fromDate:T0, toDate:addDays(T0,5), reason:"空調故障" }
     ]};
 }
 function load(){
   try{
-    const raw = localStorage.getItem("mini-pms-v2");
+    const raw = localStorage.getItem("mini-pms-v3");
     if(raw){ const s = JSON.parse(raw); if(s && Array.isArray(s.reservations) && Array.isArray(s.blocks)) return s; }
   }catch(e){}
   return seed();
 }
-function save(){ try{ localStorage.setItem("mini-pms-v2", JSON.stringify(state)); }catch(e){} }
+function save(){ try{ localStorage.setItem("mini-pms-v3", JSON.stringify(state)); }catch(e){} }
 const active = r => r.status !== "cancelled";
 
 /* ---------- 空き判定 ---------- */
@@ -307,17 +308,26 @@ function candidateRooms(res){
   }
   return list.filter(rm => roomFreeFor(rm.no, res));
 }
+function whyNoRoom(res){
+  const fits = ROOMS.filter(rm => rm.cap >= res.pax && (!res.typePref || rm.type === res.typePref));
+  if(!fits.length){
+    return res.typePref
+      ? "希望の" + res.typePref + "は定員" + (ROOMS.find(rm => rm.type === res.typePref) || {cap:"?"}).cap + "名のため、" + res.pax + "名では入れません（人数か部屋タイプの変更が必要）"
+      : res.pax + "名が入れる部屋タイプがありません";
+  }
+  return "滞在期間（" + nights(res) + "泊・" + mdLabel(res.inDate) + "→" + mdLabel(res.outDate) + "）を通して空いている" + (res.typePref || "") + "部屋がありません。画面に見えない先の日程の予約・ブロックも含めて判定しています";
+}
 function autoAssign(){
   const pend = state.reservations.filter(r => active(r) && !r.room && r.status === "booked")
     .sort((a,b) => a.inDate < b.inDate ? -1 : 1);
   let done = 0, fail = [];
   pend.forEach(r => {
     const c = candidateRooms(r);
-    if(c.length){ r.room = c[0].no; done++; } else fail.push(r.name);
+    if(c.length){ r.room = c[0].no; done++; } else fail.push(r.name + "：" + whyNoRoom(r));
   });
   save(); renderAll();
   document.getElementById("gridMsg").textContent =
-    done + "件を割当済み。" + (fail.length ? " 空きが見つからず未割当：" + fail.join("、") : "");
+    done + "件を割当済み。" + (fail.length ? " 未割当 → " + fail.join(" ／ ") : "");
 }
 
 /* ---------- 予約タブ ---------- */
@@ -442,6 +452,8 @@ function renderGrid(){
   const dates = []; for(let i = 0; i < DAYS; i++) dates.push(addDays(T0, i));
   const assignable = sel && sel.status === "booked";
   const candSet = assignable ? new Set(candidateRooms(sel).map(rm => rm.no)) : new Set();
+  if(assignable && !candSet.size)
+    document.getElementById("gridMsg").textContent = "割当できる部屋がありません — " + whyNoRoom(sel);
 
   const tbl = document.getElementById("asgrid");
   tbl.textContent = "";
