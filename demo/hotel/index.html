@@ -9,7 +9,7 @@
 <link rel="icon" type="image/png" href="/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;500;600&family=Noto+Sans+JP:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;600&family=Noto+Serif+JP:wght@400;500;600&family=Noto+Sans+JP:wght@400;500&display=swap">
 <style>
 /* Layout: photo-led inn site in the spirit of classic onsen-ryokan sites —
    white ground, serif voice, EN eyebrows, alternating photo/text rows */
@@ -22,6 +22,7 @@
   --ink:#1f2b28;          /* 深い墨緑 — ヒーロー帯・フッター */
   --gold:#9b8352;         /* 金茶 — 英字見出し・罫 */
   --font-serif:"Noto Serif JP","Hiragino Mincho ProN",serif;
+  --font-display:"Shippori Mincho","Noto Serif JP",serif;
   --font-sans:"Noto Sans JP","Hiragino Kaku Gothic ProN",Meiryo,system-ui,sans-serif;
 }
 *{box-sizing:border-box}
@@ -30,13 +31,14 @@ body{background:var(--bg);color:var(--fg);font-family:var(--font-serif);margin:0
 img{max-width:100%;display:block}
 .demo-band{background:#f3ece2;color:#8a6a3c;font-family:var(--font-sans);font-size:11.5px;text-align:center;padding:6px 14px;letter-spacing:.06em}
 /* ---- header ---- */
+.hdr{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
 header.top{max-width:1120px;margin:0 auto;padding:20px 20px 10px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
 nav.secnav{max-width:1120px;margin:0 auto;padding:0 20px 14px;display:flex;gap:26px;font-family:var(--font-sans);font-size:12px;letter-spacing:.2em}
 nav.secnav a{color:var(--muted);text-decoration:none;padding:2px 0;border-bottom:1px solid transparent}
 nav.secnav a:hover{color:var(--fg);border-bottom-color:var(--gold)}
 @media (max-width:560px){nav.secnav{gap:18px;font-size:11px;overflow-x:auto;white-space:nowrap}}
 .brand{display:flex;align-items:baseline;gap:10px;text-decoration:none;color:var(--fg)}
-.brand b{font-size:25px;font-weight:500;letter-spacing:.3em}
+.brand b{font-family:var(--font-display);font-size:25px;font-weight:600;letter-spacing:.3em}
 .brand small{font-family:var(--font-sans);font-size:10px;color:var(--muted);letter-spacing:.28em}
 .topnav{margin-left:auto;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
 .lnsw{display:flex;gap:2px;font-family:var(--font-sans)}
@@ -48,6 +50,9 @@ a.bookbtn:hover{background:#31443f}
 /* ---- hero ---- */
 .hero{position:relative;overflow:hidden}
 .hero img{width:100%;height:min(76vh,620px);object-fit:cover}
+html[lang="ja"] .hero .catch, html[lang="zh-Hant"] .hero .catch{
+  writing-mode:vertical-rl;letter-spacing:.4em;line-height:1.9;max-height:76%;
+}
 @media (prefers-reduced-motion: no-preference){
   .hero img{animation:heroZoom 14s ease-out forwards}
   @keyframes heroZoom{from{transform:scale(1.07)}to{transform:scale(1)}}
@@ -58,7 +63,7 @@ a.bookbtn:hover{background:#31443f}
   .fx.in{opacity:1;transform:none}
 }
 .hero .veil{position:absolute;inset:0;background:linear-gradient(180deg,rgba(15,20,25,.25),rgba(15,20,25,.05) 40%,rgba(15,20,25,.45));display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:#fdfdf9;padding:20px}
-.hero .catch{font-size:clamp(22px,4.2vw,34px);font-weight:500;letter-spacing:.28em;text-shadow:0 1px 14px rgba(0,0,0,.45);margin:0}
+.hero .catch{font-family:var(--font-display);font-size:clamp(22px,4.2vw,34px);font-weight:500;letter-spacing:.28em;text-shadow:0 1px 14px rgba(0,0,0,.45);margin:0}
 .hero .sub{font-family:var(--font-sans);font-size:11px;letter-spacing:.42em;opacity:.85;margin-top:14px}
 /* ---- sections ---- */
 main{display:block}
@@ -69,7 +74,7 @@ section.row .ph{overflow:hidden}
 section.row .ph img{width:100%;height:auto;aspect-ratio:3/2;object-fit:cover;transition:transform 1.2s cubic-bezier(.2,.6,.2,1)}
 section.row .ph:hover img{transform:scale(1.035)}
 .eyebrow{font-family:var(--font-sans);color:var(--gold);font-size:11px;letter-spacing:.42em;margin:0 0 14px}
-section.row h2{font-size:23px;font-weight:500;letter-spacing:.2em;margin:0 0 20px;text-wrap:balance;position:relative;padding-bottom:16px}
+section.row h2{font-family:var(--font-display);font-size:23px;font-weight:500;letter-spacing:.2em;margin:0 0 20px;text-wrap:balance;position:relative;padding-bottom:16px}
 section.row h2::after{content:"";position:absolute;left:1px;bottom:0;width:38px;height:1px;background:var(--gold)}
 section.row p.copy{margin:0;color:#55524b;font-size:13.5px}
 .rates{width:100%;border-collapse:collapse;margin-top:22px;font-variant-numeric:tabular-nums}
@@ -78,6 +83,12 @@ section.row p.copy{margin:0;color:#55524b;font-size:13.5px}
 .rates td:last-child{text-align:right;white-space:nowrap}
 .rates .cap{color:var(--muted);font-size:11.5px;font-family:var(--font-sans);margin-left:8px}
 .rates .note{color:var(--muted);font-size:11px;font-family:var(--font-sans)}
+.gallery{max-width:1120px;margin:76px auto 0;padding:0 20px;display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.gallery figure{margin:0;overflow:hidden}
+.gallery img{width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;transition:transform 1.2s cubic-bezier(.2,.6,.2,1)}
+.gallery figure:hover img{transform:scale(1.035)}
+.gallery figcaption{font-family:var(--font-sans);font-size:11px;color:var(--muted);letter-spacing:.2em;padding-top:8px}
+@media (max-width:560px){.gallery{grid-template-columns:1fr 1fr;gap:10px}}
 /* ---- info ---- */
 .infowrap{background:var(--bg2);margin-top:76px;padding:56px 20px}
 .info{max-width:1120px;margin:0 auto}
@@ -87,7 +98,7 @@ section.row p.copy{margin:0;color:#55524b;font-size:13.5px}
 .info dd{margin:0}
 /* ---- cta ---- */
 .cta{background:var(--ink);color:#f4f2ea;text-align:center;padding:64px 20px}
-.cta h2{font-size:20px;font-weight:500;letter-spacing:.3em;margin:0 0 10px}
+.cta h2{font-family:var(--font-display);font-size:20px;font-weight:500;letter-spacing:.3em;margin:0 0 10px}
 .cta p{font-family:var(--font-sans);font-size:12px;opacity:.75;margin:0 0 26px;letter-spacing:.1em}
 .cta a.bookbtn{background:#f4f2ea;color:var(--ink);font-weight:600}
 .cta a.bookbtn:hover{background:#fff}
@@ -107,6 +118,7 @@ footer .links{margin-top:8px}
 <body>
 <div class="demo-band" data-i18n="band">これは宿泊DXラボの体験デモです。実在しない架空の宿で、実際の予約はできません。</div>
 
+<div class="hdr">
 <header class="top">
   <a class="brand" href="#"><b>翠蓮</b><small>HOTEL SUIREN</small></a>
   <div class="topnav">
@@ -125,6 +137,7 @@ footer .links{margin-top:8px}
   <a href="#onsen" data-i18n="nvBath">温泉</a>
   <a href="#info" data-i18n="nvInfo">ご案内</a>
 </nav>
+</div>
 
 <div class="hero">
   <img src="img/hero.jpg" alt="" width="1920" height="1080" fetchpriority="high">
@@ -167,6 +180,12 @@ footer .links{margin-top:8px}
     </div>
   </section>
 
+  <section class="gallery">
+    <figure><img src="img/night.jpg" alt="" loading="lazy" width="1200" height="900"><figcaption data-i18n="g1">夜の佇まい</figcaption></figure>
+    <figure><img src="img/bath2.jpg" alt="" loading="lazy" width="1200" height="900"><figcaption data-i18n="g2">森の露天風呂</figcaption></figure>
+    <figure><img src="img/food_sq.jpg" alt="" loading="lazy" width="1200" height="900"><figcaption data-i18n="g3">季節の八寸</figcaption></figure>
+  </section>
+
   <div class="infowrap" id="info">
     <div class="info">
       <p class="eyebrow">INFORMATION</p>
@@ -193,13 +212,16 @@ footer .links{margin-top:8px}
 </main>
 
 <footer>
+  <div style="text-align:center;margin-bottom:22px"><span style="font-family:var(--font-display);font-size:21px;letter-spacing:.3em;color:var(--fg)">翠蓮</span><br><span style="font-size:10px;letter-spacing:.3em;color:var(--muted)">HOTEL SUIREN</span></div>
   <span data-i18n="ftNote">本ページは宿泊DXラボの体験デモです。「ホテル翠蓮」は架空の宿であり、料金・住所などの情報はデモ用の創作です。予約ボタンの先の予約エンジンデモで確定した予約は、フロント業務画面（簡易PMSデモ）に連動します（お使いのブラウザ内のみ）。写真は雰囲気をお伝えするためのイメージで、実在の場所であり当デモの宿とは関係ありません。</span>
   <div class="links">
     <span data-i18n="ftPhoto">写真</span>:
     <a href="https://commons.wikimedia.org/wiki/File:Evening_twilight_in_Ginzan_Onsen_town_January_2022_B.jpg" target="_blank" rel="noopener">さかおり (CC BY-SA 4.0)</a> /
     <a href="https://commons.wikimedia.org/wiki/File:Kaiseki_001.jpg" target="_blank" rel="noopener">Yuya Tamai (CC BY 2.0)</a> /
     <a href="https://commons.wikimedia.org/wiki/File:Garden_and_engawa_in_Japan_(158).jpg" target="_blank" rel="noopener">Savannah Rivka (CC BY-SA 4.0)</a> /
-    <a href="https://commons.wikimedia.org/wiki/File:%E3%81%AB%E3%81%94%E3%82%8A%E6%B9%AF%E6%BA%90%E6%B3%89%E3%81%8B%E3%81%91%E6%B5%81%E3%81%97%E7%A1%AB%E9%BB%84%E6%B3%89.jpg" target="_blank" rel="noopener">Oden1215 (CC BY-SA 3.0)</a>
+    <a href="https://commons.wikimedia.org/wiki/File:%E3%81%AB%E3%81%94%E3%82%8A%E6%B9%AF%E6%BA%90%E6%B3%89%E3%81%8B%E3%81%91%E6%B5%81%E3%81%97%E7%A1%AB%E9%BB%84%E6%B3%89.jpg" target="_blank" rel="noopener">Oden1215 (CC BY-SA 3.0)</a> /
+    <a href="https://commons.wikimedia.org/wiki/File:Evening_twilight_Ginzan_Onsen_town_seen_from_the_guest_room_of_Kosekiya_Bekkan.jpg" target="_blank" rel="noopener">さかおり (CC BY-SA 4.0)</a> /
+    <a href="https://commons.wikimedia.org/wiki/File:Outdoor_hot_spring_bath_in_Nigorigo_Onsen.jpg" target="_blank" rel="noopener">Alpsdake (CC BY-SA 4.0)</a>
     — via Wikimedia Commons
   </div>
   <div class="links"><a href="/">宿泊DXラボ</a> ／ <a href="/demo/booking/" data-i18n="ftBooking">予約エンジンデモ</a> ／ <a href="/demo/mini-pms/" data-i18n="ftPms">フロント業務画面（簡易PMSデモ・日本語）</a></div>
@@ -209,7 +231,7 @@ footer .links{margin-top:8px}
 "use strict";
 const I18N = {
 ja:{band:"これは宿泊DXラボの体験デモです。実在しない架空の宿で、実際の予約はできません。",
-btnBook:"ご予約", nvCui:"お料理", nvRoom:"客室", nvBath:"温泉", nvInfo:"ご案内",
+btnBook:"ご予約", nvCui:"お料理", nvRoom:"客室", nvBath:"温泉", nvInfo:"ご案内", g1:"夜の佇まい", g2:"森の露天風呂", g3:"季節の八寸",
 catch:"湯のあかりに、心ほどける。",
 cuiH:"旬を、ひと皿ずつ",
 cuiP:"山の菜、近海の幸。その日いちばんの食材を、器とともに仕立てる季節の会席です。朝は食事処「睡蓮」で、炊きたての土鍋ごはんと和の朝食を。",
@@ -226,7 +248,7 @@ ctaH:"ご予約", ctaP:"空室の確認からご予約まで、オンライン�
 ftNote:"本ページは宿泊DXラボの体験デモです。「ホテル翠蓮」は架空の宿であり、料金・住所などの情報はデモ用の創作です。予約ボタンの先の予約エンジンデモで確定した予約は、フロント業務画面（簡易PMSデモ）に連動します（お使いのブラウザ内のみ）。写真は雰囲気をお伝えするためのイメージで、実在の場所であり当デモの宿とは関係ありません。",
 ftPhoto:"写真", ftBooking:"予約エンジンデモ", ftPms:"フロント業務画面（簡易PMSデモ・日本語）"},
 en:{band:"A hands-on demo by Shukuhaku DX Lab. This inn is fictional and no real reservations are accepted.",
-btnBook:"Reserve", nvCui:"Cuisine", nvRoom:"Rooms", nvBath:"Onsen", nvInfo:"Information",
+btnBook:"Reserve", nvCui:"Cuisine", nvRoom:"Rooms", nvBath:"Onsen", nvInfo:"Information", g1:"Evenings at the inn", g2:"Open-air bath in the forest", g3:"Seasonal appetizers",
 catch:"Unwind in the glow of the baths.",
 cuiH:"The season, course by course",
 cuiP:"Mountain vegetables and seafood from nearby waters — the day's best, composed dish by dish. Mornings bring a Japanese breakfast with clay-pot rice at our dining room, Suiren.",
@@ -243,7 +265,7 @@ ctaH:"Reservations", ctaP:"Check availability and book online.", ctaBtn:"Search 
 ftNote:"This page is a hands-on demo by Shukuhaku DX Lab. Hotel Suiren is fictional; rates and addresses are invented for the demo. Bookings made through the booking demo flow into the front-desk demo (mini PMS), within your browser only. Photos are for atmosphere; they show real places unrelated to this fictional inn.",
 ftPhoto:"Photos", ftBooking:"Booking engine demo", ftPms:"Front-desk demo (mini PMS, Japanese)"},
 zh:{band:"這是住宿DX實驗室的體驗示範。此旅館為虛構，無法進行真實訂房。",
-btnBook:"立即訂房", nvCui:"餐飲", nvRoom:"客房", nvBath:"溫泉", nvInfo:"資訊",
+btnBook:"立即訂房", nvCui:"餐飲", nvRoom:"客房", nvBath:"溫泉", nvInfo:"資訊", g1:"夜之風情", g2:"森林露天風呂", g3:"季節前菜",
 catch:"湯煙燈影，身心舒展。",
 cuiH:"當季食材，逐皿呈現",
 cuiP:"山間時蔬與近海鮮味——以當日最好的食材，連同器皿一道一道細心烹製的季節會席。早晨在餐廳「睡蓮」享用砂鍋炊飯與日式早餐。",
@@ -260,7 +282,7 @@ ctaH:"線上訂房", ctaP:"查詢空房與訂房，皆可線上完成。", ctaBt
 ftNote:"本頁為住宿DX實驗室的體驗示範。「翠蓮旅館」為虛構旅館，價格與地址均為示範用創作。透過訂房示範完成的預約，將同步顯示於櫃台業務畫面（簡易PMS示範），僅限於您的瀏覽器內。照片僅供氛圍參考，為與本虛構旅館無關的真實地點。",
 ftPhoto:"照片", ftBooking:"訂房引擎示範", ftPms:"櫃台業務畫面（簡易PMS示範・日文）"},
 ko:{band:"숙박DX랩의 체험 데모입니다. 가상의 숙소이며 실제 예약은 불가합니다.",
-btnBook:"예약하기", nvCui:"요리", nvRoom:"객실", nvBath:"온천", nvInfo:"안내",
+btnBook:"예약하기", nvCui:"요리", nvRoom:"객실", nvBath:"온천", nvInfo:"안내", g1:"밤의 정취", g2:"숲속 노천탕", g3:"계절의 전채",
 catch:"온천의 불빛에, 마음이 풀리다.",
 cuiH:"제철을, 한 접시씩",
 cuiP:"산나물과 가까운 바다의 해산물 — 그날 가장 좋은 식재료를 그릇과 함께 정성껏 차려내는 계절 가이세키입니다. 아침에는 식당 '수련'에서 뚝배기 솥밥과 일본식 조식을.",
@@ -304,7 +326,7 @@ if(!matchMedia("(prefers-reduced-motion: reduce)").matches && "IntersectionObser
   const io = new IntersectionObserver(es => es.forEach(e => {
     if(e.isIntersecting){ e.target.classList.add("in"); io.unobserve(e.target); }
   }), { rootMargin: "0px 0px -12% 0px" });
-  document.querySelectorAll("section.row, .infowrap, .cta").forEach(el => {
+  document.querySelectorAll("section.row, .gallery, .infowrap, .cta").forEach(el => {
     if(el.getBoundingClientRect().top > innerHeight){ el.classList.add("fx"); io.observe(el); }
   });
 }
