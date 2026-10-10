@@ -1,0 +1,23 @@
+[
+  {
+    "id": "mini-pms-demo-2026-10-10",
+    "date": "2026-10-10",
+    "category": "new",
+    "title": "簡易PMSデモ（予約・部屋割り）を公開しました",
+    "url": "/demo/mini-pms/"
+  },
+  {
+    "id": "inbound-analysis-update-2026-10-06",
+    "date": "2026-10-06",
+    "category": "update",
+    "title": "インバウンド宿泊者分析を改善しました",
+    "url": "/inbound-analysis.html"
+  },
+  {
+    "id": "hotel-price-trends-2026-09-13",
+    "date": "2026-09-13",
+    "category": "new",
+    "title": "宿泊料金トレンドを公開しました",
+    "url": "/hotel-price-trends.html"
+  }
+]
