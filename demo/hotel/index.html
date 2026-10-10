@@ -30,7 +30,11 @@ body{background:var(--bg);color:var(--fg);font-family:var(--font-serif);margin:0
 img{max-width:100%;display:block}
 .demo-band{background:#f3ece2;color:#8a6a3c;font-family:var(--font-sans);font-size:11.5px;text-align:center;padding:6px 14px;letter-spacing:.06em}
 /* ---- header ---- */
-header.top{max-width:1120px;margin:0 auto;padding:20px 20px 14px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+header.top{max-width:1120px;margin:0 auto;padding:20px 20px 10px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+nav.secnav{max-width:1120px;margin:0 auto;padding:0 20px 14px;display:flex;gap:26px;font-family:var(--font-sans);font-size:12px;letter-spacing:.2em}
+nav.secnav a{color:var(--muted);text-decoration:none;padding:2px 0;border-bottom:1px solid transparent}
+nav.secnav a:hover{color:var(--fg);border-bottom-color:var(--gold)}
+@media (max-width:560px){nav.secnav{gap:18px;font-size:11px;overflow-x:auto;white-space:nowrap}}
 .brand{display:flex;align-items:baseline;gap:10px;text-decoration:none;color:var(--fg)}
 .brand b{font-size:25px;font-weight:500;letter-spacing:.3em}
 .brand small{font-family:var(--font-sans);font-size:10px;color:var(--muted);letter-spacing:.28em}
@@ -44,6 +48,15 @@ a.bookbtn:hover{background:#31443f}
 /* ---- hero ---- */
 .hero{position:relative;overflow:hidden}
 .hero img{width:100%;height:min(76vh,620px);object-fit:cover}
+@media (prefers-reduced-motion: no-preference){
+  .hero img{animation:heroZoom 14s ease-out forwards}
+  @keyframes heroZoom{from{transform:scale(1.07)}to{transform:scale(1)}}
+  .hero .catch{opacity:0;animation:fadeUp 1.6s .3s ease forwards}
+  .hero .sub{opacity:0;animation:fadeUp 1.6s .9s ease forwards}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  .fx{opacity:0;transform:translateY(22px);transition:opacity 1s ease,transform 1s ease}
+  .fx.in{opacity:1;transform:none}
+}
 .hero .veil{position:absolute;inset:0;background:linear-gradient(180deg,rgba(15,20,25,.25),rgba(15,20,25,.05) 40%,rgba(15,20,25,.45));display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:#fdfdf9;padding:20px}
 .hero .catch{font-size:clamp(22px,4.2vw,34px);font-weight:500;letter-spacing:.28em;text-shadow:0 1px 14px rgba(0,0,0,.45);margin:0}
 .hero .sub{font-family:var(--font-sans);font-size:11px;letter-spacing:.42em;opacity:.85;margin-top:14px}
@@ -52,9 +65,12 @@ main{display:block}
 section.row{max-width:1120px;margin:0 auto;padding:72px 20px 0;display:grid;grid-template-columns:7fr 5fr;gap:48px;align-items:center}
 section.row.rev{grid-template-columns:5fr 7fr}
 section.row.rev .ph{order:2}
-section.row .ph img{width:100%;aspect-ratio:3/2;object-fit:cover}
+section.row .ph{overflow:hidden}
+section.row .ph img{width:100%;height:auto;aspect-ratio:3/2;object-fit:cover;transition:transform 1.2s cubic-bezier(.2,.6,.2,1)}
+section.row .ph:hover img{transform:scale(1.035)}
 .eyebrow{font-family:var(--font-sans);color:var(--gold);font-size:11px;letter-spacing:.42em;margin:0 0 14px}
-section.row h2{font-size:23px;font-weight:500;letter-spacing:.2em;margin:0 0 18px;text-wrap:balance}
+section.row h2{font-size:23px;font-weight:500;letter-spacing:.2em;margin:0 0 20px;text-wrap:balance;position:relative;padding-bottom:16px}
+section.row h2::after{content:"";position:absolute;left:1px;bottom:0;width:38px;height:1px;background:var(--gold)}
 section.row p.copy{margin:0;color:#55524b;font-size:13.5px}
 .rates{width:100%;border-collapse:collapse;margin-top:22px;font-variant-numeric:tabular-nums}
 .rates td{border-top:1px solid var(--line);padding:10px 4px;font-size:13px}
@@ -103,6 +119,12 @@ footer .links{margin-top:8px}
     <a class="bookbtn cta-book" href="/demo/booking/" data-i18n="btnBook">ご予約</a>
   </div>
 </header>
+<nav class="secnav" aria-label="Sections">
+  <a href="#cuisine" data-i18n="nvCui">お料理</a>
+  <a href="#rooms" data-i18n="nvRoom">客室</a>
+  <a href="#onsen" data-i18n="nvBath">温泉</a>
+  <a href="#info" data-i18n="nvInfo">ご案内</a>
+</nav>
 
 <div class="hero">
   <img src="img/hero.jpg" alt="" width="1920" height="1080" fetchpriority="high">
@@ -113,7 +135,7 @@ footer .links{margin-top:8px}
 </div>
 
 <main>
-  <section class="row">
+  <section class="row" id="cuisine">
     <div class="ph"><img src="img/food.jpg" alt="" loading="lazy" width="1500" height="1125"></div>
     <div>
       <p class="eyebrow">CUISINE</p>
@@ -122,7 +144,7 @@ footer .links{margin-top:8px}
     </div>
   </section>
 
-  <section class="row rev">
+  <section class="row rev" id="rooms">
     <div class="ph"><img src="img/room.jpg" alt="" loading="lazy" width="1500" height="1000"></div>
     <div>
       <p class="eyebrow">ROOMS</p>
@@ -136,7 +158,7 @@ footer .links{margin-top:8px}
     </div>
   </section>
 
-  <section class="row">
+  <section class="row" id="onsen">
     <div class="ph"><img src="img/bath.jpg" alt="" loading="lazy" width="1500" height="1000"></div>
     <div>
       <p class="eyebrow">ONSEN</p>
@@ -145,7 +167,7 @@ footer .links{margin-top:8px}
     </div>
   </section>
 
-  <div class="infowrap">
+  <div class="infowrap" id="info">
     <div class="info">
       <p class="eyebrow">INFORMATION</p>
       <div class="cols">
@@ -187,7 +209,7 @@ footer .links{margin-top:8px}
 "use strict";
 const I18N = {
 ja:{band:"これは宿泊DXラボの体験デモです。実在しない架空の宿で、実際の予約はできません。",
-btnBook:"ご予約",
+btnBook:"ご予約", nvCui:"お料理", nvRoom:"客室", nvBath:"温泉", nvInfo:"ご案内",
 catch:"湯のあかりに、心ほどける。",
 cuiH:"旬を、ひと皿ずつ",
 cuiP:"山の菜、近海の幸。その日いちばんの食材を、器とともに仕立てる季節の会席です。朝は食事処「睡蓮」で、炊きたての土鍋ごはんと和の朝食を。",
@@ -204,7 +226,7 @@ ctaH:"ご予約", ctaP:"空室の確認からご予約まで、オンライン�
 ftNote:"本ページは宿泊DXラボの体験デモです。「ホテル翠蓮」は架空の宿であり、料金・住所などの情報はデモ用の創作です。予約ボタンの先の予約エンジンデモで確定した予約は、フロント業務画面（簡易PMSデモ）に連動します（お使いのブラウザ内のみ）。写真は雰囲気をお伝えするためのイメージで、実在の場所であり当デモの宿とは関係ありません。",
 ftPhoto:"写真", ftBooking:"予約エンジンデモ", ftPms:"フロント業務画面（簡易PMSデモ・日本語）"},
 en:{band:"A hands-on demo by Shukuhaku DX Lab. This inn is fictional and no real reservations are accepted.",
-btnBook:"Reserve",
+btnBook:"Reserve", nvCui:"Cuisine", nvRoom:"Rooms", nvBath:"Onsen", nvInfo:"Information",
 catch:"Unwind in the glow of the baths.",
 cuiH:"The season, course by course",
 cuiP:"Mountain vegetables and seafood from nearby waters — the day's best, composed dish by dish. Mornings bring a Japanese breakfast with clay-pot rice at our dining room, Suiren.",
@@ -221,7 +243,7 @@ ctaH:"Reservations", ctaP:"Check availability and book online.", ctaBtn:"Search 
 ftNote:"This page is a hands-on demo by Shukuhaku DX Lab. Hotel Suiren is fictional; rates and addresses are invented for the demo. Bookings made through the booking demo flow into the front-desk demo (mini PMS), within your browser only. Photos are for atmosphere; they show real places unrelated to this fictional inn.",
 ftPhoto:"Photos", ftBooking:"Booking engine demo", ftPms:"Front-desk demo (mini PMS, Japanese)"},
 zh:{band:"這是住宿DX實驗室的體驗示範。此旅館為虛構，無法進行真實訂房。",
-btnBook:"立即訂房",
+btnBook:"立即訂房", nvCui:"餐飲", nvRoom:"客房", nvBath:"溫泉", nvInfo:"資訊",
 catch:"湯煙燈影，身心舒展。",
 cuiH:"當季食材，逐皿呈現",
 cuiP:"山間時蔬與近海鮮味——以當日最好的食材，連同器皿一道一道細心烹製的季節會席。早晨在餐廳「睡蓮」享用砂鍋炊飯與日式早餐。",
@@ -238,7 +260,7 @@ ctaH:"線上訂房", ctaP:"查詢空房與訂房，皆可線上完成。", ctaBt
 ftNote:"本頁為住宿DX實驗室的體驗示範。「翠蓮旅館」為虛構旅館，價格與地址均為示範用創作。透過訂房示範完成的預約，將同步顯示於櫃台業務畫面（簡易PMS示範），僅限於您的瀏覽器內。照片僅供氛圍參考，為與本虛構旅館無關的真實地點。",
 ftPhoto:"照片", ftBooking:"訂房引擎示範", ftPms:"櫃台業務畫面（簡易PMS示範・日文）"},
 ko:{band:"숙박DX랩의 체험 데모입니다. 가상의 숙소이며 실제 예약은 불가합니다.",
-btnBook:"예약하기",
+btnBook:"예약하기", nvCui:"요리", nvRoom:"객실", nvBath:"온천", nvInfo:"안내",
 catch:"온천의 불빛에, 마음이 풀리다.",
 cuiH:"제철을, 한 접시씩",
 cuiP:"산나물과 가까운 바다의 해산물 — 그날 가장 좋은 식재료를 그릇과 함께 정성껏 차려내는 계절 가이세키입니다. 아침에는 식당 '수련'에서 뚝배기 솥밥과 일본식 조식을.",
@@ -276,6 +298,16 @@ try{
 document.querySelectorAll(".lnsw button").forEach(b =>
   b.addEventListener("click", () => apply(b.dataset.lang)));
 apply(lang);
+
+/* スクロールに合わせたフェードイン（JS無効時・reduced-motion時は常時表示） */
+if(!matchMedia("(prefers-reduced-motion: reduce)").matches && "IntersectionObserver" in window){
+  const io = new IntersectionObserver(es => es.forEach(e => {
+    if(e.isIntersecting){ e.target.classList.add("in"); io.unobserve(e.target); }
+  }), { rootMargin: "0px 0px -12% 0px" });
+  document.querySelectorAll("section.row, .infowrap, .cta").forEach(el => {
+    if(el.getBoundingClientRect().top > innerHeight){ el.classList.add("fx"); io.observe(el); }
+  });
+}
 </script>
 </body>
 </html>
