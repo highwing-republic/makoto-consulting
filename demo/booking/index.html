@@ -4,21 +4,21 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>予約エンジンデモ｜宿泊DXラボ</title>
-<meta name="description" content="架空ホテルの公式予約サイトを模した予約エンジンデモ（日英対応）。空室検索からプラン選択・予約・キャンセルまで体験でき、予約は簡易PMSデモに連動します。">
+<meta name="description" content="架空ホテルの公式予約サイトを模した予約エンジンデモ。空室検索からプラン選択・予約・キャンセルまで体験でき、予約は簡易PMSデモに連動します。">
 <link rel="canonical" href="https://lab.ugatta-llc.com/demo/booking/">
 <link rel="icon" type="image/png" href="/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@500;700&family=Noto+Sans+JP:wght@400;500;700&display=swap">
 <style>
-/* Layout: guest-facing booking flow — search → plan → form → confirm → done, plus lookup. i18n ja/en */
+/* Layout: guest-facing booking flow — search → plan → form → confirm → done, plus lookup */
 :root{
-  --bg:#f8f5ef;
+  --bg:#f8f5ef;           /* warm paper */
   --panel:#ffffff;
   --fg:#2a2622;
   --muted:#6f675d;
   --line:#e0d9cd;
-  --accent:#394f7c;
+  --accent:#394f7c;       /* deep indigo — actions */
   --accent-soft:#e4e9f3;
   --warn:#a8552c;
   --warn-soft:#f7e6db;
@@ -30,14 +30,12 @@
 *{box-sizing:border-box}
 body{background:var(--bg);color:var(--fg);font-family:var(--font-body);margin:0;padding:0 16px 40px;font-size:14px;line-height:1.7}
 .demo-band{background:var(--warn-soft);color:var(--warn);font-size:12px;text-align:center;padding:6px 10px;margin:0 -16px;font-weight:600}
+.demo-band a{color:inherit}
 header.site{max-width:860px;margin:0 auto;padding:26px 0 8px;display:flex;flex-wrap:wrap;gap:6px 16px;align-items:baseline}
 header.site h1{font-family:var(--font-serif);font-size:26px;margin:0;letter-spacing:.08em}
 header.site .tag{color:var(--muted);font-size:12px}
-header.site .back{margin-left:auto;font-size:12px;display:flex;gap:12px;align-items:baseline;flex-wrap:wrap}
+header.site .back{margin-left:auto;font-size:12px}
 header.site .back a{color:var(--accent)}
-.lnsw{display:flex;gap:4px}
-.lnsw button{appearance:none;border:1px solid var(--line);background:var(--panel);color:var(--muted);font:inherit;font-size:11px;border-radius:999px;padding:2px 10px;cursor:pointer}
-.lnsw button.on{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}
 main{max-width:860px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
 .steps{display:flex;gap:4px;flex-wrap:wrap;font-size:11px;color:var(--muted);letter-spacing:.05em}
 .steps span{padding:3px 10px;border-radius:999px;background:var(--panel);border:1px solid var(--line)}
@@ -84,180 +82,104 @@ footer.note a{color:var(--accent)}
 </style>
 </head>
 <body>
-<div class="demo-band" data-t="band">これは宿泊DXラボの体験デモです。実際の予約はできません／ホテル・料金はすべて架空です</div>
+<div class="demo-band">これは宿泊DXラボの体験デモです。実際の予約はできません／ホテル・料金はすべて架空です</div>
 <header class="site">
-  <h1 data-t="hotel">ホテル翠蓮</h1>
-  <span class="tag" data-t="tag">SUIREN — 架空のホテル（2〜5階・全20室）</span>
-  <span class="back">
-    <span class="lnsw"><button data-lang="ja" class="on">日本語</button><button data-lang="en">EN</button></span>
-    <a href="/demo/hotel/" data-t="lnHotel">旅館サイトデモ</a>
-    <a href="/demo/mini-pms/" data-t="lnPms">フロント業務画面 →</a>
-    <a href="/">宿泊DXラボ</a>
-  </span>
+  <h1>ホテル翠蓮</h1>
+  <span class="tag">SUIREN — 架空のホテル（2〜5階・全20室）</span>
+  <span class="back"><a href="/demo/mini-pms/">フロント業務画面（簡易PMSデモ）→</a>　<a href="/">宿泊DXラボ</a></span>
 </header>
 
 <main>
   <div class="steps" id="steps">
-    <span data-s="1" class="on" data-t="st1">1 空室検索</span><span data-s="2" data-t="st2">2 部屋・プラン</span><span data-s="3" data-t="st3">3 お客様情報</span><span data-s="4" data-t="st4">4 確認</span><span data-s="5" data-t="st5">5 完了</span>
+    <span data-s="1" class="on">1 空室検索</span><span data-s="2">2 部屋・プラン</span><span data-s="3">3 お客様情報</span><span data-s="4">4 確認</span><span data-s="5">5 完了</span>
   </div>
 
   <!-- STEP 1 検索 -->
   <section class="card" id="s1">
-    <h2 data-t="h1">空室検索</h2>
+    <h2>空室検索</h2>
     <div class="row">
-      <label class="f"><span data-t="fIn">チェックイン</span><input type="date" id="qIn"></label>
-      <label class="f"><span data-t="fOut">チェックアウト</span><input type="date" id="qOut"></label>
-      <label class="f"><span data-t="fPax">人数</span><select id="qPax"><option>1</option><option>2</option><option>3</option><option>4</option></select></label>
-      <button class="btn primary" id="btnSearch" data-t="bSearch">空室を探す</button>
+      <label class="f">チェックイン<input type="date" id="qIn"></label>
+      <label class="f">チェックアウト<input type="date" id="qOut"></label>
+      <label class="f">人数<select id="qPax"><option>1</option><option>2</option><option>3</option><option>4</option></select></label>
+      <button class="btn primary" id="btnSearch">空室を探す</button>
     </div>
     <div class="msg" id="qMsg"></div>
   </section>
 
   <!-- STEP 2 部屋タイプ・プラン -->
   <section class="card" id="s2" hidden>
-    <h2><span data-t="h2">部屋タイプを選ぶ</span> <small id="s2cond"></small></h2>
+    <h2>部屋タイプを選ぶ <small id="s2cond"></small></h2>
     <div class="typegrid" id="typeList"></div>
     <div class="plans" id="planList">
-      <label><input type="radio" name="plan" value="room" checked><span data-t="plRoom">素泊まり</span></label>
-      <label><input type="radio" name="plan" value="bf"><span data-t="plBf">朝食付き（+1,500円/人・泊）</span></label>
+      <label><input type="radio" name="plan" value="room" checked>素泊まり</label>
+      <label><input type="radio" name="plan" value="bf">朝食付き（+1,500円/人・泊）</label>
     </div>
     <table class="sum" id="sumTable" hidden></table>
     <div class="row">
-      <button class="btn" id="btnBack1" data-t="bBackSearch">検索に戻る</button>
-      <button class="btn primary" id="btnToForm" disabled data-t="bNext">この内容で進む</button>
+      <button class="btn" id="btnBack1">検索に戻る</button>
+      <button class="btn primary" id="btnToForm" disabled>この内容で進む</button>
     </div>
   </section>
 
   <!-- STEP 3 情報入力 -->
   <section class="card" id="s3" hidden>
-    <h2 data-t="h3">お客様情報</h2>
+    <h2>お客様情報</h2>
     <div class="row">
-      <label class="f"><span data-t="fName">お名前（必須）</span><input id="gName" data-ph="phName" placeholder="例：宿泊 太郎"></label>
-      <label class="f"><span data-t="fTel">電話番号（必須）</span><input id="gTel" inputmode="tel" placeholder="090-0000-0000"></label>
-      <label class="f"><span data-t="fMail">メールアドレス</span><input id="gMail" inputmode="email" placeholder="taro@example.com"></label>
+      <label class="f">お名前（必須）<input id="gName" placeholder="例：宿泊 太郎"></label>
+      <label class="f">電話番号（必須）<input id="gTel" inputmode="tel" placeholder="090-0000-0000"></label>
+      <label class="f">メールアドレス<input id="gMail" inputmode="email" placeholder="taro@example.com"></label>
     </div>
-    <div class="row" style="margin-top:10px"><label class="f" style="flex:1 1 100%"><span data-t="fReq">ご要望</span><textarea id="gReq" rows="2" data-ph="phReq" placeholder="到着が遅くなる、禁煙希望 など"></textarea></label></div>
+    <div class="row" style="margin-top:10px"><label class="f" style="flex:1 1 100%">ご要望<textarea id="gReq" rows="2" placeholder="到着が遅くなる、禁煙希望 など"></textarea></label></div>
     <div class="msg" id="gMsg"></div>
     <div class="row" style="margin-top:6px">
-      <button class="btn" id="btnBack2" data-t="bBack">戻る</button>
-      <button class="btn primary" id="btnToConfirm" data-t="bConfirm">確認画面へ</button>
+      <button class="btn" id="btnBack2">戻る</button>
+      <button class="btn primary" id="btnToConfirm">確認画面へ</button>
     </div>
-    <p class="notice" data-t="ntPrivacy">デモのため入力内容はお使いのブラウザ内にのみ保存され、どこにも送信されません。実在の個人情報は入力しないでください。</p>
+    <p class="notice">デモのため入力内容はお使いのブラウザ内にのみ保存され、どこにも送信されません。実在の個人情報は入力しないでください。</p>
   </section>
 
   <!-- STEP 4 確認 -->
   <section class="card" id="s4" hidden>
-    <h2 data-t="h4">ご予約内容の確認</h2>
+    <h2>ご予約内容の確認</h2>
     <table class="sum" id="confirmTable"></table>
-    <p class="notice" data-t="ntPay">お支払い：現地精算（デモのためオンライン決済はありません）</p>
+    <p class="notice">お支払い：現地精算（デモのためオンライン決済はありません）</p>
     <div class="row">
-      <button class="btn" id="btnBack3" data-t="bBack2">戻る</button>
-      <button class="btn primary" id="btnBook" data-t="bBook">予約を確定する</button>
+      <button class="btn" id="btnBack3">戻る</button>
+      <button class="btn primary" id="btnBook">予約を確定する</button>
     </div>
     <div class="msg" id="bMsg"></div>
   </section>
 
   <!-- STEP 5 完了 -->
   <section class="card" id="s5" hidden>
-    <h2 data-t="h5">ご予約ありがとうございます</h2>
+    <h2>ご予約ありがとうございます</h2>
     <div class="done">
-      <div style="font-size:12px;color:var(--muted)" data-t="doneLabel">予約番号（照会・キャンセルに使います）</div>
+      <div style="font-size:12px;color:var(--muted)">予約番号（照会・キャンセルに使います）</div>
       <div class="no" id="doneNo"></div>
       <div id="doneSummary" style="font-size:13px;margin-top:6px"></div>
     </div>
-    <div class="pmslink"><span data-t="pmsLead">この予約はフロント業務画面に届いています：</span><a href="/demo/mini-pms/" data-t="pmsLink">簡易PMSデモで見る →</a><br>
-    <span class="notice" data-t="pmsNote">PMS側の「予約」タブに未割当で入り、部屋割り→チェックインまで体験できます（同じブラウザ内でのみ連動します）。</span></div>
-    <div class="row" style="margin-top:12px"><button class="btn" id="btnAgain" data-t="bAgain">続けて予約する</button></div>
+    <div class="pmslink">この予約はフロント業務画面に届いています：<a href="/demo/mini-pms/">簡易PMSデモで見る →</a><br>
+    <span class="notice">PMS側の「予約」タブに未割当で入り、部屋割り→チェックインまで体験できます（同じブラウザ内でのみ連動します）。</span></div>
+    <div class="row" style="margin-top:12px"><button class="btn" id="btnAgain">続けて予約する</button></div>
   </section>
 
   <!-- 予約照会 -->
   <section class="card">
-    <h2 data-t="h6">予約の照会・キャンセル</h2>
+    <h2>予約の照会・キャンセル</h2>
     <div class="row">
-      <label class="f"><span data-t="fNo">予約番号</span><input id="lkNo" data-ph="phNo" placeholder="例：W3K9ZQ" style="text-transform:uppercase"></label>
-      <button class="btn" id="btnLookup" data-t="bLookup">照会する</button>
+      <label class="f">予約番号<input id="lkNo" placeholder="例：W3K9ZQ" style="text-transform:uppercase"></label>
+      <button class="btn" id="btnLookup">照会する</button>
     </div>
     <div id="lkResult" style="margin-top:10px"></div>
   </section>
 </main>
 
-<footer class="note" id="ftNote">
+<footer class="note">
   本ページは<a href="/">宿泊DXラボ</a>の体験デモです。空室は<a href="/demo/mini-pms/">簡易PMSデモ</a>と同じ部屋データ（全20室：ツイン8・シングル8・和室4）から判定し、確定した予約はPMSデモの予約一覧に連動します（お使いのブラウザ内のみ）。残室数は「割当済みの部屋・販売止め・未割当の同タイプ希望予約」を差し引いた概算です。料金・ホテル名は架空です。
 </footer>
 
 <script>
 "use strict";
-/* ---------- i18n (ja/en) ---------- */
-const T = {
-band:["これは宿泊DXラボの体験デモです。実際の予約はできません／ホテル・料金はすべて架空です","This is a hands-on demo by Shukuhaku DX Lab. No real reservations — the hotel and rates are fictional."],
-hotel:["ホテル翠蓮","Hotel Suiren"],
-tag:["SUIREN — 架空のホテル（2〜5階・全20室）","SUIREN — a fictional hotel (floors 2–5, 20 rooms)"],
-lnHotel:["旅館サイトデモ","Hotel site demo"], lnPms:["フロント業務画面 →","Front desk (PMS demo, JP) →"],
-st1:["1 空室検索","1 Search"], st2:["2 部屋・プラン","2 Room & plan"], st3:["3 お客様情報","3 Guest info"], st4:["4 確認","4 Review"], st5:["5 完了","5 Done"],
-h1:["空室検索","Check availability"], fIn:["チェックイン","Check-in"], fOut:["チェックアウト","Check-out"], fPax:["人数","Guests"], bSearch:["空室を探す","Search"],
-h2:["部屋タイプを選ぶ","Choose a room type"],
-plRoom:["素泊まり","Room only"], plBf:["朝食付き（+1,500円/人・泊）","With breakfast (+¥1,500 / person / night)"],
-bBackSearch:["検索に戻る","Back to search"], bNext:["この内容で進む","Continue"],
-h3:["お客様情報","Guest information"], fName:["お名前（必須）","Name (required)"], fTel:["電話番号（必須）","Phone (required)"], fMail:["メールアドレス","Email"], fReq:["ご要望","Requests"],
-phName:["例：宿泊 太郎","e.g. Taro Yamada"], phReq:["到着が遅くなる、禁煙希望 など","e.g. late arrival, non-smoking"],
-bBack:["戻る","Back"], bConfirm:["確認画面へ","Review booking"],
-ntPrivacy:["デモのため入力内容はお使いのブラウザ内にのみ保存され、どこにも送信されません。実在の個人情報は入力しないでください。","Demo only: your input is stored in this browser and sent nowhere. Please do not enter real personal information."],
-h4:["ご予約内容の確認","Review your booking"],
-ntPay:["お支払い：現地精算（デモのためオンライン決済はありません）","Payment: at the hotel (no online payment in this demo)"],
-bBack2:["戻る","Back"], bBook:["予約を確定する","Confirm booking"],
-h5:["ご予約ありがとうございます","Thank you — booking confirmed"],
-doneLabel:["予約番号（照会・キャンセルに使います）","Booking number (for lookup & cancellation)"],
-pmsLead:["この予約はフロント業務画面に届いています：","Your booking has arrived at the front desk screen: "],
-pmsLink:["簡易PMSデモで見る →","Open the mini PMS demo (Japanese) →"],
-pmsNote:["PMS側の「予約」タブに未割当で入り、部屋割り→チェックインまで体験できます（同じブラウザ内でのみ連動します）。","It appears unassigned in the PMS reservations tab; you can assign a room and check it in (linked within this browser only)."],
-bAgain:["続けて予約する","Make another booking"],
-h6:["予約の照会・キャンセル","Find or cancel a booking"], fNo:["予約番号","Booking number"], phNo:["例：W3K9ZQ","e.g. W3K9ZQ"], bLookup:["照会する","Look up"],
-ftNote:["本ページは宿泊DXラボの体験デモです。空室は簡易PMSデモと同じ部屋データ（全20室：ツイン8・シングル8・和室4）から判定し、確定した予約はPMSデモの予約一覧に連動します（お使いのブラウザ内のみ）。残室数は「割当済みの部屋・販売止め・未割当の同タイプ希望予約」を差し引いた概算です。料金・ホテル名は架空です。",
-"This page is a hands-on demo by Shukuhaku DX Lab. Availability is computed from the same 20-room data as the mini PMS demo (8 twin, 8 single, 4 Japanese-style), and confirmed bookings flow into the PMS demo — within your browser only. Remaining-room counts are approximate. All rates and names are fictional."],
-// 動的文言
-errDates:["日付を入力してください。","Please enter both dates."],
-errPast:["本日以降の日付を選んでください。","Please choose today or a later date."],
-errOrder:["チェックアウトはチェックインより後の日付にしてください。","Check-out must be after check-in."],
-errName:["お名前と電話番号は必須です。","Name and phone number are required."],
-errFull:["申し訳ありません。確定直前に満室になりました。条件を変えてお試しください。","Sorry — the room sold out just now. Please try different dates or rooms."],
-errSave:["このブラウザでは保存できないため、予約デモを完了できませんでした（プライベートモード等）。","This browser blocks storage (private mode?), so the demo booking could not be completed."],
-errNoInput:["予約番号を入力してください。","Please enter a booking number."],
-perNight:["／泊・室"," / night / room"],
-capOver:["定員超え","Over capacity"], full:["満室","Sold out"],
-leftN:[n=>"残り"+n+"室", n=>n+" left"],
-nights:[n=>n+"泊", n=>n+" night"+(n>1?"s":"")],
-guests:[n=>n+"名", n=>n+" guest"+(n>1?"s":"")],
-cap:[n=>"定員"+n+"名", n=>"sleeps "+n],
-sumRoom:[(t,r,n)=>t+"（"+r+"×"+n+"泊）",(t,r,n)=>t+" ("+r+" × "+n+" nights)"],
-sumBf:[(r,p,n)=>"朝食（"+r+"×"+p+"名×"+n+"泊）",(r,p,n)=>"Breakfast ("+r+" × "+p+" × "+n+")"],
-sumTotal:["合計（税込・デモ）","Total (tax incl., demo)"],
-cfDate:["宿泊日","Stay"], cfRoom:["部屋・人数","Room / guests"], cfPlan:["プラン","Plan"], cfName:["お名前","Name"], cfTel:["電話番号","Phone"],
-lkNo_:["予約番号","Booking no."], lkName:["お名前","Name"], lkStay:["宿泊日","Stay"], lkStatus:["状態","Status"],
-stBooked:["予約確定","Confirmed"], stIn:["チェックイン済","Checked in"], stOut:["チェックアウト済","Checked out"], stCxl:["キャンセル済","Cancelled"],
-noPref:["部屋タイプ指定なし","any room type"],
-notFound:[no=>"予約番号 "+no+" の予約は見つかりませんでした（このブラウザで取った予約のみ照会できます）。", no=>"No booking found for "+no+" (only bookings made in this browser can be looked up)."],
-bCancel:["この予約をキャンセルする","Cancel this booking"],
-noCxl:["チェックイン後のためWebからはキャンセルできません（フロントにご連絡ください…という体のデモです）。","Already checked in — in this demo, please 'contact the front desk' instead."]
-};
-const ROOM_I18N = {
-  "シングル":{en:"Single", descJa:"落ち着いた一人旅・出張に。14㎡", descEn:"Calm 14 m² room for solo stays."},
-  "ツイン":{en:"Twin", descJa:"ベッド2台のスタンダードルーム。22㎡", descEn:"22 m² standard room with two beds."},
-  "和室":{en:"Japanese-style", descJa:"ご家族・グループ向けの畳のお部屋。30㎡", descEn:"30 m² tatami room for families & groups."}
-};
-let L = 0; // 0=ja 1=en
-const t = k => T[k][L];
-function applyLang(lang){
-  L = lang === "en" ? 1 : 0;
-  document.documentElement.lang = L ? "en" : "ja";
-  document.querySelectorAll("[data-t]").forEach(el => { el.textContent = T[el.dataset.t][L]; });
-  document.querySelectorAll("[data-ph]").forEach(el => { el.placeholder = T[el.dataset.ph][L]; });
-  document.getElementById("ftNote").textContent = t("ftNote");
-  document.querySelectorAll(".lnsw button").forEach(b => b.classList.toggle("on", (b.dataset.lang === "en") === !!L));
-  try{ localStorage.setItem("suiren-lang", L ? "en" : "ja"); }catch(e){}
-  if(q.inD) renderTypes();
-}
-document.querySelectorAll(".lnsw button").forEach(b => b.addEventListener("click", () => applyLang(b.dataset.lang)));
-
 /* ---------- 共有ストレージ（簡易PMSデモと同じキー） ---------- */
 const KEY = "mini-pms-v3";
 const pad = n => String(n).padStart(2,"0");
@@ -266,11 +188,10 @@ const today = new Date(); today.setHours(0,0,0,0);
 const T0 = iso(today);
 const addDays = (s,n)=>{const d=new Date(s+"T00:00:00");d.setDate(d.getDate()+n);return iso(d);};
 const nightsOf = (a,b)=>Math.round((new Date(b+"T00:00:00")-new Date(a+"T00:00:00"))/86400000);
-const mdLabel = s=>{const d=new Date(s+"T00:00:00");
-  return L ? (d.getMonth()+1)+"/"+d.getDate()+" "+["Sun","Mon","Tue","Wed","Thu","Fri","Sat"][d.getDay()]
-           : (d.getMonth()+1)+"/"+d.getDate()+"("+"日月火水木金土"[d.getDay()]+")";};
+const mdLabel = s=>{const d=new Date(s+"T00:00:00");return (d.getMonth()+1)+"/"+d.getDate()+"("+"日月火水木金土"[d.getDay()]+")";};
 const yen = n => "¥" + n.toLocaleString("ja-JP");
 
+/* 部屋マスタ（PMSデモと同一） */
 const ROOMS = [];
 const addRooms=(f,nos,type,cap)=>nos.forEach(no=>ROOMS.push({no,floor:f,type,cap}));
 ["5","4","3","2"].forEach(f=>{
@@ -279,12 +200,11 @@ const addRooms=(f,nos,type,cap)=>nos.forEach(no=>ROOMS.push({no,floor:f,type,cap
   addRooms(f+"階",[f+"05"],"和室",4);
 });
 const TYPES = [
-  {type:"シングル", cap:1, rate:8000},
-  {type:"ツイン",   cap:2, rate:16000},
-  {type:"和室",     cap:4, rate:24000}
+  {type:"シングル", cap:1, rate:8000,  desc:"落ち着いた一人旅・出張に。14㎡"},
+  {type:"ツイン",   cap:2, rate:16000, desc:"ベッド2台のスタンダードルーム。22㎡"},
+  {type:"和室",     cap:4, rate:24000, desc:"ご家族・グループ向けの畳のお部屋。30㎡"}
 ];
-const BF = 1500;
-const typeName = ty => L ? ROOM_I18N[ty].en : ty;
+const BF = 1500; // 朝食 /人・泊
 
 function seed(){
   return { nextId: 9, nextBlockId: 2,
@@ -310,6 +230,7 @@ function load(){
 function save(s){ try{ localStorage.setItem(KEY, JSON.stringify(s)); return true; }catch(e){ return false; } }
 const active = r => r.status !== "cancelled";
 
+/* ---------- 空室計算 ---------- */
 function freeCount(state, type, inD, outD){
   const rooms = ROOMS.filter(rm => rm.type === type);
   let free = 0;
@@ -321,6 +242,7 @@ function freeCount(state, type, inD, outD){
     }
     if(!taken) free++;
   });
+  // 未割当でこのタイプを希望している予約（期間重複）を差し引く
   const pending = state.reservations.filter(r =>
     active(r) && !r.room && r.typePref === type && r.inDate < outD && inD < r.outDate).length;
   return Math.max(0, free - pending);
@@ -341,9 +263,9 @@ document.getElementById("btnSearch").addEventListener("click", () => {
   const msg = document.getElementById("qMsg");
   const inD = document.getElementById("qIn").value, outD = document.getElementById("qOut").value;
   const pax = +document.getElementById("qPax").value;
-  if(!inD || !outD){ msg.textContent = t("errDates"); return; }
-  if(inD < T0){ msg.textContent = t("errPast"); return; }
-  if(outD <= inD){ msg.textContent = t("errOrder"); return; }
+  if(!inD || !outD){ msg.textContent = "日付を入力してください。"; return; }
+  if(inD < T0){ msg.textContent = "本日以降の日付を選んでください。"; return; }
+  if(outD <= inD){ msg.textContent = "チェックアウトはチェックインより後の日付にしてください。"; return; }
   msg.textContent = "";
   Object.assign(q, { inD, outD, pax, nights: nightsOf(inD,outD), type:null });
   renderTypes();
@@ -352,26 +274,25 @@ document.getElementById("btnSearch").addEventListener("click", () => {
 function renderTypes(){
   const state = load();
   document.getElementById("s2cond").textContent =
-    mdLabel(q.inD) + " → " + mdLabel(q.outD) + " · " + T.nights[L](q.nights) + " · " + T.guests[L](q.pax);
+    mdLabel(q.inD) + " → " + mdLabel(q.outD) + "・" + q.nights + "泊・" + q.pax + "名";
   const list = document.getElementById("typeList");
   list.textContent = "";
-  TYPES.forEach(tp => {
-    const capNG = tp.cap < q.pax;
-    const left = capNG ? 0 : freeCount(state, tp.type, q.inD, q.outD);
+  TYPES.forEach(t => {
+    const capNG = t.cap < q.pax;
+    const left = capNG ? 0 : freeCount(state, t.type, q.inD, q.outD);
     const el = document.createElement("label");
     el.className = "typecard" + (left ? "" : " soldout");
     el.innerHTML =
-      '<input type="radio" name="rt" value="' + tp.type + '"' + (left ? "" : " disabled") + '>' +
-      '<span class="nm">' + typeName(tp.type) + '</span><span class="desc">' +
-        (L ? ROOM_I18N[tp.type].descEn : ROOM_I18N[tp.type].descJa) + " · " + T.cap[L](tp.cap) + "</span>" +
-      '<span class="price">' + yen(tp.rate) + "<small>" + t("perNight") + '</small></span>' +
+      '<input type="radio" name="rt" value="' + t.type + '"' + (left ? "" : " disabled") + '>' +
+      '<span class="nm">' + t.type + '</span><span class="desc">' + t.desc + "・定員" + t.cap + "名</span>" +
+      '<span class="price">' + yen(t.rate) + '<small>／泊・室</small></span>' +
       '<span class="left' + (left && left <= 2 ? " few" : "") + '">' +
-        (capNG ? t("capOver") : left ? T.leftN[L](left) : t("full")) + "</span>";
-    el.querySelector("input").addEventListener("change", () => { q.type = tp.type; q.rate = tp.rate; renderSum(); });
-    if(q.type === tp.type && left){ el.querySelector("input").checked = true; }
+        (capNG ? "定員超え" : left ? "残り" + left + "室" : "満室") + "</span>";
+    el.querySelector("input").addEventListener("change", () => { q.type = t.type; q.rate = t.rate; renderSum(); });
     list.appendChild(el);
   });
-  if(q.type) renderSum(); else { document.getElementById("sumTable").hidden = true; document.getElementById("btnToForm").disabled = true; }
+  document.getElementById("sumTable").hidden = true;
+  document.getElementById("btnToForm").disabled = true;
 }
 document.querySelectorAll('input[name="plan"]').forEach(r =>
   r.addEventListener("change", () => { q.plan = r.value; if(q.type) renderSum(); }));
@@ -382,12 +303,12 @@ function calc(){
 }
 function renderSum(){
   const c = calc();
-  const tb = document.getElementById("sumTable");
-  tb.hidden = false;
-  tb.innerHTML =
-    "<tr><td>" + T.sumRoom[L](typeName(q.type), yen(q.rate), q.nights) + "</td><td>" + yen(c.roomTotal) + "</td></tr>" +
-    (c.bfTotal ? "<tr><td>" + T.sumBf[L](yen(BF), q.pax, q.nights) + "</td><td>" + yen(c.bfTotal) + "</td></tr>" : "") +
-    '<tr class="total"><td>' + t("sumTotal") + "</td><td>" + yen(c.total) + "</td></tr>";
+  const t = document.getElementById("sumTable");
+  t.hidden = false;
+  t.innerHTML =
+    "<tr><td>" + q.type + "（" + yen(q.rate) + "×" + q.nights + "泊）</td><td>" + yen(c.roomTotal) + "</td></tr>" +
+    (c.bfTotal ? "<tr><td>朝食（" + yen(BF) + "×" + q.pax + "名×" + q.nights + "泊）</td><td>" + yen(c.bfTotal) + "</td></tr>" : "") +
+    '<tr class="total"><td>合計（税込・デモ）</td><td>' + yen(c.total) + "</td></tr>";
   document.getElementById("btnToForm").disabled = false;
 }
 document.getElementById("btnBack1").addEventListener("click", () => setStep(1));
@@ -396,17 +317,17 @@ document.getElementById("btnBack2").addEventListener("click", () => setStep(2));
 document.getElementById("btnToConfirm").addEventListener("click", () => {
   const msg = document.getElementById("gMsg");
   if(!document.getElementById("gName").value.trim() || !document.getElementById("gTel").value.trim()){
-    msg.textContent = t("errName"); return;
+    msg.textContent = "お名前と電話番号は必須です。"; return;
   }
   msg.textContent = "";
   const c = calc();
   document.getElementById("confirmTable").innerHTML =
-    "<tr><td>" + t("cfDate") + "</td><td>" + mdLabel(q.inD) + " → " + mdLabel(q.outD) + "（" + T.nights[L](q.nights) + "）</td></tr>" +
-    "<tr><td>" + t("cfRoom") + "</td><td>" + typeName(q.type) + " · " + T.guests[L](q.pax) + "</td></tr>" +
-    "<tr><td>" + t("cfPlan") + "</td><td>" + (q.plan === "bf" ? t("plBf") : t("plRoom")) + "</td></tr>" +
-    "<tr><td>" + t("cfName") + "</td><td>" + escapeHtml(document.getElementById("gName").value.trim()) + "</td></tr>" +
-    "<tr><td>" + t("cfTel") + "</td><td>" + escapeHtml(document.getElementById("gTel").value.trim()) + "</td></tr>" +
-    '<tr class="total"><td>' + t("sumTotal") + "</td><td>" + yen(c.total) + "</td></tr>";
+    "<tr><td>宿泊日</td><td>" + mdLabel(q.inD) + " → " + mdLabel(q.outD) + "（" + q.nights + "泊）</td></tr>" +
+    "<tr><td>部屋・人数</td><td>" + q.type + "・" + q.pax + "名</td></tr>" +
+    "<tr><td>プラン</td><td>" + (q.plan === "bf" ? "朝食付き" : "素泊まり") + "</td></tr>" +
+    "<tr><td>お名前</td><td>" + escapeHtml(document.getElementById("gName").value.trim()) + "</td></tr>" +
+    "<tr><td>電話番号</td><td>" + escapeHtml(document.getElementById("gTel").value.trim()) + "</td></tr>" +
+    '<tr class="total"><td>合計（税込・デモ）</td><td>' + yen(c.total) + "</td></tr>";
   setStep(4);
 });
 document.getElementById("btnBack3").addEventListener("click", () => setStep(3));
@@ -416,7 +337,9 @@ function escapeHtml(s){ const d = document.createElement("div"); d.textContent =
 document.getElementById("btnBook").addEventListener("click", () => {
   const msg = document.getElementById("bMsg");
   const state = load();
-  if(freeCount(state, q.type, q.inD, q.outD) < 1){ msg.textContent = t("errFull"); return; }
+  if(freeCount(state, q.type, q.inD, q.outD) < 1){
+    msg.textContent = "申し訳ありません。確定直前に満室になりました。条件を変えてお試しください。"; return;
+  }
   const no = "W" + Date.now().toString(36).toUpperCase().slice(-5);
   const c = calc();
   const name = document.getElementById("gName").value.trim();
@@ -427,19 +350,20 @@ document.getElementById("btnBook").addEventListener("click", () => {
     id: state.nextId++,
     name: name + "様",
     pax: q.pax, inDate: q.inD, outDate: q.outD, typePref: q.type,
-    memo: "Web予約 " + no + (L ? "（英語サイト経由）" : "") + "／" + (q.plan === "bf" ? "朝食付き" : "素泊まり") + "／" + yen(c.total) +
+    memo: "Web予約 " + no + "／" + (q.plan === "bf" ? "朝食付き" : "素泊まり") + "／" + yen(c.total) +
           "／TEL:" + tel + (mail ? "／" + mail : "") + (req ? "／要望：" + req : ""),
-    room: null, status: "booked", bookingNo: no, source: "web", lang: L ? "en" : "ja"
+    room: null, status: "booked", bookingNo: no, source: "web"
   });
-  if(!save(state)){ msg.textContent = t("errSave"); return; }
+  if(!save(state)){
+    msg.textContent = "このブラウザでは保存できないため、予約デモを完了できませんでした（プライベートモード等）。"; return;
+  }
   document.getElementById("doneNo").textContent = no;
   document.getElementById("doneSummary").textContent =
-    name + " / " + mdLabel(q.inD) + " → " + mdLabel(q.outD) + " · " + T.nights[L](q.nights) + " · " + typeName(q.type) + " · " + T.guests[L](q.pax) + " / " + yen(c.total);
+    name + "様／" + mdLabel(q.inD) + "→" + mdLabel(q.outD) + "・" + q.nights + "泊・" + q.type + "・" + q.pax + "名／合計 " + yen(c.total);
   setStep(5);
 });
 document.getElementById("btnAgain").addEventListener("click", () => {
-  ["gName","gTel","gMail","gReq"].forEach(id => document.getElementById(id).value = "");
-  ["bMsg","gMsg"].forEach(id => document.getElementById(id).textContent = "");
+  ["gName","gTel","gMail","gReq","bMsg","gMsg"].forEach(id => { const el = document.getElementById(id); if(el.tagName === "DIV") el.textContent=""; else el.value=""; });
   setStep(1);
 });
 
@@ -448,45 +372,36 @@ document.getElementById("btnLookup").addEventListener("click", renderLookup);
 function renderLookup(){
   const no = document.getElementById("lkNo").value.trim().toUpperCase();
   const box = document.getElementById("lkResult");
-  if(!no){ box.innerHTML = '<span class="msg">' + t("errNoInput") + "</span>"; return; }
+  if(!no){ box.innerHTML = '<span class="msg">予約番号を入力してください。</span>'; return; }
   const state = load();
   const r = state.reservations.find(x => x.bookingNo === no);
-  if(!r){ box.innerHTML = '<span class="msg">' + T.notFound[L](escapeHtml(no)) + "</span>"; return; }
-  const st = r.status === "cancelled" ? '<span class="pill cxl">' + t("stCxl") + "</span>"
-           : r.status === "in" ? '<span class="pill ok">' + t("stIn") + "</span>"
-           : r.status === "out" ? '<span class="pill ok">' + t("stOut") + "</span>"
-           : '<span class="pill ok">' + t("stBooked") + "</span>";
+  if(!r){ box.innerHTML = '<span class="msg">予約番号 ' + escapeHtml(no) + ' の予約は見つかりませんでした（このブラウザで取った予約のみ照会できます）。</span>'; return; }
+  const st = r.status === "cancelled" ? '<span class="pill cxl">キャンセル済</span>'
+           : r.status === "in" ? '<span class="pill ok">チェックイン済</span>'
+           : r.status === "out" ? '<span class="pill ok">チェックアウト済</span>'
+           : '<span class="pill ok">予約確定</span>';
   box.innerHTML =
     '<table class="sum">' +
-    "<tr><td>" + t("lkNo_") + "</td><td>" + escapeHtml(no) + "</td></tr>" +
-    "<tr><td>" + t("lkName") + "</td><td>" + escapeHtml(r.name) + "</td></tr>" +
-    "<tr><td>" + t("lkStay") + "</td><td>" + mdLabel(r.inDate) + " → " + mdLabel(r.outDate) + " · " + T.guests[L](r.pax) + " · " + (r.typePref ? typeName(r.typePref) : t("noPref")) + "</td></tr>" +
-    "<tr><td>" + t("lkStatus") + "</td><td>" + st + "</td></tr></table>";
+    "<tr><td>予約番号</td><td>" + escapeHtml(no) + "</td></tr>" +
+    "<tr><td>お名前</td><td>" + escapeHtml(r.name) + "</td></tr>" +
+    "<tr><td>宿泊日</td><td>" + mdLabel(r.inDate) + " → " + mdLabel(r.outDate) + "・" + r.pax + "名・" + (r.typePref || "部屋タイプ指定なし") + "</td></tr>" +
+    "<tr><td>状態</td><td>" + st + "</td></tr></table>";
   if(r.status === "booked"){
     const b = document.createElement("button");
-    b.className = "btn small"; b.textContent = t("bCancel");
+    b.className = "btn small"; b.textContent = "この予約をキャンセルする";
     b.addEventListener("click", () => {
       const s2 = load();
-      const x = s2.reservations.find(y => y.bookingNo === no);
-      if(x && x.status === "booked"){ x.status = "cancelled"; x.room = null; save(s2); }
+      const t = s2.reservations.find(x => x.bookingNo === no);
+      if(t && t.status === "booked"){ t.status = "cancelled"; t.room = null; save(s2); }
       renderLookup();
     });
     box.appendChild(b);
   } else if(r.status !== "cancelled"){
     const p = document.createElement("p"); p.className = "notice";
-    p.textContent = t("noCxl");
+    p.textContent = "チェックイン後のためWebからはキャンセルできません（フロントにご連絡ください…という体のデモです）。";
     box.appendChild(p);
   }
 }
-
-/* ---------- 初期化（?lang= → localStorage → ja） ---------- */
-let initLang = "ja";
-try{
-  const p = new URLSearchParams(location.search).get("lang");
-  initLang = p === "en" ? "en" : p === "ja" ? "ja"
-    : (localStorage.getItem("suiren-lang") === "en" ? "en" : "ja");
-}catch(e){}
-applyLang(initLang);
 setStep(1);
 </script>
 </body>
