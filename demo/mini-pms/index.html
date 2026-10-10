@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>簡易PMSデモ｜宿泊DXラボ</title>
+<meta name="description" content="予約登録・部屋割り・客室状況表・当日台帳までを、架空ホテル（全40室）を舞台にブラウザだけで体験できる簡易PMSデモです。">
+<link rel="canonical" href="https://lab.ugatta-llc.com/demo/mini-pms/">
+<link rel="icon" type="image/png" href="/favicon.png">
+<style>
+/* Layout: 4-tab operations console — 予約 / 部屋割りグリッド / 客室状況表 / 当日台帳 */
+:root{
+  --bg:#f5f6f4;          /* cool paper */
+  --panel:#ffffff;
+  --fg:#1d2733;
+  --muted:#5c6b7a;
+  --line:#d7dde2;
+  --accent:#0e6e68;      /* deep teal — assignment / primary actions */
+  --accent-soft:#d9ecea;
+  --warn:#b4540a;
+  --warn-soft:#fbe9d9;
+  --stay:#2b5d8c;        /* checked-in stay bar */
+  --stay-soft:#dce8f3;
+  --block:#6b7480;       /* room block */
+  --block-soft:#e3e6ea;
+  --cxl:#8a2f3c;
+  --cxl-soft:#f3dfe2;
+  --font-body:"Noto Sans JP","Hiragino Kaku Gothic ProN",Meiryo,system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#141a20; --panel:#1c242c; --fg:#e4e9ed; --muted:#93a1ae; --line:#36414c;
+    --accent:#4fb8b0; --accent-soft:#17403d; --warn:#e0984f; --warn-soft:#45310f;
+    --stay:#7aa9d4; --stay-soft:#223a51; --block:#9aa4af; --block-soft:#2a333c;
+    --cxl:#d98a96; --cxl-soft:#44252b; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#141a20; --panel:#1c242c; --fg:#e4e9ed; --muted:#93a1ae; --line:#36414c;
+  --accent:#4fb8b0; --accent-soft:#17403d; --warn:#e0984f; --warn-soft:#45310f;
+  --stay:#7aa9d4; --stay-soft:#223a51; --block:#9aa4af; --block-soft:#2a333c;
+  --cxl:#d98a96; --cxl-soft:#44252b; color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-body);margin:0;padding-block:0 32px;padding-inline:16px;font-size:14px;line-height:1.6}
+header.app{max-width:1100px;margin:0 auto;padding-block:18px 10px;display:flex;flex-wrap:wrap;gap:8px 16px;align-items:baseline}
+header.app h1{font-size:19px;margin:0;letter-spacing:.02em}
+header.app .sub{color:var(--muted);font-size:12px}
+main{max-width:1100px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
+nav.tabs{display:flex;gap:2px;border-bottom:2px solid var(--line);flex-wrap:wrap}
+nav.tabs button{appearance:none;border:none;background:none;color:var(--muted);font:inherit;font-weight:600;padding:8px 12px;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;white-space:nowrap}
+nav.tabs button[aria-selected="true"]{color:var(--accent);border-bottom-color:var(--accent)}
+nav.tabs button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+section.panel{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:16px}
+h2{font-size:15px;margin:0 0 10px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;align-items:start}
+form .row{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:10px}
+form label{display:flex;flex-direction:column;gap:3px;font-size:12px;color:var(--muted);min-width:0;flex:1 1 120px}
+input,select,textarea{font:inherit;color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:6px 8px;min-width:0}
+textarea{resize:vertical}
+button.btn{appearance:none;font:inherit;font-weight:600;border-radius:6px;border:1px solid var(--line);background:var(--panel);color:var(--fg);padding:7px 14px;cursor:pointer;white-space:nowrap}
+button.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+:root[data-theme="dark"] button.btn.primary{color:#07211f}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) button.btn.primary{color:#07211f}}
+button.btn.small{padding:3px 9px;font-size:12px;font-weight:500}
+button.btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}
+.res-table th,.res-table td{border-bottom:1px solid var(--line);padding:6px 8px;text-align:left;font-size:13px;vertical-align:top}
+.res-table th{color:var(--muted);font-size:11px;letter-spacing:.06em;font-weight:600}
+.res-table tr.cxl td{opacity:.55}
+.pill{display:inline-block;font-size:11px;font-weight:600;border-radius:999px;padding:1px 9px;white-space:nowrap}
+.pill.ok{background:var(--accent-soft);color:var(--accent)}
+.pill.todo{background:var(--warn-soft);color:var(--warn)}
+.pill.in{background:var(--stay-soft);color:var(--stay)}
+.pill.out{background:var(--block-soft);color:var(--muted)}
+.pill.cxl{background:var(--cxl-soft);color:var(--cxl)}
+.pill.blk{background:var(--block-soft);color:var(--block)}
+.scroll{overflow-x:auto;border:1px solid var(--line);border-radius:8px}
+.asgrid{min-width:760px}
+.asgrid th,.asgrid td{border:1px solid var(--line);padding:0;font-size:12px}
+.asgrid thead th{background:var(--bg);padding:4px 6px;text-align:center;font-weight:600;min-width:52px}
+.asgrid thead th.today{color:var(--accent)}
+.asgrid td.roomcell,.asgrid th.roomcell{position:sticky;left:0;background:var(--panel);padding:3px 8px;min-width:120px;text-align:left;white-space:nowrap;z-index:1}
+.asgrid tr.floor th{background:var(--bg);padding:3px 8px;text-align:left;color:var(--muted);letter-spacing:.08em;font-size:11px}
+.asgrid td.night{height:30px;min-width:52px;position:relative;cursor:default}
+.asgrid td.night.cand{cursor:pointer;background:var(--accent-soft);box-shadow:inset 0 0 0 1px var(--accent)}
+.asgrid td.night .bar{position:absolute;inset:3px 1px;background:var(--stay-soft);border-left:3px solid var(--stay);border-radius:3px;display:flex;align-items:center;padding:0 5px;overflow:hidden;white-space:nowrap;font-size:11px;cursor:pointer}
+.asgrid td.night .bar.booked{background:var(--panel);border:1px dashed var(--stay);border-left:3px solid var(--stay)}
+.asgrid td.night .bar.blk{background:repeating-linear-gradient(45deg,var(--block-soft),var(--block-soft) 5px,var(--bg) 5px,var(--bg) 10px);border-left:3px solid var(--block);color:var(--muted)}
+.asgrid td.night .bar.sel{outline:2px solid var(--accent)}
+.toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:10px}
+.toolbar .note{font-size:12px;color:var(--muted)}
+.selbox{background:var(--accent-soft);border:1px solid var(--accent);border-radius:6px;padding:4px 10px;font-size:12px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.blockform{display:flex;flex-wrap:wrap;gap:8px;align-items:end;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px;margin-bottom:10px}
+.blockform label{display:flex;flex-direction:column;gap:3px;font-size:11px;color:var(--muted)}
+.statusboard{display:flex;flex-direction:column;gap:14px}
+.statusboard h3{font-size:12px;margin:0 0 6px;color:var(--muted);letter-spacing:.08em}
+.roomgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.roomcard{border:1px solid var(--line);border-radius:8px;padding:8px 10px;display:flex;flex-direction:column;gap:3px;min-width:0}
+.roomcard .top{display:flex;justify-content:space-between;align-items:baseline;gap:6px}
+.roomcard .no{font-weight:700}
+.roomcard .typ{font-size:11px;color:var(--muted)}
+.roomcard .guest{font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.roomcard.vacant{background:var(--bg)}
+.roomcard.occ{background:var(--stay-soft);border-color:var(--stay)}
+.roomcard.arr{background:var(--warn-soft);border-color:var(--warn)}
+.roomcard.blkd{background:repeating-linear-gradient(45deg,var(--block-soft),var(--block-soft) 6px,var(--panel) 6px,var(--panel) 12px);border-color:var(--block)}
+.legend{display:flex;flex-wrap:wrap;gap:12px;font-size:11px;color:var(--muted);margin-bottom:12px}
+.legend span{display:inline-flex;align-items:center;gap:5px}
+.legend i{width:12px;height:12px;border-radius:3px;display:inline-block;border:1px solid var(--line)}
+.ledger{display:flex;flex-direction:column;gap:14px}
+.ledger h3{font-size:13px;margin:0 0 6px;display:flex;gap:8px;align-items:baseline}
+.ledger h3 .cnt{color:var(--muted);font-weight:500;font-size:12px}
+.ledger table td,.ledger table th{border-bottom:1px solid var(--line);padding:5px 8px;font-size:13px;text-align:left}
+.ledger table th{color:var(--muted);font-size:11px;font-weight:600}
+.empty{color:var(--muted);font-size:12px;padding:4px 2px}
+footer.note{max-width:1100px;margin:14px auto 0;color:var(--muted);font-size:11px}
+.msg{font-size:12px;color:var(--warn);min-height:1.2em}
+@media (max-width:640px){ .res-table .hide-sm{display:none} }
+</style>
+</head>
+<body>
+
+
+<header class="app">
+  <h1>簡易PMSデモ</h1>
+  <span class="sub">予約 → 部屋割り → 状況表 → 当日台帳のデモ（架空ホテル・データはサンプル、このブラウザ内のみ）</span>
+  <span class="sub" style="margin-left:auto"><a href="/" style="color:var(--accent)">← 宿泊DXラボ</a></span>
+</header>
+
+<main>
+  <nav class="tabs" role="tablist">
+    <button role="tab" aria-selected="true" data-tab="res">予約</button>
+    <button role="tab" aria-selected="false" data-tab="grid">部屋割り</button>
+    <button role="tab" aria-selected="false" data-tab="board">客室状況表</button>
+    <button role="tab" aria-selected="false" data-tab="ledger">当日台帳</button>
+  </nav>
+
+  <section class="panel" id="tab-res">
+    <div class="grid2">
+      <div>
+        <h2>新規予約</h2>
+        <form id="resForm">
+          <div class="row">
+            <label>宿泊者名（必須）<input id="fName" required placeholder="例：田中物産 佐藤様"></label>
+            <label>人数<input id="fPax" type="number" min="1" max="6" value="1"></label>
+          </div>
+          <div class="row">
+            <label>チェックイン<input id="fIn" type="date" required></label>
+            <label>チェックアウト<input id="fOut" type="date" required></label>
+          </div>
+          <div class="row">
+            <label>部屋タイプ希望
+              <select id="fType">
+                <option value="">指定なし</option>
+                <option>シングル</option><option>ツイン</option><option>和室</option>
+              </select>
+            </label>
+          </div>
+          <div class="row"><label style="flex:1 1 100%">メモ<textarea id="fMemo" rows="2" placeholder="現場メモ・申し送り"></textarea></label></div>
+          <div class="msg" id="formMsg"></div>
+          <button class="btn primary" type="submit">予約を登録</button>
+        </form>
+      </div>
+      <div style="min-width:0">
+        <h2>予約一覧</h2>
+        <label style="font-size:12px;color:var(--muted)"><input type="checkbox" id="showCxl" style="vertical-align:-2px"> キャンセルも表示</label>
+        <div style="overflow-x:auto;margin-top:6px">
+        <table class="res-table"><thead><tr>
+          <th>宿泊者</th><th>IN / OUT</th><th class="hide-sm">泊</th><th class="hide-sm">人数</th><th>部屋</th><th>状態</th><th></th>
+        </tr></thead><tbody id="resRows"></tbody></table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel" id="tab-grid" hidden>
+    <h2>部屋割り（今日から14日間）</h2>
+    <div class="toolbar">
+      <button class="btn primary" id="btnAuto">未割当を自動割当</button>
+      <div class="selbox" id="selBox" hidden>
+        <span id="selLabel"></span>
+        <button class="btn small" id="btnUnassign">割当解除</button>
+        <button class="btn small" id="btnClearSel">選択解除</button>
+      </div>
+      <div class="selbox" id="blkSelBox" hidden>
+        <span id="blkSelLabel"></span>
+        <button class="btn small" id="btnBlockDel">ブロック解除</button>
+        <button class="btn small" id="btnBlockClearSel">選択解除</button>
+      </div>
+      <span class="note">未割当の予約を「割当」で選ぶと空き部屋が緑に光ります。クリックで確定。斜線はブロック（販売止め）。</span>
+    </div>
+    <div class="blockform">
+      <strong style="font-size:12px">部屋ブロック</strong>
+      <label>部屋<select id="bRoom"></select></label>
+      <label>開始日<input type="date" id="bFrom"></label>
+      <label>終了日（この日まで止める）<input type="date" id="bTo"></label>
+      <label>理由<input id="bReason" placeholder="例：空調故障" style="width:130px"></label>
+      <button class="btn small" id="btnBlockAdd" type="button">ブロック追加</button>
+    </div>
+    <div class="msg" id="gridMsg"></div>
+    <div class="scroll"><table class="asgrid" id="asgrid"></table></div>
+  </section>
+
+  <section class="panel" id="tab-board">
+    <h2>客室状況表（本日）</h2>
+    <div class="legend">
+      <span><i style="background:var(--stay-soft);border-color:var(--stay)"></i>在室</span>
+      <span><i style="background:var(--warn-soft);border-color:var(--warn)"></i>本日到着予定</span>
+      <span><i style="background:var(--block-soft);border-color:var(--block)"></i>ブロック</span>
+      <span><i style="background:var(--bg)"></i>空室</span>
+    </div>
+    <div class="statusboard" id="boardBody"></div>
+  </section>
+
+  <section class="panel" id="tab-ledger" hidden>
+    <h2>当日台帳</h2>
+    <div class="toolbar">
+      <label style="font-size:12px;color:var(--muted)">対象日　<input type="date" id="ledgerDate"></label>
+    </div>
+    <div class="ledger" id="ledgerBody"></div>
+  </section>
+</main>
+
+<footer class="note">
+  架空ホテル（2〜5階・各階10室＝シングル3／ツイン4／和室3、全40室）のデモです。
+  予約は「予約→チェックイン済→チェックアウト済」のステータスで管理し、キャンセルは履歴として残ります（削除はキャンセル済のみ可）。
+  自動割当ルール（デモ用）：7泊以上の長期滞在はシングル→ツインの順で優先／人数が定員を超える部屋は候補外／ブロック中の部屋は候補外。
+  表示順は 5階→4階→3階→2階。料金・精算・OTA連携は含みません。
+</footer>
+
+<script>
+"use strict";
+/* ---------- 基礎 ---------- */
+const DAYS = 14;
+const pad = n => String(n).padStart(2,"0");
+const iso = d => d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());
+const today = new Date(); today.setHours(0,0,0,0);
+const T0 = iso(today);
+const addDays = (isoStr, n) => { const d = new Date(isoStr+"T00:00:00"); d.setDate(d.getDate()+n); return iso(d); };
+const nights = r => Math.round((new Date(r.outDate+"T00:00:00") - new Date(r.inDate+"T00:00:00"))/86400000);
+const mdLabel = isoStr => { const d = new Date(isoStr+"T00:00:00"); const w="日月火水木金土"[d.getDay()]; return (d.getMonth()+1)+"/"+d.getDate()+"("+w+")"; };
+const ST_LABEL = { booked:"予約", in:"チェックイン済", out:"チェックアウト済", cancelled:"キャンセル" };
+const ST_PILL  = { booked:"ok", in:"in", out:"out", cancelled:"cxl" };
+
+/* ---------- 部屋マスタ（架空ホテル：2〜5階、各階10室） ---------- */
+const ROOMS = [];
+const addRooms = (floor, nos, type, cap) => nos.forEach(no => ROOMS.push({no, floor, type, cap}));
+["5","4","3","2"].forEach(f => {
+  addRooms(f+"階", [f+"01",f+"02",f+"03"], "シングル", 1);
+  addRooms(f+"階", [f+"04",f+"05",f+"06",f+"07"], "ツイン", 2);
+  addRooms(f+"階", [f+"08",f+"09",f+"10"], "和室", 4);
+});
+const FLOOR_ORDER = ["5階","4階","3階","2階"];
+
+/* ---------- 状態 ---------- */
+let state = null;
+let selectedId = null;      // 選択中の予約
+let selectedBlockId = null; // 選択中のブロック
+
+function seed(){
+  return { nextId: 9, nextBlockId: 2,
+    reservations: [
+      { id:1, name:"田中物産 佐藤様", pax:1, inDate:addDays(T0,-3), outDate:addDays(T0,25), typePref:"シングル", memo:"長期法人。請求書は月末まとめ（サンプル）", room:"301", status:"in" },
+      { id:2, name:"高橋様", pax:2, inDate:addDays(T0,-1), outDate:addDays(T0,1), typePref:"ツイン", memo:"レンタカー21時返却予定（サンプル）", room:"504", status:"in" },
+      { id:3, name:"Smith様", pax:1, inDate:T0, outDate:addDays(T0,1), typePref:"シングル", memo:"英語対応（サンプル）", room:"203", status:"booked" },
+      { id:4, name:"山田様", pax:2, inDate:T0, outDate:addDays(T0,2), typePref:"ツイン", memo:"記念日。眺望良い部屋希望（サンプル）", room:null, status:"booked" },
+      { id:5, name:"鈴木様ご家族", pax:4, inDate:addDays(T0,1), outDate:addDays(T0,3), typePref:"和室", memo:"お子様2名添い寝（サンプル）", room:null, status:"booked" },
+      { id:6, name:"南海電装 中村様", pax:1, inDate:addDays(T0,2), outDate:addDays(T0,12), typePref:"", memo:"工事関係・長期（サンプル）", room:null, status:"booked" },
+      { id:7, name:"伊藤様", pax:1, inDate:addDays(T0,3), outDate:addDays(T0,4), typePref:"", memo:"（サンプル）", room:null, status:"booked" },
+      { id:8, name:"渡辺様", pax:2, inDate:addDays(T0,1), outDate:addDays(T0,2), typePref:"ツイン", memo:"電話にて取消連絡あり（サンプル）", room:null, status:"cancelled" }
+    ],
+    blocks: [
+      { id:1, room:"510", fromDate:T0, toDate:addDays(T0,5), reason:"空調故障" }
+    ]};
+}
+function load(){
+  try{
+    const raw = localStorage.getItem("mini-pms-v2");
+    if(raw){ const s = JSON.parse(raw); if(s && Array.isArray(s.reservations) && Array.isArray(s.blocks)) return s; }
+  }catch(e){}
+  return seed();
+}
+function save(){ try{ localStorage.setItem("mini-pms-v2", JSON.stringify(state)); }catch(e){} }
+const active = r => r.status !== "cancelled";
+
+/* ---------- 空き判定 ---------- */
+function nightTaken(roomNo, d, exceptResId, exceptBlockId){
+  const res = state.reservations.some(r =>
+    active(r) && r.room === roomNo && r.id !== exceptResId && r.inDate <= d && d < r.outDate);
+  if(res) return true;
+  return state.blocks.some(b =>
+    b.room === roomNo && b.id !== exceptBlockId && b.fromDate <= d && d < b.toDate);
+}
+function roomFreeFor(roomNo, res){
+  for(let d = res.inDate; d < res.outDate; d = addDays(d,1))
+    if(nightTaken(roomNo, d, res.id, null)) return false;
+  return true;
+}
+function candidateRooms(res){
+  const long = nights(res) >= 7;
+  let list = ROOMS.filter(rm => rm.cap >= res.pax);
+  if(res.typePref) list = list.filter(rm => rm.type === res.typePref);
+  if(long && !res.typePref){
+    const rank = t => t === "シングル" ? 0 : t === "ツイン" ? 1 : 2;
+    list = list.slice().sort((a,b) => rank(a.type) - rank(b.type));
+  }
+  return list.filter(rm => roomFreeFor(rm.no, res));
+}
+function autoAssign(){
+  const pend = state.reservations.filter(r => active(r) && !r.room && r.status === "booked")
+    .sort((a,b) => a.inDate < b.inDate ? -1 : 1);
+  let done = 0, fail = [];
+  pend.forEach(r => {
+    const c = candidateRooms(r);
+    if(c.length){ r.room = c[0].no; done++; } else fail.push(r.name);
+  });
+  save(); renderAll();
+  document.getElementById("gridMsg").textContent =
+    done + "件を割当済み。" + (fail.length ? " 空きが見つからず未割当：" + fail.join("、") : "");
+}
+
+/* ---------- 予約タブ ---------- */
+function esc(s){ const d = document.createElement("div"); d.textContent = s == null ? "" : String(s); return d.innerHTML; }
+
+function renderRes(){
+  const tb = document.getElementById("resRows");
+  const showCxl = document.getElementById("showCxl").checked;
+  tb.textContent = "";
+  const list = state.reservations.filter(r => showCxl || active(r))
+    .slice().sort((a,b) => a.inDate < b.inDate ? -1 : 1);
+  if(!list.length){ tb.innerHTML = '<tr><td colspan="7" class="empty">予約はまだありません。左のフォームから登録してください。</td></tr>'; return; }
+  list.forEach(r => {
+    const tr = document.createElement("tr");
+    if(r.status === "cancelled") tr.className = "cxl";
+    const roomCell = r.status === "cancelled" ? "—"
+      : (r.room ? '<span class="pill ok">' + r.room + "</span>" : '<span class="pill todo">未割当</span>');
+    tr.innerHTML =
+      "<td>" + esc(r.name) + (r.memo ? '<div style="font-size:11px;color:var(--muted)">' + esc(r.memo) + "</div>" : "") + "</td>" +
+      "<td>" + mdLabel(r.inDate) + " →<br>" + mdLabel(r.outDate) + "</td>" +
+      '<td class="hide-sm">' + nights(r) + "</td>" +
+      '<td class="hide-sm">' + r.pax + "名</td>" +
+      "<td>" + roomCell + (r.typePref ? '<div style="font-size:11px;color:var(--muted)">希望:' + esc(r.typePref) + "</div>" : "") + "</td>" +
+      '<td><span class="pill ' + ST_PILL[r.status] + '">' + ST_LABEL[r.status] + "</span></td>" +
+      "<td></td>";
+    const act = tr.lastElementChild;
+    const mkBtn = (label, fn) => {
+      const b = document.createElement("button");
+      b.className = "btn small"; b.textContent = label; b.style.margin = "0 4px 4px 0";
+      b.addEventListener("click", fn); act.appendChild(b);
+    };
+    if(r.status === "booked"){
+      mkBtn(r.room ? "部屋変更" : "割当", () => { selectedId = r.id; selectedBlockId = null; switchTab("grid"); });
+      if(r.room) mkBtn("チェックイン", () => { r.status = "in"; save(); renderAll(); });
+      mkBtn("キャンセル", () => { r.status = "cancelled"; r.room = null; if(selectedId === r.id) selectedId = null; save(); renderAll(); });
+    } else if(r.status === "in"){
+      mkBtn("チェックアウト", () => { r.status = "out"; save(); renderAll(); });
+    } else if(r.status === "cancelled"){
+      mkBtn("削除", () => { state.reservations = state.reservations.filter(x => x.id !== r.id); save(); renderAll(); });
+    }
+    tb.appendChild(tr);
+  });
+}
+document.getElementById("showCxl").addEventListener("change", renderRes);
+
+document.getElementById("resForm").addEventListener("submit", ev => {
+  ev.preventDefault();
+  const msg = document.getElementById("formMsg");
+  const name = document.getElementById("fName").value.trim();
+  const pax = parseInt(document.getElementById("fPax").value, 10) || 1;
+  const inD = document.getElementById("fIn").value;
+  const outD = document.getElementById("fOut").value;
+  if(!name || !inD || !outD){ msg.textContent = "宿泊者名とIN/OUT日付は必須です。"; return; }
+  if(outD <= inD){ msg.textContent = "チェックアウトはチェックインより後の日付にしてください。"; return; }
+  msg.textContent = "";
+  state.reservations.push({
+    id: state.nextId++, name, pax, inDate: inD, outDate: outD,
+    typePref: document.getElementById("fType").value,
+    memo: document.getElementById("fMemo").value.trim(), room: null, status: "booked"
+  });
+  save(); renderAll();
+  ev.target.reset(); document.getElementById("fPax").value = 1; setDefaultDates();
+});
+function setDefaultDates(){
+  document.getElementById("fIn").value = T0;
+  document.getElementById("fOut").value = addDays(T0,1);
+}
+
+/* ---------- 部屋ブロック ---------- */
+function initBlockForm(){
+  const sel = document.getElementById("bRoom");
+  ROOMS.forEach(rm => {
+    const o = document.createElement("option");
+    o.value = rm.no; o.textContent = rm.no + "（" + rm.type + "）";
+    sel.appendChild(o);
+  });
+  document.getElementById("bFrom").value = T0;
+  document.getElementById("bTo").value = addDays(T0,1);
+}
+document.getElementById("btnBlockAdd").addEventListener("click", () => {
+  const msg = document.getElementById("gridMsg");
+  const room = document.getElementById("bRoom").value;
+  const from = document.getElementById("bFrom").value;
+  const to = document.getElementById("bTo").value;
+  const reason = document.getElementById("bReason").value.trim() || "販売止め";
+  if(!from || !to || to <= from){ msg.textContent = "ブロックの開始日・終了日を確認してください（終了日＞開始日）。"; return; }
+  for(let d = from; d < to; d = addDays(d,1)){
+    if(nightTaken(room, d, null, null)){
+      msg.textContent = room + " は " + mdLabel(d) + " に予約またはブロックがあり、ブロックできません。";
+      return;
+    }
+  }
+  state.blocks.push({ id: state.nextBlockId++, room, fromDate: from, toDate: to, reason });
+  msg.textContent = room + " を " + mdLabel(from) + "〜" + mdLabel(addDays(to,-1)) + " の夜までブロックしました（" + reason + "）。";
+  save(); renderAll();
+});
+document.getElementById("btnBlockDel").addEventListener("click", () => {
+  state.blocks = state.blocks.filter(b => b.id !== selectedBlockId);
+  selectedBlockId = null; save(); renderAll();
+});
+document.getElementById("btnBlockClearSel").addEventListener("click", () => { selectedBlockId = null; renderGrid(); });
+
+/* ---------- 部屋割りグリッド ---------- */
+function renderGrid(){
+  const sel = selectedId ? state.reservations.find(r => r.id === selectedId) : null;
+  const selBox = document.getElementById("selBox");
+  if(sel && sel.status === "booked"){
+    selBox.hidden = false;
+    document.getElementById("selLabel").textContent =
+      "選択中：" + sel.name + "（" + mdLabel(sel.inDate) + "→" + mdLabel(sel.outDate) + "・" + sel.pax + "名" + (sel.room ? "・現在 " + sel.room : "") + "）";
+    document.getElementById("btnUnassign").hidden = !sel.room;
+  } else selBox.hidden = true;
+
+  const selBlock = selectedBlockId ? state.blocks.find(b => b.id === selectedBlockId) : null;
+  const blkBox = document.getElementById("blkSelBox");
+  if(selBlock){
+    blkBox.hidden = false;
+    document.getElementById("blkSelLabel").textContent =
+      "ブロック選択中：" + selBlock.room + "（" + mdLabel(selBlock.fromDate) + "→" + mdLabel(selBlock.toDate) + "・" + selBlock.reason + "）";
+  } else blkBox.hidden = true;
+
+  const dates = []; for(let i = 0; i < DAYS; i++) dates.push(addDays(T0, i));
+  const assignable = sel && sel.status === "booked";
+  const candSet = assignable ? new Set(candidateRooms(sel).map(rm => rm.no)) : new Set();
+
+  const tbl = document.getElementById("asgrid");
+  tbl.textContent = "";
+  const thead = document.createElement("thead");
+  const hr = document.createElement("tr");
+  hr.innerHTML = '<th class="roomcell">部屋</th>' + dates.map(d =>
+    '<th class="' + (d === T0 ? "today" : "") + '">' + mdLabel(d) + "</th>").join("");
+  thead.appendChild(hr); tbl.appendChild(thead);
+  const tbody = document.createElement("tbody");
+
+  FLOOR_ORDER.forEach(fl => {
+    const rooms = ROOMS.filter(r => r.floor === fl);
+    const fr = document.createElement("tr"); fr.className = "floor";
+    fr.innerHTML = '<th class="roomcell">' + fl + '</th><th colspan="' + DAYS + '"></th>';
+    tbody.appendChild(fr);
+    rooms.forEach(rm => {
+      const tr = document.createElement("tr");
+      const rc = document.createElement("td");
+      rc.className = "roomcell";
+      rc.innerHTML = "<b>" + rm.no + "</b> <span style='color:var(--muted);font-size:11px'>" + rm.type + "・" + rm.cap + "名</span>";
+      tr.appendChild(rc);
+      dates.forEach(d => {
+        const td = document.createElement("td"); td.className = "night";
+        const occ = state.reservations.find(r => active(r) && r.room === rm.no && r.inDate <= d && d < r.outDate);
+        const blk = occ ? null : state.blocks.find(b => b.room === rm.no && b.fromDate <= d && d < b.toDate);
+        if(occ){
+          const bar = document.createElement("div");
+          bar.className = "bar " + (occ.status === "booked" ? "booked" : "") + (occ.id === selectedId ? " sel" : "");
+          bar.textContent = (occ.inDate === d || d === dates[0]) ? occ.name : "";
+          bar.title = occ.name + " " + mdLabel(occ.inDate) + "→" + mdLabel(occ.outDate) + "（" + ST_LABEL[occ.status] + "）";
+          bar.addEventListener("click", () => { selectedId = occ.id; selectedBlockId = null; renderGrid(); });
+          td.appendChild(bar);
+        } else if(blk){
+          const bar = document.createElement("div");
+          bar.className = "bar blk" + (blk.id === selectedBlockId ? " sel" : "");
+          bar.textContent = (blk.fromDate === d || d === dates[0]) ? "■ " + blk.reason : "";
+          bar.title = "ブロック：" + blk.reason + " " + mdLabel(blk.fromDate) + "→" + mdLabel(blk.toDate);
+          bar.addEventListener("click", () => { selectedBlockId = blk.id; selectedId = null; renderGrid(); });
+          td.appendChild(bar);
+        } else if(assignable && candSet.has(rm.no) && sel.inDate <= d && d < sel.outDate){
+          td.classList.add("cand");
+          td.title = sel.name + " を " + rm.no + " に割当";
+          td.addEventListener("click", () => {
+            sel.room = rm.no; save();
+            document.getElementById("gridMsg").textContent = sel.name + " を " + rm.no + " に割り当てました。";
+            selectedId = null; renderAll();
+          });
+        }
+        tr.appendChild(td);
+      });
+      tbody.appendChild(tr);
+    });
+  });
+  tbl.appendChild(tbody);
+}
+document.getElementById("btnAuto").addEventListener("click", autoAssign);
+document.getElementById("btnClearSel").addEventListener("click", () => { selectedId = null; renderGrid(); });
+document.getElementById("btnUnassign").addEventListener("click", () => {
+  const sel = state.reservations.find(r => r.id === selectedId);
+  if(sel){ sel.room = null; save(); renderAll(); }
+});
+
+/* ---------- 客室状況表 ---------- */
+function renderBoard(){
+  const body = document.getElementById("boardBody");
+  body.textContent = "";
+  FLOOR_ORDER.forEach(fl => {
+    const div = document.createElement("div");
+    div.innerHTML = "<h3>" + fl + "</h3>";
+    const grid = document.createElement("div"); grid.className = "roomgrid";
+    ROOMS.filter(r => r.floor === fl).forEach(rm => {
+      const card = document.createElement("div");
+      const blk = state.blocks.find(b => b.room === rm.no && b.fromDate <= T0 && T0 < b.toDate);
+      const cur = state.reservations.find(r => r.status === "in" && r.room === rm.no);
+      const arriving = state.reservations.find(r => r.status === "booked" && r.room === rm.no && r.inDate === T0);
+      let cls = "vacant", lines = [];
+      if(blk){ cls = "blkd"; lines.push('<span class="pill blk">ブロック</span> <span class="guest">' + esc(blk.reason) + "</span>"); }
+      if(cur){
+        cls = "occ";
+        const dep = cur.outDate === T0 ? '<span class="pill out">本日出発</span> ' : '<span class="pill in">在室</span> ';
+        lines.push(dep + '<span class="guest">' + esc(cur.name) + "</span>");
+      }
+      if(arriving){
+        if(cls === "vacant") cls = "arr";
+        lines.push('<span class="pill todo">本日到着</span> <span class="guest">' + esc(arriving.name) + "</span>");
+      }
+      card.className = "roomcard " + cls;
+      card.innerHTML = '<div class="top"><span class="no">' + rm.no + '</span><span class="typ">' + rm.type + "・" + rm.cap + "名</span></div>" +
+        (lines.length ? lines.map(l => "<div>" + l + "</div>").join("") : '<div class="guest" style="color:var(--muted)">空室</div>');
+      grid.appendChild(card);
+    });
+    div.appendChild(grid);
+    body.appendChild(div);
+  });
+}
+
+/* ---------- 当日台帳 ---------- */
+function renderLedger(){
+  const d = document.getElementById("ledgerDate").value || T0;
+  const body = document.getElementById("ledgerBody");
+  body.textContent = "";
+  const stIn  = r => r.inDate === d && (r.status === "booked" || r.status === "in");
+  const stay  = r => r.inDate < d && d < r.outDate && (r.status === "booked" || r.status === "in");
+  const stOut = r => r.outDate === d && (r.status === "in" || r.status === "out");
+  const groups = [
+    ["本日到着", stIn,  r => r.status === "in" ? '<span class="pill in">チェックイン済</span>' : '<span class="pill ok">未到着</span>'],
+    ["滞在中",   stay,  r => '<span class="pill ' + ST_PILL[r.status] + '">' + ST_LABEL[r.status] + "</span>"],
+    ["本日出発", stOut, r => r.status === "out" ? '<span class="pill out">チェックアウト済</span>' : '<span class="pill in">未出発</span>']
+  ];
+  groups.forEach(([title, fn, stFn]) => {
+    const rows = state.reservations.filter(r => active(r) && fn(r))
+      .sort((a,b) => (a.room||"zz") < (b.room||"zz") ? -1 : 1);
+    const div = document.createElement("div");
+    div.innerHTML = "<h3>" + title + ' <span class="cnt">' + rows.length + "組</span></h3>";
+    if(!rows.length){ div.innerHTML += '<div class="empty">該当なし</div>'; }
+    else {
+      const t = document.createElement("table");
+      t.innerHTML = "<thead><tr><th>部屋</th><th>宿泊者</th><th>状態</th><th>人数</th><th>IN→OUT</th><th>メモ</th></tr></thead>";
+      const tb = document.createElement("tbody");
+      rows.forEach(r => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = "<td>" + (r.room ? "<b>" + r.room + "</b>" : '<span class="pill todo">未割当</span>') + "</td>" +
+          "<td>" + esc(r.name) + "</td><td>" + stFn(r) + "</td><td>" + r.pax + "名</td>" +
+          "<td>" + mdLabel(r.inDate) + "→" + mdLabel(r.outDate) + "</td>" +
+          '<td style="color:var(--muted)">' + esc(r.memo || "") + "</td>";
+        tb.appendChild(tr);
+      });
+      t.appendChild(tb); div.appendChild(t);
+    }
+    body.appendChild(div);
+  });
+}
+document.getElementById("ledgerDate").addEventListener("change", renderLedger);
+
+/* ---------- タブ・初期化 ---------- */
+function switchTab(id){
+  document.querySelectorAll("nav.tabs button").forEach(b => b.setAttribute("aria-selected", String(b.dataset.tab === id)));
+  ["res","grid","board","ledger"].forEach(t => { document.getElementById("tab-"+t).hidden = (t !== id); });
+  renderAll();
+}
+document.querySelectorAll("nav.tabs button").forEach(b =>
+  b.addEventListener("click", () => switchTab(b.dataset.tab)));
+function renderAll(){ renderRes(); renderGrid(); renderBoard(); renderLedger(); }
+
+state = load();
+setDefaultDates();
+initBlockForm();
+document.getElementById("ledgerDate").value = T0;
+switchTab("res");
+</script>
+
+</body>
+</html>
