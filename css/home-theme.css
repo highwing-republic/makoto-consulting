@@ -1,8 +1,5 @@
 /* Home page theme (layout + brand accents). Colors come from --lab-* tokens. */
-.site-header{border-bottom-color:rgba(23,50,77,.1)}
-.brand-copy small,.global-nav li a{color:var(--lab-ink-soft)}
-.global-nav li a:hover{color:var(--lab-navy)}
-.button{background:var(--lab-navy);border-color:var(--lab-navy);box-shadow:0 8px 22px rgba(23,50,77,.1)}
+.site-header{border-bottom-color:rgba(23,50,77,.1)}.button{background:var(--lab-navy);border-color:var(--lab-navy);box-shadow:0 8px 22px rgba(23,50,77,.1)}
 .button:hover{background:var(--lab-navy-deep);border-color:var(--lab-navy-deep)}
 .button--outline{background:transparent;color:var(--lab-navy);border-color:var(--lab-navy)}
 .button--outline:hover{background:var(--lab-navy);border-color:var(--lab-navy);color:#fff}
@@ -12,21 +9,10 @@
 .analysis-card--featured{background:var(--lab-navy);border-color:var(--lab-navy)}
 .analysis-card--featured .button{background:#fff;border-color:#fff;color:var(--lab-navy)}
 .analysis-card--featured .button:hover{background:var(--lab-surface);border-color:var(--lab-surface)}
-.tool-group__index{color:var(--lab-teal)}
-.site-footer{background:var(--lab-navy-deep)}
-.brand--footer .brand-copy small,.footer-bottom,.footer-note-link{color:#b9c8d4}
-.footer-note-link:hover{color:#fff}
-a:focus-visible,button:focus-visible{outline:2px solid var(--lab-focus);outline-offset:4px}
+.tool-group__index{color:var(--lab-teal)}a:focus-visible,button:focus-visible{outline:2px solid var(--lab-focus);outline-offset:4px}
 
 body{font-size:16px;font-weight:400;line-height:1.95;letter-spacing:.015em}
-.container{width:min(calc(100% - 96px),1180px)}
-.site-header{background:rgba(245,247,248,.95);border-color:var(--line)}
-.header-inner{height:92px}
-.brand-copy strong{font-size:18px;font-weight:700;letter-spacing:.04em}
-.brand-copy small{font-size:10px;letter-spacing:.04em}
-.global-nav ul{gap:30px}
-.global-nav li a{font-size:13px;letter-spacing:.04em}
-.eyebrow{font-size:10px;line-height:1.5;letter-spacing:.19em;font-weight:500;color:var(--lab-ink-soft)}
+.container{width:min(calc(100% - 96px),1180px)}.eyebrow{font-size:10px;line-height:1.5;letter-spacing:.19em;font-weight:500;color:var(--lab-ink-soft)}
 .home-hero{min-height:630px;background:var(--paper);border-bottom:0}
 .home-hero:before{display:none}
 .home-hero__inner{grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:80px;padding:84px 0 98px;align-items:center}
@@ -99,15 +85,8 @@ body{font-size:16px;font-weight:400;line-height:1.95;letter-spacing:.015em}
 .about-lab__body{max-width:710px}
 .about-lab__body p{font-size:17px;font-weight:400;line-height:2.15;letter-spacing:.025em}
 .about-lab__questions{margin:30px 0;padding:0;border:0;font-size:24px;font-weight:500;line-height:1.9;letter-spacing:.01em}
-.about-lab__body .about-lab__closing{font-size:17px;font-weight:500;margin-top:26px}
-.site-footer{padding:58px 0 24px;background:var(--lab-navy-deep)}
-.footer-grid{padding-bottom:40px}
-.site-footer .brand-copy strong{font-size:24px;font-weight:700}
-.footer-bottom{font-size:11px;letter-spacing:.03em}
-a:focus-visible,button:focus-visible{outline:2px solid var(--lab-focus);outline-offset:5px}
-@media(max-width:1050px){
- .global-nav ul{gap:18px}.global-nav li a{font-size:12px}
- .home-hero__inner{gap:40px}
+.about-lab__body .about-lab__closing{font-size:17px;font-weight:500;margin-top:26px}a:focus-visible,button:focus-visible{outline:2px solid var(--lab-focus);outline-offset:5px}
+@media(max-width:1050px){ .home-hero__inner{gap:40px}
  .tool-group{grid-template-columns:180px minmax(0,1fr)}
  .home-section__heading .eyebrow{min-width:138px}
  .analysis-card--featured{grid-template-columns:1fr;padding:30px}
@@ -115,8 +94,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--lab-focus);outline-
  .about-lab__grid{grid-template-columns:180px minmax(0,1fr)}
 }
 @media(max-width:900px){
- .container{width:calc(100% - 48px)}.header-inner{height:74px}
- .home-news:before{left:24px}
+ .container{width:calc(100% - 48px)} .home-news:before{left:24px}
  .home-hero{min-height:0}.home-hero__inner{padding:65px 0 72px;gap:28px}
  .home-hero h1{font-size:34px}.home-hero__visual{max-width:300px}
  .tool-group{grid-template-columns:1fr;gap:28px}
@@ -137,9 +115,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--lab-focus);outline-
 }
 @media(max-width:620px){
  .container{width:calc(100% - 40px)}
- .home-news:before{left:20px}
- .brand-copy strong{font-size:16px}.brand__mark{width:32px;height:32px}
- .home-hero__inner{grid-template-columns:1fr;padding:30px 0 54px;gap:32px}
+ .home-news:before{left:20px} .home-hero__inner{grid-template-columns:1fr;padding:30px 0 54px;gap:32px}
  .home-hero__visual{width:190px;max-width:75%;grid-row:1;justify-self:center}
  .home-hero__copy{padding:0;overflow-wrap:normal}
  .home-hero .eyebrow{margin-bottom:22px;font-size:9px;gap:12px}
@@ -161,9 +137,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--lab-focus);outline-
  .analysis-card--featured .button{margin-top:6px;justify-self:stretch;justify-content:space-between}
  .about-lab{padding:52px 0 60px}.about-lab h2{font-size:28px}
  .about-lab__body p{font-size:16px}.about-lab__questions{font-size:19px}
- .about-lab__body .about-lab__closing{font-size:16px}
- .site-footer{padding:42px 0 24px}.footer-grid{padding-bottom:30px}
-}
+ .about-lab__body .about-lab__closing{font-size:16px}}
 @media(prefers-reduced-motion:reduce){.button>span,.news-list__link,.news-list__arrow{transition:none}}
 
 body.home-page .tool-group__heading h3{font-weight:700}

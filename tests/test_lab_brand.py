@@ -85,7 +85,7 @@ def test_data_colors_are_pinned() -> None:
 
 
 def test_lab_code_style_never_synthesizes_bold() -> None:
-    css = (ROOT / "css" / "useful.css").read_text(encoding="utf-8")
+    css = (ROOT / "css" / "site-shell.css").read_text(encoding="utf-8")
     rule = re.search(r"\.lab-code\{([^}]+)\}", css)
     assert rule
     assert "font-family:var(--lab-font-dot)" in rule.group(1)

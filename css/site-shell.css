@@ -2,8 +2,12 @@
    browser can request them in parallel with this stylesheet. DotGothic16 is
    linked only on pages with LAB numbers, subset to "LAB 0-9". */
 
-/* Lab brand and data tokens. Loaded on every page (classics included), so every
-   name is prefixed: pages keep their own --serif / --sans. */
+/* Shared stylesheet, loaded last on every Lab page (tools, classics notes,
+   EDINET, 404). Sections: 1. tokens  2. base  3. shell  4. components.
+   Page stylesheets (useful.css, classics.css, home*.css) never restyle the
+   header, nav or footer; classics.css re-tints the tokens with :root:root. */
+
+/* 1. Tokens. Every name is prefixed: pages keep their own --serif / --sans. */
 :root {
   --lab-font-sans: "Noto Sans JP", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", Meiryo, sans-serif;
   --lab-font-dot: "DotGothic16", ui-monospace, "Courier New", monospace;
@@ -42,6 +46,7 @@
   --site-shell-font: var(--lab-font-sans);
 }
 
+/* 2. Base: body layout and the skip link. */
 body.nav-open { overflow: hidden; }
 body.site-shell-ready {
   min-height: 100vh;
@@ -65,6 +70,8 @@ body.site-shell-ready > .site-footer { margin-top: auto; }
 }
 .skip-link:focus { top: 16px; }
 
+/* 3. Shell: header, navigation, footer. The markup is _includes/site-header.html
+   and _includes/site-footer.html. */
 .site-header,
 .site-footer,
 .site-header *,
@@ -309,7 +316,8 @@ body.site-shell-ready > .site-footer { margin-top: auto; }
   .site-footer .container { width: calc(100% - 40px); }
   .site-header .brand__mark { width: 32px; height: 32px; }
   .site-header .brand-copy strong { font-size: 16px; }
-  .site-header .brand-copy small { font-size: 9px; }
+  /* The tagline is hidden on phones, as the tool pages always did. */
+  .site-header .brand-copy small { display: none; }
   .site-footer { padding: 42px 0 24px; }
   .site-footer .footer-grid { padding-bottom: 30px; }
   .site-footer .footer-bottom {
@@ -328,4 +336,25 @@ body.site-shell-ready > .site-footer { margin-top: auto; }
 @media print {
   .site-header,
   .site-footer { display: none !important; }
+}
+
+/* 4. Components shared by the tool pages: the LAB number mark and the
+   loading / error / no-data states. The states share one box; scripts toggle
+   the hidden attribute on #data-loading / #data-error / #data-empty. */
+/* LAB number mark: DotGothic16 only for "LAB 01" style codes, never for Japanese. */
+.lab-code{font-family:var(--lab-font-dot);font-weight:400;font-synthesis:none;letter-spacing:0;line-height:1;white-space:nowrap;color:var(--lab-teal)}
+.data-loading,.data-error,.data-empty{margin-top:32px;padding:52px 34px;text-align:center;border:1px solid var(--lab-border);background:var(--lab-card)}
+.data-loading[hidden],.data-error[hidden],.data-empty[hidden],.analysis-dashboard[hidden]{display:none!important}
+.data-loading span{display:inline-block;width:30px;height:30px;border:2px solid var(--lab-border);border-top-color:var(--lab-navy);border-radius:50%;animation:data-spin .8s linear infinite}
+.data-loading p{margin:14px 0 0;color:var(--lab-ink-soft);font-size:13px}
+.data-error strong,.data-empty strong{display:block;font-family:var(--lab-font-sans);font-size:26px;font-weight:700}
+.data-error p,.data-empty p{margin:10px 0 24px;color:var(--lab-ink-soft);font-size:14px}
+@keyframes data-spin{to{transform:rotate(360deg)}}
+.lab-eyebrow{display:flex;align-items:center;gap:14px;flex-wrap:wrap;font-size:11px;font-weight:500}
+.lab-eyebrow .lab-code{font-size:24px}
+.lab-eyebrow .lab-code+span{padding-left:14px;border-left:1px solid var(--lab-border)}
+@media print {
+  .data-loading,
+  .data-error,
+  .data-empty { display: none !important; }
 }

@@ -88,7 +88,7 @@ def test_site_shell_cache_busters_are_consistent() -> None:
         css_versions.add(css_match.group(1))
     assert len(shell_pages) == 63
     assert js_versions == {"20261012shell2"}
-    assert css_versions == {"20261003font"}
+    assert css_versions == {"20261012shell"}
 
 
 def test_repository_only_files_are_excluded_from_pages_build():

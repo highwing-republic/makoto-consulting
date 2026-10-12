@@ -20,7 +20,7 @@ def test_news_section_sits_between_hero_and_tools_and_starts_hidden():
     assert section.get("data-news-url") == "data/news.json"
     assert section.select_one("[data-news-list][aria-live='polite']")
     assert page.find("script", src="js/news.js?v=20261010")
-    assert page.find("link", href="css/home-theme.css?v=20261010news2")
+    assert page.find("link", href="css/home-theme.css?v=20261012shell")
 
 
 def test_initial_news_records_are_valid_and_point_to_published_pages():
