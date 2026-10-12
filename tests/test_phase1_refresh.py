@@ -278,21 +278,23 @@ def test_supply_position_page_prioritizes_interpretation_over_composite_score():
     assert "追加調査優先度" in body
     assert "供給不足の確率や程度ではありません" in body
     assert "需給ひっ迫 参考スコア" not in body
-    assert page.find("script", src="js/cross-analysis.js?v=20260914a")
+    assert page.find("script", src="js/cross-analysis-model.js?v=20261012model")
+    assert page.find("script", src="js/cross-analysis.js?v=20261012model")
 
 
 def test_supply_chart_has_four_named_quadrants_and_fixed_size_points():
-    script = (ROOT / "js" / "cross-analysis.js").read_text(encoding="utf-8")
+    model = (ROOT / "js" / "cross-analysis-model.js").read_text(encoding="utf-8")
+    view = (ROOT / "js" / "cross-analysis.js").read_text(encoding="utf-8")
     for label in (
         "需要成長・高稼働型",
         "需要成長・稼働余力型",
         "需要減速・高稼働型",
         "需要減速・稼働余力型",
     ):
-        assert label in script
-    assert "const radius = selected ? 10 : 6" in script
-    assert "Math.sqrt((r.lodging_establishments" not in script
-    assert "scatter-table-body" in script
+        assert label in model
+    assert "r: selected ? 10 : 6" in model
+    assert "Math.sqrt((r.lodging_establishments" not in model
+    assert "scatter-table-body" in view
 
 
 def test_lab_pages_get_the_shared_header_and_footer_at_build_time():

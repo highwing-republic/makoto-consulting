@@ -1,0 +1,6 @@
+{% if page.tool_related %}<section class="tool-related" aria-labelledby="tool-related-title"><div class="container">
+  <div class="tool-related__heading"><h2 id="tool-related-title">関連ツール</h2><a href="/#analysis-tools">すべてのツールを見る <span aria-hidden="true">→</span></a></div>
+  <div class="tool-related__grid">{% for id in page.tool_related %}{% assign tool = site.data.tools | where: "id", id | first %}{% if tool %}
+    <a class="tool-related__card" href="{{ tool.url }}" data-analytics-event="tool_open" data-tool-id="{{ tool.id }}"{% if tool.pref %} data-pref-link{% endif %}><span class="tag">{{ tool.tag }}</span><strong>{{ tool.title }}</strong><p>{{ tool.summary }}</p></a>{% endif %}{% endfor %}
+  </div>
+</div></section>{% endif %}

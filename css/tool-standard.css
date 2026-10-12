@@ -1,0 +1,50 @@
+/* Standard blocks shared by the analysis tool pages (Phase 3).
+   Rendered from _includes/tool-overview.html, tool-sources.html and tool-related.html. */
+
+.tool-overview{padding:34px 0 0}
+.tool-overview__grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:28px 56px;align-items:start;padding:30px 36px;border:1px solid var(--lab-border);border-left:4px solid var(--lab-teal);border-radius:12px;background:var(--lab-card)}
+.tool-overview__purpose h2{margin:0 0 10px;font-family:var(--lab-font-sans);font-size:clamp(19px,2vw,24px);font-weight:700;line-height:1.4;color:var(--lab-navy)}
+.tool-overview__purpose p{margin:0;color:var(--lab-ink);font-size:15px;line-height:1.95}
+.tool-overview__scope{margin:0}
+.tool-overview__scope>div{display:grid;grid-template-columns:72px minmax(0,1fr);gap:14px;padding:9px 0;border-top:1px solid var(--lab-border)}
+.tool-overview__scope>div:first-child{border-top:0;padding-top:0}
+.tool-overview__scope dt{color:var(--lab-ink-soft);font-size:12px;font-weight:700;letter-spacing:.04em;line-height:1.9}
+.tool-overview__scope dd{margin:0;color:var(--lab-ink);font-size:13px;line-height:1.9}
+
+.tool-sources{padding:64px 0 0}
+.tool-sources__grid{display:grid;grid-template-columns:.65fr 1.35fr;gap:40px 55px;padding:46px 0;border-top:1px solid var(--lab-ink);border-bottom:1px solid var(--lab-ink)}
+.tool-sources h2{margin:0;font-family:var(--lab-font-sans);font-size:clamp(22px,2.4vw,30px);font-weight:700;line-height:1.4;color:var(--lab-navy)}
+.tool-sources__list{margin:0}
+.tool-sources__list>div{display:grid;grid-template-columns:110px minmax(0,1fr);gap:20px;padding:10px 0;border-bottom:1px solid var(--lab-border)}
+.tool-sources__list dt{color:var(--lab-ink-soft);font-size:11px;line-height:1.9}
+.tool-sources__list dd{margin:0;font-size:12px;line-height:1.9}
+.tool-sources__list dd a{color:var(--lab-navy);font-weight:700;text-decoration:underline;text-underline-offset:3px}
+.tool-sources__list dd span{display:block;color:var(--lab-ink-soft)}
+.tool-sources__updated{margin:16px 0 0;color:var(--lab-ink);font-size:12px;font-weight:700}
+.tool-sources__notes{margin:14px 0 0;padding-left:18px;color:var(--lab-ink-soft);font-size:11px;line-height:1.9}
+.tool-sources__notes li{margin:0 0 4px}
+
+.tool-related{padding:64px 0 88px}
+.tool-related__heading{display:flex;align-items:baseline;justify-content:space-between;gap:20px;margin-bottom:22px}
+.tool-related__heading h2{margin:0;font-family:var(--lab-font-sans);font-size:clamp(22px,2.4vw,30px);font-weight:700;line-height:1.4;color:var(--lab-navy)}
+.tool-related__heading a{color:var(--lab-navy);font-size:13px;font-weight:700;text-decoration:none}
+.tool-related__heading a:hover{text-decoration:underline;text-underline-offset:3px}
+.tool-related__grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.tool-related__card{display:flex;flex-direction:column;gap:8px;padding:20px 22px;border:1px solid var(--lab-border);border-radius:12px;background:var(--lab-card);color:var(--lab-ink);text-decoration:none;transition:border-color .15s,box-shadow .15s}
+.tool-related__card:hover{border-color:var(--lab-teal);box-shadow:0 8px 22px rgba(23,50,77,.08)}
+.tool-related__card .tag{align-self:flex-start;display:inline-flex;align-items:center;min-height:22px;padding:2px 9px;border-radius:999px;background:var(--lab-surface-soft);color:var(--lab-ink-soft);font-size:11px;font-weight:700;letter-spacing:.02em}
+.tool-related__card strong{font-size:15px;line-height:1.5;color:var(--lab-navy)}
+.tool-related__card p{margin:0;color:var(--lab-ink-soft);font-size:12px;line-height:1.8}
+
+@media(max-width:900px){
+  .tool-overview__grid{grid-template-columns:1fr;padding:24px}
+  .tool-sources__grid{grid-template-columns:1fr;gap:20px}
+}
+@media(max-width:620px){
+  .tool-overview{padding-top:24px}
+  .tool-overview__scope>div{grid-template-columns:1fr;gap:2px}
+  .tool-sources{padding-top:48px}
+  .tool-related{padding:48px 0 64px}
+  .tool-related__heading{flex-direction:column;gap:6px}
+}
+@media print{.tool-related{display:none}}

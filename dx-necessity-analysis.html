@@ -1,5 +1,26 @@
 ---
 # Built by Jekyll: the shared header and footer come from _includes/.
+# Phase 3 標準ブロック（_includes/tool-overview / tool-sources / tool-related）の内容。
+tool: dx-necessity
+tool_purpose: 宿泊需要・人材負荷・生産年齢人口などの公的統計をもとに、省人化やDXを検討しやすい地域条件を47都道府県で相対的に比較します。旧「宿泊DX必要度分析」と同じ算式です。
+tool_scope:
+  - label: 対象
+    text: 47都道府県。地域の参考指標であり、自施設のDX診断ではありません。
+  - label: データ
+    text: 観光庁 宿泊旅行統計調査、総務省 経済センサス・人口推計などの公的統計を横断集計。
+  - label: 条件
+    text: 各指標を47都道府県内の percentile rank で0〜100点化し、算式で合成した参考スコアを表示します。
+tool_updated: データ読み込み後に表示
+tool_notes:
+  - "算式：需要伸び率20%＋客室稼働率25%＋宿泊運営負荷30%＋生産年齢人口減少25%。各指標は47都道府県内の percentile rank で得点化しています。"
+  - 欠損値がある場合はスコアを算出せず、サンプル値では補いません。
+  - 宿泊旅行統計調査は2026年1月から集計・層化基準が変更されています。2025年以前との比較には、この変更の影響が含まれる可能性があります。
+  - 地域の参考指標であり、自施設のDX成熟度や導入優先度を示すものではありません。
+tool_related:
+  - dx-diagnosis
+  - supply-demand
+  - tourism-pressure
+  - management-issue-organizer
 ---
 <!DOCTYPE html>
 <html lang="ja">
@@ -23,6 +44,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&amp;display=swap">
   <link rel="stylesheet" href="css/useful.css?v=20261012shell">
+  <link rel="stylesheet" href="css/tool-standard.css?v=20261012tool">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="都道府県別 地域の省人化・宿泊DX必要度分析｜宿泊DXラボ">
   <meta name="twitter:description" content="公的統計から47都道府県の省人化・DX検討条件を比較します。">
@@ -63,21 +85,23 @@
 <body><a class="skip-link" href="#main">本文へ移動</a>
   {% include site-header.html %}
   <main id="main"><nav class="breadcrumb container" aria-label="パンくずリスト"><ol><li><a href="/">ホーム</a></li><li><a href="/#analysis-tools">分析・ツール</a></li><li aria-current="page">地域の省人化・DX検討指標</li></ol></nav>
-    <section class="page-hero tool-page-hero inbound-hero"><div class="container page-hero-grid"><div><span class="scope-badge">分析対象：都道府県</span><h1>地域の省人化・<br>DX検討指標</h1></div><div class="inbound-hero__copy"><p class="lead-copy">DXを検討したい地域条件を、公的統計から整理する。</p><p>旧「宿泊DX必要度分析」。宿泊需要、人材負荷、生産年齢人口などから、省人化・DXの検討条件を地域別に比較します。</p><small>観光庁・総務省の公的統計を横断集計</small></div></div></section>
+    <section class="page-hero tool-page-hero inbound-hero"><div class="container page-hero-grid"><div><span class="scope-badge">分析対象：都道府県</span><h1>地域の省人化・<br>DX検討指標</h1></div><div class="inbound-hero__copy"><p class="lead-copy">DXを検討したい地域条件を、公的統計から整理する。</p></div></div></section>
+    {% include tool-overview.html %}
     <section class="inbound-tool cross-tool" data-cross-analysis="dx" id="tool" aria-labelledby="analysis-title" aria-busy="true"><div class="container">
       <div class="analysis-control-panel"><div><p class="eyebrow">分析条件</p><h2 id="analysis-title">都道府県を選択</h2><p>選択した地域の参考スコア、主な要因、全国順位を表示します。</p></div><label class="prefecture-select" for="prefecture-select"><span>都道府県</span><select id="prefecture-select" disabled><option>データを読み込み中</option></select></label><p class="analysis-period" id="analysis-period" aria-live="polite"></p></div>
       <div class="data-loading" id="data-loading" role="status"><span aria-hidden="true"></span><p>最新統計を読み込んでいます</p></div><div class="data-error" id="data-error" role="alert" hidden></div><noscript><div class="data-error"><strong>JavaScriptを有効にしてください</strong><p>観光庁・総務省の公的統計から地域の省人化・DX検討条件を比較する参考指標です。自施設のDX診断ではなく、操作にはJavaScriptが必要です。</p></div></noscript>
       <div class="analysis-dashboard" id="analysis-dashboard" hidden inert aria-hidden="true">
         <div class="data-scope-note"><span>地域の参考指標</span><strong>省人化・DX検討指標</strong><p>自施設のDX診断ではありません。旧「宿泊DX必要度」と同じ算式で、効率化を検討しやすい地域条件を相対評価します。</p></div>
-        <section class="analysis-section"><div class="analysis-heading"><div><p class="eyebrow">OVERVIEW</p><h2><span id="selected-area-name"></span>の分析結果</h2></div></div><p class="survey-change-note"><strong>注意：</strong>地域の参考指標であり、自施設のDX成熟度や導入優先度を示すものではありません。</p><div class="cross-score-layout"><article class="score-card"><span>省人化・DX検討 参考スコア</span><strong id="primary-score"></strong><b id="primary-level"></b><small id="primary-rank"></small></article><div class="reason-card"><h3>確認できる事実と読み取り候補</h3><p id="analysis-reason"></p></div></div></section>
-        <section class="analysis-section analysis-panel"><div class="analysis-heading"><div><p class="eyebrow">FACTORS</p><h2>4つの構成要因</h2></div><p>各指標を47都道府県内のpercentile rankで0〜100点化</p></div><div class="factor-bars" id="factor-bars"></div><p class="survey-change-note"><strong>注意：</strong>※宿泊旅行統計調査は2026年1月から集計・層化基準が変更されています。2025年以前との比較には、この変更の影響が含まれる可能性があります。</p></section>
-        <section class="analysis-section"><div class="analysis-heading"><div><p class="eyebrow">RAW INDICATORS</p><h2>判断に使った公表値</h2></div></div><div class="metric-grid"><article><span>客室稼働率</span><strong id="metric-occupancy"></strong></article><article><span>宿泊需要伸び率</span><strong id="metric-growth"></strong></article><article><span>年間延べ宿泊者数</span><strong id="metric-nights"></strong></article><article><span>宿泊業従業者数</span><strong id="metric-employees"></strong></article><article><span>従業者1人あたり宿泊需要</span><strong id="metric-load"></strong></article><article><span>総人口</span><strong id="metric-population"></strong></article></div></section>
-        <section class="analysis-section analysis-panel"><div class="analysis-heading"><div><p class="eyebrow">PREFECTURE RANKING</p><h2>47都道府県ランキング</h2></div><p>同点は同順位</p></div><ol class="prefecture-ranking" id="prefecture-ranking"></ol></section>
-        <section class="analysis-section insight-panel"><p class="eyebrow">HOW TO READ</p><h2>結果の読み方</h2><div id="short-insight"><p>高スコアは、需要や稼働、運営負荷、働き手の減少を踏まえると、業務標準化・省力化・データ活用を検討する余地が相対的に大きいことを示します。</p></div><p class="insight-caution">「従業者1人あたり延べ宿泊者数」は実労働時間や個別施設の業務負荷そのものではありません。特定システムの導入効果も示しません。</p></section>
-        <section class="next-action-panel"><h3>次に確認すること</h3><ul><li>予約・顧客情報の二重入力と作業時間</li><li>フロント、清掃、集計の業務別負荷</li><li>自施設のDX課題はDXかんたん診断で確認</li></ul><div class="analysis-actions"><button class="button button--outline" type="button" data-copy-result data-tool-id="dx-necessity">要点をコピー</button><button class="button button--outline" type="button" data-print-result data-tool-id="dx-necessity">印刷する</button><a class="button button--outline" data-pref-link href="/management-ai.html">同じ地域で課題を整理する</a><a class="button button--outline" href="/supply-demand-gap-analysis.html">宿泊需給ギャップを見る</a><a class="button button--outline" href="/#analysis-tools">すべてのツールを見る</a></div></section>
-        <section class="analysis-source"><div><p class="eyebrow">DATA SOURCE</p><h2>出典・算出方法</h2></div><dl id="source-list"></dl><div class="source-notes"><p><strong>算式：</strong>需要伸び率20%＋客室稼働率25%＋宿泊運営負荷30%＋生産年齢人口減少25%。各指標は47都道府県内のpercentile rankで得点化しています。</p><p>データ取得日：<span id="source-updated"></span>。欠損値がある場合はスコアを算出せず、サンプル値では補いません。</p></div></section>
+        <section class="analysis-section"><div class="analysis-heading"><div><h2><span id="selected-area-name"></span>の分析結果</h2></div></div><p class="survey-change-note"><strong>注意：</strong>地域の参考指標であり、自施設のDX成熟度や導入優先度を示すものではありません。</p><div class="cross-score-layout"><article class="score-card"><span>省人化・DX検討 参考スコア</span><strong id="primary-score"></strong><b id="primary-level"></b><small id="primary-rank"></small></article><div class="reason-card"><h3>確認できる事実と読み取り候補</h3><p id="analysis-reason"></p></div></div></section>
+        <section class="analysis-section analysis-panel"><div class="analysis-heading"><div><h2>4つの構成要因</h2></div><p>各指標を47都道府県内のpercentile rankで0〜100点化</p></div><div class="factor-bars" id="factor-bars"></div><p class="survey-change-note"><strong>注意：</strong>※宿泊旅行統計調査は2026年1月から集計・層化基準が変更されています。2025年以前との比較には、この変更の影響が含まれる可能性があります。</p></section>
+        <section class="analysis-section"><div class="analysis-heading"><div><h2>判断に使った公表値</h2></div></div><div class="metric-grid"><article><span>客室稼働率</span><strong id="metric-occupancy"></strong></article><article><span>宿泊需要伸び率</span><strong id="metric-growth"></strong></article><article><span>年間延べ宿泊者数</span><strong id="metric-nights"></strong></article><article><span>宿泊業従業者数</span><strong id="metric-employees"></strong></article><article><span>従業者1人あたり宿泊需要</span><strong id="metric-load"></strong></article><article><span>総人口</span><strong id="metric-population"></strong></article></div></section>
+        <section class="analysis-section analysis-panel"><div class="analysis-heading"><div><h2>47都道府県ランキング</h2></div><p>同点は同順位</p></div><ol class="prefecture-ranking" id="prefecture-ranking"></ol></section>
+        <section class="analysis-section insight-panel"><h2>結果の読み方</h2><div id="short-insight"><p>高スコアは、需要や稼働、運営負荷、働き手の減少を踏まえると、業務標準化・省力化・データ活用を検討する余地が相対的に大きいことを示します。</p></div><p class="insight-caution">「従業者1人あたり延べ宿泊者数」は実労働時間や個別施設の業務負荷そのものではありません。特定システムの導入効果も示しません。</p></section>
+        <section class="next-action-panel"><h3>次に確認すること</h3><ul><li>予約・顧客情報の二重入力と作業時間</li><li>フロント、清掃、集計の業務別負荷</li><li>自施設のDX課題はDXかんたん診断で確認</li></ul><div class="analysis-actions"><button class="button button--outline" type="button" data-copy-result data-tool-id="dx-necessity">要点をコピー</button><button class="button button--outline" type="button" data-print-result data-tool-id="dx-necessity">印刷する</button></div></section>
       </div></div></section>
+    {% include tool-sources.html %}
+    {% include tool-related.html %}
   </main>
   {% include site-footer.html %}
-  <script defer src="js/site.js?v=20260909c"></script><script defer src="js/cross-analysis.js?v=20261002brand2"></script>
+  <script defer src="js/site.js?v=20260909c"></script><script defer src="js/cross-analysis-model.js?v=20261012model"></script><script defer src="js/cross-analysis.js?v=20261012model"></script>
 </body></html>
