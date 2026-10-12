@@ -1,0 +1,331 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-QS9HSHCY33"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-QS9HSHCY33');gtag('config','GT-M3S9S5D7');</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>EDINET投資レーダー（新TOPIX）｜大株主の動きと株価の勢いが重なった新TOPIX銘柄｜宿泊DXラボ</title>
+<meta name="description" content="金融庁EDINETの大量保有報告（5%超の新規取得・買い増し）が出て、かつ株価も上向きの新TOPIX構成銘柄（移行措置銘柄を除く）だけを毎日自動で絞り込む無料ツールです。投資判断を推奨するものではありません。">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://lab.ugatta-llc.com/edinet-investment-radar/topix/">
+<link rel="icon" type="image/png" href="/favicon.png?v=20260929">
+<meta property="og:type" content="website"><meta property="og:locale" content="ja_JP"><meta property="og:site_name" content="宿泊DXラボ">
+<meta property="og:title" content="EDINET投資レーダー（新TOPIX）｜宿泊DXラボ"><meta property="og:description" content="大株主が5%超を新規取得・買い増しした企業のうち、株価も上向きの新TOPIX構成銘柄だけを毎日自動で絞り込みます。">
+<meta property="og:url" content="https://lab.ugatta-llc.com/edinet-investment-radar/topix/">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"EDINET投資レーダー（新TOPIX）","url":"https://lab.ugatta-llc.com/edinet-investment-radar/topix/","applicationCategory":"FinanceApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"JPY"},"provider":{"@type":"Organization","name":"宿泊DXラボ","url":"https://lab.ugatta-llc.com/","logo":"https://lab.ugatta-llc.com/images/lab-logo.png"}}</script>
+<style>
+:root{--ink:#172033;--muted:#687386;--line:#e4e9f0;--paper:#fff;--bg:#f4f6f9;--navy:#142a45;--blue:#2563eb;--red:#d13344;--green:#16805b;--amber:#b76b00;--grey:#8a93a2}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP","Hiragino Sans",Meiryo,sans-serif;line-height:1.6;overflow-x:hidden}
+.shell{width:min(1040px,calc(100% - 32px));margin:auto}
+.top{background:var(--navy);color:#fff;padding:32px 0 26px}
+.eyebrow{font-size:12px;letter-spacing:.18em;color:#9bc2f5;font-weight:700}
+.lab-back{display:inline-block;margin-bottom:8px;color:#9bc2f5;font-size:13px;text-decoration:none}
+.top h1{font-size:clamp(24px,5vw,38px);margin:6px 0 8px;line-height:1.2}
+.top .lead{margin:0 0 10px;color:#e6edf6;font-size:15px;max-width:720px;line-height:1.7}
+.top p{margin:0;color:#cfdae8;font-size:13px}
+.top .sibling{margin-top:8px}
+.top .sibling a{color:#9bc2f5;font-weight:600}
+.main{padding:20px 0 48px}
+.panel{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:18px;margin-top:16px}
+.panel h2{margin:0 0 4px;font-size:18px}
+.panel h2 small{font-size:13px;font-weight:500;color:var(--muted);margin-left:8px}
+.panel h3{margin:14px 0 4px;font-size:14px;color:var(--muted);letter-spacing:.04em}
+.note{margin:0 0 14px;color:var(--muted);font-size:13px}
+.steps{list-style:none;margin:10px 0 0;padding:0;display:grid;grid-template-columns:1fr;gap:10px;counter-reset:step}
+@media(min-width:760px){.steps{grid-template-columns:1fr 1fr 1fr}}
+.steps li{border:1px solid var(--line);border-radius:10px;padding:12px 14px;font-size:14px;position:relative;padding-left:46px}
+.steps li::before{counter-increment:step;content:counter(step);position:absolute;left:12px;top:12px;width:24px;height:24px;border-radius:50%;background:var(--navy);color:#fff;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center}
+.steps b{display:block;margin-bottom:2px}
+.steps span{color:var(--muted);font-size:13px;line-height:1.5;display:block}
+.howto{margin:6px 0 0;padding-left:1.2em;font-size:14px}
+.howto li{margin:3px 0}
+.scope{margin:12px 0 0;font-size:13px;color:var(--muted)}
+.scope a{color:var(--blue)}
+.glossary{margin-top:12px;border:1px solid var(--line);border-radius:10px;padding:0 14px;font-size:14px}
+.glossary summary{cursor:pointer;padding:10px 0;font-weight:700;color:var(--navy)}
+.glossary dl{margin:0 0 12px;display:grid;grid-template-columns:1fr;gap:8px 12px}
+@media(min-width:760px){.glossary dl{grid-template-columns:max-content 1fr}}
+.glossary dt{font-weight:700;white-space:nowrap}
+.glossary dd{margin:0;color:var(--muted);font-size:13px;line-height:1.6}
+.glossary dd .badge{margin-right:4px}
+.banner{display:none;border:1px solid #f0d18b;background:#fff8e7;color:#684900;padding:12px 14px;border-radius:12px;margin-top:16px;font-size:14px}
+.banner.show{display:block}
+.banner.err{border-color:#f0b4ba;background:#fff0f1;color:#8a1f2b}
+.cards{display:grid;grid-template-columns:1fr;gap:12px}
+@media(min-width:760px){.cards{grid-template-columns:1fr 1fr}}
+.card{border:1px solid var(--line);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.card-head{display:flex;gap:12px;align-items:flex-start}
+.rank{flex:none;width:34px;height:34px;border-radius:50%;background:var(--navy);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center}
+.who{min-width:0;flex:1}
+.name{font-weight:700;font-size:16px;overflow-wrap:anywhere}
+.code{color:var(--muted);font-size:12px}
+.tags{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.badge{display:inline-block;border-radius:999px;padding:3px 9px;font-size:11px;font-weight:700;white-space:nowrap}
+.b-setup{background:#e8f0ff;color:#174da6}
+.b-status{background:#eef1f5;color:#3b4658}
+.st-STRENGTHENING{background:#e7f7ef;color:#126345}
+.st-CONFIRMED{background:#d8f0ee;color:#0b5f58}
+.st-REACTED{background:#fff0d6;color:#8c5200}
+.st-BROKEN,.st-CLOSED{background:#fdecee;color:#9b2432}
+.rc{background:transparent;border:1px solid currentColor;padding:2px 8px}
+.rc-new{color:#8c5200}.rc-up{color:#126345}.rc-down{color:#9b2432}.rc-same{color:#7a8595}
+.reasons-label{font-size:12px;color:var(--muted);margin:2px 0 -4px}
+.reasons{margin:0;padding-left:1.2em;font-size:14px}
+.reasons li{margin:2px 0;overflow-wrap:anywhere}
+.metrics{display:grid;grid-template-columns:1fr;gap:6px;border-top:1px dashed var(--line);padding-top:8px;font-size:13px}
+.metrics div{display:flex;justify-content:space-between;gap:10px}
+.metrics span{color:var(--muted)}
+.metrics b{white-space:nowrap}
+.detail{margin-top:auto;align-self:flex-start;color:#fff;background:var(--blue);text-decoration:none;font-size:14px;font-weight:600;padding:8px 16px;border-radius:9px}
+.up{color:var(--green);font-weight:700}.down{color:var(--red);font-weight:700}.nil{color:var(--grey)}
+.list{list-style:none;margin:0;padding:0}
+.list-head{display:grid;grid-template-columns:28px 1fr auto;gap:4px 10px;font-size:12px;color:var(--muted);padding:0 0 6px}
+.list li{display:grid;grid-template-columns:28px 1fr auto;gap:4px 10px;align-items:center;padding:10px 0;border-top:1px solid var(--line);font-size:14px}
+.list .n{color:var(--muted);font-weight:700;text-align:center}
+.list a{color:var(--ink);font-weight:600;text-decoration:none;overflow-wrap:anywhere}
+.list a:hover{color:var(--blue)}
+.list .sub{grid-column:2 / 4;display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:12px;color:var(--muted)}
+.chg-group{margin-top:12px}
+.chg-group:first-child{margin-top:0}
+.chg-group h3{margin:0 0 2px;font-size:14px;color:var(--ink)}
+.chg-group h3 small{font-weight:500;color:var(--muted);margin-left:6px}
+.chg{list-style:none;margin:0;padding:0}
+.chg li{padding:9px 0;border-top:1px solid var(--line);font-size:14px}
+.chg li:first-child{border-top:0}
+.chg .d{color:var(--muted);font-size:12px;margin-right:6px}
+.chg .r{color:var(--muted);font-size:13px;display:block;overflow-wrap:anywhere}
+.chg a{color:var(--ink);font-weight:600;text-decoration:none}
+.src{display:grid;grid-template-columns:1fr;gap:8px;font-size:13px}
+@media(min-width:600px){.src{grid-template-columns:1fr 1fr}}
+.src>div{border:1px solid var(--line);border-radius:10px;padding:9px 12px;min-width:0}
+.src b{display:block;font-size:13px}
+.src small{color:var(--muted);display:block}
+.pill{display:inline-block;border-radius:999px;padding:1px 8px;font-size:11px;font-weight:700;margin-left:6px}
+.pill.ok{background:#e7f7ef;color:#126345}.pill.warn{background:#fff0d6;color:#8c5200}.pill.bad{background:#fdecee;color:#9b2432}.pill.off{background:#eef1f5;color:#5a6577}
+.meta{margin-top:12px;font-size:13px;color:var(--muted)}
+.empty{text-align:center;padding:24px 8px;color:var(--muted);font-size:14px}
+.empty strong{display:block;color:var(--ink);font-size:16px;margin-bottom:6px}
+.disc{font-size:12px;color:var(--muted);margin:4px 0}
+.skeleton{color:var(--muted);font-size:14px}
+</style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&amp;display=swap">
+  <link rel="stylesheet" href="/css/site-shell.css?v=20261003font">
+  <script src="/js/site-shell.js?v=20261003font" defer></script>
+  <script src="/js/site.js?v=20261002-shell" defer></script>
+</head>
+<body>
+<header class="top"><div class="shell">
+  <a class="lab-back" href="/#market-tools">← 宿泊DXラボ</a>
+  <div class="eyebrow">EDINET INVESTMENT RADAR ／ TOPIX EVENT WATCH</div>
+  <h1>EDINET投資レーダー <small style="font-size:.5em;font-weight:500;color:#9bc2f5">新TOPIX 版</small></h1>
+  <p class="lead">大株主が株式の5%超を新規取得・買い増しした企業（金融庁EDINETの大量保有報告）のうち、株価も上向きの銘柄だけを、<span class="u-label">新TOPIX（移行措置銘柄を除く）</span>から毎日自動で絞り込みます。</p>
+  <p id="updated">読み込み中…</p>
+  <p class="sibling">対象を変える: <a href="../watch/">JPX日経400 版はこちら</a></p>
+</div></header>
+<main class="main shell">
+  <div id="banner" class="banner" role="status"></div>
+
+  <section class="panel about">
+    <h2>仕組みは3ステップ</h2>
+    <ol class="steps">
+      <li><b>大株主の動きを検知</b><span>金融庁EDINETに提出された大量保有報告（5%超の新規取得や買い増し）を毎日チェックします。</span></li>
+      <li><b>株価の形を判定</b><span>移動平均線・直近60日の値幅・市場平均との比較から、株価が上向きかどうかを機械的に判定します。</span></li>
+      <li><b>両方そろった銘柄だけ掲載</b><span>条件を満たしている間だけ監視し、株価の形が崩れたり期限が切れたりした銘柄は外します。</span></li>
+    </ol>
+    <h3>このページの見方</h3>
+    <ul class="howto">
+      <li><b>順位</b>を見る。上にあるほど、大株主の動きと株価の形がはっきりしている銘柄です。</li>
+      <li><b>根拠</b>を見る。各銘柄に「なぜ載っているか」を箇条書きで示しています。</li>
+      <li>気になる銘柄は<b>「詳細を見る」</b>から、チャート・開示書類・監視開始後の成績を確認します。</li>
+    </ul>
+    <details class="glossary">
+      <summary>用語の見方（型・状態・根拠の読み方）</summary>
+      <dl>
+        <dt>大量保有報告</dt><dd>上場企業の株式を5%超保有した投資家が金融庁に提出する書類です。その後、保有割合が1%以上変わるたびに変更報告書が出ます。</dd>
+        <dt>型</dt><dd><span class="badge b-setup">高値更新型</span>直近60日の高値圏にあり、上抜けを狙う形。<span class="badge b-setup">反発型</span>下落のあと20日線を回復し、持ち直し始めた形。<span class="badge b-setup">上昇継続型</span>上昇の流れが続いており、52週高値も近い形。</dd>
+        <dt>状態</dt><dd><span class="badge b-status">監視中</span>条件を満たして監視を始めた段階。<span class="badge b-status st-STRENGTHENING">強まっている</span>買い増しが続く、市場平均を上回り始めたなど根拠が増えた。<span class="badge b-status st-CONFIRMED">値動き確認済み</span>想定した方向に株価が実際に動いた。<span class="badge b-status st-REACTED">反応済み</span>すでに大きく動いた後。<span class="badge b-status st-BROKEN">形が崩れた</span>／<span class="badge b-status st-CLOSED">監視終了</span>条件を外れたため掲載を終えた。</dd>
+        <dt>20日線・60日線</dt><dd>過去20営業日・60営業日の平均株価を結んだ線です。株価がその上にあり、線が上向きなら短期・中期の流れが上向きと見ます。</dd>
+        <dt>60日レンジ上位N%</dt><dd>直近60営業日の高値〜安値の中で、今の株価が上からN%の位置にあることを示します。0%に近いほど高値圏です。</dd>
+        <dt>pt買い増し</dt><dd>保有割合の増え幅です。例えば 6.6%→7.7% なら 1.1pt の買い増しです。</dd>
+        <dt>市場平均との差</dt><dd>同じ期間のTOPIX連動ETF（1306）の騰落率との差です。プラスなら市場平均より強く動いたことを意味します。</dd>
+        <dt>順位の決め方</dt><dd>大量保有報告の内容（新規取得・買い増しの大きさや回数）と株価の形の強さをもとに、機械的に並べています。人の判断は入っていません。</dd>
+      </dl>
+    </details>
+    <p class="scope">宿泊・観光に限らず、<span class="u-label">新TOPIX（移行措置銘柄を除く）</span>の全銘柄が対象です。新TOPIXは2026年10月30日の初回定期入替後のTOPIX構成銘柄で、段階的に除外される移行措置銘柄は対象に含めていません。観光関連の銘柄に絞って見たい方は <a href="/report.html">観光株シグナル</a> をご覧ください。</p>
+  </section>
+
+  <section class="panel">
+    <h2>今週のピックアップ<small>上位5銘柄</small></h2>
+    <p class="note" id="weeklyNote">今週時点の上位5銘柄です。「NEW」は今週ランク入りした銘柄、▲▼は前の週からの順位の変化です。</p>
+    <div id="weekly" class="cards"><div class="skeleton">読み込み中…</div></div>
+  </section>
+
+  <section class="panel">
+    <h2>今月のランキング<small>上位10銘柄</small></h2>
+    <p class="note" id="monthlyNote">今月の順位です。今週のピックアップと重なる銘柄は、月を通して条件を満たし続けている銘柄です。</p>
+    <div id="monthly"><div class="skeleton">読み込み中…</div></div>
+  </section>
+
+  <section class="panel">
+    <h2>前回更新からの変化</h2>
+    <p class="note">直近の更新で状態が変わった銘柄です。新しく監視に入った銘柄、根拠が強まった銘柄、条件を外れて終了した銘柄に分けて表示します。</p>
+    <div id="changes"><div class="skeleton">読み込み中…</div></div>
+  </section>
+
+  <section class="panel">
+    <h2>データ更新状況</h2>
+    <div id="sources"><div class="skeleton">読み込み中…</div></div>
+    <div class="meta" id="meta"></div>
+  </section>
+
+  <section class="panel">
+    <p class="disc" id="disclaimer">本ページは公開情報を整理する情報整理ツールであり、特定銘柄の売買を推奨するものではなく、将来の株価を予測するものでもありません。投資判断はご自身の責任で行ってください。</p>
+    <p class="disc">「市場平均」はTOPIX連動ETF（1306）を代理指標として使用しています（TOPIX指数そのものではありません）。</p>
+  </section>
+</main>
+
+<script>
+(function(){
+'use strict';
+var DEFAULT_BASE='https://raw.githubusercontent.com/highwing-republic/stock/main/public/data/watch-topix';
+var RAW='https://raw.githubusercontent.com/highwing-republic/';
+function resolveBase(){
+  var q=new URLSearchParams(location.search).get('data');
+  if(!q)return {base:DEFAULT_BASE,param:null,rejected:false};
+  var ok=false;
+  if(q.indexOf(RAW)===0)ok=/^[A-Za-z0-9_\-.\/]+$/.test(q.slice(RAW.length))&&q.indexOf('..')<0;
+  else ok=/^(\.{1,2}\/)?[A-Za-z0-9_\-.\/]*$/.test(q)&&q.indexOf('//')<0&&q.indexOf(':')<0;
+  if(!ok)return {base:DEFAULT_BASE,param:null,rejected:true};
+  return {base:q.replace(/\/+$/,''),param:q,rejected:false};
+}
+var B=resolveBase(), BASE=B.base;
+function $(id){return document.getElementById(id)}
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function num(v){return typeof v==='number'&&isFinite(v)}
+function pct(v,unit){if(!num(v))return '<span class="nil">—</span>';var s=(v>0?'+':v<0?'−':'')+Math.abs(v).toFixed(1)+(unit||'%');return '<span class="'+(v>0?'up':v<0?'down':'nil')+'">'+s+'</span>'}
+function dstr(s){if(!s)return '—';var m=/^(\d{4})-(\d{2})-(\d{2})/.exec(s);return m?esc(parseInt(m[2],10)+'/'+parseInt(m[3],10)):esc(s)}
+function dfull(s){if(!s)return '—';var d=new Date(s);return isNaN(d)?String(s):d.toLocaleString('ja-JP',{timeZone:'Asia/Tokyo',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'})}
+function md(d){return (d.getUTCMonth()+1)+'/'+d.getUTCDate()}
+function periodLabel(key){
+  if(!key)return '';
+  var w=/^(\d{4})-W(\d{2})$/.exec(key);
+  if(w){
+    var y=+w[1],n=+w[2],jan4=new Date(Date.UTC(y,0,4)),dow=jan4.getUTCDay()||7;
+    var mon=new Date(jan4.getTime()-(dow-1)*864e5+(n-1)*7*864e5),fri=new Date(mon.getTime()+4*864e5);
+    return md(mon)+'〜'+md(fri)+'（'+y+'年 第'+n+'週）';
+  }
+  var m=/^(\d{4})-(\d{2})$/.exec(key);
+  if(m)return (+m[1])+'年'+(+m[2])+'月';
+  return key;
+}
+var SETUP={BREAKOUT:'高値更新型',RECOVERY:'反発型',TREND:'上昇継続型'};
+var SETUP_EN={BREAKOUT:'BREAKOUT WATCH',RECOVERY:'RECOVERY WATCH',TREND:'TREND WATCH'};
+var STATUS_JA={CANDIDATE:'候補',WATCH:'監視中',STRENGTHENING:'強まっている',CONFIRMED:'値動き確認済み',REACTED:'反応済み',BROKEN:'形が崩れた',CLOSED:'監視終了'};
+var CHANGE={NEW_WATCH:['新規監視','in','WATCH'],STRENGTHENING:['強まった','up','STRENGTHENING'],BREAKOUT_CONFIRMED:['高値更新を確認','up','CONFIRMED'],REACTED:['反応済み','up','REACTED'],SETUP_BROKEN:['形が崩れた','out','BROKEN'],CLOSED:['監視終了','out','CLOSED']};
+var CHANGE_GROUPS=[['in','新しく監視に入った'],['up','根拠が強まった・確認できた'],['out','条件を外れて終了した'],['other','その他']];
+var RC={'new':['NEW','rc-new'],up:['▲ 上昇','rc-up'],down:['▼ 下降','rc-down'],same:['― 変わらず','rc-same']};
+function ja(s){
+  s=String(s==null?'':s);
+  if(s==='60日レンジ上位0%')return '60日レンジの最上位（高値圏）';
+  return s.replace(/Price Setup/g,'株価の形').replace(/TOPIX連動ETF比/g,'市場平均比').replace(/TOPIX連動ETF/g,'市場平均').replace(/^20日線上向き$/,'20日線が上向き');
+}
+function detailHref(code){return 'stock.html?code='+encodeURIComponent(code)+(B.param?'&data='+encodeURIComponent(B.param):'')}
+function setupBadge(t){return t?'<span class="badge b-setup" title="'+esc(SETUP_EN[t]||t)+'">'+esc(SETUP[t]||t)+'</span>':''}
+function statusBadge(s){return s?'<span class="badge b-status st-'+esc(s)+'" title="'+esc(s)+'">'+esc(STATUS_JA[s]||s)+'</span>':''}
+function rcBadge(r){var x=RC[r];return x?'<span class="badge rc '+x[1]+'">'+x[0]+'</span>':''}
+function link(e){return '<a href="'+esc(detailHref(e.securityCode))+'">'+esc(e.companyName||e.securityCode)+'</a>'}
+function empty(title,body){return '<div class="empty"><strong>'+esc(title)+'</strong>'+esc(body)+'</div>'}
+var EMPTY_BODY='大株主の5%超の新規取得・買い増しがあり、かつ株価が上向きという両方の条件を満たす銘柄が、今はありません。条件を満たす銘柄が出ると自動で掲載されます。';
+
+function card(e,i){
+  var reasons=(e.reasons||[]).slice(0,4).map(function(r){return '<li>'+esc(ja(r))+'</li>'}).join('');
+  return '<article class="card">'+
+   '<div class="card-head"><div class="rank" aria-label="順位">'+esc(e.rank||i+1)+'</div>'+
+   '<div class="who"><div class="name">'+esc(e.companyName)+'</div><div class="code">'+esc(e.securityCode)+'</div></div>'+rcBadge(e.rankChange)+'</div>'+
+   '<div class="tags">'+setupBadge(e.setupType)+statusBadge(e.status)+'</div>'+
+   (reasons?'<div class="reasons-label">掲載の根拠</div><ul class="reasons">'+reasons+'</ul>':'')+
+   '<div class="metrics">'+
+    '<div><span>監視開始</span><b>'+dstr(e.watchStartedAt)+'</b></div>'+
+    '<div><span>監視開始からの騰落率</span><b>'+pct(e.returnSinceWatch)+'</b></div>'+
+    '<div><span>市場平均との差</span><b>'+pct(e.excessSinceWatch,'pt')+'</b></div>'+
+   '</div>'+
+   '<a class="detail" href="'+esc(detailHref(e.securityCode))+'">詳細を見る</a></article>';
+}
+function row(e,i){
+  return '<li><span class="n">'+esc(e.rank||i+1)+'</span><span>'+link(e)+' <span class="code">'+esc(e.securityCode)+'</span></span><span title="監視開始からの騰落率">'+pct(e.returnSinceWatch)+'</span>'+
+   '<span class="sub">'+setupBadge(e.setupType)+statusBadge(e.status)+rcBadge(e.rankChange)+(e.reasons&&e.reasons[0]?'<span>'+esc(ja(e.reasons[0]))+'</span>':'')+'</span></li>';
+}
+function changesHtml(list){
+  var groups={};
+  list.forEach(function(x){var c=CHANGE[x.change];var g=c?c[1]:'other';(groups[g]=groups[g]||[]).push(x)});
+  return CHANGE_GROUPS.filter(function(g){return groups[g[0]]&&groups[g[0]].length}).map(function(g){
+    var items=groups[g[0]];
+    return '<div class="chg-group"><h3>'+esc(g[1])+'<small>'+items.length+'件</small></h3><ul class="chg">'+items.map(function(x){
+      var c=CHANGE[x.change];
+      return '<li><span class="d">'+dstr(x.date)+'</span><span class="badge b-status st-'+esc(c?c[2]:'')+'" title="'+esc(x.change)+'">'+esc(c?c[0]:x.change)+'</span> '+
+       link(x)+' '+setupBadge(x.setupType)+(x.reason?'<span class="r">'+esc(ja(x.reason))+'</span>':'')+'</li>'}).join('')+'</ul></div>';
+  }).join('');
+}
+var SRCJA={edinet:'EDINET（大量保有報告）',prices:'株価',jpx400:'JPX日経400 構成銘柄',topix:'新TOPIX 構成銘柄',margin:'信用需給（補助情報）'};
+var DEFAULT_UNIVERSE={key:'topix',label:'新TOPIX',note:'移行措置銘柄を除く'};
+function universeOf(s){var u=s&&s.universe;return (u&&u.key&&u.label)?u:DEFAULT_UNIVERSE}
+function universeLabel(u){return u.label+(u.note?'（'+u.note+'）':'')}
+var STJA={ok:['正常','ok'],stale:['更新が古い','warn'],failed:['取得失敗','bad'],disabled:['無効','off'],partial:['一部のみ','warn']};
+function srcCell(k,s,label){
+  s=s||{};var st=STJA[s.status]||[s.status||'不明','off'];var d=[];
+  if(s.lastSuccessAt)d.push('最終成功 '+esc(dfull(s.lastSuccessAt)));
+  if(num(s.coverage))d.push('カバー率 '+Math.round(s.coverage*100)+'%');
+  if(num(s.memberCount))d.push('構成銘柄 '+s.memberCount+'件');
+  if(s.asOf)d.push('基準日 '+esc(s.asOf));
+  if(k==='margin'&&(s.status==='disabled'||s.status==='failed'||s.status==='stale'))d.push('補助情報のため、ランキングの必須条件にはしていません');
+  return '<div><b>'+esc(label||SRCJA[k]||k)+'<span class="pill '+st[1]+'">'+esc(st[0])+'</span></b>'+(d.length?'<small>'+d.join('<br>')+'</small>':'')+'</div>';
+}
+function banner(t,err){var b=$('banner');b.textContent=t;b.className='banner show'+(err?' err':'')}
+function render(s){
+  var U=universeOf(s), ulabel=universeLabel(U);
+  Array.prototype.forEach.call(document.querySelectorAll('.u-label'),function(el){el.textContent=ulabel});
+  var head=[];
+  if(s.asOfMarketDate)head.push('株価は '+s.asOfMarketDate+' の終値ベース');
+  head.push(s.updatedAt?'最終更新 '+dfull(s.updatedAt):'未更新');
+  $('updated').textContent=head.join(' ／ ');
+  var w=(s.weekly&&s.weekly.entries)||[], m=(s.monthly&&s.monthly.entries)||[];
+  var wp=s.weekly&&s.weekly.periodKey?periodLabel(s.weekly.periodKey):'';
+  var mp=s.monthly&&s.monthly.periodKey?periodLabel(s.monthly.periodKey):'';
+  $('weeklyNote').textContent=(wp?'対象期間 '+wp+'。':'今週時点の')+'上位5銘柄です。「NEW」は今週ランク入りした銘柄、▲▼は前の週からの順位の変化です。';
+  $('monthlyNote').textContent=(mp?mp+'の順位です。':'今月の順位です。')+'今週のピックアップと重なる銘柄は、月を通して条件を満たし続けている銘柄です。';
+  $('weekly').innerHTML=w.length?w.slice(0,5).map(card).join(''):empty('今週の掲載銘柄はありません',EMPTY_BODY);
+  $('monthly').innerHTML=m.length?'<div class="list-head"><span></span><span>銘柄</span><span>監視開始からの騰落率</span></div><ul class="list">'+m.slice(0,10).map(row).join('')+'</ul>':empty('今月の掲載銘柄はありません',EMPTY_BODY);
+  var c=s.stateChanges||[];
+  $('changes').innerHTML=c.length?changesHtml(c.slice(0,20)):empty('前回更新からの変化はありません','');
+  var src=s.sources||{};
+  $('sources').innerHTML='<div class="src">'+['edinet','prices',U.key,'margin'].map(function(k){return srcCell(k,src[k],k===U.key?U.label+' 構成銘柄':null)}).join('')+'</div>';
+  var mt=[];
+  if(s.asOfMarketDate)mt.push('株価の基準日 '+esc(s.asOfMarketDate)+'（終値）');
+  if(s.updatedAt)mt.push('更新 '+esc(dfull(s.updatedAt)));
+  if(num(s.universeCount))mt.push('対象 '+ulabel+' '+s.universeCount+'銘柄');
+  $('meta').innerHTML=mt.join(' ／ ');
+  if(s.disclaimer)$('disclaimer').textContent=s.disclaimer;
+  var warn=[];
+  if(src.prices&&src.prices.status&&src.prices.status!=='ok')warn.push('株価データの更新に問題があります。表示は前回の内容の可能性があります。');
+  if(src.edinet&&src.edinet.status&&src.edinet.status!=='ok')warn.push('EDINET データの更新に問題があります。');
+  if(warn.length)banner(warn.join(' '),false);
+}
+if(B.rejected)banner('data パラメータが許可されていない形式のため、既定のデータ元を使用しています。',false);
+fetch(BASE+'/summary.json?t='+Date.now()).then(function(r){if(!r.ok)throw new Error(r.status);return r.json()}).then(function(s){
+  if(!s||typeof s!=='object'||s.schemaVersion!==1)throw new Error('schema');
+  render(s);
+}).catch(function(){
+  $('updated').textContent='データ取得エラー';
+  banner('公開データを読み込めませんでした。時間を置いて再度お試しください。',true);
+  var e=empty('データを表示できません','公開データの準備がまだの可能性があります。');
+  ['weekly','monthly','changes','sources'].forEach(function(id){$(id).innerHTML=e});
+});
+})();
+</script>
+</body>
+</html>

@@ -171,7 +171,7 @@ var SETUP={BREAKOUT:'高値更新型',RECOVERY:'反発型',TREND:'上昇継続�
 var SETUP_EN={BREAKOUT:'BREAKOUT WATCH',RECOVERY:'RECOVERY WATCH',TREND:'TREND WATCH'};
 var STATUS_JA={CANDIDATE:'候補',WATCH:'監視中',STRENGTHENING:'強まっている',CONFIRMED:'値動き確認済み',REACTED:'反応済み',BROKEN:'形が崩れた',CLOSED:'監視終了'};
 function ja(s){s=String(s==null?'':s);if(s==='60日レンジ上位0%')return '60日レンジの最上位（高値圏）';return s.replace(/Price Setup/g,'株価の形').replace(/TOPIX連動ETF比/g,'市場平均比').replace(/TOPIX連動ETF/g,'市場平均').replace(/^20日線上向き$/,'20日線が上向き')}
-var CLOSE_JA={NO_SETUP:'株価の形が整わないまま期限切れ',BROKEN:'株価の形が崩れた',EXPIRED:'監視期間の終了',UNIVERSE_EXIT:'JPX400から除外'};
+var CLOSE_JA={NO_SETUP:'株価の形が整わないまま期限切れ',BROKEN:'株価の形が崩れた',EXPIRED:'監視期間の終了',UNIVERSE_EXIT:'対象指数から除外'};
 function safeUrl(u){return typeof u==='string'&&/^https:\/\/[A-Za-z0-9.\-]+\//.test(u)?u:null}
 function fail(t){$('name').textContent='表示できません';var b=$('banner');b.textContent=t;b.className='banner show'}
 
@@ -188,7 +188,7 @@ else{
  });
 }
 
-var V1BASE=B.base.replace(/\/watch$/,'');
+var V1BASE=B.base.replace(/\/watch(-[a-z0-9]+)?$/,'');
 if(V1BASE===B.base)V1BASE=B.base+'/v1';
 var chartObj=null;
 function chartMsg(t){var host=$('chart');host.textContent='';var m=document.createElement('div');m.className='msg';m.textContent=t;host.appendChild(m)}
