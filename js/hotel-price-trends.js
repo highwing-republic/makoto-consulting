@@ -12,14 +12,9 @@
     "hakuba": [36.70, 137.86], "kaga-onsenkyo": [36.30, 136.33], "gero-onsen": [35.81, 137.24],
     "ise-shima": [34.45, 136.85], "beppu": [33.28, 131.49], "kirishima": [31.87, 130.85]
   };
-  // Hand-simplified coastline [lon, lat] vertices drawn for this page (not traced from a third-party map).
-  const JAPAN_OUTLINE = [
-    [[141.2,45.5],[142.0,45.3],[143.3,44.3],[144.8,43.9],[145.6,43.3],[145.2,43.0],[143.3,42.0],[141.7,42.6],[140.9,41.9],[140.1,41.5],[139.9,42.2],[140.5,42.6],[139.9,42.9],[140.5,43.3],[141.4,43.4],[141.6,44.3]],
-    [[141.4,41.4],[141.5,40.6],[142.0,39.6],[141.6,38.4],[141.0,37.9],[141.0,36.9],[140.6,35.7],[140.0,35.0],[139.8,35.3],[139.2,35.2],[138.8,34.6],[138.2,34.6],[137.0,34.6],[136.8,34.3],[136.3,33.9],[135.8,33.5],[135.1,33.9],[135.2,34.6],[134.2,34.7],[133.0,34.4],[132.2,34.0],[131.0,34.0],[130.9,34.3],[131.4,34.5],[132.6,35.4],[133.4,35.5],[134.6,35.6],[135.5,35.5],[136.0,35.7],[136.7,36.4],[136.8,37.1],[137.3,37.5],[137.3,36.8],[138.3,37.1],[139.0,37.9],[139.6,38.6],[140.0,39.4],[140.0,40.3],[140.3,41.2],[140.9,41.2]],
-    [[132.4,33.4],[132.9,34.0],[133.7,34.3],[134.6,34.2],[134.7,33.8],[134.2,33.3],[133.0,32.7],[132.5,32.9]],
-    [[129.8,33.5],[130.5,33.9],[131.0,33.9],[131.6,33.6],[131.9,32.9],[131.4,31.4],[130.7,31.0],[130.2,31.3],[130.2,32.1],[130.6,32.8],[130.2,32.8],[129.7,32.6],[129.6,33.2]]
-  ];
-  const MAP = {lonMin: 129.3, latMax: 45.8, lonScale: 0.79, unit: 18, width: 240, height: 272};
+  // Coastline and prefecture borders come from js/japan-map-data.js (Natural Earth, public domain).
+  const JAPAN_MAP = window.HotelPriceJapanMap;
+  const PHOTO_CREDIT = "写真：楽天トラベル";
   const model = window.HotelPriceTrendsModel;
   const elements = {
     region: document.querySelector("#hpt-region"), hotel: document.querySelector("#hpt-hotel"),
@@ -159,19 +154,24 @@
   function renderCoreFacilities(view) {
     const list = document.querySelector("#hpt-core-list");
     const selectedNo = Number(elements.hotel.value);
+    const images = view.facilities.map((facility) => facilityImage(facility.hotel_no));
+    const withPhotos = images.some(Boolean);
+    list.classList.toggle("hpt-core-list--photos", withPhotos);
     list.innerHTML = view.facilities.map((facility, index) => {
+      const image = images[index];
+      const photo = !withPhotos ? "" : image ? photoLink(image, "hpt-core-row__photo", "thumbnail") : '<span class="hpt-core-row__photo hpt-core-row__photo--empty" aria-hidden="true">写真なし</span>';
       const selected = facility.hotel_no === selectedNo;
       const usable = facility.coverage !== "insufficient";
       const coverageText = facility.coverage === "insufficient"
         ? view.accumulating ? "7日前の観測を蓄積中" : `比較データ不足（共通宿泊日 ${facility.commonStayDates}泊）`
         : `${COVERAGE_LABELS[facility.coverage]} ${facility.commonStayDates}宿泊日`;
       return `<article class="hpt-core-row${selected ? " hpt-core-row--selected" : ""} hpt-core-row--${facility.coverage}" data-hotel-no="${facility.hotel_no}" data-coverage="${facility.coverage}">
-        <div class="hpt-core-row__name"><span class="hpt-core-row__index">${index + 1}</span><div><strong>${escapeHtml(facility.name)}</strong><small>${selected ? "選択施設 / CORE" : "CORE"}</small></div></div>
+        <div class="hpt-core-row__name"><span class="hpt-core-row__index">${index + 1}</span>${photo}<div><strong>${escapeHtml(facility.name)}</strong><small>${selected ? "選択施設 / CORE" : "CORE"}</small></div></div>
         <div class="hpt-core-row__spark"><div class="hpt-spark" data-spark-index="${index}"></div><div class="hpt-spark-axis" aria-hidden="true"><span>7日前</span><span>今日</span></div></div>
         <div class="hpt-core-row__change">${usable ? `<strong>${escapeHtml(pct(facility.changePct))}</strong>${facility.coverage === "reference" ? '<em class="hpt-reference-badge">参考</em>' : ""}${directionBadge(facility.direction)}` : `<strong class="hpt-core-row__status">${view.accumulating ? "データ蓄積中" : "比較データ不足"}</strong>`}<small>7日前比</small></div>
         <div class="hpt-core-row__coverage">${escapeHtml(coverageText)}</div>
       </article>`;
-    }).join("");
+    }).join("") + (withPhotos ? `<p class="hpt-photo-credit">${PHOTO_CREDIT}（写真を選ぶと施設ページが開きます）</p>` : "");
     // One shared scale so the shapes of the five facilities can be compared directly.
     const axis = model.trendAxis(view.facilities.flatMap((facility) => facility.points.map((point) => point.value)), {floor: -3, ceiling: 3, headroom: 0});
     list.querySelectorAll(".hpt-spark").forEach((container) => {
@@ -195,17 +195,38 @@
   }
 
   function mapPoint([lat, lon]) {
-    return [(lon - MAP.lonMin) * MAP.lonScale * MAP.unit, (MAP.latMax - lat) * MAP.unit];
+    const projection = JAPAN_MAP.projection;
+    return [(lon - projection.lonMin) * projection.lonScale * projection.unit, (projection.latMax - lat) * projection.unit];
   }
   function renderMarkets() {
     const active = elements.region.value;
-    const outline = JAPAN_OUTLINE.map((shape) => `<polygon points="${shape.map(([lon, lat]) => mapPoint([lat, lon]).map((value) => value.toFixed(1)).join(",")).join(" ")}"/>`).join("");
-    const points = regions.filter((region) => MARKET_LOCATIONS[region.code]).map((region) => {
-      const [px, py] = mapPoint(MARKET_LOCATIONS[region.code]);
-      return `<button type="button" class="hpt-map-point${region.code === active ? " is-active" : ""}" data-region="${escapeHtml(region.code)}" style="left:${(px / MAP.width * 100).toFixed(2)}%;top:${(py / MAP.height * 100).toFixed(2)}%" tabindex="-1" aria-hidden="true" title="${escapeHtml(region.name)}"><span>${escapeHtml(region.name)}</span></button>`;
-    }).join("");
-    document.querySelector("#hpt-map").innerHTML = `<svg viewBox="0 0 ${MAP.width} ${MAP.height}" aria-hidden="true"><g class="hpt-map-land">${outline}</g></svg>${points}`;
+    const map = document.querySelector("#hpt-map");
+    if (JAPAN_MAP) {
+      const [x, y, width, height] = JAPAN_MAP.inset.box;
+      const points = regions.filter((region) => MARKET_LOCATIONS[region.code]).map((region) => {
+        const [px, py] = mapPoint(MARKET_LOCATIONS[region.code]);
+        // Labels sit left of points in the east so they stay inside the map.
+        const side = px > JAPAN_MAP.width * 0.72 ? " hpt-map-point--label-left" : "";
+        return `<button type="button" class="hpt-map-point${region.code === active ? " is-active" : ""}${side}" data-region="${escapeHtml(region.code)}" style="left:${(px / JAPAN_MAP.width * 100).toFixed(2)}%;top:${(py / JAPAN_MAP.height * 100).toFixed(2)}%" tabindex="-1" aria-hidden="true" title="${escapeHtml(region.name)}"><span>${escapeHtml(region.name)}</span></button>`;
+      }).join("");
+      map.innerHTML = `<svg viewBox="0 0 ${JAPAN_MAP.width} ${JAPAN_MAP.height}" aria-hidden="true"><rect class="hpt-map-inset" x="${x}" y="${y}" width="${width}" height="${height}" rx="6"/><text class="hpt-map-inset-label" x="${x + width - 8}" y="${y + height - 8}" text-anchor="end">${escapeHtml(JAPAN_MAP.inset.label)}</text><path class="hpt-map-land" d="${JAPAN_MAP.land}${JAPAN_MAP.inset.land}"/><path class="hpt-map-borders" d="${JAPAN_MAP.borders}"/></svg>${points}`;
+    } else {
+      map.innerHTML = "";
+    }
     document.querySelector("#hpt-market-chips").innerHTML = regions.map((region) => `<button type="button" class="hpt-market-chip${region.code === active ? " is-active" : ""}" data-region="${escapeHtml(region.code)}" aria-pressed="${region.code === active}">${escapeHtml(region.name)}</button>`).join("");
+  }
+  function facilityImage(hotelNo) {
+    const profile = profilesByHotel.get(Number(hotelNo));
+    const image = profile?.latest?.image;
+    return image?.url || image?.thumbnail_url ? {...image, source_url: profile.source_url, name: profile.name} : null;
+  }
+  // Photos stay on Rakuten's servers, unaltered, and always link back to the facility page.
+  function photoLink(image, className, size) {
+    const src = size === "thumbnail" ? image.thumbnail_url || image.url : image.url || image.thumbnail_url;
+    const img = `<img src="${escapeHtml(src)}" alt="${escapeHtml(image.name)}の写真" loading="lazy" decoding="async" referrerpolicy="no-referrer">`;
+    return image.source_url
+      ? `<a class="${className}" href="${escapeHtml(image.source_url)}" target="_blank" rel="noopener noreferrer" aria-label="${escapeHtml(image.name)}を楽天トラベルで見る（新しいタブ）">${img}</a>`
+      : `<span class="${className}">${img}</span>`;
   }
   function renderTrendSection() {
     const view = model.dailyTrendView(selectedRegion());
@@ -246,11 +267,14 @@
   function renderProfile(summary) {
     const profile=selectedProfile(),selected=summary.positions.find((row)=>row.hotel_no===Number(elements.hotel.value));
     const container=document.querySelector("#hpt-profile");
-    if (!profile) {container.innerHTML='<p class="hpt-empty">この施設の基本情報はまだ取得されていません。料金データは引き続き確認できます。</p>';return;}
+    if (!profile) {container.classList.remove("hpt-profile--photo");container.innerHTML='<p class="hpt-empty">この施設の基本情報はまだ取得されていません。料金データは引き続き確認できます。</p>';return;}
     const latestProfile=profile.latest;
     const rating=latestProfile?.review_average==null?"—":Number(latestProfile.review_average).toFixed(2);
     const source=profile.source_url?`<a href="${escapeHtml(profile.source_url)}" target="_blank" rel="noopener noreferrer">楽天トラベルで確認 ↗</a>`:"";
-    container.innerHTML=`<div class="hpt-profile__identity"><p class="eyebrow">PROPERTY PROFILE</p><h2>${escapeHtml(profile.name)}</h2><p>${escapeHtml([profile.prefecture,profile.address].filter(Boolean).join(" "))}</p><small>楽天エリア：${escapeHtml(profile.rakuten_area_name||"—")}</small>${source}</div><div class="hpt-profile__metrics"><article><span>大人2名1室の比較料金</span><strong>${escapeHtml(yen(selected?.min_price_yen))}</strong><small>${escapeHtml(formatDate(elements.stayDate.value))}・${escapeHtml(MEAL_LABELS[elements.meal.value])}</small></article><article><span>楽天参考最安料金</span><strong>${escapeHtml(yen(latestProfile?.reference_min_charge_yen))}</strong><small>条件統一料金ではありません</small></article><article><span>楽天総合評価</span><strong>${escapeHtml(rating)}</strong><small>${latestProfile?`取得月 ${escapeHtml(latestProfile.snapshot_month)}`:"月次データ蓄積中"}</small></article></div>`;
+    const image=facilityImage(profile.hotel_no);
+    container.classList.toggle("hpt-profile--photo",Boolean(image));
+    const photo=image?`<figure class="hpt-profile__photo">${photoLink(image,"hpt-profile__photo-link","large")}<figcaption>${PHOTO_CREDIT}</figcaption></figure>`:"";
+    container.innerHTML=`${photo}<div class="hpt-profile__identity"><p class="eyebrow">PROPERTY PROFILE</p><h2>${escapeHtml(profile.name)}</h2><p>${escapeHtml([profile.prefecture,profile.address].filter(Boolean).join(" "))}</p><small>楽天エリア：${escapeHtml(profile.rakuten_area_name||"—")}</small>${source}</div><div class="hpt-profile__metrics"><article><span>大人2名1室の比較料金</span><strong>${escapeHtml(yen(selected?.min_price_yen))}</strong><small>${escapeHtml(formatDate(elements.stayDate.value))}・${escapeHtml(MEAL_LABELS[elements.meal.value])}</small></article><article><span>楽天参考最安料金</span><strong>${escapeHtml(yen(latestProfile?.reference_min_charge_yen))}</strong><small>条件統一料金ではありません</small></article><article><span>楽天総合評価</span><strong>${escapeHtml(rating)}</strong><small>${latestProfile?`取得月 ${escapeHtml(latestProfile.snapshot_month)}`:"月次データ蓄積中"}</small></article></div>`;
   }
   function renderRatings() {
     const profile=selectedProfile(),container=document.querySelector("#hpt-ratings"),table=document.querySelector("#hpt-ratings-table");
