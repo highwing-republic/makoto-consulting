@@ -28,7 +28,7 @@ def test_lab_notes_link_is_kept_out_of_headers_and_small_at_page_bottom():
 
 def test_every_html_page_loads_the_canonical_site_shell():
     pages = [path for path in ROOT.rglob("*.html") if not {".git", "tourism-market-signal"} & set(path.parts)]
-    assert len(pages) == 19
+    assert len(pages) == 65
     for path in pages:
         page = BeautifulSoup(path.read_text(encoding="utf-8"), "html.parser")
         assert page.find("link", href="/css/site-shell.css?v=20261003font"), path

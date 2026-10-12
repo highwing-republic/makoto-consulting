@@ -33,7 +33,7 @@ def read(relative: str) -> str:
 
 def test_all_public_pages_send_to_both_google_tags_once() -> None:
     pages = tracked_public_html()
-    assert len(pages) == 19
+    assert len(pages) == 65
     for path in pages:
         content = read(path)
         assert content.count(LAB_CONFIG) == 1, path
@@ -57,7 +57,7 @@ def test_fallback_footers_link_back_to_ugatta() -> None:
         fallback_pages.append(path)
         assert "運営：合同会社UGATTA</small>" not in content, path
         assert UGATTA_LINK in content, path
-    assert len(fallback_pages) == 17
+    assert len(fallback_pages) == 60
 
 
 def test_ugatta_link_has_visible_link_styling() -> None:
@@ -83,7 +83,7 @@ def test_site_shell_cache_busters_are_consistent() -> None:
         assert css_match, path
         js_versions.add(js_match.group(1))
         css_versions.add(css_match.group(1))
-    assert len(shell_pages) == 19
+    assert len(shell_pages) == 62
     assert js_versions == {"20261003font"}
     assert css_versions == {"20261003font"}
 

@@ -1,0 +1,699 @@
+[
+ {
+  "slug": "kyutei",
+  "story": "九鼎",
+  "title": "九鼎｜大手の要求を、正面から断らずにかわす",
+  "summary": "力のない周が、相手の欲と実務の問いで二度の要求をかわす。小規模施設の条件交渉に重ねます。",
+  "tags": [
+   "交渉",
+   "外部依存",
+   "小規模経営"
+  ],
+  "category": "意思決定",
+  "work": "zhanguoce",
+  "kicker": "戦国策 東周",
+  "n": 2,
+  "url": "/classics-ai-management/zhanguoce/kyutei/",
+  "unit": "zhanguoce/c1/s1"
+ },
+ {
+  "slug": "soshin-shiko",
+  "story": "蘇秦の刺股と前倨後卑",
+  "title": "蘇秦の刺股と前倨後卑｜提案が通らない期間を、どう使うか",
+  "summary": "十度退けられた蘇秦が学び直して成功し、家族の態度が一変する。提案が通らない時期の使い方を考えます。",
+  "tags": [
+   "提案",
+   "学び直し",
+   "評価"
+  ],
+  "category": "組織と人材",
+  "work": "zhanguoce",
+  "kicker": "戦国策 秦一",
+  "n": 7,
+  "url": "/classics-ai-management/zhanguoce/soshin-shiko/",
+  "unit": "zhanguoce/c3/s2"
+ },
+ {
+  "slug": "henjaku",
+  "story": "扁鵲、秦の武王を診る",
+  "title": "扁鵲、秦の武王を診る｜専門家に相談した結論を、素人の一言で覆さない",
+  "summary": "専門家の結論を側近の一言で覆す王を、扁鵲が叱る。判断の仕組みの話です。",
+  "tags": [
+   "専門家",
+   "意思決定",
+   "側近"
+  ],
+  "category": "意思決定",
+  "work": "zhanguoce",
+  "kicker": "戦国策 秦二",
+  "n": 1,
+  "url": "/classics-ai-management/zhanguoce/henjaku/",
+  "unit": "zhanguoce/c4/s5"
+ },
+ {
+  "slug": "sosan-satsujin",
+  "story": "曾參殺人と息壤の盟",
+  "title": "曾參殺人と息壤の盟｜任せた人への悪評が、三度届いたとき",
+  "summary": "讒言は中身より回数が怖い。甘茂が先に盟約を結び、一言で王の心変わりを止める話です。",
+  "tags": [
+   "権限委譲",
+   "信頼",
+   "噂"
+  ],
+  "category": "組織と人材",
+  "work": "zhanguoce",
+  "kicker": "戦国策 秦二",
+  "n": 4,
+  "url": "/classics-ai-management/zhanguoce/sosan-satsujin/",
+  "unit": "zhanguoce/c4/s6"
+ },
+ {
+  "slug": "kanra",
+  "story": "十二歳の甘羅",
+  "title": "十二歳の甘羅｜若手の提案を、年齢で退けない",
+  "summary": "十二歳の甘羅が老臣を動かし、趙に五城を割かせる。若手の提案を試す場の話です。",
+  "tags": [
+   "若手",
+   "提案",
+   "交渉"
+  ],
+  "category": "組織と人材",
+  "work": "zhanguoce",
+  "kicker": "戦国策 秦五",
+  "n": 3,
+  "url": "/classics-ai-management/zhanguoce/kanra/",
+  "unit": "zhanguoce/c7/s6"
+ },
+ {
+  "slug": "kaidaigyo",
+  "story": "海大魚",
+  "title": "海大魚｜自前主義の前に、自分の「水」を確かめる",
+  "summary": "大魚も水を失えば蟻に食われる。自前の城より、自分を支える水を確かめる話です。",
+  "tags": [
+   "外部依存",
+   "投資判断",
+   "地域"
+  ],
+  "category": "意思決定",
+  "work": "zhanguoce",
+  "kicker": "戦国策 齊一",
+  "n": 1,
+  "url": "/classics-ai-management/zhanguoce/kaidaigyo/",
+  "unit": "zhanguoce/c8/s3"
+ },
+ {
+  "slug": "suki",
+  "story": "鄒忌、斉王を諷して諫めを納れしむ",
+  "title": "鄒忌、斉王を諷して諫めを納れしむ｜経営者に本当のことが届かない理由",
+  "summary": "鄒忌が、妻・妾・客が自分を美しいと言う理由を分析し、王の周りも同じだと説く。直言を賞する仕組みの話です。",
+  "tags": [
+   "情報の偏り",
+   "諫言",
+   "評価制度"
+  ],
+  "category": "情報とデータ",
+  "work": "zhanguoce",
+  "kicker": "戦国策 齊一",
+  "n": 4,
+  "url": "/classics-ai-management/zhanguoce/suki/",
+  "unit": "zhanguoce/c8/s12"
+ },
+ {
+  "slug": "dasoku",
+  "story": "蛇足",
+  "title": "蛇足｜十分な成果に、足を描き足さない",
+  "summary": "蛇に足を描いて酒を失う。成功した施策を足し続けて損をする危険の話です。",
+  "tags": [
+   "やりすぎ",
+   "撤退",
+   "施策の終わり方"
+  ],
+  "category": "業務改善",
+  "work": "zhanguoce",
+  "kicker": "戦国策 齊二",
+  "n": 1,
+  "url": "/classics-ai-management/zhanguoce/dasoku/",
+  "unit": "zhanguoce/c9/s4"
+ },
+ {
+  "slug": "junukon",
+  "story": "淳于髡、一日に七人を薦む",
+  "title": "淳于髡、一日に七人を薦む｜「人がいない」の前に、探す場所を疑う",
+  "summary": "士は少ないのではなく探す場所が違う。「物各々疇有り」。採用の探し場所の話です。",
+  "tags": [
+   "採用",
+   "人材",
+   "紹介"
+  ],
+  "category": "組織と人材",
+  "work": "zhanguoce",
+  "kicker": "戦国策 齊三",
+  "n": 1,
+  "url": "/classics-ai-management/zhanguoce/junukon/",
+  "unit": "zhanguoce/c10/s10"
+ },
+ {
+  "slug": "fuken",
+  "story": "馮諼と狡兎三窟",
+  "title": "馮諼と狡兎三窟｜取り立てより信頼を買う。そして三つの穴を掘る",
+  "summary": "証文を焼いて義を買い、三つの穴で主人を守る。顧客の信頼とリスク分散の話です。",
+  "tags": [
+   "顧客関係",
+   "リスク分散",
+   "長期"
+  ],
+  "category": "意思決定",
+  "work": "zhanguoce",
+  "kicker": "戦国策 齊四",
+  "n": 7,
+  "url": "/classics-ai-management/zhanguoce/fuken/",
+  "unit": "zhanguoce/c11/s1"
+ },
+ {
+  "slug": "gansoku",
+  "story": "顏斶「士貴く、王者貴からず」",
+  "title": "顏斶「士貴く、王者貴からず」｜専門人材は、厚遇だけでは引き留められない",
+  "summary": "顏斶が王に言い返し、士の貴さを論じ、厚遇を断って帰る。専門人材との対等な関係の話です。",
+  "tags": [
+   "専門人材",
+   "処遇",
+   "裁量"
+  ],
+  "category": "組織と人材",
+  "work": "zhanguoce",
+  "kicker": "戦国策 齊四",
+  "n": 6,
+  "url": "/classics-ai-management/zhanguoce/gansoku/",
+  "unit": "zhanguoce/c11/s5"
+ },
+ {
+  "slug": "choiko",
+  "story": "趙威后、斉の使者に問う",
+  "title": "趙威后、斉の使者に問う｜報告は、トップの機嫌からではなく、現場の実態から",
+  "summary": "作物、民、王の順に無事を問う。「民がなければ君はない」。報告の順序の話です。",
+  "tags": [
+   "報告",
+   "民本",
+   "評価"
+  ],
+  "category": "情報とデータ",
+  "work": "zhanguoce",
+  "kicker": "戦国策 齊四",
+  "n": 1,
+  "url": "/classics-ai-management/zhanguoce/choiko/",
+  "unit": "zhanguoce/c11/s7"
+ },
+ {
+  "slug": "koka-koi",
+  "story": "狐假虎威",
+  "title": "狐假虎威｜「本部が言っている」「ベンダーが推奨」の正体を見抜く",
+  "summary": "狐が虎の威を借りて百獣を従える。「本部の方針」「AIの推奨」など、借りた権威の正体を見抜く話です。",
+  "tags": [
+   "権威",
+   "情報の裏取り",
+   "意思決定"
+  ],
+  "category": "情報とデータ",
+  "work": "zhanguoce",
+  "kicker": "戦国策 楚一",
+  "n": 1,
+  "url": "/classics-ai-management/zhanguoce/koka-koi/",
+  "unit": "zhanguoce/c14/s3"
+ },
+ {
+  "slug": "boyo-horo",
+  "story": "亡羊補牢",
+  "title": "亡羊補牢｜失敗のあとに「もう遅い」と言わない",
+  "summary": "羊を失ってから囲いを直しても遅くない。失敗後の立て直しと、油断の構造の話です。",
+  "tags": [
+   "危機対応",
+   "再建",
+   "油断"
+  ],
+  "category": "意思決定",
+  "work": "zhanguoce",
+  "kicker": "戦国策 楚四",
+  "n": 7,
+  "url": "/classics-ai-management/zhanguoce/boyo-horo/",
+  "unit": "zhanguoce/c17/s4"
+ },
+ {
+  "slug": "ki-ensha",
+  "story": "驥、鹽車に服す",
+  "title": "驥、鹽車に服す｜塩車を引く名馬を、現場で見つける",
+  "summary": "老いた名馬が塩車を引く。伯楽に出会って鳴く。埋もれた人材を見つける側の話です。",
+  "tags": [
+   "人材発掘",
+   "配置",
+   "承認"
+  ],
+  "category": "組織と人材",
+  "work": "zhanguoce",
+  "kicker": "戦国策 楚四",
+  "n": 2,
+  "url": "/classics-ai-management/zhanguoce/ki-ensha/",
+  "unit": "zhanguoce/c17/s11"
+ },
+ {
+  "slug": "yojo",
+  "story": "豫讓「士は己を知る者の為に死す」",
+  "title": "豫讓「士は己を知る者の為に死す」｜人は、扱われたとおりに報いる",
+  "summary": "国士として扱われた豫讓が、国士として報いる。処遇と忠誠の話です。",
+  "tags": [
+   "処遇",
+   "忠誠",
+   "退職"
+  ],
+  "category": "組織と人材",
+  "work": "zhanguoce",
+  "kicker": "戦国策 趙一",
+  "n": 2,
+  "url": "/classics-ai-management/zhanguoce/yojo/",
+  "unit": "zhanguoce/c18/s4"
+ },
+ {
+  "slug": "shokusho",
+  "story": "觸讋、趙太后に説く",
+  "title": "觸讋、趙太后に説く｜後継者に、功を立てる機会を与える",
+  "summary": "老臣が、子を愛する話から太后を説き伏せる。後継者に功を立てさせる話です。",
+  "tags": [
+   "事業承継",
+   "説得",
+   "後継者"
+  ],
+  "category": "意思決定",
+  "work": "zhanguoce",
+  "kicker": "戦国策 趙四",
+  "n": 4,
+  "url": "/classics-ai-management/zhanguoce/shokusho/",
+  "unit": "zhanguoce/c21/s18"
+ },
+ {
+  "slug": "seimonhyo",
+  "story": "西門豹、鄴の令となる",
+  "title": "西門豹、鄴の令となる｜新任の責任者が、最初の三か月にすること",
+  "summary": "賢者に師事し、悪口も聞いて照らし合わせよ。「似て非なる者」。着任時の情報の集め方の話です。",
+  "tags": [
+   "着任",
+   "情報収集",
+   "参験"
+  ],
+  "category": "情報とデータ",
+  "work": "zhanguoce",
+  "kicker": "戦国策 魏一",
+  "n": 1,
+  "url": "/classics-ai-management/zhanguoce/seimonhyo/",
+  "unit": "zhanguoce/c22/s4"
+ },
+ {
+  "slug": "gujin",
+  "story": "文侯、虞人と狩りを期す",
+  "title": "文侯、虞人と狩りを期す｜小さな約束を、経営者が自分で守る",
+  "summary": "雨の中、身分の低い役人との約束の場所まで自分で行く。経営者の信の話です。",
+  "tags": [
+   "信頼",
+   "約束",
+   "リーダーシップ"
+  ],
+  "category": "組織と人材",
+  "work": "zhanguoce",
+  "kicker": "戦国策 魏一",
+  "n": 1,
+  "url": "/classics-ai-management/zhanguoce/gujin/",
+  "unit": "zhanguoce/c22/s5"
+ },
+ {
+  "slug": "sanninseiko",
+  "story": "三人成虎",
+  "title": "三人成虎｜三人が言えば虎になる。口コミと社内の噂",
+  "summary": "三人が言えば市場に虎がいることになる。噂と口コミを回数で判断しない話です。",
+  "tags": [
+   "口コミ",
+   "噂",
+   "情報の検証"
+  ],
+  "category": "情報とデータ",
+  "work": "zhanguoce",
+  "kicker": "戦国策 魏二",
+  "n": 1,
+  "url": "/classics-ai-management/zhanguoce/sanninseiko/",
+  "unit": "zhanguoce/c23/s17"
+ },
+ {
+  "slug": "nanen-hokutetsu",
+  "story": "南轅北轍",
+  "title": "南轅北轍｜よい馬、多い旅費、上手な御者が、目的地から遠ざける",
+  "summary": "楚へ行こうとして北へ向かう。手段が優れているほど目的から遠ざかる話です。",
+  "tags": [
+   "目的",
+   "手段",
+   "投資"
+  ],
+  "category": "意思決定",
+  "work": "zhanguoce",
+  "kicker": "戦国策 魏四",
+  "n": 1,
+  "url": "/classics-ai-management/zhanguoce/nanen-hokutetsu/",
+  "unit": "zhanguoce/c25/s18"
+ },
+ {
+  "slug": "tosho",
+  "story": "唐且、使命を辱めず",
+  "title": "唐且、使命を辱めず｜大手に「恩」を売られ、脅されたとき",
+  "summary": "秦王の「屍百万」に「屍二人、血五歩」で答える。小さい側が譲れないものを守る交渉の話です。",
+  "tags": [
+   "交渉",
+   "契約",
+   "小規模"
+  ],
+  "category": "意思決定",
+  "work": "zhanguoce",
+  "kicker": "戦国策 魏四",
+  "n": 1,
+  "url": "/classics-ai-management/zhanguoce/tosho/",
+  "unit": "zhanguoce/c25/s27"
+ },
+ {
+  "slug": "shinshi",
+  "story": "申子、従兄の任用を請う",
+  "title": "申子、従兄の任用を請う｜ルールを決めた人が、最初に破るとき",
+  "summary": "ルールを説いた申不害が縁故任用を頼み、自分の教えで退けられる。経営者の例外の話です。",
+  "tags": [
+   "ルール",
+   "縁故",
+   "一貫性"
+  ],
+  "category": "AIガバナンス",
+  "work": "zhanguoce",
+  "kicker": "戦国策 韓一",
+  "n": 1,
+  "url": "/classics-ai-management/zhanguoce/shinshi/",
+  "unit": "zhanguoce/c26/s4"
+ },
+ {
+  "slug": "kakukai",
+  "story": "郭隗「先づ隗より始めよ」",
+  "title": "郭隗「先づ隗より始めよ」｜人を集めたいなら、まず隗より始めよ",
+  "summary": "死んだ馬の骨を五百金で買う。外から人を集める前に、今いる人を厚遇する話です。",
+  "tags": [
+   "採用",
+   "処遇",
+   "評判"
+  ],
+  "category": "組織と人材",
+  "work": "zhanguoce",
+  "kicker": "戦国策 燕一",
+  "n": 4,
+  "url": "/classics-ai-management/zhanguoce/kakukai/",
+  "unit": "zhanguoce/c29/s11"
+ },
+ {
+  "slug": "gakki",
+  "story": "樂毅、燕の恵王に報ずる書",
+  "title": "樂毅、燕の恵王に報ずる書｜功臣が去るとき、去られるとき",
+  "summary": "疑われて去った楽毅が、王を非難せずに手紙を書く。代替わりと功臣の去り方の話です。",
+  "tags": [
+   "退職",
+   "事業承継",
+   "評判"
+  ],
+  "category": "組織と人材",
+  "work": "zhanguoce",
+  "kicker": "戦国策 燕二",
+  "n": 8,
+  "url": "/classics-ai-management/zhanguoce/gakki/",
+  "unit": "zhanguoce/c30/s9"
+ },
+ {
+  "slug": "itsubo",
+  "story": "鷸蚌の争い",
+  "title": "鷸蚌の争い｜隣の旅館と争って、漁師に取られる",
+  "summary": "しぎとはまぐりが争い、漁師に両方取られる。地域内の競争と第三者の利の話です。",
+  "tags": [
+   "地域連携",
+   "競争",
+   "価格"
+  ],
+  "category": "意思決定",
+  "work": "zhanguoce",
+  "kicker": "戦国策 燕二",
+  "n": 1,
+  "url": "/classics-ai-management/zhanguoce/itsubo/",
+  "unit": "zhanguoce/c30/s12"
+ },
+ {
+  "slug": "keika",
+  "story": "荊軻、秦王を刺す",
+  "title": "荊軻、秦王を刺す｜一発逆転の計画は、何を賭けているか",
+  "summary": "太子丹の一発逆転の計画。二人が先に死に、暗殺は失敗し、燕は滅ぶ。追い込まれた大勝負の話です。",
+  "tags": [
+   "リスク",
+   "計画",
+   "撤退"
+  ],
+  "category": "意思決定",
+  "work": "zhanguoce",
+  "kicker": "戦国策 燕三",
+  "n": 12,
+  "url": "/classics-ai-management/zhanguoce/keika/",
+  "unit": "zhanguoce/c31/s5"
+ },
+ {
+  "slug": "bokushi-koshu",
+  "story": "墨子、楚の宋攻めを止める",
+  "title": "墨子、楚の宋攻めを止める｜相手に先に判断を言わせてから、本題に入る",
+  "summary": "相手に判断を先に言わせ、それを相手自身に向ける。墨子の説得と「非攻」の話です。",
+  "tags": [
+   "説得",
+   "合理性",
+   "交渉"
+  ],
+  "category": "意思決定",
+  "work": "zhanguoce",
+  "kicker": "戦国策 宋衛",
+  "n": 3,
+  "url": "/classics-ai-management/zhanguoce/bokushi-koshu/",
+  "unit": "zhanguoce/c32/s2"
+ },
+ {
+  "slug": "eijin-shinpu",
+  "story": "衞人、新婦を迎う",
+  "title": "衞人、新婦を迎う｜正しい指摘を、言うべき時機に",
+  "summary": "新婦の三つの正しい指摘が笑われる。言うべき時機の話です。",
+  "tags": [
+   "着任",
+   "信頼",
+   "改善提案"
+  ],
+  "category": "組織と人材",
+  "work": "zhanguoce",
+  "kicker": "戦国策 宋衛",
+  "n": 1,
+  "url": "/classics-ai-management/zhanguoce/eijin-shinpu/",
+  "unit": "zhanguoce/c32/s15"
+ },
+ {
+  "slug": "yokan",
+  "story": "一杯の羊羹、国を亡ぼす",
+  "title": "一杯の羊羹、国を亡ぼす｜一杯の羊羹で、人が去る",
+  "summary": "羹を回し忘れて国を失い、一壺の飯で二人の士を得る。小さな不公平と承認の話です。",
+  "tags": [
+   "公平",
+   "承認",
+   "怨み"
+  ],
+  "category": "組織と人材",
+  "work": "zhanguoce",
+  "kicker": "戦国策 中山",
+  "n": 1,
+  "url": "/classics-ai-management/zhanguoce/yokan/",
+  "unit": "zhanguoce/c33/s8"
+ },
+ {
+  "slug": "zeinan",
+  "story": "說難",
+  "title": "說難｜経営者に意見を通す。経営者が意見を受ける",
+  "summary": "説得の難しさは相手の心を知ることにある。進言する部下と、受ける経営者の両方の話です。",
+  "tags": [
+   "進言",
+   "信頼",
+   "逆鱗"
+  ],
+  "category": "情報とデータ",
+  "work": "hanfeizi",
+  "kicker": "韓非子 說難",
+  "n": 6,
+  "url": "/classics-ai-management/hanfeizi/zeinan/",
+  "unit": "hanfeizi/c12"
+ },
+ {
+  "slug": "washi",
+  "story": "和氏",
+  "title": "和氏｜正しい改革ほど、周りに嫌われる",
+  "summary": "宝玉ですら両足を失ってから認められた。改革が周りに嫌われる構造の話です。",
+  "tags": [
+   "改革",
+   "抵抗",
+   "制度"
+  ],
+  "category": "AIガバナンス",
+  "work": "hanfeizi",
+  "kicker": "韓非子 和氏",
+  "n": 3,
+  "url": "/classics-ai-management/hanfeizi/washi/",
+  "unit": "hanfeizi/c13"
+ },
+ {
+  "slug": "baitoku-kanshu",
+  "story": "買櫝還珠",
+  "title": "買櫝還珠｜美しい提案書の、中身を買う",
+  "summary": "箱だけ買われた真珠。整った提案書の中身を見る話です。",
+  "tags": [
+   "提案書",
+   "評価",
+   "実用"
+  ],
+  "category": "情報とデータ",
+  "work": "hanfeizi",
+  "kicker": "韓非子 外儲說左上",
+  "n": 1,
+  "url": "/classics-ai-management/hanfeizi/baitoku-kanshu/",
+  "unit": "hanfeizi/c32/p8"
+ },
+ {
+  "slug": "kenba-kimi",
+  "story": "犬馬は難く、鬼魅は易し",
+  "title": "犬馬は難く、鬼魅は易し｜犬馬を描く。確かめられることを語る",
+  "summary": "犬馬は難しく、化け物は易しい。確かめられる言葉で語る話です。",
+  "tags": [
+   "KPI",
+   "検証",
+   "言葉"
+  ],
+  "category": "情報とデータ",
+  "work": "hanfeizi",
+  "kicker": "韓非子 外儲說左上",
+  "n": 1,
+  "url": "/classics-ai-management/hanfeizi/kenba-kimi/",
+  "unit": "hanfeizi/c32/p19"
+ },
+ {
+  "slug": "eisho-ensetsu",
+  "story": "郢書燕説",
+  "title": "郢書燕説｜結果がよくても、解釈が正しいとは限らない",
+  "summary": "誤記を深読みして国が治まる。結果と解釈の正しさを切り分ける話です。",
+  "tags": [
+   "検証",
+   "偶然",
+   "学習"
+  ],
+  "category": "意思決定",
+  "work": "hanfeizi",
+  "kicker": "韓非子 外儲說左上",
+  "n": 1,
+  "url": "/classics-ai-management/hanfeizi/eisho-ensetsu/",
+  "unit": "hanfeizi/c32/p43"
+ },
+ {
+  "slug": "teijin-bairi",
+  "story": "鄭人、履を買う",
+  "title": "鄭人、履を買う｜寸法より、目の前の足を信じる",
+  "summary": "寸法を家に忘れて履物を買えない。マニュアルと目の前の客の話です。",
+  "tags": [
+   "マニュアル",
+   "現場判断",
+   "柔軟性"
+  ],
+  "category": "業務改善",
+  "work": "hanfeizi",
+  "kicker": "韓非子 外儲說左上",
+  "n": 1,
+  "url": "/classics-ai-management/hanfeizi/teijin-bairi/",
+  "unit": "hanfeizi/c32/p44"
+ },
+ {
+  "slug": "kanko-shi",
+  "story": "齊の桓公、紫を好む",
+  "title": "齊の桓公、紫を好む｜経営者の好みが、現場を染める",
+  "summary": "君主の好みが国を染め、好みを変えると三日で変わる。経営者の影響力の話です。",
+  "tags": [
+   "経営者の影響",
+   "文化",
+   "率先"
+  ],
+  "category": "組織と人材",
+  "work": "hanfeizi",
+  "kicker": "韓非子 外儲說左上",
+  "n": 1,
+  "url": "/classics-ai-management/hanfeizi/kanko-shi/",
+  "unit": "hanfeizi/c32/p49"
+ },
+ {
+  "slug": "soshi-satsutei",
+  "story": "曾子、彘を殺す",
+  "title": "曾子、彘を殺す｜小さな約束を守ることが、賞罰を信じさせる",
+  "summary": "子どもへの約束のために豚を煮る。小さな約束と信賞必罰の話です。",
+  "tags": [
+   "信賞必罰",
+   "約束",
+   "教育"
+  ],
+  "category": "AIガバナンス",
+  "work": "hanfeizi",
+  "kicker": "韓非子 外儲說左上",
+  "n": 1,
+  "url": "/classics-ai-management/hanfeizi/soshi-satsutei/",
+  "unit": "hanfeizi/c32/p64"
+ },
+ {
+  "slug": "kumo-shaso",
+  "story": "狗猛酒酸と社鼠",
+  "title": "狗猛酒酸と社鼠｜酒はうまいのに売れない。店先の犬と社の鼠",
+  "summary": "猛犬のために酒が売れず、社の鼠は取れない。経営者を塞ぐ大臣と側近の話です。",
+  "tags": [
+   "情報遮断",
+   "側近",
+   "組織"
+  ],
+  "category": "情報とデータ",
+  "work": "hanfeizi",
+  "kicker": "韓非子 外儲說右上",
+  "n": 1,
+  "url": "/classics-ai-management/hanfeizi/kumo-shaso/",
+  "unit": "hanfeizi/c34/p29"
+ },
+ {
+  "slug": "mujun",
+  "story": "矛盾",
+  "title": "矛盾｜両立しない目標を、同時に掲げていないか",
+  "summary": "盾と矛は同時に成り立たない。両立しない目標と、聖人を待たない仕組みの話です。",
+  "tags": [
+   "目標設定",
+   "仕組み",
+   "聖人待ち"
+  ],
+  "category": "意思決定",
+  "work": "hanfeizi",
+  "kicker": "韓非子 難一",
+  "n": 1,
+  "url": "/classics-ai-management/hanfeizi/mujun/",
+  "unit": "hanfeizi/c36/p4"
+ },
+ {
+  "slug": "shushu",
+  "story": "守株",
+  "title": "守株｜切り株を見張る。過去の成功を待つ経営",
+  "summary": "切り株を見張って兎を待つ。過去の成功にしがみつく経営の話です。",
+  "tags": [
+   "変化",
+   "過去の成功",
+   "慣習"
+  ],
+  "category": "業務改善",
+  "work": "hanfeizi",
+  "kicker": "韓非子 五蠹",
+  "n": 1,
+  "url": "/classics-ai-management/hanfeizi/shushu/",
+  "unit": "hanfeizi/c49/p1"
+ }
+]

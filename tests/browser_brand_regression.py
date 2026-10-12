@@ -141,9 +141,9 @@ def main(destination):
             assert page.locator('#answer-status').evaluate('(e)=>getComputedStyle(e).fontWeight') == '400'
             capture('management-answer', width)
 
-        # All 19 shell consumers, including classic readers and EDINET pages.
+        # All 62 shell consumers, including classic readers (43 story pages added 2026-10) and EDINET pages.
         pages = [f for f in ROOT.rglob('*.html') if not {'.git', 'docs', 'tourism-market-signal'} & set(f.relative_to(ROOT).parts)]
-        assert len(pages) == 19
+        assert len(pages) == 65
         page.set_viewport_size({'width': 1440, 'height': 1000})
         for file in pages:
             visit(file.relative_to(ROOT).as_posix())
@@ -160,7 +160,7 @@ def main(destination):
         browser.close()
     server.shutdown()
     (destination / 'acceptance.json').write_text(json.dumps(results, ensure_ascii=False, indent=2), encoding='utf-8')
-    print(json.dumps({'scenarios': len(results)-1, 'all_shell_pages':19, 'console_errors':errors}))
+    print(json.dumps({'scenarios': len(results)-1, 'all_shell_pages':65, 'console_errors':errors}))
 
 
 if __name__ == '__main__':
