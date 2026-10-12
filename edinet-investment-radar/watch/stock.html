@@ -29,7 +29,8 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,Bl
 .badge{display:inline-block;border-radius:999px;padding:3px 9px;font-size:11px;font-weight:700;white-space:nowrap}
 .b-setup{background:#e8f0ff;color:#174da6}
 .b-status{background:#eef1f5;color:#3b4658}
-.st-STRENGTHENING,.st-CONFIRMED{background:#e7f7ef;color:#126345}
+.st-STRENGTHENING{background:#e7f7ef;color:#126345}
+.st-CONFIRMED{background:#d8f0ee;color:#0b5f58}
 .st-REACTED{background:#fff0d6;color:#8c5200}
 .st-BROKEN,.st-CLOSED{background:#fdecee;color:#9b2432}
 .top .b-setup{background:#dbe8ff}
@@ -84,7 +85,7 @@ th{color:var(--muted);font-weight:600;font-size:12px;border-top:0}
 </head>
 <body>
 <header class="top"><div class="shell">
-  <a id="back" href="index.html">← JPX400 Event Watch</a>
+  <a id="back" href="index.html">← EDINET投資レーダー</a>
   <div class="eyebrow">EDINET INVESTMENT RADAR</div>
   <h1 id="name">読み込み中…</h1>
   <div class="code" id="code"></div>
@@ -95,7 +96,7 @@ th{color:var(--muted);font-weight:600;font-size:12px;border-top:0}
   <div id="content" class="hidden">
 
   <section class="panel">
-    <h2>Radarが注目している理由</h2>
+    <h2>レーダーが注目している理由</h2>
     <div id="reasons"></div>
   </section>
 
@@ -113,7 +114,7 @@ th{color:var(--muted);font-weight:600;font-size:12px;border-top:0}
   </section>
 
   <section class="panel">
-    <h2>Price Setup</h2>
+    <h2>株価の形（Price Setup）</h2>
     <div id="setup"></div>
   </section>
 
@@ -123,8 +124,8 @@ th{color:var(--muted);font-weight:600;font-size:12px;border-top:0}
   </section>
 
   <section class="panel">
-    <h2>Radar成績</h2>
-    <p class="note">比較対象はTOPIX連動ETF（1306）を代理指標としたもので、TOPIX指数そのものではありません。</p>
+    <h2>監視開始後の成績</h2>
+    <p class="note">「市場平均」はTOPIX連動ETF（1306）を代理指標としたもので、TOPIX指数そのものではありません。</p>
     <div id="perf"></div>
   </section>
 
@@ -166,8 +167,10 @@ function pct(v,unit){if(!num(v))return '<span class="nil">—</span>';var s=(v>0
 function plain(v,d,unit){return num(v)?v.toFixed(d)+(unit||''):'—'}
 function yen(v){return num(v)?Math.round(v).toLocaleString('ja-JP')+'円':'—'}
 function dstr(s){if(!s)return '—';var m=/^(\d{4})-(\d{2})-(\d{2})/.exec(s);return m?esc(m[1]+'/'+m[2]+'/'+m[3]):esc(s)}
-var SETUP={BREAKOUT:'BREAKOUT WATCH',RECOVERY:'RECOVERY WATCH',TREND:'TREND WATCH'};
-var STATUS_JA={CANDIDATE:'候補',WATCH:'監視中',STRENGTHENING:'強まっている',CONFIRMED:'値動きが確認できた',REACTED:'すでに反応済み',BROKEN:'株価の形が崩れた',CLOSED:'監視終了'};
+var SETUP={BREAKOUT:'高値更新型',RECOVERY:'反発型',TREND:'上昇継続型'};
+var SETUP_EN={BREAKOUT:'BREAKOUT WATCH',RECOVERY:'RECOVERY WATCH',TREND:'TREND WATCH'};
+var STATUS_JA={CANDIDATE:'候補',WATCH:'監視中',STRENGTHENING:'強まっている',CONFIRMED:'値動き確認済み',REACTED:'反応済み',BROKEN:'形が崩れた',CLOSED:'監視終了'};
+function ja(s){s=String(s==null?'':s);if(s==='60日レンジ上位0%')return '60日レンジの最上位（高値圏）';return s.replace(/Price Setup/g,'株価の形').replace(/TOPIX連動ETF比/g,'市場平均比').replace(/TOPIX連動ETF/g,'市場平均').replace(/^20日線上向き$/,'20日線が上向き')}
 var CLOSE_JA={NO_SETUP:'株価の形が整わないまま期限切れ',BROKEN:'株価の形が崩れた',EXPIRED:'監視期間の終了',UNIVERSE_EXIT:'JPX400から除外'};
 function safeUrl(u){return typeof u==='string'&&/^https:\/\/[A-Za-z0-9.\-]+\//.test(u)?u:null}
 function fail(t){$('name').textContent='表示できません';var b=$('banner');b.textContent=t;b.className='banner show'}
@@ -235,23 +238,22 @@ function mountChart(sym,tl,ep){
 
 function render(d){
   var co=d.company,ep=d.episode||{};
-  document.title=(co.name||code)+'（'+code+'） | JPX400 Event Watch';
+  document.title=(co.name||code)+'（'+code+'）｜EDINET投資レーダー｜宿泊DXラボ';
   $('name').textContent=co.name||code;
   $('code').textContent='証券コード '+(co.securityCode||code);
-  $('headTags').innerHTML=(ep.setupType?'<span class="badge b-setup">'+esc(SETUP[ep.setupType]||ep.setupType)+'</span>':'')+
-    (ep.status?'<span class="badge b-status st-'+esc(ep.status)+'" title="'+esc(STATUS_JA[ep.status]||'')+'">'+esc(ep.status)+'</span>':'')+
-    (ep.status&&STATUS_JA[ep.status]?'<span style="font-size:12px;color:#cfdae8;align-self:center">'+esc(STATUS_JA[ep.status])+'</span>':'')+
+  $('headTags').innerHTML=(ep.setupType?'<span class="badge b-setup" title="'+esc(SETUP_EN[ep.setupType]||ep.setupType)+'">'+esc(SETUP[ep.setupType]||ep.setupType)+'</span>':'')+
+    (ep.status?'<span class="badge b-status st-'+esc(ep.status)+'" title="'+esc(ep.status)+'">'+esc(STATUS_JA[ep.status]||ep.status)+'</span>':'')+
     (ep.overextended?'<span class="badge" style="background:#fff0d6;color:#8c5200">すでに大きく動いた後</span>':'');
   var rs=(d.reasons||[]).slice(0,4);
-  $('reasons').innerHTML=rs.length?'<ul class="plain">'+rs.map(function(r){return '<li>'+esc(r)+'</li>'}).join('')+'</ul>':'<div class="empty">表示できる理由はありません。</div>';
+  $('reasons').innerHTML=rs.length?'<ul class="plain">'+rs.map(function(r){return '<li>'+esc(ja(r))+'</li>'}).join('')+'</ul>':'<div class="empty">表示できる理由はありません。</div>';
   var sym=/^[A-Z]{2,10}:[0-9A-Z]{3,6}$/.test(co.tradingViewSymbol||'')?co.tradingViewSymbol:'TSE:'+code;
 
   var tl=d.timeline||[];
   $('timeline').innerHTML=tl.length?'<ul class="tl">'+tl.map(function(t){
     var u=safeUrl(t.sourceUrl);
-    return '<li class="'+esc(t.kind)+'"><span class="d">'+dstr(t.date)+'</span><span class="k">'+esc(t.label)+'</span>'+
+    return '<li class="'+esc(t.kind)+'"><span class="d">'+dstr(t.date)+'</span><span class="k">'+esc(ja(t.label))+'</span>'+
      (u?'<a href="'+esc(u)+'" target="_blank" rel="noopener nofollow">EDINET</a>':'')+
-     (t.detail?'<div class="dt">'+esc(t.detail)+'</div>':'')+'</li>'}).join('')+'</ul>':'<div class="empty">イベントはまだありません。</div>';
+     (t.detail?'<div class="dt">'+esc(ja(t.detail))+'</div>':'')+'</li>'}).join('')+'</ul>':'<div class="empty">イベントはまだありません。</div>';
 
   var ps=d.priceSetup;
   if(ps){
@@ -263,10 +265,10 @@ function render(d){
      '<div class="small">'+
       '<span>MA20 <b>'+plain(ps.ma20,0)+'</b></span><span>MA60 <b>'+plain(ps.ma60,0)+'</b></span><span>MA200 <b>'+plain(ps.ma200,0)+'</b></span>'+
       '<span>60日レンジ位置 <b>'+rp+'</b></span><span>52週高値まで <b>'+dh+'</b></span>'+
-      '<span>ETF比(20日) <b>'+pct(ps.rel20,'pt')+'</b></span><span>ETF比(60日) <b>'+pct(ps.rel60,'pt')+'</b></span>'+
+      '<span>市場平均比(20日) <b>'+pct(ps.rel20,'pt')+'</b></span><span>市場平均比(60日) <b>'+pct(ps.rel60,'pt')+'</b></span>'+
       '<span>出来高20日比 <b>'+plain(ps.volumeRatio20,1,'倍')+'</b></span></div>'+
      '<p class="note" style="margin-top:10px">基準日 '+dstr(ps.asOf)+'（調整後株価ベース）</p>';
-  }else $('setup').innerHTML='<div class="empty">Price Setup の情報はありません。</div>';
+  }else $('setup').innerHTML='<div class="empty">株価の形の情報はありません。</div>';
 
   var m=d.margin;
   if(m){
@@ -285,17 +287,17 @@ function render(d){
       return '<tr><td>'+k[1]+'</td><td>'+pct(x.stockReturn)+'</td><td>'+pct(x.benchReturn)+'</td><td>'+pct(x.excessReturn,'pt')+'</td></tr>';
     }).join('');
     $('perf').innerHTML='<div class="perf">'+
-     '<div><span>Radar初登場</span><b>'+dstr(p.initialDate)+'</b><span>'+yen(p.initialPrice)+'</span></div>'+
+     '<div><span>監視開始</span><b>'+dstr(p.initialDate)+'</b><span>'+yen(p.initialPrice)+'</span></div>'+
      '<div><span>現在</span><b>'+yen(p.currentPrice)+'</b></div>'+
      '<div><span>株価騰落率</span><b>'+pct(p.stockReturn)+'</b></div>'+
-     '<div><span>TOPIX連動ETF（1306）</span><b>'+pct(p.benchReturn)+'</b></div>'+
-     '<div><span>超過</span><b>'+pct(p.excessReturn,'pt')+'</b></div></div>'+
-     '<table><thead><tr><th></th><th>株価</th><th>ETF(1306)</th><th>超過</th></tr></thead><tbody>'+rows+'</tbody></table>';
+     '<div><span>市場平均（TOPIX連動ETF）</span><b>'+pct(p.benchReturn)+'</b></div>'+
+     '<div><span>市場平均との差</span><b>'+pct(p.excessReturn,'pt')+'</b></div></div>'+
+     '<table><thead><tr><th></th><th>株価</th><th>市場平均</th><th>差</th></tr></thead><tbody>'+rows+'</tbody></table>';
   }else $('perf').innerHTML='<div class="empty">成績はまだありません。</div>';
 
   var pe=d.pastEpisodes||[];
   if(pe.length)$('past').innerHTML='<ul class="past">'+pe.map(function(e){
-    return '<li>'+dstr(e.startedAt)+' 〜 '+dstr(e.closedAt)+' '+(e.setupType?'<span class="badge b-setup">'+esc(SETUP[e.setupType]||e.setupType)+'</span>':'')+
+    return '<li>'+dstr(e.startedAt)+' 〜 '+dstr(e.closedAt)+' '+(e.setupType?'<span class="badge b-setup" title="'+esc(SETUP_EN[e.setupType]||e.setupType)+'">'+esc(SETUP[e.setupType]||e.setupType)+'</span>':'')+
      '<small>終了理由: '+esc(CLOSE_JA[e.closeReason]||e.closeReason||'—')+'</small></li>'}).join('')+'</ul>';
   else $('pastPanel').classList.add('hidden');
 
