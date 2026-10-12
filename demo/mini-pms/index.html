@@ -1,11 +1,27 @@
+---
+# Built by Jekyll: the analytics tags and the demo bar come from _includes/.
+---
 <!DOCTYPE html>
 <html lang="ja">
 <head>
+{% include lab-analytics.html %}
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>簡易PMSデモ｜宿泊DXラボ</title>
 <meta name="description" content="予約登録・部屋割り・客室状況表・当日台帳までを、架空ホテル（全20室）を舞台にブラウザだけで体験できる簡易PMSデモです。">
 <link rel="canonical" href="https://lab.ugatta-llc.com/demo/mini-pms/">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="宿泊DXラボ">
+<meta property="og:title" content="簡易PMSデモ｜宿泊DXラボ">
+<meta property="og:description" content="予約登録・部屋割り・客室状況表・当日台帳までを、架空ホテル（全20室）を舞台にブラウザだけで体験できる簡易PMSデモです。">
+<meta property="og:url" content="https://lab.ugatta-llc.com/demo/mini-pms/">
+<meta property="og:image" content="https://lab.ugatta-llc.com/images/og-lab.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="簡易PMSデモ｜宿泊DXラボ">
+<meta name="twitter:description" content="予約登録・部屋割り・客室状況表・当日台帳までを、架空ホテル（全20室）を舞台にブラウザだけで体験できる簡易PMSデモです。">
+<meta name="twitter:image" content="https://lab.ugatta-llc.com/images/og-lab.jpg">
+<link rel="stylesheet" href="/css/demo-bar.css?v=20261012demo">
 <link rel="icon" type="image/png" href="/favicon.png">
 <style>
 /* Layout: 4-tab operations console — 予約 / 部屋割りグリッド / 客室状況表 / 当日台帳 */
@@ -119,7 +135,8 @@ footer.note{max-width:1100px;margin:14px auto 0;color:var(--muted);font-size:11p
 @media (max-width:640px){ .res-table .hide-sm{display:none} }
 </style>
 </head>
-<body>
+<body style="--lab-demo-bar-bleed:16px">
+{% include demo-bar.html %}
 
 
 <header class="app">

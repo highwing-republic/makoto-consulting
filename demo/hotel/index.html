@@ -1,11 +1,27 @@
+---
+# Built by Jekyll: the analytics tags and the demo bar come from _includes/.
+---
 <!DOCTYPE html>
 <html lang="ja">
 <head>
+{% include lab-analytics.html %}
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>多言語旅館サイトデモ｜宿泊DXラボ</title>
 <meta name="description" content="架空の宿「ホテル翠蓮」の多言語公式サイトデモ(日英中韓)。予約エンジンデモ・簡易PMSデモと連動し、海外ゲストの予約動線まで体験できます。">
 <link rel="canonical" href="https://lab.ugatta-llc.com/demo/hotel/">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="宿泊DXラボ">
+<meta property="og:title" content="多言語旅館サイトデモ｜宿泊DXラボ">
+<meta property="og:description" content="架空の宿「ホテル翠蓮」の多言語公式サイトデモ(日英中韓)。予約エンジンデモ・簡易PMSデモと連動し、海外ゲストの予約動線まで体験できます。">
+<meta property="og:url" content="https://lab.ugatta-llc.com/demo/hotel/">
+<meta property="og:image" content="https://lab.ugatta-llc.com/images/og-lab.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="多言語旅館サイトデモ｜宿泊DXラボ">
+<meta name="twitter:description" content="架空の宿「ホテル翠蓮」の多言語公式サイトデモ(日英中韓)。予約エンジンデモ・簡易PMSデモと連動し、海外ゲストの予約動線まで体験できます。">
+<meta name="twitter:image" content="https://lab.ugatta-llc.com/images/og-lab.jpg">
+<link rel="stylesheet" href="/css/demo-bar.css?v=20261012demo">
 <link rel="icon" type="image/png" href="/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -116,6 +132,7 @@ footer .links{margin-top:8px}
 </style>
 </head>
 <body>
+{% include demo-bar.html %}
 <div class="demo-band" data-i18n="band">これは宿泊DXラボの体験デモです。実在しない架空の宿で、実際の予約はできません。</div>
 
 <div class="hdr">

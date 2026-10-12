@@ -1,0 +1,27 @@
+/* Thin bar above every standalone demo: a way back to the Lab and a reminder
+   that nothing on the page is real. Demos keep their own look below it. The
+   bar bleeds past the body's horizontal padding by --lab-demo-bar-bleed. */
+.lab-demo-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px 16px;
+  margin: 0 calc(-1 * var(--lab-demo-bar-bleed, 0px));
+  padding: 7px max(16px, var(--lab-demo-bar-bleed, 0px));
+  background: #17324d;
+  color: #d9e3ec;
+  font-family: "Noto Sans JP", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", Meiryo, sans-serif;
+  font-size: 12px;
+  line-height: 1.6;
+  letter-spacing: .04em;
+}
+.lab-demo-bar__back {
+  color: #fff;
+  font-weight: 500;
+  text-decoration: none;
+}
+.lab-demo-bar__back:hover,
+.lab-demo-bar__back:focus-visible { text-decoration: underline; }
+.lab-demo-bar__note { color: #d9e3ec; }
+@media print { .lab-demo-bar { display: none; } }

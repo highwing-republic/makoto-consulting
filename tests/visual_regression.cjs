@@ -26,6 +26,7 @@ const WIDTHS = { pc: [1440, 900], tablet: [768, 1024], m390: [390, 844], m360: [
 // captured text covers each tool's calculated result, not only its empty form.
 const PAGES = [
   '/',
+  '/404.html',
   '/dx-diagnosis.html',
   '/inbound-analysis.html',
   '/inbound-analysis.html?pref=nagano',
