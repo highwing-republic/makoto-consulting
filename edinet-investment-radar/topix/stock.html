@@ -238,7 +238,7 @@ function mountChart(sym,tl,ep){
 
 function render(d){
   var co=d.company,ep=d.episode||{};
-  document.title=(co.name||code)+'（'+code+'）｜EDINET投資レーダー｜宿泊DXラボ';
+  document.title=(co.name||code)+'（'+code+'）｜EDINET投資レーダー（新TOPIX）｜宿泊DXラボ';
   $('name').textContent=co.name||code;
   $('code').textContent='証券コード '+(co.securityCode||code);
   $('headTags').innerHTML=(ep.setupType?'<span class="badge b-setup" title="'+esc(SETUP_EN[ep.setupType]||ep.setupType)+'">'+esc(SETUP[ep.setupType]||ep.setupType)+'</span>':'')+
