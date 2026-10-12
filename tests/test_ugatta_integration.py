@@ -25,8 +25,7 @@ def tracked_public_html() -> list[str]:
     return [
         path
         for path in result.stdout.splitlines()
-        # Demo pages are standalone mock sites and do not load the Lab tags yet.
-        if not path.startswith(("_includes/", "demo/", "docs/", "tourism-market-signal/"))
+        if not path.startswith(("_includes/", "docs/", "tourism-market-signal/"))
     ]
 
 
@@ -36,7 +35,7 @@ def read(relative: str) -> str:
 
 def test_all_public_pages_send_to_both_google_tags_once() -> None:
     pages = tracked_public_html()
-    assert len(pages) == 62
+    assert len(pages) == 66
     for path in pages:
         content = read(path)
         assert content.count(LAB_CONFIG) == 1, path
@@ -60,8 +59,8 @@ def test_fallback_footers_link_back_to_ugatta() -> None:
         fallback_pages.append(path)
         assert "運営：合同会社UGATTA</small>" not in content, path
         assert UGATTA_LINK in content, path
-    # Every Lab page now carries the shared footer from _includes/.
-    assert len(fallback_pages) == len(tracked_public_html()) == 62
+    # Every Lab page except the standalone demos carries the shared footer from _includes/.
+    assert len(fallback_pages) == 63
 
 
 def test_ugatta_link_has_visible_link_styling() -> None:
@@ -87,7 +86,7 @@ def test_site_shell_cache_busters_are_consistent() -> None:
         assert css_match, path
         js_versions.add(js_match.group(1))
         css_versions.add(css_match.group(1))
-    assert len(shell_pages) == 62
+    assert len(shell_pages) == 63
     assert js_versions == {"20261012shell2"}
     assert css_versions == {"20261003font"}
 
