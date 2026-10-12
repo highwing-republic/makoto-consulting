@@ -1,3 +1,6 @@
+---
+# Built by Jekyll: the shared header and footer come from _includes/.
+---
 <!doctype html>
 <html lang="ja">
 <head>
@@ -36,19 +39,11 @@
   }
   </script>
   <link rel="stylesheet" href="/css/site-shell.css?v=20261003font">
-  <script src="/js/site-shell.js?v=20261003font" defer></script>
+  <script src="/js/site-shell.js?v=20261012shell2" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">本文へ移動</a>
-  <header class="site-header">
-    <div class="container header-inner">
-      <a class="brand" href="/"><strong>宿泊DXラボ</strong><small>データを見る。試す。考える。</small></a>
-      <button class="menu-toggle" type="button" aria-controls="global-nav" aria-expanded="false" aria-label="メニューを開く" data-menu-toggle><span></span><span></span><span></span></button>
-      <nav class="global-nav" id="global-nav" aria-label="メインナビゲーション" data-nav>
-        <ul><li><a href="/#analysis-tools">分析・ツール</a></li><li><a href="/#about-lab">宿泊DXラボとは</a></li></ul>
-      </nav>
-    </div>
-  </header>
+  {% include site-header.html %}
 
   <main id="main">
     <nav class="breadcrumb container" aria-label="パンくずリスト"><ol><li><a href="/">ホーム</a></li><li aria-current="page">ラボノート｜古典 × AI</li></ol></nav>
@@ -138,7 +133,7 @@
 
   </main>
 
-  <footer class="site-footer"><div class="container footer-top"><div class="footer-brand-copy"><a class="brand" href="/"><strong style="color:#fff">宿泊DXラボ</strong><small>データを見る。試す。考える。</small></a><p class="footer-lead">宿泊・観光について、データ・AI・DXを使って分析・実験するラボです。</p><small>運営：<a href="https://ugatta-llc.com/">合同会社UGATTA</a></small></div><nav class="footer-links" aria-label="フッターナビゲーション"><a href="/#analysis-tools">分析・ツール</a><a href="/#about-lab">宿泊DXラボについて</a><a data-analytics-event="consultation_click" data-tool-id="footer" href="https://forms.gle/yjinqFdntoXhTmgk7" target="_blank" rel="noopener noreferrer">お問い合わせ ↗</a></nav></div><div class="container footer-bottom"><span>© 2026 宿泊DXラボ</span><a class="footer-note-link" href="/classics-ai-management/">ラボノート</a></div></footer>
+  {% include site-footer.html %}
 <script src="/js/site.js?v=20260909c" defer></script>
   <script src="/classics-ai-management/classics.js" defer></script>
 </body>

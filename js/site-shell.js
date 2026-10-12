@@ -15,6 +15,7 @@
             <li><a href="/#regional-tools">地域を分析する</a></li>
             <li><a href="/#market-tools">市場を見る</a></li>
             <li><a href="/#ai-tools">AIと考える</a></li>
+            <li><a href="/#demo-tools">試してみる</a></li>
             <li><a href="/#about-lab">About</a></li>
           </ul>
         </nav>
@@ -61,9 +62,13 @@
     skipLink.href = '#main';
     skipLink.textContent = '本文へ移動';
 
+    // Pages built from _includes/ already carry the shared header and footer;
+    // only older pages get theirs replaced here.
     const newHeader = elementFromHtml(shellHeader);
     const currentHeader = document.querySelector('.site-header') || document.querySelector('body > header:not(.top)');
-    if (currentHeader) {
+    if (currentHeader && currentHeader.dataset.shell === 'static') {
+      // Keep the header rendered at build time.
+    } else if (currentHeader) {
       currentHeader.replaceWith(newHeader);
     } else {
       const pageHero = document.querySelector('body > header.top');
@@ -74,6 +79,7 @@
 
     const newFooter = elementFromHtml(shellFooter);
     const currentSiteFooter = document.querySelector('.site-footer');
+    if (currentSiteFooter && currentSiteFooter.dataset.shell === 'static') return;
     if (currentSiteFooter) {
       currentSiteFooter.replaceWith(newFooter);
       return;

@@ -4,6 +4,8 @@ import re
 import subprocess
 from pathlib import Path
 
+from site_pages import rendered
+
 
 ROOT = Path(__file__).resolve().parents[1]
 LAB_CONFIG = "gtag('config','G-QS9HSHCY33')"
@@ -24,12 +26,12 @@ def tracked_public_html() -> list[str]:
         path
         for path in result.stdout.splitlines()
         # Demo pages are standalone mock sites and do not load the Lab tags yet.
-        if not path.startswith(("demo/", "docs/", "tourism-market-signal/"))
+        if not path.startswith(("_includes/", "demo/", "docs/", "tourism-market-signal/"))
     ]
 
 
 def read(relative: str) -> str:
-    return (ROOT / relative).read_text(encoding="utf-8")
+    return rendered(relative)
 
 
 def test_all_public_pages_send_to_both_google_tags_once() -> None:
@@ -58,7 +60,8 @@ def test_fallback_footers_link_back_to_ugatta() -> None:
         fallback_pages.append(path)
         assert "運営：合同会社UGATTA</small>" not in content, path
         assert UGATTA_LINK in content, path
-    assert len(fallback_pages) == 60
+    # Every Lab page now carries the shared footer from _includes/.
+    assert len(fallback_pages) == len(tracked_public_html()) == 62
 
 
 def test_ugatta_link_has_visible_link_styling() -> None:
@@ -85,7 +88,7 @@ def test_site_shell_cache_busters_are_consistent() -> None:
         js_versions.add(js_match.group(1))
         css_versions.add(css_match.group(1))
     assert len(shell_pages) == 62
-    assert js_versions == {"20261003font"}
+    assert js_versions == {"20261012shell2"}
     assert css_versions == {"20261003font"}
 
 
