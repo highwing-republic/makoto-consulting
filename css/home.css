@@ -3,7 +3,7 @@
    .container and .button, which this file restyles for the home page only.
    Layout: one centred 1180px column; hero in two equal columns; four featured
    cards in a row, then compact cards grouped by purpose. */
-.home-page{--home-mint:rgba(154,214,206,.26);--home-sky:rgba(120,200,210,.14);--home-logo-ink:#014840;--home-display:"Zen Kaku Gothic New",var(--lab-font-sans);--home-logo:"Dela Gothic One",var(--lab-font-sans)}
+.home-page{--home-mint:rgba(154,214,206,.26);--home-sky:rgba(120,200,210,.14);--home-logo-ink:#082a4b;--home-display:"Zen Kaku Gothic New",var(--lab-font-sans);--home-logo:"Dela Gothic One",var(--lab-font-sans)}
 .home-page .container{width:min(calc(100% - 64px),1180px)}
 .home-page h1,.home-page h2,.home-page h3,.home-page h4{margin:0}
 .home-page .title-phrase{display:inline-block}
@@ -27,11 +27,11 @@
 .home-hero__title em{font-style:normal;color:var(--lab-teal);background:linear-gradient(90deg,var(--lab-teal),#2f8b9b 70%,#0f5a45);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
 .home-hero__lead{max-width:30em;margin:26px 0 0;color:var(--lab-ink-soft);font-size:16px;line-height:2;letter-spacing:.03em}
 .home-hero__actions{display:flex;flex-wrap:wrap;gap:14px;margin-top:32px}
-/* Logo block: the noren part of the supplied artwork is framed in CSS; the
-   name and tagline below it are live text in the dot font. */
+/* Logo block: the supplied noren artwork (transparent PNG) shown as is; the
+   name and tagline below it are live text. */
 .home-hero__visual{display:flex;flex-direction:column;align-items:center;width:100%;max-width:500px;justify-self:center}
-.home-hero__noren{position:relative;width:100%;aspect-ratio:1.47;overflow:hidden;mix-blend-mode:multiply}
-.home-hero__logo{position:absolute;width:143.3%;max-width:none;height:auto;left:-21.66%;top:-27.54%}
+.home-hero__noren{width:100%;padding:2% 3%}
+.home-hero__logo{display:block;width:100%;height:auto}
 /* Logo name in Dela Gothic One (single weight, already black; no synthetic
    bold); the tagline mirrors the artwork in Noto Sans JP. */
 .home-hero__logotype{margin:10px 0 0;font-family:var(--home-logo);font-weight:400;font-synthesis:none;font-size:clamp(38px,5vw,62px);line-height:1.15;letter-spacing:.02em;color:var(--home-logo-ink)}
