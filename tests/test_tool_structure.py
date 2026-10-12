@@ -44,6 +44,7 @@ def test_converted_pages_use_the_three_standard_blocks():
     pages = converted_pages()
     assert [path.name for path in pages] == [
         "dx-necessity-analysis.html",
+        "inbound-analysis.html",
         "supply-demand-gap-analysis.html",
         "tourism-pressure-analysis.html",
     ]
@@ -90,15 +91,23 @@ def test_converted_pages_use_the_three_standard_blocks():
         assert main.find_all("section", recursive=False)[-1] is related or main.select_one(".tool-related") is related
 
 
-def test_cross_analysis_pages_load_the_model_before_the_view():
-    for name in ("dx-necessity-analysis.html", "supply-demand-gap-analysis.html", "tourism-pressure-analysis.html"):
+PAGE_SCRIPTS = {
+    "dx-necessity-analysis.html": ("cross-analysis", "CrossAnalysisModel"),
+    "supply-demand-gap-analysis.html": ("cross-analysis", "CrossAnalysisModel"),
+    "tourism-pressure-analysis.html": ("cross-analysis", "CrossAnalysisModel"),
+    "inbound-analysis.html": ("inbound-analysis", "InboundAnalysisModel"),
+}
+
+
+def test_tool_pages_load_a_pure_model_before_the_view():
+    for name, (script, global_name) in PAGE_SCRIPTS.items():
         html = BeautifulSoup(rendered(ROOT / name), "html.parser")
-        scripts = [script["src"] for script in html.find_all("script", src=True)]
-        model = next(index for index, src in enumerate(scripts) if src.startswith("js/cross-analysis-model.js"))
-        view = next(index for index, src in enumerate(scripts) if src.startswith("js/cross-analysis.js"))
+        scripts = [tag["src"] for tag in html.find_all("script", src=True)]
+        model = next(index for index, src in enumerate(scripts) if src.startswith(f"js/{script}-model.js"))
+        view = next(index for index, src in enumerate(scripts) if src.startswith(f"js/{script}.js"))
         assert model < view, name
-    view = (ROOT / "js" / "cross-analysis.js").read_text(encoding="utf-8")
-    model = (ROOT / "js" / "cross-analysis-model.js").read_text(encoding="utf-8")
-    body = model.split("'use strict';", 1)[1]
-    assert "document" not in body and "fetch(" not in body and "window" not in body
-    assert "globalThis.CrossAnalysisModel" in view
+        view_source = (ROOT / "js" / f"{script}.js").read_text(encoding="utf-8")
+        model_source = (ROOT / "js" / f"{script}-model.js").read_text(encoding="utf-8")
+        body = model_source.split("'use strict';", 1)[1]
+        assert "document" not in body and "fetch(" not in body and "window" not in body, script
+        assert f"globalThis.{global_name}" in view_source, script
