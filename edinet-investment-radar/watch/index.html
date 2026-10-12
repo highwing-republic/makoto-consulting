@@ -29,6 +29,8 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,Bl
 .top h1{font-size:clamp(24px,5vw,38px);margin:6px 0 8px;line-height:1.2}
 .top .lead{margin:0 0 10px;color:#e6edf6;font-size:15px;max-width:720px;line-height:1.7}
 .top p{margin:0;color:#cfdae8;font-size:13px}
+.top .sibling{margin-top:8px}
+.top .sibling a{color:#9bc2f5;font-weight:600}
 .main{padding:20px 0 48px}
 .panel{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:18px;margin-top:16px}
 .panel h2{margin:0 0 4px;font-size:18px}
@@ -125,8 +127,9 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,Bl
   <a class="lab-back" href="/#market-tools">← 宿泊DXラボ</a>
   <div class="eyebrow">EDINET INVESTMENT RADAR ／ JPX400 EVENT WATCH</div>
   <h1>EDINET投資レーダー</h1>
-  <p class="lead">大株主が株式の5%超を新規取得・買い増しした企業（金融庁EDINETの大量保有報告）のうち、株価も上向きの銘柄だけを、JPX日経400から毎日自動で絞り込みます。</p>
+  <p class="lead">大株主が株式の5%超を新規取得・買い増しした企業（金融庁EDINETの大量保有報告）のうち、株価も上向きの銘柄だけを、<span class="u-label">JPX日経400</span>から毎日自動で絞り込みます。</p>
   <p id="updated">読み込み中…</p>
+  <p class="sibling">対象を変える: <a href="../topix/">新TOPIX 版はこちら</a></p>
 </div></header>
 <main class="main shell">
   <div id="banner" class="banner" role="status"></div>
@@ -154,10 +157,10 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,Bl
         <dt>60日レンジ上位N%</dt><dd>直近60営業日の高値〜安値の中で、今の株価が上からN%の位置にあることを示します。0%に近いほど高値圏です。</dd>
         <dt>pt買い増し</dt><dd>保有割合の増え幅です。例えば 6.6%→7.7% なら 1.1pt の買い増しです。</dd>
         <dt>市場平均との差</dt><dd>同じ期間のTOPIX連動ETF（1306）の騰落率との差です。プラスなら市場平均より強く動いたことを意味します。</dd>
-        <dt>順位の決め方</dt><dd>大量保有報告の内容（新規取得・買い増しの大きさや回数）と株価の形の強さをもとに、機械的に並べています。人の判断は入っていません。</dd>
+        <dt>順位の決め方</dt><dd>大量保有報告の内容（新規取得・買い増しの大きさや回数。日数が経つほど重みは下がります）、株価の形の強さ、状態（値動きが確認できた・強まっている）、直近5営業日の改善、信用買残の減少を加点し、すでに大きく動いた後の銘柄は減点して、機械的に並べています。月のランキングは月内の追加の買い増しと形の改善も加点します。人の判断は入っていません。</dd>
       </dl>
     </details>
-    <p class="scope">宿泊・観光に限らず、JPX日経400の全銘柄が対象です。観光関連の銘柄に絞って見たい方は <a href="/report.html">観光株シグナル</a> をご覧ください。</p>
+    <p class="scope">宿泊・観光に限らず、<span class="u-label">JPX日経400</span>の全銘柄が対象です。観光関連の銘柄に絞って見たい方は <a href="/report.html">観光株シグナル</a> をご覧ください。</p>
   </section>
 
   <section class="panel">
@@ -272,19 +275,24 @@ function changesHtml(list){
        link(x)+' '+setupBadge(x.setupType)+(x.reason?'<span class="r">'+esc(ja(x.reason))+'</span>':'')+'</li>'}).join('')+'</ul></div>';
   }).join('');
 }
-var SRCJA={edinet:'EDINET（大量保有報告）',prices:'株価',jpx400:'JPX400 構成銘柄',margin:'信用需給（補助情報）'};
+var SRCJA={edinet:'EDINET（大量保有報告）',prices:'株価',jpx400:'JPX日経400 構成銘柄',topix:'新TOPIX 構成銘柄',margin:'信用需給（補助情報）'};
+var DEFAULT_UNIVERSE={key:'jpx400',label:'JPX日経400',note:null};
+function universeOf(s){var u=s&&s.universe;return (u&&u.key&&u.label)?u:DEFAULT_UNIVERSE}
+function universeLabel(u){return u.label+(u.note?'（'+u.note+'）':'')}
 var STJA={ok:['正常','ok'],stale:['更新が古い','warn'],failed:['取得失敗','bad'],disabled:['無効','off'],partial:['一部のみ','warn']};
-function srcCell(k,s){
+function srcCell(k,s,label){
   s=s||{};var st=STJA[s.status]||[s.status||'不明','off'];var d=[];
   if(s.lastSuccessAt)d.push('最終成功 '+esc(dfull(s.lastSuccessAt)));
   if(num(s.coverage))d.push('カバー率 '+Math.round(s.coverage*100)+'%');
   if(num(s.memberCount))d.push('構成銘柄 '+s.memberCount+'件');
   if(s.asOf)d.push('基準日 '+esc(s.asOf));
   if(k==='margin'&&(s.status==='disabled'||s.status==='failed'||s.status==='stale'))d.push('補助情報のため、ランキングの必須条件にはしていません');
-  return '<div><b>'+esc(SRCJA[k]||k)+'<span class="pill '+st[1]+'">'+esc(st[0])+'</span></b>'+(d.length?'<small>'+d.join('<br>')+'</small>':'')+'</div>';
+  return '<div><b>'+esc(label||SRCJA[k]||k)+'<span class="pill '+st[1]+'">'+esc(st[0])+'</span></b>'+(d.length?'<small>'+d.join('<br>')+'</small>':'')+'</div>';
 }
 function banner(t,err){var b=$('banner');b.textContent=t;b.className='banner show'+(err?' err':'')}
 function render(s){
+  var U=universeOf(s), ulabel=universeLabel(U);
+  Array.prototype.forEach.call(document.querySelectorAll('.u-label'),function(el){el.textContent=ulabel});
   var head=[];
   if(s.asOfMarketDate)head.push('株価は '+s.asOfMarketDate+' の終値ベース');
   head.push(s.updatedAt?'最終更新 '+dfull(s.updatedAt):'未更新');
@@ -299,11 +307,11 @@ function render(s){
   var c=s.stateChanges||[];
   $('changes').innerHTML=c.length?changesHtml(c.slice(0,20)):empty('前回更新からの変化はありません','');
   var src=s.sources||{};
-  $('sources').innerHTML='<div class="src">'+['edinet','prices','jpx400','margin'].map(function(k){return srcCell(k,src[k])}).join('')+'</div>';
+  $('sources').innerHTML='<div class="src">'+['edinet','prices',U.key,'margin'].map(function(k){return srcCell(k,src[k],k===U.key?U.label+' 構成銘柄':null)}).join('')+'</div>';
   var mt=[];
   if(s.asOfMarketDate)mt.push('株価の基準日 '+esc(s.asOfMarketDate)+'（終値）');
   if(s.updatedAt)mt.push('更新 '+esc(dfull(s.updatedAt)));
-  if(num(s.universeCount))mt.push('対象 JPX日経400 '+s.universeCount+'銘柄');
+  if(num(s.universeCount))mt.push('対象 '+ulabel+' '+s.universeCount+'銘柄');
   $('meta').innerHTML=mt.join(' ／ ');
   if(s.disclaimer)$('disclaimer').textContent=s.disclaimer;
   var warn=[];

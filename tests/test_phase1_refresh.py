@@ -31,7 +31,7 @@ def test_lab_notes_link_is_kept_out_of_headers_and_small_at_page_bottom():
 def test_every_html_page_loads_the_canonical_site_shell():
     # Demo pages are standalone mock sites with their own header and footer.
     pages = [path for path in filter(is_published, ROOT.rglob("*.html")) if not {"demo", "tourism-market-signal"} & set(path.relative_to(ROOT).parts)]
-    assert len(pages) == 63
+    assert len(pages) == 65
     for path in pages:
         page = BeautifulSoup(rendered(path), "html.parser")
         assert page.find("link", href="/css/site-shell.css?v=20261012shell"), path
@@ -64,7 +64,7 @@ def test_home_is_concise_and_groups_all_tools_by_purpose():
     page = soup("index.html")
     assert "宿泊・観光の経営を" in page.find("h1").get_text("", strip=True)
     assert "データとAIでもう少しわかりやすく" in page.find("h1").get_text("", strip=True)
-    assert len(page.select("#analysis-tools .analysis-card")) == 12
+    assert len(page.select("#analysis-tools .analysis-card")) == 13
     assert len(page.select("#analysis-tools .tool-group")) == 5
     assert not page.find(id="lab-notes")
     assert page.find(id="about-lab")
@@ -82,7 +82,7 @@ def test_home_is_concise_and_groups_all_tools_by_purpose():
 def test_home_is_only_tool_directory_and_legacy_page_is_removed():
     assert not (ROOT / "useful.html").exists()
     home = soup("index.html")
-    assert len(home.select("#analysis-tools .analysis-card")) == 12
+    assert len(home.select("#analysis-tools .analysis-card")) == 13
     assert home.select_one('a[href="/report.html"]')
 
     report = soup("report.html")
@@ -279,7 +279,7 @@ def test_lab_pages_get_the_shared_header_and_footer_at_build_time():
     # Every Lab page except the standalone demos and the synced signal report
     # is built by Jekyll from the shared includes.
     pages = [path for path in filter(is_published, ROOT.rglob("*.html")) if not {"demo", "tourism-market-signal"} & set(path.relative_to(ROOT).parts)]
-    assert len(pages) == 63
+    assert len(pages) == 65
     for path in pages:
         source = path.read_text(encoding="utf-8")
         assert source.startswith("---\n"), path
