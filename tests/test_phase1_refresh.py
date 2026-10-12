@@ -150,7 +150,20 @@ def test_hotel_price_trends_has_controls_disclosures_and_rakuten_credit():
     credit = page.find("a", href="https://developers.rakuten.com/")
     assert credit and credit.get_text(strip=True) == "Supported by Rakuten Developers"
     assert page.find("script", src="js/hotel-price-trends-model.js?v=20261005trend1")
-    assert page.find("script", src="js/hotel-price-trends.js?v=20261005trend1")
+    scripts = [tag["src"] for tag in page.find_all("script", src=True)]
+    assert scripts.index("js/japan-map-data.js?v=20261012map1") < scripts.index("js/hotel-price-trends.js?v=20261012map1")
+
+
+def test_hotel_price_trends_photos_stay_on_rakuten_and_link_back():
+    script = (ROOT / "js" / "hotel-price-trends.js").read_text(encoding="utf-8")
+    assert "JAPAN_OUTLINE" not in script
+    assert "window.HotelPriceJapanMap" in script
+    assert "profile?.latest?.image" in script
+    assert 'referrerpolicy="no-referrer"' in script
+    assert 'href="${escapeHtml(image.source_url)}" target="_blank" rel="noopener noreferrer"' in script
+    assert 'const PHOTO_CREDIT = "写真：楽天トラベル";' in script
+    # Rows without a photo only get a placeholder when another facility in the market has one.
+    assert "const withPhotos = images.some(Boolean);" in script
 
 
 def test_hotel_price_trends_script_keeps_browser_history_available():
