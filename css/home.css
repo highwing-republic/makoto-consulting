@@ -1,5 +1,3 @@
-.site-header .brand{align-items:center;gap:12px}
-.brand__mark{display:block;flex:0 0 auto;object-fit:contain}
 
 .home-hero{
   position:relative;
@@ -67,10 +65,6 @@
 .about-lab__body p:last-child{margin-bottom:0}
 .about-lab__questions{display:block;margin:14px 0;padding-left:18px;border-left:2px solid var(--gold);color:var(--accent)}
 .about-lab__body .about-lab__closing{margin-top:32px;color:var(--accent);font-size:clamp(19px,1.9vw,24px)}
-
-.site-footer .brand--footer+small{display:block;margin-top:22px}
-.footer-note-link+.footer-note-link{margin-left:24px}
-
 @media(max-width:1080px){
   .analysis-grid--regional{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
@@ -84,9 +78,7 @@
   .analysis-grid--single{grid-template-columns:1fr}
 }
 @media(max-width:620px){
-  .site-header .brand{gap:9px}
-  .brand__mark{width:36px;height:36px}
-  .home-hero{min-height:0}
+  .site-header .brand{gap:9px}  .home-hero{min-height:0}
   .home-hero:before{background:radial-gradient(ellipse at 50% 12%,rgba(157,183,152,.16),transparent 58%)}
   .home-hero__copy{min-width:0;padding-left:20px;overflow-wrap:anywhere}
   .home-hero__inner{grid-template-columns:minmax(0,1fr);gap:28px;padding:28px 0 48px}
@@ -95,9 +87,7 @@
   .home-hero__lead{font-size:15px;line-height:1.8}
   .home-hero .button{width:100%}
   .home-section{padding:76px 0}
-  .about-lab{padding:64px 0}
-  .footer-note-link+.footer-note-link{margin-left:auto}
-  .home-section__heading{margin-bottom:48px}
+  .about-lab{padding:64px 0}  .home-section__heading{margin-bottom:48px}
   .tool-group{margin-top:58px}
   .tool-group-row{margin-top:58px}
   .tool-group__heading{gap:10px;margin-bottom:20px}
