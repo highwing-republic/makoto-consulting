@@ -60,7 +60,8 @@ def test_fallback_footers_link_back_to_ugatta() -> None:
         fallback_pages.append(path)
         assert "運営：合同会社UGATTA</small>" not in content, path
         assert UGATTA_LINK in content, path
-    assert len(fallback_pages) == 60
+    # Every Lab page now carries the shared footer from _includes/.
+    assert len(fallback_pages) == len(tracked_public_html()) == 62
 
 
 def test_ugatta_link_has_visible_link_styling() -> None:

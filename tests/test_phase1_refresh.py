@@ -275,30 +275,23 @@ def test_supply_chart_has_four_named_quadrants_and_fixed_size_points():
     assert "scatter-table-body" in script
 
 
-BUILT_PAGES = (
-    "index.html",
-    "dx-diagnosis.html",
-    "inbound-analysis.html",
-    "dx-necessity-analysis.html",
-    "supply-demand-gap-analysis.html",
-    "tourism-pressure-analysis.html",
-    "management-ai.html",
-    "report.html",
-    "hotel-price-trends.html",
-)
-
-
-def test_main_pages_get_the_shared_header_and_footer_at_build_time():
-    for name in BUILT_PAGES:
-        source = (ROOT / name).read_text(encoding="utf-8")
-        assert source.startswith("---\n"), name
-        assert source.count("{% include site-header.html %}") == 1, name
-        assert source.count("{% include site-footer.html %}") == 1, name
-        page = rendered(name)
-        assert "{%" not in page and "{{" not in page, name
+def test_lab_pages_get_the_shared_header_and_footer_at_build_time():
+    # Every Lab page except the standalone demos and the synced signal report
+    # is built by Jekyll from the shared includes.
+    pages = [path for path in filter(is_published, ROOT.rglob("*.html")) if not {"demo", "tourism-market-signal"} & set(path.relative_to(ROOT).parts)]
+    assert len(pages) == 62
+    for path in pages:
+        source = path.read_text(encoding="utf-8")
+        assert source.startswith("---\n"), path
+        assert source.count("{% include site-header.html %}") == 1, path
+        assert source.count("{% include site-footer.html %}") == 1, path
+        page = rendered(path)
+        assert "{%" not in page and "{{" not in page, path
         html = BeautifulSoup(page, "html.parser")
-        assert len(html.select('.site-header[data-shell="static"]')) == 1, name
-        assert len(html.select('.site-footer[data-shell="static"]')) == 1, name
+        assert len(html.select('.site-header[data-shell="static"]')) == 1, path
+        assert len(html.select('.site-footer[data-shell="static"]')) == 1, path
+        # The include comes before any page-specific hero header.
+        assert html.find("header").get("data-shell") == "static", path
 
 
 def test_include_and_script_shell_share_the_same_navigation():

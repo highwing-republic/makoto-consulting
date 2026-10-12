@@ -1,3 +1,6 @@
+---
+# Built by Jekyll: the shared header and footer come from _includes/.
+---
 <!doctype html>
 <html lang="ja">
 <head>
@@ -17,7 +20,7 @@
 </head>
 <body class="classics-article">
   <a class="skip-link" href="#main">本文へ移動</a>
-<header class="site-header"><div class="container header-inner"><a class="brand" href="/"><strong>宿泊DXラボ</strong><small>データを見る。試す。考える。</small></a><button class="menu-toggle" type="button" aria-controls="global-nav" aria-expanded="false" aria-label="メニューを開く" data-menu-toggle><span></span><span></span><span></span></button><nav class="global-nav" id="global-nav" aria-label="メインナビゲーション" data-nav><ul><li><a href="/#analysis-tools">分析・ツール</a></li><li><a href="/#about-lab">宿泊DXラボとは</a></li></ul></nav></div></header>
+{% include site-header.html %}
 
   <main id="main">
 <nav class="breadcrumb container" aria-label="パンくずリスト"><ol><li><a href="/">ホーム</a></li><li><a href="/classics-ai-management/">ラボノート｜古典 × AI</a></li><li><a href="/classics-ai-management/hanfeizi/">韓非子</a></li><li aria-current="page">齊の桓公、紫を好む</li></ol></nav>
@@ -40,6 +43,6 @@
 <nav class="article-nav" aria-label="記事ナビゲーション"><a href="/classics-ai-management/hanfeizi/teijin-bairi/">← 前の記事　鄭人、履を買う</a><a href="/classics-ai-management/hanfeizi/">韓非子の一覧へ戻る</a><a href="/classics-ai-management/hanfeizi/soshi-satsutei/">次の記事　曾子、彘を殺す →</a></nav>
 </div></article>
   </main>
-<footer class="site-footer"><div class="container footer-top"><div class="footer-brand-copy"><a class="brand" href="/"><strong style="color:#fff">宿泊DXラボ</strong><small>データを見る。試す。考える。</small></a><p class="footer-lead">宿泊・観光について、データ・AI・DXを使って分析・実験するラボです。</p><small>運営：<a href="https://ugatta-llc.com/">合同会社UGATTA</a></small></div><nav class="footer-links"><a href="/#analysis-tools">分析・ツール</a><a href="/#about-lab">宿泊DXラボについて</a><a data-analytics-event="consultation_click" data-tool-id="footer" href="https://forms.gle/yjinqFdntoXhTmgk7" target="_blank" rel="noopener noreferrer">お問い合わせ ↗</a></nav></div><div class="container footer-bottom"><span>© 2026 宿泊DXラボ</span><a class="footer-note-link" href="/classics-ai-management/">ラボノート</a></div></footer><script src="/js/site.js?v=20260909c" defer></script>
+{% include site-footer.html %}<script src="/js/site.js?v=20260909c" defer></script>
 </body>
 </html>
