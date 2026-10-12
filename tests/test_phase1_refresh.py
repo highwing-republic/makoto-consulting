@@ -14,7 +14,7 @@ def test_lab_notes_link_is_kept_out_of_headers_and_small_at_page_bottom():
     pages = []
     for path in ROOT.rglob("*.html"):
         relative = path.relative_to(ROOT)
-        if {"docs", "edinet-investment-radar", "tourism-market-signal"} & set(relative.parts):
+        if {"demo", "docs", "edinet-investment-radar", "tourism-market-signal"} & set(relative.parts):
             continue
         pages.append(path)
     assert pages
@@ -27,8 +27,9 @@ def test_lab_notes_link_is_kept_out_of_headers_and_small_at_page_bottom():
 
 
 def test_every_html_page_loads_the_canonical_site_shell():
-    pages = [path for path in ROOT.rglob("*.html") if not {".git", "tourism-market-signal"} & set(path.parts)]
-    assert len(pages) == 65
+    # Demo pages are standalone mock sites with their own header and footer.
+    pages = [path for path in ROOT.rglob("*.html") if not {".git", "demo", "tourism-market-signal"} & set(path.relative_to(ROOT).parts)]
+    assert len(pages) == 62
     for path in pages:
         page = BeautifulSoup(path.read_text(encoding="utf-8"), "html.parser")
         assert page.find("link", href="/css/site-shell.css?v=20261003font"), path
@@ -60,13 +61,13 @@ def test_home_is_concise_and_groups_all_tools_by_purpose():
     page = soup("index.html")
     assert "宿泊・観光の経営を" in page.find("h1").get_text("", strip=True)
     assert "データとAIでもう少しわかりやすく" in page.find("h1").get_text("", strip=True)
-    assert len(page.select("#analysis-tools .analysis-card")) == 9
-    assert len(page.select("#analysis-tools .tool-group")) == 4
+    assert len(page.select("#analysis-tools .analysis-card")) == 12
+    assert len(page.select("#analysis-tools .tool-group")) == 5
     assert not page.find(id="lab-notes")
     assert page.find(id="about-lab")
     assert not page.find(id="flow") and not page.find(id="use-cases")
     assert [heading.get_text(strip=True) for heading in page.select(".tool-group__heading h3")] == [
-        "施設を診断する", "地域を分析する", "市場を見る", "AIと考える"
+        "施設を診断する", "地域を分析する", "市場を見る", "AIと考える", "ツールを試してみる"
     ]
     assert page.select_one('a[href="#analysis-tools"]')
     assert page.select_one('a[href="/management-ai.html"]')
@@ -78,7 +79,7 @@ def test_home_is_concise_and_groups_all_tools_by_purpose():
 def test_home_is_only_tool_directory_and_legacy_page_is_removed():
     assert not (ROOT / "useful.html").exists()
     home = soup("index.html")
-    assert len(home.select("#analysis-tools .analysis-card")) == 9
+    assert len(home.select("#analysis-tools .analysis-card")) == 12
     assert home.select_one('a[href="/report.html"]')
 
     report = soup("report.html")
