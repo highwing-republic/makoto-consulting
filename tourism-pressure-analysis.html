@@ -1,5 +1,25 @@
 ---
 # Built by Jekyll: the shared header and footer come from _includes/.
+# Phase 3 標準ブロック（_includes/tool-overview / tool-sources / tool-related）の内容。
+tool: tourism-pressure
+tool_purpose: 人口あたりの宿泊需要と施設密度、宿泊業の雇用・事業所構成から、宿泊需要の集中度と宿泊業への依存度を分けて47都道府県で相対的に比較します。旧「観光負荷・観光依存度分析」と同じ算式です。
+tool_scope:
+  - label: 対象
+    text: 47都道府県。地域の参考指標であり、観光地点ごとの混雑や住民意識は含みません。
+  - label: データ
+    text: 観光庁 宿泊旅行統計調査、総務省 経済センサス・人口推計などの公的統計を横断集計。
+  - label: 条件
+    text: 各指標を47都道府県内の percentile rank で得点化し、観光負荷と宿泊観光依存度の2つの参考スコアを表示します。
+tool_updated: データ読み込み後に表示
+tool_notes:
+  - "観光負荷：宿泊密度70%＋宿泊施設密度30%。宿泊観光依存度：宿泊業従業者比率50%＋宿泊業事業所比率25%＋宿泊密度25%。いずれも percentile rank による参考スコアです。"
+  - 両指標に宿泊密度が含まれるため、完全に独立した2軸ではありません。
+  - 欠損値がある場合はスコアを算出せず、サンプル値では補いません。
+tool_related:
+  - supply-demand
+  - inbound
+  - dx-necessity
+  - management-issue-organizer
 ---
 <!DOCTYPE html>
 <html lang="ja"><head>
@@ -22,6 +42,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&amp;display=swap">
   <link rel="stylesheet" href="css/useful.css?v=20261012shell">
+  <link rel="stylesheet" href="css/tool-standard.css?v=20261012tool">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="都道府県別 観光負荷・宿泊集中度・宿泊業依存度分析｜宿泊DXラボ">
   <meta name="twitter:description" content="公的統計から47都道府県の宿泊集中度と宿泊業依存度を比較します。">
@@ -61,23 +82,25 @@
 </head><body><a class="skip-link" href="#main">本文へ移動</a>
   {% include site-header.html %}
   <main id="main"><nav class="breadcrumb container" aria-label="パンくずリスト"><ol><li><a href="/">ホーム</a></li><li><a href="/#analysis-tools">分析・ツール</a></li><li aria-current="page">宿泊集中度・宿泊業依存度</li></ol></nav>
-    <section class="page-hero tool-page-hero inbound-hero"><div class="container page-hero-grid"><div><span class="scope-badge">分析対象：都道府県</span><h1>宿泊集中度・<br>宿泊業依存度</h1></div><div class="inbound-hero__copy"><p class="lead-copy">宿泊需要の集中と、宿泊業への依存を分けて見る。</p><p>旧「観光負荷・観光依存度分析」。人口あたり宿泊需要と施設密度、宿泊業の雇用・事業所構成を比較します。</p><small>観光庁・総務省の公的統計を横断集計</small></div></div></section>
+    <section class="page-hero tool-page-hero inbound-hero"><div class="container page-hero-grid"><div><span class="scope-badge">分析対象：都道府県</span><h1>宿泊集中度・<br>宿泊業依存度</h1></div><div class="inbound-hero__copy"><p class="lead-copy">宿泊需要の集中と、宿泊業への依存を分けて見る。</p></div></div></section>
+    {% include tool-overview.html %}
     <section class="inbound-tool cross-tool" data-cross-analysis="tourism" id="tool" aria-labelledby="analysis-title" aria-busy="true"><div class="container">
       <div class="analysis-control-panel"><div><p class="eyebrow">分析条件</p><h2 id="analysis-title">都道府県を選択</h2><p>観光負荷と宿泊観光への依存度を2軸で表示します。</p></div><label class="prefecture-select" for="prefecture-select"><span>都道府県</span><select id="prefecture-select" disabled><option>データを読み込み中</option></select></label><p class="analysis-period" id="analysis-period" aria-live="polite"></p></div>
       <div class="data-loading" id="data-loading" role="status"><span aria-hidden="true"></span><p>最新統計を読み込んでいます</p></div><div class="data-error" id="data-error" role="alert" hidden></div><noscript><div class="data-error"><strong>JavaScriptを有効にしてください</strong><p>観光庁・総務省の公的統計から宿泊需要の集中と宿泊業の構成を比較します。日帰り客・交通・住民意識は含まず、操作にはJavaScriptが必要です。</p></div></noscript>
       <div class="analysis-dashboard" id="analysis-dashboard" hidden inert aria-hidden="true"><div class="data-scope-note"><span>地域の参考指標</span><strong>宿泊集中度・宿泊業依存度</strong><p>住民生活への影響と地域経済の宿泊業依存は別の概念です。日帰り客、交通、住民意識、地点別混雑は計測していません。</p></div>
-        <section class="analysis-section"><div class="analysis-heading"><div><p class="eyebrow">OVERVIEW</p><h2><span id="selected-area-name"></span>の分析結果</h2></div></div><div class="dual-score-grid"><article class="score-card"><span>観光負荷 参考スコア</span><strong id="primary-score"></strong><small id="primary-rank"></small></article><article class="score-card score-card--secondary"><span>宿泊観光への依存度 参考スコア</span><strong id="secondary-score"></strong><small id="secondary-rank"></small></article><div class="reason-card"><h3>この結果になった主な理由</h3><strong class="market-type" id="metric-type"></strong><p id="analysis-reason"></p></div></div></section>
-        <section class="analysis-section analysis-panel"><div class="analysis-heading"><div><p class="eyebrow">REGIONAL MAP</p><h2>観光負荷 × 宿泊観光依存度</h2></div><p>破線は参考スコア50点。選択地域を強調表示</p></div><div class="scatter-wrap"><div class="scatter-chart" id="scatter-chart"></div></div></section>
-        <section class="analysis-section analysis-panel"><div class="analysis-heading"><div><p class="eyebrow">FACTORS</p><h2>指標を構成する4要素</h2></div></div><div class="factor-bars" id="factor-bars"></div></section>
-        <section class="analysis-section"><div class="analysis-heading"><div><p class="eyebrow">RAW INDICATORS</p><h2>判断に使った公表値</h2></div></div><div class="metric-grid"><article><span>住民1人あたり年間延べ宿泊者数</span><strong id="metric-density"></strong></article><article><span>外国人宿泊密度</span><strong id="metric-foreign-density"></strong></article><article><span>人口1万人あたり宿泊事業所</span><strong id="metric-establishment-density"></strong></article><article><span>宿泊業従業者比率</span><strong id="metric-employee-share"></strong></article><article><span>宿泊業事業所比率</span><strong id="metric-establishment-share"></strong></article><article><span>年間延べ宿泊者数</span><strong id="metric-nights"></strong></article></div></section>
-        <section class="analysis-section analysis-panel"><div class="analysis-heading"><div><p class="eyebrow">PREFECTURE RANKING</p><h2>観光負荷ランキング</h2></div><p>同点は同順位</p></div><ol class="prefecture-ranking" id="prefecture-ranking"></ol></section>
-        <section class="analysis-section insight-panel"><p class="eyebrow">HOW TO READ</p><h2>結果の読み方</h2><div id="short-insight"><p>宿泊集中度が高い地域では地点別の混雑を追加確認する入口になります。宿泊業依存度が高い地域では、人材や需要変動への備えを検討する手がかりになります。</p></div><p class="insight-caution">市区町村・観光地点ごとの集中、日帰り客、交通、住民意識、観光消費額は含みません。「高い＝オーバーツーリズム」ではありません。</p></section>
-        <section class="next-action-panel"><h3>次に確認すること</h3><ul><li>市区町村・観光地点ごとの混雑と交通</li><li>住民意識と生活への影響</li><li>宿泊以外の観光関連産業と地域経済</li></ul><div class="analysis-actions"><button class="button button--outline" type="button" data-copy-result data-tool-id="tourism-pressure">要点をコピー</button><button class="button button--outline" type="button" data-print-result data-tool-id="tourism-pressure">印刷する</button><a class="button button--outline" data-pref-link href="/supply-demand-gap-analysis.html">同じ地域の需給を見る</a><a class="button button--outline" href="/inbound-analysis.html">インバウンド分析を見る</a><a class="button button--outline" href="/#analysis-tools">すべてのツールを見る</a></div></section>
+        <section class="analysis-section"><div class="analysis-heading"><div><h2><span id="selected-area-name"></span>の分析結果</h2></div></div><div class="dual-score-grid"><article class="score-card"><span>観光負荷 参考スコア</span><strong id="primary-score"></strong><small id="primary-rank"></small></article><article class="score-card score-card--secondary"><span>宿泊観光への依存度 参考スコア</span><strong id="secondary-score"></strong><small id="secondary-rank"></small></article><div class="reason-card"><h3>この結果になった主な理由</h3><strong class="market-type" id="metric-type"></strong><p id="analysis-reason"></p></div></div></section>
+        <section class="analysis-section analysis-panel"><div class="analysis-heading"><div><h2>観光負荷 × 宿泊観光依存度</h2></div><p>破線は参考スコア50点。選択地域を強調表示</p></div><div class="scatter-wrap"><div class="scatter-chart" id="scatter-chart"></div></div></section>
+        <section class="analysis-section analysis-panel"><div class="analysis-heading"><div><h2>指標を構成する4要素</h2></div></div><div class="factor-bars" id="factor-bars"></div></section>
+        <section class="analysis-section"><div class="analysis-heading"><div><h2>判断に使った公表値</h2></div></div><div class="metric-grid"><article><span>住民1人あたり年間延べ宿泊者数</span><strong id="metric-density"></strong></article><article><span>外国人宿泊密度</span><strong id="metric-foreign-density"></strong></article><article><span>人口1万人あたり宿泊事業所</span><strong id="metric-establishment-density"></strong></article><article><span>宿泊業従業者比率</span><strong id="metric-employee-share"></strong></article><article><span>宿泊業事業所比率</span><strong id="metric-establishment-share"></strong></article><article><span>年間延べ宿泊者数</span><strong id="metric-nights"></strong></article></div></section>
+        <section class="analysis-section analysis-panel"><div class="analysis-heading"><div><h2>観光負荷ランキング</h2></div><p>同点は同順位</p></div><ol class="prefecture-ranking" id="prefecture-ranking"></ol></section>
+        <section class="analysis-section insight-panel"><h2>結果の読み方</h2><div id="short-insight"><p>宿泊集中度が高い地域では地点別の混雑を追加確認する入口になります。宿泊業依存度が高い地域では、人材や需要変動への備えを検討する手がかりになります。</p></div><p class="insight-caution">市区町村・観光地点ごとの集中、日帰り客、交通、住民意識、観光消費額は含みません。「高い＝オーバーツーリズム」ではありません。</p></section>
+        <section class="next-action-panel"><h3>次に確認すること</h3><ul><li>市区町村・観光地点ごとの混雑と交通</li><li>住民意識と生活への影響</li><li>宿泊以外の観光関連産業と地域経済</li></ul><div class="analysis-actions"><button class="button button--outline" type="button" data-copy-result data-tool-id="tourism-pressure">要点をコピー</button><button class="button button--outline" type="button" data-print-result data-tool-id="tourism-pressure">印刷する</button></div></section>
         <p class="survey-change-note"><strong>注意：</strong>両指標に宿泊密度が含まれるため、完全に独立した2軸ではありません。本分析の依存度は、旅行業、飲食、交通、小売、レジャー等を含む地域経済全体の観光依存度を示すものではありません。</p>
-        <section class="analysis-source"><div><p class="eyebrow">DATA SOURCE</p><h2>出典・算出方法</h2></div><dl id="source-list"></dl><div class="source-notes"><p><strong>観光負荷：</strong>宿泊密度70%＋宿泊施設密度30%。<strong>宿泊観光依存度：</strong>宿泊業従業者比率50%＋宿泊業事業所比率25%＋宿泊密度25%。いずれもpercentile rankによる参考スコアです。</p><p>データ取得日：<span id="source-updated"></span>。欠損値がある場合はスコアを算出せず、サンプル値では補いません。</p></div></section>
       </div></div></section>
+    {% include tool-sources.html %}
+    {% include tool-related.html %}
   </main>
   {% include site-footer.html %}
   <script defer src="js/site.js?v=20260909c"></script>
-  <script defer src="js/cross-analysis.js?v=20261002brand2"></script>
+  <script defer src="js/cross-analysis-model.js?v=20261012model"></script><script defer src="js/cross-analysis.js?v=20261012model"></script>
 </body></html>

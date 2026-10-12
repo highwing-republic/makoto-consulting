@@ -162,9 +162,9 @@ def test_home_lists_tools_in_order():
 
 def test_pref_query_resolution_and_reload_contract():
     script = (
-        "require('./js/cross-analysis.js');"
+        "require('./js/cross-analysis-model.js');"
         "const rows=[{prefecture_slug:'tokyo'},{prefecture_slug:'nagano'}];"
-        "const r=globalThis.CrossAnalysisUtils.resolvePrefectureSlug;"
+        "const r=globalThis.CrossAnalysisModel.resolvePrefectureSlug;"
         "console.log(JSON.stringify([r(rows,'nagano'),r(rows,'abc'),r(rows,null),r(rows,r(rows,'nagano'))]));"
     )
     result = subprocess.run(
@@ -175,8 +175,8 @@ def test_pref_query_resolution_and_reload_contract():
 
 def test_supply_position_and_difference_helpers_cover_boundaries():
     script = (
-        "require('./js/cross-analysis.js');"
-        "const u=globalThis.CrossAnalysisUtils;"
+        "require('./js/cross-analysis-model.js');"
+        "const u=globalThis.CrossAnalysisModel;"
         "console.log(JSON.stringify(["
         "u.classifySupplyPosition(2,2,1,1),"
         "u.classifySupplyPosition(2,0,1,1),"
