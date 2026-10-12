@@ -43,8 +43,10 @@ def test_registry_matches_the_home_page_cards():
 def test_converted_pages_use_the_three_standard_blocks():
     pages = converted_pages()
     assert [path.name for path in pages] == [
+        "dx-diagnosis.html",
         "dx-necessity-analysis.html",
         "inbound-analysis.html",
+        "management-ai.html",
         "supply-demand-gap-analysis.html",
         "tourism-pressure-analysis.html",
     ]
@@ -72,7 +74,8 @@ def test_converted_pages_use_the_three_standard_blocks():
         assert len(overview.select(".tool-overview__scope dt")) == 3
         sources = html.select_one(".tool-sources")
         assert sources.find("h2").get_text() == "出典・更新日・注意事項"
-        assert sources.find(id="source-list") and sources.find(id="source-updated")
+        assert sources.find(id="source-list")
+        assert bool(sources.find(id="source-updated")) == bool(page.get("tool_updated")), path
         assert len(sources.select(".tool-sources__notes li")) == len(page["tool_notes"])
         related = html.select_one(".tool-related")
         cards = related.select(".tool-related__card")

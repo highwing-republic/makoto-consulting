@@ -1,5 +1,5 @@
 <section class="tool-overview" aria-labelledby="tool-overview-title"><div class="container tool-overview__grid">
-  <div class="tool-overview__purpose"><h2 id="tool-overview-title">この分析でわかること</h2><p>{{ page.tool_purpose }}</p></div>
+  <div class="tool-overview__purpose"><h2 id="tool-overview-title">この分析でわかること</h2><p>{{ page.tool_purpose }}</p>{% if page.tool_cta %}<p class="tool-overview__cta"><a class="button" href="{{ page.tool_cta.href }}" data-analytics-event="tool_open" data-tool-id="{{ page.tool_cta.tool_id }}">{{ page.tool_cta.label }} <span aria-hidden="true">↓</span></a></p>{% endif %}</div>
   <dl class="tool-overview__scope">{% for item in page.tool_scope %}
     <div><dt>{{ item.label }}</dt><dd>{{ item.text }}</dd></div>{% endfor %}
   </dl>

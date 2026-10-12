@@ -197,7 +197,29 @@
     fields.disabled = true;
   }
 
+  // 共通の出典ブロック（_includes/tool-sources.html）を地域統計の出典で埋める。
+  function renderSourceBlock() {
+    const list = $('source-list');
+    const sources = datasets.dx.metadata.sources;
+    if (list) {
+      list.replaceChildren(...[sources.lodging, sources.population, sources.economic_census].map((source) => {
+        const row = element('div');
+        const link = element('a', '', `${source.table_name} ↗`);
+        link.href = source.source_url;
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+        const detail = element('dd');
+        detail.append(link, element('span', '', `基準時点：${source.reference_period}／公表日：${source.published_date || '各月公表'}`));
+        row.append(element('dt', '', source.source_name), detail);
+        return row;
+      }));
+    }
+    const updated = $('source-updated');
+    if (updated) updated.textContent = datasets.dx.metadata.retrieved_at;
+  }
+
   function initialize() {
+    renderSourceBlock();
     const rows = Object.values(datasets.statistics.prefectures).sort((a, b) => a.prefecture_code.localeCompare(b.prefecture_code));
     prefectureSelect.replaceChildren(...rows.map((row) => {
       const option = element('option', '', row.prefecture_name);
