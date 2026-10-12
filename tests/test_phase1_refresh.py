@@ -2,24 +2,26 @@ from pathlib import Path
 
 from bs4 import BeautifulSoup
 
+from site_pages import is_published, rendered
+
 
 ROOT = Path(__file__).resolve().parents[1]
 
 
 def soup(name):
-    return BeautifulSoup((ROOT / name).read_text(encoding="utf-8"), "html.parser")
+    return BeautifulSoup(rendered(name), "html.parser")
 
 
 def test_lab_notes_link_is_kept_out_of_headers_and_small_at_page_bottom():
     pages = []
-    for path in ROOT.rglob("*.html"):
+    for path in filter(is_published, ROOT.rglob("*.html")):
         relative = path.relative_to(ROOT)
         if {"demo", "docs", "edinet-investment-radar", "tourism-market-signal"} & set(relative.parts):
             continue
         pages.append(path)
     assert pages
     for path in pages:
-        page = BeautifulSoup(path.read_text(encoding="utf-8"), "html.parser")
+        page = BeautifulSoup(rendered(path), "html.parser")
         assert not page.select('header a[href="/classics-ai-management/"]'), path
         footer_links = page.select('footer a[href="/classics-ai-management/"]')
         assert len(footer_links) == 1, path
@@ -28,12 +30,12 @@ def test_lab_notes_link_is_kept_out_of_headers_and_small_at_page_bottom():
 
 def test_every_html_page_loads_the_canonical_site_shell():
     # Demo pages are standalone mock sites with their own header and footer.
-    pages = [path for path in ROOT.rglob("*.html") if not {".git", "demo", "tourism-market-signal"} & set(path.relative_to(ROOT).parts)]
+    pages = [path for path in filter(is_published, ROOT.rglob("*.html")) if not {"demo", "tourism-market-signal"} & set(path.relative_to(ROOT).parts)]
     assert len(pages) == 62
     for path in pages:
-        page = BeautifulSoup(path.read_text(encoding="utf-8"), "html.parser")
+        page = BeautifulSoup(rendered(path), "html.parser")
         assert page.find("link", href="/css/site-shell.css?v=20261003font"), path
-        assert page.find("script", src="/js/site-shell.js?v=20261003font"), path
+        assert page.find("script", src="/js/site-shell.js?v=20261012shell"), path
 
     for name in (
         "report.html",
@@ -270,3 +272,47 @@ def test_supply_chart_has_four_named_quadrants_and_fixed_size_points():
     assert "const radius = selected ? 10 : 6" in script
     assert "Math.sqrt((r.lodging_establishments" not in script
     assert "scatter-table-body" in script
+
+
+BUILT_PAGES = (
+    "index.html",
+    "dx-diagnosis.html",
+    "inbound-analysis.html",
+    "dx-necessity-analysis.html",
+    "supply-demand-gap-analysis.html",
+    "tourism-pressure-analysis.html",
+    "management-ai.html",
+    "report.html",
+    "hotel-price-trends.html",
+)
+
+
+def test_main_pages_get_the_shared_header_and_footer_at_build_time():
+    for name in BUILT_PAGES:
+        source = (ROOT / name).read_text(encoding="utf-8")
+        assert source.startswith("---\n"), name
+        assert source.count("{% include site-header.html %}") == 1, name
+        assert source.count("{% include site-footer.html %}") == 1, name
+        page = rendered(name)
+        assert "{%" not in page and "{{" not in page, name
+        html = BeautifulSoup(page, "html.parser")
+        assert len(html.select('.site-header[data-shell="static"]')) == 1, name
+        assert len(html.select('.site-footer[data-shell="static"]')) == 1, name
+
+
+def test_include_and_script_shell_share_the_same_navigation():
+    def links(markup):
+        nav = BeautifulSoup(markup, "html.parser").select(".global-nav a")
+        return [(link.get_text(strip=True), link["href"]) for link in nav]
+
+    include = (ROOT / "_includes" / "site-header.html").read_text(encoding="utf-8")
+    script = (ROOT / "js" / "site-shell.js").read_text(encoding="utf-8")
+    script_header = script.split("const shellHeader = `", 1)[1].split("`;", 1)[0]
+    assert links(include) == links(script_header)
+    assert links(include)
+
+    footer = (ROOT / "_includes" / "site-footer.html").read_text(encoding="utf-8")
+    script_footer = script.split("const shellFooter = `", 1)[1].split("`;", 1)[0]
+    assert [a["href"] for a in BeautifulSoup(footer, "html.parser").find_all("a")] == [
+        a["href"] for a in BeautifulSoup(script_footer, "html.parser").find_all("a")
+    ]

@@ -1,3 +1,6 @@
+---
+# Built by Jekyll: the shared header and footer come from _includes/.
+---
 <!DOCTYPE html>
 <html lang="ja"><head>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-QS9HSHCY33"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-QS9HSHCY33');gtag('config','GT-M3S9S5D7');</script>
@@ -55,9 +58,9 @@
   }
   </script>
   <link rel="stylesheet" href="/css/site-shell.css?v=20261003font">
-  <script src="/js/site-shell.js?v=20261003font" defer></script>
+  <script src="/js/site-shell.js?v=20261012shell" defer></script>
 </head><body><a class="skip-link" href="#main">本文へ移動</a>
-  <header class="site-header"><div class="container header-inner"><a class="brand" href="/" aria-label="宿泊DXラボ ホーム"><span class="brand-copy"><strong>宿泊DXラボ</strong><small>データを見る。試す。考える。</small></span></a><button class="menu-toggle" type="button" aria-controls="global-nav" aria-expanded="false" aria-label="メニューを開く" data-menu-toggle><span></span><span></span><span></span></button><nav class="global-nav" id="global-nav" aria-label="メインナビゲーション" data-nav><ul><li><a href="/#analysis-tools">分析・ツール</a></li><li><a href="/#about-lab">宿泊DXラボとは</a></li></ul></nav></div></header>
+  {% include site-header.html %}
   <main id="main"><nav class="breadcrumb container" aria-label="パンくずリスト"><ol><li><a href="/">ホーム</a></li><li><a href="/#analysis-tools">分析・ツール</a></li><li aria-current="page">宿泊市場の成長・稼働ポジション</li></ol></nav>
     <section class="page-hero tool-page-hero inbound-hero"><div class="container page-hero-grid"><div><p class="eyebrow lab-eyebrow"><span class="lab-code">LAB 02</span><span>PUBLIC DATA CROSS ANALYSIS</span></p><span class="scope-badge">分析対象：都道府県</span><h1>宿泊市場の<br>成長・稼働ポジション</h1></div><div class="inbound-hero__copy"><p class="lead-copy">需要の伸びと稼働率から、地域の市場状態をつかむ。</p><p>選択地域を全国値と比べ、次に確認したい経営情報を整理します。</p><small>観光庁・総務省の公的統計を横断集計</small></div></div></section>
     <section class="inbound-tool cross-tool" data-cross-analysis="supply" id="tool" aria-labelledby="analysis-title" aria-busy="true"><div class="container">
@@ -76,13 +79,7 @@
         <section class="analysis-source"><div><p class="eyebrow">DATA SOURCE</p><h2>出典・算出方法</h2></div><dl id="source-list"></dl><div class="source-notes"><p><strong>追加調査優先度：</strong>客室稼働率40%＋需要伸び率35%＋1事業所あたり宿泊需要25%。各値は47都道府県内の百分位です。</p><p><strong>市場タイプ：</strong>全国の需要伸び率と客室稼働率を境界に4象限へ分類します。供給不足・供給過剰を断定する分類ではありません。</p><p>データ取得日：<span id="source-updated"></span>。欠損値がある場合は参考値を算出せず、サンプル値では補いません。</p></div></section>
       </div></div></section>
   </main>
-  <footer class="site-footer">
-    <div class="container footer-grid">
-      <div><a class="brand brand--footer" href="/"><span class="brand-copy"><strong>宿泊DXラボ</strong><small>データを見る。試す。考える。</small></span></a><p class="footer-lead">宿泊・観光について、データ・AI・DXを使って分析・実験するラボです。</p><small>運営：<a href="https://ugatta-llc.com/">合同会社UGATTA</a></small></div>
-      <div class="footer-links"><div><p class="footer-heading">ラボ</p><a href="/#analysis-tools">分析・ツール</a><a href="/#about-lab">宿泊DXラボについて</a><a data-analytics-event="consultation_click" data-tool-id="footer" href="https://forms.gle/yjinqFdntoXhTmgk7" target="_blank" rel="noopener noreferrer">お問い合わせ ↗</a></div></div>
-    </div>
-    <div class="container footer-bottom"><span>© 2026 宿泊DXラボ</span><a class="footer-note-link" href="/classics-ai-management/">ラボノート</a></div>
-  </footer>
+  {% include site-footer.html %}
   <script defer src="js/site.js?v=20260909c"></script>
   <script defer src="js/cross-analysis.js?v=20260914a"></script>
 </body></html>

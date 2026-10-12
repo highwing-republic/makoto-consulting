@@ -4,6 +4,8 @@ import re
 import subprocess
 from pathlib import Path
 
+from site_pages import rendered
+
 
 ROOT = Path(__file__).resolve().parents[1]
 LAB_CONFIG = "gtag('config','G-QS9HSHCY33')"
@@ -29,7 +31,7 @@ def tracked_public_html() -> list[str]:
 
 
 def read(relative: str) -> str:
-    return (ROOT / relative).read_text(encoding="utf-8")
+    return rendered(relative)
 
 
 def test_all_public_pages_send_to_both_google_tags_once() -> None:
@@ -85,7 +87,7 @@ def test_site_shell_cache_busters_are_consistent() -> None:
         js_versions.add(js_match.group(1))
         css_versions.add(css_match.group(1))
     assert len(shell_pages) == 62
-    assert js_versions == {"20261003font"}
+    assert js_versions == {"20261012shell"}
     assert css_versions == {"20261003font"}
 
 

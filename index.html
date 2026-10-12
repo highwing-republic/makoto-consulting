@@ -1,3 +1,6 @@
+---
+# Built by Jekyll: the shared header and footer come from _includes/.
+---
 <!doctype html>
 <html lang="ja">
 <head>
@@ -26,15 +29,11 @@
   <meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="宿泊DXラボ｜宿泊・観光のデータ分析・AI・DXツール"><meta name="twitter:description" content="データを見る。試す。考える。宿泊・観光の分析・診断・実験ツールを公開しています。"><meta name="twitter:image" content="https://lab.ugatta-llc.com/images/og-lab.jpg">
   <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://lab.ugatta-llc.com/#organization","name":"宿泊DXラボ","url":"https://lab.ugatta-llc.com/","logo":"https://lab.ugatta-llc.com/images/lab-logo.png","description":"宿泊・観光のデータを経営に使える形にするための実験ラボ"},{"@type":"WebSite","@id":"https://lab.ugatta-llc.com/#website","url":"https://lab.ugatta-llc.com/","name":"宿泊DXラボ","description":"公的データやAIを使い、宿泊・観光の経営を考えるための分析ツールを公開するラボ","publisher":{"@id":"https://lab.ugatta-llc.com/#organization"},"inLanguage":"ja-JP"},{"@type":"CollectionPage","@id":"https://lab.ugatta-llc.com/#tools","name":"宿泊・観光の分析・ツール","url":"https://lab.ugatta-llc.com/#analysis-tools","isPartOf":{"@id":"https://lab.ugatta-llc.com/#website"},"mainEntity":{"@type":"ItemList","numberOfItems":12,"itemListElement":[{"@type":"ListItem","position":1,"name":"旅館・ホテル DXかんたん診断","url":"https://lab.ugatta-llc.com/dx-diagnosis.html"},{"@type":"ListItem","position":2,"name":"インバウンド宿泊者分析","url":"https://lab.ugatta-llc.com/inbound-analysis.html"},{"@type":"ListItem","position":3,"name":"宿泊DX必要度分析","url":"https://lab.ugatta-llc.com/dx-necessity-analysis.html"},{"@type":"ListItem","position":4,"name":"宿泊市場需給ギャップ分析","url":"https://lab.ugatta-llc.com/supply-demand-gap-analysis.html"},{"@type":"ListItem","position":5,"name":"観光負荷・観光依存度分析","url":"https://lab.ugatta-llc.com/tourism-pressure-analysis.html"},{"@type":"ListItem","position":6,"name":"観光株シグナル","url":"https://lab.ugatta-llc.com/report.html"},{"@type":"ListItem","position":7,"name":"宿泊料金トレンド","url":"https://lab.ugatta-llc.com/hotel-price-trends.html"},{"@type":"ListItem","position":8,"name":"宿泊経営AI","url":"https://lab.ugatta-llc.com/management-ai.html"},{"@type":"ListItem","position":9,"name":"EDINET投資レーダー","url":"https://lab.ugatta-llc.com/edinet-investment-radar/watch/"},{"@type":"ListItem","position":10,"name":"簡易PMSデモ","url":"https://lab.ugatta-llc.com/demo/mini-pms/"},{"@type":"ListItem","position":11,"name":"予約エンジンデモ","url":"https://lab.ugatta-llc.com/demo/booking/"},{"@type":"ListItem","position":12,"name":"多言語旅館サイトデモ","url":"https://lab.ugatta-llc.com/demo/hotel/"}]}}]}</script>
   <link rel="stylesheet" href="/css/site-shell.css?v=20261003font">
-  <script src="/js/site-shell.js?v=20261003font" defer></script>
+  <script src="/js/site-shell.js?v=20261012shell" defer></script>
 </head>
 <body class="home-page">
   <a class="skip-link" href="#main">本文へ移動</a>
-  <header class="site-header" data-header><div class="container header-inner">
-    <a class="brand" href="/" aria-label="宿泊DXラボ ホーム"><img class="brand__mark" src="favicon.png?v=20260929" alt="" width="44" height="44"><span class="brand-copy"><strong>宿泊DXラボ</strong><small>データを見る。試す。考える。</small></span></a>
-    <button class="menu-toggle" type="button" aria-controls="global-nav" aria-expanded="false" aria-label="メニューを開く" data-menu-toggle><span></span><span></span><span></span></button>
-    <nav class="global-nav" id="global-nav" aria-label="メインナビゲーション" data-nav><ul><li><a href="#facility-tools">施設を診断する</a></li><li><a href="#regional-tools">地域を分析する</a></li><li><a href="#market-tools">市場を見る</a></li><li><a href="#ai-tools">AIと考える</a></li><li><a href="#demo-tools">試してみる</a></li><li><a href="#about-lab">About</a></li></ul></nav>
-  </div></header>
+  {% include site-header.html %}
 
   <main id="main">
     <section class="home-hero"><div class="container home-hero__inner"><div class="home-hero__copy">
@@ -98,15 +97,7 @@
     <section class="home-section about-lab" id="about-lab"><div class="container about-lab__grid"><div><p class="eyebrow">ABOUT</p><h2>宿泊DXラボ<br>とは</h2></div><div class="about-lab__body"><p>料金、市場動向、インバウンド、DXなどを、できるだけ分かりやすく見える化し、<span class="about-lab__questions">「今、何が起きているのか」<br>「自施設はどこにいるのか」<br>「次に何を考えるべきか」</span>を判断するための材料を提供します。</p><p>答えを決めつけるのではなく、宿泊経営を考えるための新しい視点をつくる。</p><p class="about-lab__closing">それが、宿泊DXラボです。</p></div></div></section>
   </main>
 
-  <footer class="site-footer">
-    <div class="container footer-grid">
-      <div>
-        <a class="brand brand--footer" href="/"><span class="brand-copy"><strong>宿泊DXラボ</strong><small>データを見る。試す。考える。</small></span></a>
-        <small>運営：<a href="https://ugatta-llc.com/">合同会社UGATTA</a></small>
-      </div>
-    </div>
-    <div class="container footer-bottom"><span>© 2026 宿泊DXラボ</span><a class="footer-note-link" data-analytics-event="consultation_click" data-tool-id="footer" href="https://forms.gle/yjinqFdntoXhTmgk7" target="_blank" rel="noopener noreferrer">お問い合わせ ↗</a><a class="footer-note-link" href="/classics-ai-management/">ラボノート</a></div>
-  </footer>
+  {% include site-footer.html %}
   <script src="js/news.js?v=20261010" defer></script>
   <script src="js/site.js?v=20260912a" defer></script>
 </body>
