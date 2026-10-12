@@ -1,0 +1,6 @@
+<section class="tool-overview" aria-labelledby="tool-overview-title"><div class="container tool-overview__grid">
+  <div class="tool-overview__purpose"><h2 id="tool-overview-title">この分析でわかること</h2><p>{{ page.tool_purpose }}</p></div>
+  <dl class="tool-overview__scope">{% for item in page.tool_scope %}
+    <div><dt>{{ item.label }}</dt><dd>{{ item.text }}</dd></div>{% endfor %}
+  </dl>
+</div></section>

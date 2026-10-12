@@ -1,0 +1,12 @@
+<section class="tool-sources" aria-labelledby="tool-sources-title"><div class="container tool-sources__grid">
+  <div><h2 id="tool-sources-title">出典・更新日・注意事項</h2></div>
+  <div>
+    <dl class="tool-sources__list" id="source-list">{% for source in page.tool_sources %}
+      <div><dt>{{ source.name }}</dt><dd>{% if source.url %}<a href="{{ source.url }}" target="_blank" rel="noopener">{{ source.publisher }}</a>{% else %}{{ source.publisher }}{% endif %}{% if source.note %} <span>{{ source.note }}</span>{% endif %}</dd></div>{% endfor %}
+    </dl>
+    <p class="tool-sources__updated">{{ page.tool_updated_label | default: "データ取得日" }}：<span id="source-updated">{{ page.tool_updated }}</span></p>
+    {% if page.tool_notes %}<ul class="tool-sources__notes">{% for note in page.tool_notes %}
+      <li>{{ note }}</li>{% endfor %}
+    </ul>{% endif %}
+  </div>
+</div></section>
