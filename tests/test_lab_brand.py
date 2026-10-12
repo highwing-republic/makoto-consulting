@@ -103,7 +103,7 @@ def test_lab_codes_are_ascii_lab_numbers_only() -> None:
 def test_home_page_labels_tool_groups_with_lab_numbers() -> None:
     page = BeautifulSoup((ROOT / "index.html").read_text(encoding="utf-8"), "html.parser")
     labels = [node.get_text() for node in page.select(".tool-group__index.lab-code")]
-    assert labels == ["LAB 01", "LAB 02", "LAB 03", "LAB 04"]
+    assert labels == ["LAB 01", "LAB 02", "LAB 03", "LAB 04", "LAB 05"]
 
 
 def test_classics_pages_keep_their_own_typography() -> None:

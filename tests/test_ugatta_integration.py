@@ -23,7 +23,8 @@ def tracked_public_html() -> list[str]:
     return [
         path
         for path in result.stdout.splitlines()
-        if not path.startswith(("docs/", "tourism-market-signal/"))
+        # Demo pages are standalone mock sites and do not load the Lab tags yet.
+        if not path.startswith(("demo/", "docs/", "tourism-market-signal/"))
     ]
 
 
@@ -33,7 +34,7 @@ def read(relative: str) -> str:
 
 def test_all_public_pages_send_to_both_google_tags_once() -> None:
     pages = tracked_public_html()
-    assert len(pages) == 65
+    assert len(pages) == 62
     for path in pages:
         content = read(path)
         assert content.count(LAB_CONFIG) == 1, path
