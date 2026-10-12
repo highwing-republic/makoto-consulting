@@ -1,5 +1,26 @@
 ---
 # Built by Jekyll: the shared header and footer come from _includes/.
+# Phase 3 標準ブロック（_includes/tool-overview / tool-sources / tool-related）の内容。
+tool: market-signal
+tool_purpose: 観光・インバウンド関連企業の株価の市場変化から、追加調査したい動きを確認するための調査レポートです。観光関連株の市場動向と注目銘柄を日々更新されるレポートで確認できます。
+tool_scope:
+  - label: 対象
+    text: 観光・インバウンド関連の上場企業。株価の動きは地域の宿泊需要を示しません。
+  - label: データ
+    text: 株価の市場データ。対象取引日とデータ更新日時は、埋め込まれたレポート内に表示します。
+  - label: 条件
+    text: 調査・参考情報の掲載であり、投資助言、株価予測、売買推奨を目的とするものではありません。
+tool_sources:
+  - name: 出典
+    publisher: 日々更新されるレポート内に、対象取引日とデータ更新日時を記載しています。
+tool_notes:
+  - 株価の動きは地域の宿泊需要を示しません。
+  - 投資助言、株価予測、売買推奨を目的とするものではなく、判断の前に企業IRなどの一次情報をご確認ください。
+tool_related:
+  - edinet-investment-radar
+  - edinet-investment-radar-topix
+  - supply-demand
+  - inbound
 ---
 <!doctype html>
 <html lang="ja">
@@ -18,6 +39,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&amp;display=swap">
   <link rel="stylesheet" href="css/useful.css?v=20261012shell">
+  <link rel="stylesheet" href="css/tool-standard.css?v=20261012tool">
   <link rel="stylesheet" href="css/report.css?v=20261006compact1">
   <meta property="og:type" content="website"><meta property="og:locale" content="ja_JP"><meta property="og:site_name" content="宿泊DXラボ"><meta property="og:title" content="観光株シグナル｜宿泊DXラボ"><meta property="og:description" content="観光・インバウンド関連企業の市場変化から、追加調査したい動きを確認する調査レポートです。"><meta property="og:url" content="https://lab.ugatta-llc.com/report.html"><meta property="og:image" content="https://lab.ugatta-llc.com/images/og-lab.jpg"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="観光株シグナル｜宿泊DXラボ"><meta name="twitter:description" content="観光・インバウンド関連企業の市場変化を確認する調査レポートです。"><meta name="twitter:image" content="https://lab.ugatta-llc.com/images/og-lab.jpg">
   <link rel="stylesheet" href="/css/site-shell.css?v=20261012shell">
@@ -32,9 +54,12 @@
     <nav class="breadcrumb container" aria-label="パンくずリスト"><ol><li><a href="/">ホーム</a></li><li><a href="/#market-tools">市場を見る</a></li><li aria-current="page">観光株シグナル</li></ol></nav>
     <section class="page-hero report-hero" aria-labelledby="page-title"><div class="container page-hero-grid">
       <div><h1 id="page-title">観光株シグナル</h1></div>
-      <div class="report-hero__copy"><p>観光関連株の市場動向と注目銘柄を確認できます。</p><details class="report-about"><summary>このレポートについて</summary><p>観光・インバウンド関連企業の市場変化から、追加調査したい動きを確認するための調査レポートです。日々更新されるレポート内で、対象取引日とデータ更新日時をご確認ください。</p><p>本ページは調査・参考情報を掲載しています。株価の動きは地域の宿泊需要を示しません。投資助言、株価予測、売買推奨を目的とするものではなく、判断の前に企業IRなどの一次情報をご確認ください。</p></details></div>
+      <div class="report-hero__copy"><p>観光関連株の市場動向と注目銘柄を確認できます。</p></div>
     </div></section>
+    {% include tool-overview.html %}
     <section class="report-embed-section" aria-label="観光株シグナル レポート"><div class="container"><iframe class="report-frame" data-report-frame src="/tourism-market-signal/index.html?v=20261006compact1" title="観光株シグナル Tourism Market Signal" scrolling="no" aria-busy="true"></iframe></div></section>
+    {% include tool-sources.html %}
+    {% include tool-related.html %}
   </main>
   {% include site-footer.html %}
 </body>
