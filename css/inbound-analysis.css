@@ -1,7 +1,7 @@
 /* Page-only layout: keep the Lab's shared typography, colors and data styles. */
 .inbound-page .inbound-hero{padding-block:36px 32px}
 .inbound-page .page-hero-grid{gap:32px;align-items:center}
-.inbound-page .lab-eyebrow{margin-bottom:16px}
+
 .inbound-page .inbound-hero h1{font-size:clamp(28px,3.2vw,42px);line-height:1.5}
 .inbound-tool-name{margin:12px 0 0;color:var(--lab-ink-soft);font-size:13px}
 .inbound-page .inbound-hero__copy .lead-copy{font-size:19px;margin-bottom:12px;font-weight:700}

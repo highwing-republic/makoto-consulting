@@ -49,7 +49,6 @@ def test_every_html_page_loads_the_canonical_site_shell():
         "/#facility-tools",
         "/#regional-tools",
         "/#market-tools",
-        "/#ai-tools",
         "/#demo-tools",
         "/#about-lab",
         "https://forms.gle/yjinqFdntoXhTmgk7",
@@ -62,18 +61,26 @@ def test_every_html_page_loads_the_canonical_site_shell():
 
 def test_home_is_concise_and_groups_all_tools_by_purpose():
     page = soup("index.html")
-    assert "宿泊・観光の経営を" in page.find("h1").get_text("", strip=True)
-    assert "データとAIでもう少しわかりやすく" in page.find("h1").get_text("", strip=True)
+    assert page.find("h1").get_text("", strip=True) == "現場のヒントが見つかる実践ツール"
+    assert len(page.select("#analysis-tools .tool-card")) == 4
+    assert [img["src"] for img in page.select(".tool-card__thumb img")] == [
+        f"images/thumbs/{name}.svg" for name in ("hotel-price-trends", "inbound-analysis", "dx-diagnosis", "mini-pms")
+    ]
+    for name in ("hotel-price-trends", "inbound-analysis", "dx-diagnosis", "mini-pms"):
+        assert (ROOT / "images" / "thumbs" / f"{name}.svg").exists()
     assert len(page.select("#analysis-tools .analysis-card")) == 13
-    assert len(page.select("#analysis-tools .tool-group")) == 5
+    assert len(page.select("#analysis-tools .tool-group")) == 4
+    # Card wrappers are block elements: no heading, paragraph or div may sit inside a span.
+    assert page.select("span h3, span p, span div") == []
     assert not page.find(id="lab-notes")
     assert page.find(id="about-lab")
     assert not page.find(id="flow") and not page.find(id="use-cases")
     assert [heading.get_text(strip=True) for heading in page.select(".tool-group__heading h3")] == [
-        "施設を診断する", "地域を分析する", "市場を見る", "AIと考える", "ツールを試してみる"
+        "自施設を知る", "地域を知る", "市場の動きを知る", "実験・体験する"
     ]
     assert page.select_one('a[href="#analysis-tools"]')
     assert page.select_one('a[href="/management-ai.html"]')
+    assert page.find(id="ai-tools")  # old /#ai-tools links still land on the AI card
     assert page.select_one('a[href="/hotel-price-trends.html"]')
     market = page.find(id="market-tools").find_parent("section")
     assert market.select_one('a[href="/edinet-investment-radar/watch/"]')
