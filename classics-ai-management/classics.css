@@ -8,6 +8,12 @@
 /* site-shell.css（全ページ共通）の藍・紙の値を、このセクションのページだけ水墨調に寄せる。
    site-shell.css は後に読み込まれるため、:root:root で優先度を上げている。 */
 :root:root{--lab-navy:#2e4e7e;--lab-navy-deep:#1f3658;--lab-teal:#4b6a8f;--lab-focus:#4b6a8f;--lab-surface:#eef0ec;--lab-surface-soft:#e3e6e1;--lab-card:#f7f7f3;--lab-border:#c9cfc8;--lab-ink:#1d2430;--lab-ink-soft:#5a6472;--site-shell-on-dark:#b7c1d1}*{box-sizing:border-box}
+/* 古典ノートだけの共通ヘッダー調整（オーナー指定）：ロゴと社名を縦に積み、
+   ヘッダーと開いたメニューの背景を水墨調の紙色に合わせる。それ以外のヘッダー・
+   フッターの見た目は site-shell.css に任せる。 */
+body .site-header{background:rgba(238,240,236,.95)}
+body .site-header .brand{flex-direction:column}
+@media(max-width:900px){body .site-header .global-nav{background:rgba(238,240,236,.99)}}
 html{scroll-behavior:smooth}
 body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.9}a{color:inherit;text-decoration:none}
 button,input{font:inherit}
