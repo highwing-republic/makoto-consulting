@@ -70,6 +70,8 @@ def test_home_is_concise_and_groups_all_tools_by_purpose():
         assert (ROOT / "images" / "thumbs" / f"{name}.svg").exists()
     assert len(page.select("#analysis-tools .analysis-card")) == 12
     assert len(page.select("#analysis-tools .tool-group")) == 4
+    # Card wrappers are block elements: no heading, paragraph or div may sit inside a span.
+    assert page.select("span h3, span p, span div") == []
     assert not page.find(id="lab-notes")
     assert page.find(id="about-lab")
     assert not page.find(id="flow") and not page.find(id="use-cases")
