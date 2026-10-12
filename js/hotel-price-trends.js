@@ -354,6 +354,7 @@
     trendComparison.textContent=comparisonParts.join(" ／ ");
     const generatedAt=formatGeneratedAt(latest.generated_at);
     elements.freshness.textContent=`取得日：${latest.snapshot_date} ／ 条件：大人2名・1室・1泊・${MEAL_LABELS[elements.meal.value]}${generatedAt?` ／ データ生成日時（日本時間）：${generatedAt}`:""}`;
+    const sourceUpdated=document.querySelector("#source-updated");if(sourceUpdated)sourceUpdated.textContent=latest.snapshot_date;
   }
   function selectRegion(code) {
     if (!regions.some((region) => region.code === code) || code === elements.region.value) return;

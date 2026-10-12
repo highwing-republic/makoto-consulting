@@ -151,7 +151,7 @@ def test_hotel_price_trends_has_controls_disclosures_and_rakuten_credit():
     assert credit and credit.get_text(strip=True) == "Supported by Rakuten Developers"
     assert page.find("script", src="js/hotel-price-trends-model.js?v=20261005trend1")
     scripts = [tag["src"] for tag in page.find_all("script", src=True)]
-    assert scripts.index("js/japan-map-data.js?v=20261012map1") < scripts.index("js/hotel-price-trends.js?v=20261012map1")
+    assert scripts.index("js/japan-map-data.js?v=20261012map1") < scripts.index("js/hotel-price-trends.js?v=20261012tool")
 
 
 def test_hotel_price_trends_photos_stay_on_rakuten_and_link_back():

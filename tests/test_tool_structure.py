@@ -45,8 +45,10 @@ def test_converted_pages_use_the_three_standard_blocks():
     assert [path.name for path in pages] == [
         "dx-diagnosis.html",
         "dx-necessity-analysis.html",
+        "hotel-price-trends.html",
         "inbound-analysis.html",
         "management-ai.html",
+        "report.html",
         "supply-demand-gap-analysis.html",
         "tourism-pressure-analysis.html",
     ]
