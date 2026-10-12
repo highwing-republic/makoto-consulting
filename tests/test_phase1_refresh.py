@@ -35,7 +35,7 @@ def test_every_html_page_loads_the_canonical_site_shell():
     for path in pages:
         page = BeautifulSoup(rendered(path), "html.parser")
         assert page.find("link", href="/css/site-shell.css?v=20261003font"), path
-        assert page.find("script", src="/js/site-shell.js?v=20261012shell"), path
+        assert page.find("script", src="/js/site-shell.js?v=20261012shell2"), path
 
     for name in (
         "report.html",
@@ -50,6 +50,7 @@ def test_every_html_page_loads_the_canonical_site_shell():
         "/#regional-tools",
         "/#market-tools",
         "/#ai-tools",
+        "/#demo-tools",
         "/#about-lab",
         "https://forms.gle/yjinqFdntoXhTmgk7",
         "/classics-ai-management/",

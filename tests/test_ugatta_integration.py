@@ -26,7 +26,7 @@ def tracked_public_html() -> list[str]:
         path
         for path in result.stdout.splitlines()
         # Demo pages are standalone mock sites and do not load the Lab tags yet.
-        if not path.startswith(("demo/", "docs/", "tourism-market-signal/"))
+        if not path.startswith(("_includes/", "demo/", "docs/", "tourism-market-signal/"))
     ]
 
 
@@ -87,7 +87,7 @@ def test_site_shell_cache_busters_are_consistent() -> None:
         js_versions.add(js_match.group(1))
         css_versions.add(css_match.group(1))
     assert len(shell_pages) == 62
-    assert js_versions == {"20261012shell"}
+    assert js_versions == {"20261012shell2"}
     assert css_versions == {"20261003font"}
 
 
