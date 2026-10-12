@@ -1,5 +1,25 @@
 ---
 # Built by Jekyll: the shared header and footer come from _includes/.
+# Phase 3 標準ブロック（_includes/tool-overview / tool-sources / tool-related）の内容。
+tool: management-issue-organizer
+tool_purpose: 相談テーマと都道府県、任意の施設情報から、地域の公的統計をもとに次に確認したい論点と最初の確認事項を整理します。生成AIとの自由対話ではなく、公開データと確認済みの条件分岐を使うルールベース分析です。
+tool_scope:
+  - label: 対象
+    text: 47都道府県と、任意で入力した自施設の客室数・従業員数・稼働率・外国人宿泊比率。都道府県だけでも利用できます。
+  - label: データ
+    text: 宿泊DX必要度・需給ギャップ・観光負荷・インバウンドの各分析データ（観光庁 宿泊旅行統計調査、総務省 人口推計・経済センサス）。
+  - label: 条件
+    text: 固定ルールで判定し、外部の生成AI APIは使用しません。施設情報はこのページ内で計算し、サーバーへ保存せず、URLや解析イベントにも含めません。
+tool_updated: データ読み込み後に表示
+tool_notes:
+  - 公的統計と入力情報をもとに確認候補を提示するルールベース型ツールです。個別施設の経営成果を保証するものではなく、投資・採用・価格設定等の最終判断は利用者自身で行ってください。
+  - 地域統計と施設情報は対象期間・施設範囲・分母が異なるため、厳密な比較ではありません。
+  - 氏名、施設名、電話番号、メールアドレスなどの個人情報は入力しないでください。
+tool_related:
+  - dx-diagnosis
+  - dx-necessity
+  - supply-demand
+  - inbound
 ---
 <!doctype html>
 <html lang="ja">
@@ -23,6 +43,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&amp;display=swap">
   <link rel="stylesheet" href="css/useful.css?v=20261012shell">
+  <link rel="stylesheet" href="css/tool-standard.css?v=20261012tool">
   <script type="application/ld+json">
   {"@context":"https://schema.org","@type":"WebApplication","name":"宿泊経営の課題整理（β）","url":"https://lab.ugatta-llc.com/management-ai.html","applicationCategory":"BusinessApplication","operatingSystem":"Web","isAccessibleForFree":true,"inLanguage":"ja-JP","description":"公的統計分析と施設情報を並べ、宿泊経営で次に確認したいことを整理するルールベース型ツール。","provider":{"@type":"Organization","name":"宿泊DXラボ","url":"https://lab.ugatta-llc.com/","logo":"https://lab.ugatta-llc.com/images/lab-logo.png"}}
   </script>
@@ -37,8 +58,9 @@
     <nav class="breadcrumb container" aria-label="パンくずリスト"><ol><li><a href="/">ホーム</a></li><li><a href="/#analysis-tools">分析・ツール</a></li><li aria-current="page">宿泊経営の課題整理（β）</li></ol></nav>
     <section class="page-hero tool-page-hero management-hero"><div class="container page-hero-grid">
       <div><span class="scope-badge">分析対象：都道府県＋任意の施設情報</span><h1>宿泊経営の課題整理（β）</h1></div>
-      <div class="inbound-hero__copy"><p class="lead-copy">地域データと施設情報から、<br>次に確認する課題を整理。</p><p>生成AIとの自由対話ではなく、公開データと確認済みの条件分岐を使うルールベース分析です。都道府県だけでも利用できます。</p><small>ルールベース分析（生成AIではありません）／登録不要</small></div>
+      <div class="inbound-hero__copy"><p class="lead-copy">地域データと施設情報から、<br>次に確認する課題を整理。</p><small>ルールベース分析（生成AIではありません）／登録不要</small></div>
     </div></section>
+    {% include tool-overview.html %}
 
     <section class="inbound-tool management-ai" data-management-ai aria-labelledby="management-form-title" aria-busy="true"><div class="container">
       <div class="data-loading" id="management-loading" role="status"><span aria-hidden="true"></span><p>地域統計を読み込んでいます</p></div>
@@ -50,7 +72,7 @@
           <legend class="sr-only">宿泊経営の課題整理に使う条件</legend>
           <section class="management-step management-step--first">
             <p class="management-step__number">01</p>
-            <div class="management-step__heading"><div><p class="eyebrow">TOPIC</p><h2 id="management-form-title">何について考えますか？</h2></div><p>最も近いテーマをひとつ選んでください。</p></div>
+            <div class="management-step__heading"><div><h2 id="management-form-title">何について考えますか？</h2></div><p>最も近いテーマをひとつ選んでください。</p></div>
             <div class="management-topic-grid" role="radiogroup" aria-label="相談テーマ">
               <label class="management-topic"><input type="radio" name="topic" value="dx" checked required><span><b>人手不足・DX</b><small>業務負荷や省力化を考える</small></span></label>
               <label class="management-topic"><input type="radio" name="topic" value="inbound"><span><b>インバウンド</b><small>外国人宿泊需要を考える</small></span></label>
@@ -62,7 +84,7 @@
 
           <section class="management-step">
             <p class="management-step__number">02</p>
-            <div class="management-step__heading"><div><p class="eyebrow">REGION &amp; FACILITY</p><h2>地域と施設の状況</h2></div><p>都道府県だけでも分析できます。施設情報は任意です。</p></div>
+            <div class="management-step__heading"><div><h2>地域と施設の状況</h2></div><p>都道府県だけでも分析できます。施設情報は任意です。</p></div>
             <div class="management-required-field"><label for="management-prefecture">都道府県 <span>必須</span></label><select id="management-prefecture" name="prefecture" required></select></div>
             <details class="management-optional"><summary>施設情報を入力すると、地域との参考比較ができます</summary>
               <div class="management-input-grid">
@@ -78,7 +100,7 @@
 
           <section class="management-step">
             <p class="management-step__number">03</p>
-            <div class="management-step__heading"><div><p class="eyebrow">QUESTION</p><h2>現在困っていること</h2></div><p>任意の短文です。選択した相談テーマを優先して分析します。</p></div>
+            <div class="management-step__heading"><div><h2>現在困っていること</h2></div><p>任意の短文です。選択した相談テーマを優先して分析します。</p></div>
             <div class="management-examples" aria-label="質問例">
               <button type="button" data-question-example data-topic="dx">人手不足対策はどこから始めればいい？</button>
               <button type="button" data-question-example data-topic="inbound">インバウンドを強化する余地はある？</button>
@@ -93,7 +115,7 @@
       </form>
 
       <section class="management-result" id="management-result" aria-live="polite" tabindex="-1" hidden inert>
-        <div class="management-answer-header"><div><p class="eyebrow">ANALYSIS RESULT</p><h2><span id="answer-prefecture"></span> × <span id="answer-topic"></span></h2></div><div class="management-rule-badge">公的統計をもとにした参考分析</div></div>
+        <div class="management-answer-header"><div><h2><span id="answer-prefecture"></span> × <span id="answer-topic"></span></h2></div><div class="management-rule-badge">公的統計をもとにした参考分析</div></div>
         <section class="management-answer-block management-answer-block--status"><p class="management-answer-label">要点</p><p class="management-status" id="answer-status"></p></section>
         <section class="management-answer-block"><p class="management-answer-label">確認できる数値</p><ul class="management-facts" id="answer-facts"></ul><p class="management-missing" id="missing-data-note" hidden></p></section>
 
@@ -118,11 +140,13 @@
 
       <aside class="management-disclaimer"><p>宿泊経営の課題整理（β）は、公的統計と入力情報をもとに確認候補を提示するルールベース型ツールです。個別施設の経営成果を保証するものではなく、投資・採用・価格設定等の最終判断は利用者自身で行ってください。</p></aside>
     </div></section>
+    {% include tool-sources.html %}
+    {% include tool-related.html %}
   </main>
 
   {% include site-footer.html %}
   <script src="js/site.js?v=20260909c" defer></script>
   <script src="js/management-ai-rules.js?v=20260911a" defer></script>
-  <script src="js/management-ai.js?v=20260911a" defer></script>
+  <script src="js/management-ai.js?v=20261012tool" defer></script>
 </body>
 </html>

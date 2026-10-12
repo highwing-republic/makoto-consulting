@@ -5,6 +5,7 @@
 .tool-overview__grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:28px 56px;align-items:start;padding:30px 36px;border:1px solid var(--lab-border);border-left:4px solid var(--lab-teal);border-radius:12px;background:var(--lab-card)}
 .tool-overview__purpose h2{margin:0 0 10px;font-family:var(--lab-font-sans);font-size:clamp(19px,2vw,24px);font-weight:700;line-height:1.4;color:var(--lab-navy)}
 .tool-overview__purpose p{margin:0;color:var(--lab-ink);font-size:15px;line-height:1.95}
+.tool-overview__cta{margin:18px 0 0}
 .tool-overview__scope{margin:0}
 .tool-overview__scope>div{display:grid;grid-template-columns:72px minmax(0,1fr);gap:14px;padding:9px 0;border-top:1px solid var(--lab-border)}
 .tool-overview__scope>div:first-child{border-top:0;padding-top:0}
