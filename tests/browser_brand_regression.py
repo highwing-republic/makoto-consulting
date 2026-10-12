@@ -152,9 +152,7 @@ def main(destination):
             if 'classics-ai-management' in file.parts:
                 family = page.locator('h1').evaluate('(e)=>getComputedStyle(e).fontFamily')
                 assert 'Mincho' in family and 'Noto Sans JP' not in family, (file, family)
-            for code in page.locator('.lab-code').all():
-                assert code.evaluate('(e)=>getComputedStyle(e).fontWeight') == '400'
-                assert 'DotGothic16' in code.evaluate('(e)=>getComputedStyle(e).fontFamily')
+            assert page.locator('.lab-code, .lab-eyebrow').count() == 0, file
         assert not errors, errors
         results.append({'all_shell_pages': len(pages), 'console_errors': errors})
         browser.close()

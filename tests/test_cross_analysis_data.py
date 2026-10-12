@@ -153,7 +153,10 @@ def test_home_lists_tools_in_order():
         "tourism-pressure", "market-signal", "hotel-price-trends",
         "edinet-investment-radar", "management-issue-organizer",
     ]
-    positions = [home.index(f'data-tool-id="{tool_id}"') for tool_id in tool_ids]
+    # The featured cards above the purpose groups repeat four of these tools,
+    # so the order is checked inside the "目的から選ぶ" block.
+    groups = home[home.index('class="tool-groups"'):]
+    positions = [groups.index(f'data-tool-id="{tool_id}"') for tool_id in tool_ids]
     assert positions == sorted(positions)
 
 
@@ -209,9 +212,9 @@ def test_responsive_layout_and_existing_tools_regression():
     home_css = (ROOT / "css" / "home.css").read_text(encoding="utf-8")
     assert "@media(max-width:900px)" in css
     assert "@media(max-width:620px)" in css
-    assert ".analysis-grid--regional{grid-template-columns:repeat(4,minmax(0,1fr))}" in home_css
+    assert ".analysis-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr))" in home_css
     assert "@media(max-width:620px)" in home_css
-    assert ".analysis-grid--regional{grid-template-columns:1fr}" in home_css
+    assert ".tool-cards,.analysis-grid{grid-template-columns:1fr}" in home_css
     assert (ROOT / "dx-diagnosis.html").exists()
     assert (ROOT / "inbound-analysis.html").exists()
     report = (ROOT / "report.html").read_text(encoding="utf-8")

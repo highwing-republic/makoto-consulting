@@ -61,8 +61,13 @@ def test_every_html_page_loads_the_canonical_site_shell():
 
 def test_home_is_concise_and_groups_all_tools_by_purpose():
     page = soup("index.html")
-    assert "宿泊・観光の経営を" in page.find("h1").get_text("", strip=True)
-    assert "データとAIでもう少しわかりやすく" in page.find("h1").get_text("", strip=True)
+    assert page.find("h1").get_text("", strip=True) == "現場のヒントが見つかる実践ツール"
+    assert len(page.select("#analysis-tools .tool-card")) == 4
+    assert [img["src"] for img in page.select(".tool-card__thumb img")] == [
+        f"images/thumbs/{name}.svg" for name in ("hotel-price-trends", "inbound-analysis", "dx-diagnosis", "mini-pms")
+    ]
+    for name in ("hotel-price-trends", "inbound-analysis", "dx-diagnosis", "mini-pms"):
+        assert (ROOT / "images" / "thumbs" / f"{name}.svg").exists()
     assert len(page.select("#analysis-tools .analysis-card")) == 12
     assert len(page.select("#analysis-tools .tool-group")) == 4
     assert not page.find(id="lab-notes")

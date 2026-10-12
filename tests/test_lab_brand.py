@@ -40,10 +40,35 @@ def root_tokens(css: str) -> dict[str, str]:
     return {name: value.strip() for name, value in re.findall(r"(--[\w-]+)\s*:\s*([^;]+);", block.group(1))}
 
 
-def test_zen_kaku_is_no_longer_loaded_anywhere() -> None:
+HOME_DISPLAY_FONTS = {
+    # family: (CSS weight query, text the subset must cover)
+    "Zen+Kaku+Gothic+New": ("wght@900", "現場のヒントが見つかる実践ツール"),
+    "Dela+Gothic+One": (None, "宿泊DXラボ"),
+}
+
+
+def test_display_faces_are_loaded_only_on_the_home_page_as_subsets() -> None:
+    from urllib.parse import unquote
+
     for path in public_files(".html", ".css", ".js"):
         text = path.read_text(encoding="utf-8")
-        assert "Zen+Kaku" not in text and "Zen Kaku" not in text, path
+        assert "DotGothic16" not in text, path
+        if path != ROOT / "index.html" and path != ROOT / "css" / "home.css":
+            for family in ("Zen+Kaku", "Zen Kaku", "Dela+Gothic", "Dela Gothic"):
+                assert family not in text, (path, family)
+    head = BeautifulSoup((ROOT / "index.html").read_text(encoding="utf-8"), "html.parser").head
+    hrefs = [link.get("href", "") for link in head.find_all("link", rel="stylesheet") if "fonts.googleapis.com" in link.get("href", "")]
+    for family, (weight, shown) in HOME_DISPLAY_FONTS.items():
+        matches = [href for href in hrefs if family in href]
+        assert len(matches) == 1, family
+        href = matches[0]
+        assert "display=swap" in href and "text=" in href, href
+        if weight:
+            assert f"{family}:{weight}" in href, href
+        else:
+            assert "wght" not in href, href
+        subset = unquote(re.search(r"text=([^&]+)", href).group(1))
+        assert set(shown) <= set(subset), (family, set(shown) - set(subset))
 
 
 NOTO_URL = "https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap"
@@ -61,14 +86,12 @@ def test_pages_link_web_fonts_in_head_instead_of_css_import() -> None:
 
         stylesheets = [link.get("href", "") for link in head.find_all("link", rel="stylesheet")]
         fonts = [href for href in stylesheets if "fonts.googleapis.com" in href]
-        dot = [href for href in fonts if "DotGothic16" in href]
         # Font CSS must be discoverable before any site stylesheet.
         assert stylesheets[: len(fonts)] == fonts, path
         assert fonts[0] == NOTO_URL, path
-        has_lab_mark = bool(BeautifulSoup(path.read_text(encoding="utf-8"), "html.parser").select(".lab-code"))
-        assert len(dot) == (1 if has_lab_mark else 0), path
-        for href in dot:
-            assert "text=" in href and "wght" not in href and "display=swap" in href
+        # Home adds its two subset display faces; classics notes add their mincho; tools load Noto only.
+        expected = 3 if path == ROOT / "index.html" else 2 if "classics-ai-management" in path.parts else 1
+        assert len(fonts) == expected, path
 
 
 def test_shell_tokens_do_not_override_page_font_variables() -> None:
@@ -84,26 +107,25 @@ def test_data_colors_are_pinned() -> None:
         assert tokens[name] == value, name
 
 
-def test_lab_code_style_never_synthesizes_bold() -> None:
-    css = (ROOT / "css" / "site-shell.css").read_text(encoding="utf-8")
-    rule = re.search(r"\.lab-code\{([^}]+)\}", css)
-    assert rule
-    assert "font-family:var(--lab-font-dot)" in rule.group(1)
-    assert "font-weight:400" in rule.group(1)
-    assert "font-synthesis:none" in rule.group(1)
-
-
-def test_lab_codes_are_ascii_lab_numbers_only() -> None:
+def test_lab_number_marks_and_their_styles_are_gone() -> None:
+    # Decorative "LAB 01" codes and English eyebrows were dropped with the 2026-10 redesign.
     for path in public_files(".html"):
         page = BeautifulSoup(path.read_text(encoding="utf-8"), "html.parser")
-        for node in page.select(".lab-code"):
-            assert re.fullmatch(r"LAB \d{2}", node.get_text()), (path, node.get_text())
+        assert not page.select(".lab-code, .lab-eyebrow, .tool-group__index"), path
+    for path in public_files(".css"):
+        css = path.read_text(encoding="utf-8")
+        assert "lab-code" not in css and "lab-eyebrow" not in css and "--lab-font-dot" not in css, path
 
 
-def test_home_page_labels_tool_groups_with_lab_numbers() -> None:
+def test_home_page_has_no_english_decoration() -> None:
     page = BeautifulSoup((ROOT / "index.html").read_text(encoding="utf-8"), "html.parser")
-    labels = [node.get_text() for node in page.select(".tool-group__index.lab-code")]
-    assert labels == ["LAB 01", "LAB 02", "LAB 03", "LAB 04"]
+    for node in page.select("main .eyebrow, main h1, main h2, main h3"):
+        text = node.get_text(" ", strip=True)
+        assert not re.fullmatch(r"[A-Z0-9 !'&.-]+", text), text
+    assert not page.select("main .eyebrow")
+    # Meaningful short labels stay.
+    body = page.get_text(" ", strip=True)
+    assert "NEW" in body and "DX" in body and "PMS" in body and "AI" in body
 
 
 def test_classics_pages_keep_their_own_typography() -> None:
@@ -145,19 +167,14 @@ def test_hotel_calendar_and_legend_share_fixed_semantic_tokens() -> None:
         assert f".hpt-legend-{level}:before,.hpt-calendar-cell--{level}{{background:var(--data-{token})}}" in css
 
 
-def test_analysis_lab_numbers_match_the_home_groups() -> None:
-    for filename, number in {
-        "hotel-price-trends.html": "03",
-        "dx-diagnosis.html": "01",
-        "management-ai.html": "04",
-        "inbound-analysis.html": "02",
-        "dx-necessity-analysis.html": "02",
-        "supply-demand-gap-analysis.html": "02",
-        "tourism-pressure-analysis.html": "02",
-    }.items():
+def test_tool_page_heroes_carry_no_english_eyebrow() -> None:
+    for filename in (
+        "hotel-price-trends.html", "dx-diagnosis.html", "management-ai.html", "inbound-analysis.html",
+        "dx-necessity-analysis.html", "supply-demand-gap-analysis.html", "tourism-pressure-analysis.html", "report.html",
+    ):
         page = BeautifulSoup((ROOT / filename).read_text(encoding="utf-8"), "html.parser")
-        assert [node.get_text() for node in page.select(".page-hero .lab-code")] == [f"LAB {number}"]
-        assert not re.search(r"(?:CROSS ANALYSIS|ISSUE ORGANIZER) 0[4-7]", page.get_text())
+        assert not page.select(".page-hero .eyebrow"), filename
+        assert not re.search(r"(?:CROSS ANALYSIS|ISSUE ORGANIZER|MARKET SIGNAL|PRICE TRENDS|DX CHECK)", page.get_text()), filename
 
 
 def test_caution_notes_are_labeled_without_gold_decoration() -> None:
@@ -172,14 +189,12 @@ def test_caution_notes_are_labeled_without_gold_decoration() -> None:
             assert note.get_text().startswith("注意：")
 
 
-def test_analysis_styles_use_loaded_weights_and_keep_dot_font_in_lab_labels() -> None:
+def test_analysis_styles_use_loaded_weights() -> None:
     for filename in ["useful.css", "hotel-price-trends.css", "dx-diagnosis.css"]:
         css = (ROOT / "css" / filename).read_text(encoding="utf-8")
         assert not re.search(r"font(?:-weight)?:600", css)
         assert "font-size:9px" not in css
         for selector, declarations in re.findall(r"([^{}]+)\{([^{}]*)\}", css):
-            if "font-family:var(--lab-font-dot)" in declarations:
-                assert selector.strip().endswith(".lab-code")
             assert not re.search(r"(?:^|;)color:var\(--(?:data-self|gold)\)", declarations)
 
 

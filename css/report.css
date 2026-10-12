@@ -1,7 +1,7 @@
 .report-page{background:var(--lab-surface);color:var(--lab-ink);font-family:var(--lab-font-sans)}
 .report-hero{padding-block:24px 20px}
 .report-hero .page-hero-grid{grid-template-columns:1fr;gap:12px}
-.report-hero .lab-eyebrow{margin-bottom:12px}
+
 .report-hero h1{font-size:34px}
 .report-hero__copy>p{margin:0;color:var(--lab-ink-soft);font-size:14px;line-height:1.8}
 .report-about{margin-top:8px;font-size:12px;color:var(--lab-ink-soft)}
@@ -10,5 +10,5 @@
 .report-about p{max-width:840px;line-height:1.9}
 .report-embed-section{padding:0 0 48px;background:var(--lab-surface)}
 .report-frame{display:block;width:100%;height:1600px;min-height:760px;overflow:hidden;border:0;background:var(--lab-surface)}
-@media(max-width:620px){.report-page .breadcrumb{padding-top:16px}.report-hero{padding-block:18px 16px}.report-hero h1{font-size:28px}.report-hero .lab-code{font-size:20px}.report-hero .lab-eyebrow{margin-bottom:10px}}
+@media(max-width:620px){.report-page .breadcrumb{padding-top:16px}.report-hero{padding-block:18px 16px}.report-hero h1{font-size:28px}}
 @media print{.report-embed-section{padding:0;background:#fff}.report-frame{border:0;border-radius:0;box-shadow:none}}
