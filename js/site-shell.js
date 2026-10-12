@@ -11,11 +11,10 @@
         <button class="menu-toggle" type="button" aria-controls="global-nav" aria-expanded="false" aria-label="メニューを開く" data-menu-toggle><span></span><span></span><span></span></button>
         <nav class="global-nav" id="global-nav" aria-label="メインナビゲーション" data-nav>
           <ul>
-            <li><a href="/#facility-tools">施設を診断する</a></li>
-            <li><a href="/#regional-tools">地域を分析する</a></li>
-            <li><a href="/#market-tools">市場を見る</a></li>
-            <li><a href="/#ai-tools">AIと考える</a></li>
-            <li><a href="/#demo-tools">試してみる</a></li>
+            <li><a href="/#facility-tools">自施設を知る</a></li>
+            <li><a href="/#regional-tools">地域を知る</a></li>
+            <li><a href="/#market-tools">市場の動きを知る</a></li>
+            <li><a href="/#demo-tools">実験・体験する</a></li>
             <li><a href="/#about-lab">About</a></li>
           </ul>
         </nav>
