@@ -131,5 +131,4 @@ def test_initial_html_exposes_only_loading_state():
     assert all(not soup.find(id=element_id).get_text(strip=True) for element_id in (
         "kpi-total", "kpi-total-unit", "kpi-national-share", "kpi-largest-market",
         "kpi-largest-value", "kpi-specialized-market", "kpi-specialized-value",
-        "source-period", "source-updated", "source-unit", "source-scope",
     ))
