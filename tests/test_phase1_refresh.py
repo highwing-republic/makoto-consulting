@@ -2,7 +2,7 @@ from pathlib import Path
 
 from bs4 import BeautifulSoup
 
-from site_pages import is_published, rendered
+from site_pages import is_published, is_redirect_stub, rendered
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -16,7 +16,7 @@ def test_lab_notes_link_is_kept_out_of_headers_and_small_at_page_bottom():
     pages = []
     for path in filter(is_published, ROOT.rglob("*.html")):
         relative = path.relative_to(ROOT)
-        if {"demo", "docs", "edinet-investment-radar", "tourism-market-signal"} & set(relative.parts):
+        if {"demo", "docs", "tourism-market-signal"} & set(relative.parts) or is_redirect_stub(path):
             continue
         pages.append(path)
     assert pages
@@ -30,18 +30,14 @@ def test_lab_notes_link_is_kept_out_of_headers_and_small_at_page_bottom():
 
 def test_every_html_page_loads_the_canonical_site_shell():
     # Demo pages are standalone mock sites with their own header and footer.
-    pages = [path for path in filter(is_published, ROOT.rglob("*.html")) if not {"demo", "tourism-market-signal"} & set(path.relative_to(ROOT).parts)]
-    assert len(pages) == 65
+    pages = [path for path in filter(is_published, ROOT.rglob("*.html")) if not {"demo", "tourism-market-signal"} & set(path.relative_to(ROOT).parts) and not is_redirect_stub(path)]
+    assert len(pages) == 16
     for path in pages:
         page = BeautifulSoup(rendered(path), "html.parser")
         assert page.find("link", href="/css/site-shell.css?v=20261012shell"), path
         assert page.find("script", src="/js/site-shell.js?v=20261012shell2"), path
 
-    for name in (
-        "report.html",
-        "edinet-investment-radar/watch/index.html",
-        "edinet-investment-radar/watch/stock.html",
-    ):
+    for name in ("report.html",):
         assert soup(name).find("script", src="/js/site.js?v=20261002-shell"), name
 
     shell = (ROOT / "js" / "site-shell.js").read_text(encoding="utf-8")
@@ -68,7 +64,7 @@ def test_home_is_concise_and_groups_all_tools_by_purpose():
     ]
     for name in ("hotel-price-trends", "inbound-analysis", "dx-diagnosis", "mini-pms"):
         assert (ROOT / "images" / "thumbs" / f"{name}.svg").exists()
-    assert len(page.select("#analysis-tools .analysis-card")) == 13
+    assert len(page.select("#analysis-tools .analysis-card")) == 11
     assert len(page.select("#analysis-tools .tool-group")) == 4
     # Card wrappers are block elements: no heading, paragraph or div may sit inside a span.
     assert page.select("span h3, span p, span div") == []
@@ -83,13 +79,14 @@ def test_home_is_concise_and_groups_all_tools_by_purpose():
     assert page.find(id="ai-tools")  # old /#ai-tools links still land on the AI card
     assert page.select_one('a[href="/hotel-price-trends.html"]')
     market = page.find(id="market-tools").find_parent("section")
-    assert market.select_one('a[href="/edinet-investment-radar/watch/"]')
+    assert market.select_one('a[href="/report.html"]')
+    assert not page.select_one('a[href*="edinet-investment-radar"]')
 
 
 def test_home_is_only_tool_directory_and_legacy_page_is_removed():
     assert not (ROOT / "useful.html").exists()
     home = soup("index.html")
-    assert len(home.select("#analysis-tools .analysis-card")) == 13
+    assert len(home.select("#analysis-tools .analysis-card")) == 11
     assert home.select_one('a[href="/report.html"]')
 
     report = soup("report.html")
@@ -111,18 +108,6 @@ def test_home_is_only_tool_directory_and_legacy_page_is_removed():
         if "docs" not in relative.parts:
             assert "useful.html" not in path.read_text(encoding="utf-8"), path
     assert "useful.html" not in (ROOT / "sitemap.xml").read_text(encoding="utf-8")
-
-
-def test_edinet_radar_top_is_indexable_and_listed_while_detail_stays_noindex():
-    top = soup("edinet-investment-radar/watch/index.html")
-    assert top.find("meta", attrs={"name": "robots"})["content"] == "index,follow"
-    assert top.find("link", rel="canonical")["href"] == "https://lab.ugatta-llc.com/edinet-investment-radar/watch/"
-    assert top.select_one('a.lab-back[href="/#market-tools"]')
-    detail = soup("edinet-investment-radar/watch/stock.html")
-    assert "noindex" in detail.find("meta", attrs={"name": "robots"})["content"]
-    sitemap = (ROOT / "sitemap.xml").read_text(encoding="utf-8")
-    assert "https://lab.ugatta-llc.com/edinet-investment-radar/watch/</loc>" in sitemap
-    assert "edinet-investment-radar/watch/stock.html" not in sitemap
 
 
 def test_hotel_price_trends_has_controls_disclosures_and_rakuten_credit():
@@ -300,8 +285,8 @@ def test_supply_chart_has_four_named_quadrants_and_fixed_size_points():
 def test_lab_pages_get_the_shared_header_and_footer_at_build_time():
     # Every Lab page except the standalone demos and the synced signal report
     # is built by Jekyll from the shared includes.
-    pages = [path for path in filter(is_published, ROOT.rglob("*.html")) if not {"demo", "tourism-market-signal"} & set(path.relative_to(ROOT).parts)]
-    assert len(pages) == 65
+    pages = [path for path in filter(is_published, ROOT.rglob("*.html")) if not {"demo", "tourism-market-signal"} & set(path.relative_to(ROOT).parts) and not is_redirect_stub(path)]
+    assert len(pages) == 16
     for path in pages:
         source = path.read_text(encoding="utf-8")
         assert source.startswith("---\n"), path

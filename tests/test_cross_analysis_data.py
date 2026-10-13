@@ -151,7 +151,7 @@ def test_home_lists_tools_in_order():
     tool_ids = [
         "dx-diagnosis", "inbound", "dx-necessity", "supply-demand",
         "tourism-pressure", "market-signal", "hotel-price-trends",
-        "edinet-investment-radar", "management-issue-organizer",
+        "management-issue-organizer",
     ]
     # The featured cards above the purpose groups repeat four of these tools,
     # so the order is checked inside the "目的から選ぶ" block.

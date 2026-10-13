@@ -5,6 +5,8 @@ from pathlib import Path
 
 from bs4 import BeautifulSoup
 
+from site_pages import is_redirect_stub
+
 
 ROOT = Path(__file__).resolve().parents[1]
 SHELL_CSS = ROOT / "css" / "site-shell.css"
@@ -31,6 +33,7 @@ def public_files(*suffixes: str) -> list[Path]:
         for suffix in suffixes
         for path in ROOT.rglob(f"*{suffix}")
         if not skip & set(path.relative_to(ROOT).parts)
+        and not (suffix == ".html" and is_redirect_stub(path))
     ]
 
 
@@ -77,7 +80,7 @@ NOTO_URL = "https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;7
 def test_pages_link_web_fonts_in_head_instead_of_css_import() -> None:
     assert not re.search(r"@import\s+url", SHELL_CSS.read_text(encoding="utf-8"))
     shell_pages = [path for path in public_files(".html") if "site-shell.css" in path.read_text(encoding="utf-8")]
-    assert len(shell_pages) == 65
+    assert len(shell_pages) == 16
     for path in shell_pages:
         head = BeautifulSoup(path.read_text(encoding="utf-8"), "html.parser").head
         preconnects = [link.get("href") for link in head.find_all("link", rel="preconnect")]
@@ -129,7 +132,7 @@ def test_home_page_has_no_english_decoration() -> None:
 
 
 def test_classics_pages_keep_their_own_typography() -> None:
-    pages = list((ROOT / "classics-ai-management").rglob("*.html"))
+    pages = [path for path in (ROOT / "classics-ai-management").rglob("*.html") if not is_redirect_stub(path)]
     assert pages
     for path in pages:
         page = BeautifulSoup(path.read_text(encoding="utf-8"), "html.parser")
