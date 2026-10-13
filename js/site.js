@@ -121,11 +121,18 @@ document.addEventListener('DOMContentLoaded', function () {
       const reason = document.getElementById('analysis-reason')?.textContent.trim() || '';
       const sources = Array.from(document.querySelectorAll('#source-list dt')).map(function (node) { return node.textContent.trim(); }).join('、');
       const resultText = [title, selectedArea && `地域：${selectedArea}`, period, score && `参考スコア：${score}`, reason, sources && `出典：${sources}`, '注意：公開データに基づく参考情報であり、個別施設の成果や投資判断を保証するものではありません。'].filter(Boolean).join('\n');
-      if (!navigator.clipboard) return;
-      await navigator.clipboard.writeText(resultText);
       const original = button.textContent;
-      button.textContent = 'コピーしました';
-      window.LabAnalytics.track('result_export', { tool_id: button.dataset.toolId || '', export_type: 'copy' });
+      let copied = false;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        try {
+          await navigator.clipboard.writeText(resultText);
+          copied = true;
+        } catch (error) {
+          copied = false;
+        }
+      }
+      button.textContent = copied ? 'コピーしました' : 'コピーできませんでした';
+      if (copied) window.LabAnalytics.track('result_export', { tool_id: button.dataset.toolId || '', export_type: 'copy' });
       window.setTimeout(function () { button.textContent = original; }, 1800);
     });
   });
