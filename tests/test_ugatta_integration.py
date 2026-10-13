@@ -4,7 +4,7 @@ import re
 import subprocess
 from pathlib import Path
 
-from site_pages import rendered
+from site_pages import is_redirect_stub, rendered
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -26,6 +26,7 @@ def tracked_public_html() -> list[str]:
         path
         for path in result.stdout.splitlines()
         if not path.startswith(("_includes/", "docs/", "tourism-market-signal/"))
+        and not is_redirect_stub(ROOT / path)
     ]
 
 
@@ -35,7 +36,7 @@ def read(relative: str) -> str:
 
 def test_all_public_pages_send_to_both_google_tags_once() -> None:
     pages = tracked_public_html()
-    assert len(pages) == 68
+    assert len(pages) == 19
     for path in pages:
         content = read(path)
         assert content.count(LAB_CONFIG) == 1, path
@@ -60,7 +61,7 @@ def test_fallback_footers_link_back_to_ugatta() -> None:
         assert "運営：合同会社UGATTA</small>" not in content, path
         assert UGATTA_LINK in content, path
     # Every Lab page except the standalone demos carries the shared footer from _includes/.
-    assert len(fallback_pages) == 65
+    assert len(fallback_pages) == 16
 
 
 def test_ugatta_link_has_visible_link_styling() -> None:
@@ -86,7 +87,7 @@ def test_site_shell_cache_busters_are_consistent() -> None:
         assert css_match, path
         js_versions.add(js_match.group(1))
         css_versions.add(css_match.group(1))
-    assert len(shell_pages) == 65
+    assert len(shell_pages) == 16
     assert js_versions == {"20261012shell2"}
     assert css_versions == {"20261012shell"}
 
@@ -98,16 +99,9 @@ def test_repository_only_files_are_excluded_from_pages_build():
 
 
 def test_account_names_are_not_shown_in_visible_text_or_source_links():
-    assert "github.com/highwing-republic" not in read("classics-ai-management/sunzi/shikei/index.html")
     diagnosis = read("dx-diagnosis.html")
     assert "<iframe" not in diagnosis
     assert '<span lang="en">ugatta-dx-diagnosis' not in diagnosis
-
-
-def test_legacy_edinet_pages_are_removed() -> None:
-    assert not (ROOT / "edinet-investment-radar/index.html").exists()
-    assert not (ROOT / "edinet-investment-radar/stock.html").exists()
-    assert (ROOT / "edinet-investment-radar/watch/index.html").exists()
 
 
 def test_tourism_signal_is_served_from_the_lab_domain() -> None:

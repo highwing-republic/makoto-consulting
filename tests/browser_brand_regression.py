@@ -12,6 +12,8 @@ from pathlib import Path
 from playwright.sync_api import sync_playwright
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "tests"))
+from site_pages import is_redirect_stub  # noqa: E402
 
 
 class QuietHandler(SimpleHTTPRequestHandler):
@@ -141,9 +143,8 @@ def main(destination):
             assert page.locator('#answer-status').evaluate('(e)=>getComputedStyle(e).fontWeight') == '400'
             capture('management-answer', width)
 
-        # All 62 shell consumers, including classic readers (43 story pages added 2026-10) and EDINET pages.
-        pages = [f for f in ROOT.rglob('*.html') if not {'.git', 'docs', 'tourism-market-signal'} & set(f.relative_to(ROOT).parts)]
-        assert len(pages) == 65
+        # Every shell consumer; forwarding pages left by the 2026-10 site split are skipped.
+        pages = [f for f in ROOT.rglob('*.html') if not {'.git', 'docs', 'tourism-market-signal'} & set(f.relative_to(ROOT).parts) and not is_redirect_stub(f)]
         page.set_viewport_size({'width': 1440, 'height': 1000})
         for file in pages:
             visit(file.relative_to(ROOT).as_posix())

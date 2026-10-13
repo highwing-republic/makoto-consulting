@@ -44,6 +44,11 @@ def is_published(path: Path) -> bool:
     return not any(part.startswith(("_", ".")) for part in path.relative_to(ROOT).parts)
 
 
+def is_redirect_stub(path: Path) -> bool:
+    """Pages moved to another subdomain leave a small forwarding page behind."""
+    return '<meta http-equiv="refresh"' in path.read_text(encoding="utf-8")
+
+
 def rendered(path: Path | str) -> str:
     path = ROOT / path
     text = path.read_text(encoding="utf-8")
