@@ -132,6 +132,22 @@ table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}
 .empty{color:var(--muted);font-size:12px;padding:4px 2px}
 footer.note{max-width:1100px;margin:14px auto 0;color:var(--muted);font-size:11px}
 .msg{font-size:12px;color:var(--warn);min-height:1.2em}
+.guide summary{cursor:pointer;font-weight:700;font-size:15px;list-style-position:outside}
+.guide summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.guide .gbody{display:flex;flex-direction:column;gap:14px;margin-top:12px}
+.guide h3{font-size:13px;margin:0 0 6px;color:var(--accent)}
+.guide p,.guide ul,.guide ol{margin:0}
+.guide ul,.guide ol{padding-left:1.4em}
+.guide li+li{margin-top:3px}
+.guide .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.guide .box{border:1px solid var(--line);border-radius:8px;padding:10px 12px;min-width:0}
+.guide .box.can{border-left:4px solid var(--accent)}
+.guide .box.cannot{border-left:4px solid var(--warn)}
+.guide table td,.guide table th{border-bottom:1px solid var(--line);padding:5px 8px;font-size:13px;text-align:left;vertical-align:top}
+.guide table th{color:var(--muted);font-size:11px;font-weight:600;white-space:nowrap}
+.guide table td:first-child{white-space:nowrap}
+.guide .resetrow{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.guide .resetrow .note{font-size:12px;color:var(--muted)}
 @media (max-width:640px){ .res-table .hide-sm{display:none} }
 </style>
 </head>
@@ -146,6 +162,92 @@ footer.note{max-width:1100px;margin:14px auto 0;color:var(--muted);font-size:11p
 </header>
 
 <main>
+  <section class="panel guide" aria-labelledby="guideTitle">
+    <details id="guide" open>
+      <summary id="guideTitle">このデモの使い方（できること・できないこと）</summary>
+      <div class="gbody">
+        <p>ホテルの予約管理システム（PMS）で毎日行う「予約を受ける → 部屋を割り当てる → チェックイン → 客室の状況を見る → チェックアウト」の流れを、架空のホテル（全20室）で試せるデモです。インストールやログインは不要で、このページの中だけで動きます。最初からサンプルの予約が8件入っています。</p>
+
+        <div>
+          <h3>試してみる流れ（約3分）</h3>
+          <ol>
+            <li><b>予約</b>タブの「新規予約」に宿泊者名・日付・人数を入れて「予約を登録」を押します。右の予約一覧に「未割当」で載ります。</li>
+            <li>一覧の「割当」を押すと<b>部屋割り</b>タブに移り、入れる空き部屋が緑色に光ります。緑のマスを押すと、その部屋に決まります。まとめて決めたいときは「未割当を自動割当」を押します。</li>
+            <li><b>予約</b>タブに戻り、今日到着の予約の「チェックイン」を押します。</li>
+            <li><b>客室状況表</b>タブで、今日の各部屋が「在室」「本日到着」「ブロック」「空室」のどれかを色で確かめます。</li>
+            <li><b>当日台帳</b>タブで、その日の「本日到着」「滞在中」「本日出発」の一覧を確かめます。日付を変えると、ほかの日も見られます。</li>
+            <li>出発するお客様は、<b>予約</b>タブの「チェックアウト」を押します。</li>
+          </ol>
+        </div>
+
+        <div>
+          <h3>各画面でできること</h3>
+          <div style="overflow-x:auto">
+          <table>
+            <thead><tr><th>画面</th><th>できること</th></tr></thead>
+            <tbody>
+              <tr><td><b>予約</b></td><td>予約の登録（宿泊者名・人数1〜6名・チェックイン／アウト日・部屋タイプの希望・メモ）。一覧から割当・部屋変更・チェックイン・チェックアウト・キャンセル。「キャンセルも表示」にチェックすると取り消した予約も見られ、キャンセル済のものだけ削除できます。</td></tr>
+              <tr><td><b>部屋割り</b></td><td>今日から14日間の部屋ごとの予定表。予約の帯を押して選び「割当解除」や別の部屋への変更、「未割当を自動割当」。故障などで売れない部屋を「部屋ブロック」で期間を決めて止める・帯を押して「ブロック解除」。点線の帯は到着前、塗りつぶしの帯はチェックイン済、斜線はブロックです。</td></tr>
+              <tr><td><b>客室状況表</b></td><td>今日の全20室の状態を階ごとにカードで一覧。在室・本日出発・本日到着・ブロック・空室が色で分かります。</td></tr>
+              <tr><td><b>当日台帳</b></td><td>選んだ日の到着・滞在中・出発を部屋番号順に一覧。部屋・状態・人数・日程・メモを1画面で確認できます。</td></tr>
+            </tbody>
+          </table>
+          </div>
+        </div>
+
+        <div class="cols">
+          <div class="box can">
+            <h3>このデモでできること</h3>
+            <ul>
+              <li>予約の登録・キャンセルと、予約 → チェックイン済 → チェックアウト済 の状態管理</li>
+              <li>手での部屋割りと自動割当、部屋の変更・割当解除</li>
+              <li>人数が定員を超える部屋や、滞在中に1泊でもふさがっている部屋を候補から外す空き判定（画面に見えない15日目以降も含めて判定）</li>
+              <li>割り当てられないときに、理由（定員・部屋タイプ・空きなし）を表示</li>
+              <li>部屋ブロック（販売止め）の追加と解除</li>
+              <li>今日の客室状況表と、日付を選べる当日台帳</li>
+              <li>パソコン・タブレット・スマートフォンでの表示</li>
+            </ul>
+          </div>
+          <div class="box cannot">
+            <h3>このデモでできないこと</h3>
+            <ul>
+              <li>料金の設定・計算、精算（会計）、領収書・請求書の発行</li>
+              <li>楽天トラベルなどの予約サイトやサイトコントローラーとの連携（予約の自動取り込み）</li>
+              <li>登録した予約の宿泊者名・日付・人数の修正（キャンセルして登録し直します）</li>
+              <li>チェックイン・チェックアウトの取り消し</li>
+              <li>清掃状況の管理、顧客台帳、売上・稼働率の集計、印刷・CSV出力</li>
+              <li>複数の人・複数の端末でのデータ共有、ログインや権限の管理</li>
+              <li>部屋数・部屋タイプの変更（架空ホテルの20室で固定）</li>
+            </ul>
+          </div>
+        </div>
+
+        <div>
+          <h3>自動割当のルール（デモ用）</h3>
+          <ul>
+            <li>到着日の早い予約から順に割り当てます。</li>
+            <li>部屋タイプの希望があれば、そのタイプの部屋だけを候補にします。</li>
+            <li>人数が定員を超える部屋と、滞在中にブロックや別の予約がある部屋は候補から外します。</li>
+            <li>部屋タイプの指定がない7泊以上の長期滞在は、シングル → ツインの順で優先します。</li>
+          </ul>
+        </div>
+
+        <div>
+          <h3>データについて</h3>
+          <ul>
+            <li>入力した内容は、お使いのブラウザの中だけに保存されます。サーバーには送られず、ほかの人からは見えません。同じブラウザで開き直すと続きから使えます。</li>
+            <li>デモのため、<b>実在のお客様の名前や連絡先は入力しないでください。</b></li>
+            <li>サンプルの予約は、最初に開いた日を基準に作られます。日がたって日付がずれたときや、最初からやり直したいときは、下のボタンで元に戻せます。</li>
+          </ul>
+          <div class="resetrow" style="margin-top:8px">
+            <button class="btn small" type="button" id="btnReset">サンプルデータに戻す</button>
+            <span class="note">入力した予約・ブロックはすべて消え、今日の日付でサンプルを作り直します。</span>
+          </div>
+        </div>
+      </div>
+    </details>
+  </section>
+
   <nav class="tabs" role="tablist">
     <button role="tab" aria-selected="true" data-tab="res">予約</button>
     <button role="tab" aria-selected="false" data-tab="grid">部屋割り</button>
@@ -614,6 +716,14 @@ function switchTab(id){
 document.querySelectorAll("nav.tabs button").forEach(b =>
   b.addEventListener("click", () => switchTab(b.dataset.tab)));
 function renderAll(){ renderRes(); renderGrid(); renderBoard(); renderLedger(); }
+
+document.getElementById("btnReset").addEventListener("click", () => {
+  if(!confirm("入力した予約・ブロックをすべて消して、サンプルデータに戻しますか？")) return;
+  try{ localStorage.removeItem("mini-pms-v3"); }catch(e){}
+  state = seed(); selectedId = null; selectedBlockId = null;
+  document.getElementById("gridMsg").textContent = "";
+  save(); renderAll();
+});
 
 state = load();
 setDefaultDates();
