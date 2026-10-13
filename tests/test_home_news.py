@@ -40,7 +40,7 @@ def test_initial_news_records_are_valid_and_point_to_published_pages():
 def test_news_styles_include_desktop_and_768px_mobile_layouts():
     assert not (ROOT / "css" / "home-theme.css").exists()  # merged into home.css
     css = (ROOT / "css" / "home.css").read_text(encoding="utf-8")
-    assert ".news-list__category--new{background:#ffe2c5;color:#b74400;font-weight:700}" in css
+    assert ".news-list__category--new{background:#ffe2c5;color:#a63d00;font-weight:700}" in css
     assert ".news-list__category--update{background:#d8e3ee;color:#284767;font-weight:700}" in css
     assert ".home-news__grid{display:grid;grid-template-columns:220px minmax(0,1fr)" in css
     assert "@media(max-width:768px)" in css

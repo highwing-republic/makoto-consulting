@@ -111,7 +111,8 @@ button,input{font:inherit}
 .article-body h3{margin:32px 0 12px;color:var(--green);font-family:var(--serif);font-size:1.25rem}
 .source-block{padding:32px;border-left:4px solid var(--green);background:var(--wash)}
 .source-block blockquote{margin:0;font-family:var(--zh);font-size:1.2rem;line-height:2.05}
-.vertical-text-wrap{max-width:100%;overflow-x:auto;overflow-y:hidden;padding:4px 0 12px;direction:rtl;overscroll-behavior-inline:contain}
+main a{overflow-wrap:anywhere}
+.vertical-text-wrap{max-width:100%;overflow-x:auto;overflow-y:hidden;outline-offset:4px;padding:4px 0 12px;direction:rtl;overscroll-behavior-inline:contain}
 .source-block .vertical-original{width:max-content;min-width:100%;height:36rem;padding:0 8px 12px;direction:ltr;writing-mode:vertical-rl;text-orientation:upright;white-space:normal;line-break:strict;letter-spacing:.08em;line-height:2.15}
 .vertical-original .original-paragraph{display:block;margin-left:1.6em}
 .source-status{margin:0;color:var(--muted);font-size:.85rem}
