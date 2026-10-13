@@ -132,22 +132,34 @@ table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}
 .empty{color:var(--muted);font-size:12px;padding:4px 2px}
 footer.note{max-width:1100px;margin:14px auto 0;color:var(--muted);font-size:11px}
 .msg{font-size:12px;color:var(--warn);min-height:1.2em}
-.guide summary{cursor:pointer;font-weight:700;font-size:15px;list-style-position:outside}
-.guide summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.guide .gbody{display:flex;flex-direction:column;gap:14px;margin-top:12px}
-.guide h3{font-size:13px;margin:0 0 6px;color:var(--accent)}
-.guide p,.guide ul,.guide ol{margin:0}
-.guide ul,.guide ol{padding-left:1.4em}
-.guide li+li{margin-top:3px}
-.guide .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
-.guide .box{border:1px solid var(--line);border-radius:8px;padding:10px 12px;min-width:0}
-.guide .box.can{border-left:4px solid var(--accent)}
-.guide .box.cannot{border-left:4px solid var(--warn)}
-.guide table td,.guide table th{border-bottom:1px solid var(--line);padding:5px 8px;font-size:13px;text-align:left;vertical-align:top}
-.guide table th{color:var(--muted);font-size:11px;font-weight:600;white-space:nowrap}
-.guide table td:first-child{white-space:nowrap}
-.guide .resetrow{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
-.guide .resetrow .note{font-size:12px;color:var(--muted)}
+/* 上段：一言＋4ステップ / 下段：詳しい説明（カード） */
+.intro{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;padding:10px 14px}
+.intro .lead{font-size:13px;margin:0;flex:1 1 320px}
+.intro .lead a{color:var(--accent)}
+.steps{display:flex;flex-wrap:wrap;gap:6px;margin:0;padding:0;list-style:none}
+.steps li{display:inline-flex;align-items:center;gap:6px;font-size:12px;background:var(--bg);border:1px solid var(--line);border-radius:999px;padding:3px 10px 3px 4px;white-space:nowrap}
+.steps li i{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;background:var(--accent);color:#fff;font-style:normal;font-size:11px;font-weight:700}
+.howto{max-width:1100px;margin:28px auto 0}
+.howto h2{font-size:16px;margin:0 0 4px}
+.howto .sub{font-size:12px;color:var(--muted);margin:0 0 14px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-bottom:14px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:12px 14px;min-width:0}
+.card h3{font-size:13px;margin:0 0 6px;display:flex;align-items:center;gap:6px}
+.card h3 .tag{font-size:10px;font-weight:600;color:var(--accent);background:var(--accent-soft);border-radius:4px;padding:1px 6px;letter-spacing:.04em}
+.card p{margin:0;font-size:12px;color:var(--muted)}
+.card ul{margin:0;padding-left:1.2em;font-size:12px}
+.card li+li{margin-top:3px}
+.card.can{border-top:4px solid var(--accent)}
+.card.cannot{border-top:4px solid var(--warn)}
+.card.can h3{color:var(--accent)}
+.card.cannot h3{color:var(--warn)}
+.card.wide{grid-column:1/-1}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips span{font-size:12px;border-radius:999px;padding:2px 10px;background:var(--bg);border:1px solid var(--line)}
+.card.can .chips span{background:var(--accent-soft);border-color:transparent;color:var(--accent)}
+.card.cannot .chips span{background:var(--warn-soft);border-color:transparent;color:var(--warn)}
+.resetrow{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:8px}
+.resetrow .note{font-size:12px;color:var(--muted)}
 @media (max-width:640px){ .res-table .hide-sm{display:none} }
 </style>
 </head>
@@ -162,90 +174,14 @@ footer.note{max-width:1100px;margin:14px auto 0;color:var(--muted);font-size:11p
 </header>
 
 <main>
-  <section class="panel guide" aria-labelledby="guideTitle">
-    <details id="guide" open>
-      <summary id="guideTitle">このデモの使い方（できること・できないこと）</summary>
-      <div class="gbody">
-        <p>ホテルの予約管理システム（PMS）で毎日行う「予約を受ける → 部屋を割り当てる → チェックイン → 客室の状況を見る → チェックアウト」の流れを、架空のホテル（全20室）で試せるデモです。インストールやログインは不要で、このページの中だけで動きます。最初からサンプルの予約が8件入っています。</p>
-
-        <div>
-          <h3>試してみる流れ（約3分）</h3>
-          <ol>
-            <li><b>予約</b>タブの「新規予約」に宿泊者名・日付・人数を入れて「予約を登録」を押します。右の予約一覧に「未割当」で載ります。</li>
-            <li>一覧の「割当」を押すと<b>部屋割り</b>タブに移り、入れる空き部屋が緑色に光ります。緑のマスを押すと、その部屋に決まります。まとめて決めたいときは「未割当を自動割当」を押します。</li>
-            <li><b>予約</b>タブに戻り、今日到着の予約の「チェックイン」を押します。</li>
-            <li><b>客室状況表</b>タブで、今日の各部屋が「在室」「本日到着」「ブロック」「空室」のどれかを色で確かめます。</li>
-            <li><b>当日台帳</b>タブで、その日の「本日到着」「滞在中」「本日出発」の一覧を確かめます。日付を変えると、ほかの日も見られます。</li>
-            <li>出発するお客様は、<b>予約</b>タブの「チェックアウト」を押します。</li>
-          </ol>
-        </div>
-
-        <div>
-          <h3>各画面でできること</h3>
-          <div style="overflow-x:auto">
-          <table>
-            <thead><tr><th>画面</th><th>できること</th></tr></thead>
-            <tbody>
-              <tr><td><b>予約</b></td><td>予約の登録（宿泊者名・人数1〜6名・チェックイン／アウト日・部屋タイプの希望・メモ）。一覧から割当・部屋変更・チェックイン・チェックアウト・キャンセル。「キャンセルも表示」にチェックすると取り消した予約も見られ、キャンセル済のものだけ削除できます。</td></tr>
-              <tr><td><b>部屋割り</b></td><td>今日から14日間の部屋ごとの予定表。予約の帯を押して選び「割当解除」や別の部屋への変更、「未割当を自動割当」。故障などで売れない部屋を「部屋ブロック」で期間を決めて止める・帯を押して「ブロック解除」。点線の帯は到着前、塗りつぶしの帯はチェックイン済、斜線はブロックです。</td></tr>
-              <tr><td><b>客室状況表</b></td><td>今日の全20室の状態を階ごとにカードで一覧。在室・本日出発・本日到着・ブロック・空室が色で分かります。</td></tr>
-              <tr><td><b>当日台帳</b></td><td>選んだ日の到着・滞在中・出発を部屋番号順に一覧。部屋・状態・人数・日程・メモを1画面で確認できます。</td></tr>
-            </tbody>
-          </table>
-          </div>
-        </div>
-
-        <div class="cols">
-          <div class="box can">
-            <h3>このデモでできること</h3>
-            <ul>
-              <li>予約の登録・キャンセルと、予約 → チェックイン済 → チェックアウト済 の状態管理</li>
-              <li>手での部屋割りと自動割当、部屋の変更・割当解除</li>
-              <li>人数が定員を超える部屋や、滞在中に1泊でもふさがっている部屋を候補から外す空き判定（画面に見えない15日目以降も含めて判定）</li>
-              <li>割り当てられないときに、理由（定員・部屋タイプ・空きなし）を表示</li>
-              <li>部屋ブロック（販売止め）の追加と解除</li>
-              <li>今日の客室状況表と、日付を選べる当日台帳</li>
-              <li>パソコン・タブレット・スマートフォンでの表示</li>
-            </ul>
-          </div>
-          <div class="box cannot">
-            <h3>このデモでできないこと</h3>
-            <ul>
-              <li>料金の設定・計算、精算（会計）、領収書・請求書の発行</li>
-              <li>楽天トラベルなどの予約サイトやサイトコントローラーとの連携（予約の自動取り込み）</li>
-              <li>登録した予約の宿泊者名・日付・人数の修正（キャンセルして登録し直します）</li>
-              <li>チェックイン・チェックアウトの取り消し</li>
-              <li>清掃状況の管理、顧客台帳、売上・稼働率の集計、印刷・CSV出力</li>
-              <li>複数の人・複数の端末でのデータ共有、ログインや権限の管理</li>
-              <li>部屋数・部屋タイプの変更（架空ホテルの20室で固定）</li>
-            </ul>
-          </div>
-        </div>
-
-        <div>
-          <h3>自動割当のルール（デモ用）</h3>
-          <ul>
-            <li>到着日の早い予約から順に割り当てます。</li>
-            <li>部屋タイプの希望があれば、そのタイプの部屋だけを候補にします。</li>
-            <li>人数が定員を超える部屋と、滞在中にブロックや別の予約がある部屋は候補から外します。</li>
-            <li>部屋タイプの指定がない7泊以上の長期滞在は、シングル → ツインの順で優先します。</li>
-          </ul>
-        </div>
-
-        <div>
-          <h3>データについて</h3>
-          <ul>
-            <li>入力した内容は、お使いのブラウザの中だけに保存されます。サーバーには送られず、ほかの人からは見えません。同じブラウザで開き直すと続きから使えます。</li>
-            <li>デモのため、<b>実在のお客様の名前や連絡先は入力しないでください。</b></li>
-            <li>サンプルの予約は、最初に開いた日を基準に作られます。日がたって日付がずれたときや、最初からやり直したいときは、下のボタンで元に戻せます。</li>
-          </ul>
-          <div class="resetrow" style="margin-top:8px">
-            <button class="btn small" type="button" id="btnReset">サンプルデータに戻す</button>
-            <span class="note">入力した予約・ブロックはすべて消え、今日の日付でサンプルを作り直します。</span>
-          </div>
-        </div>
-      </div>
-    </details>
+  <section class="panel intro" aria-label="このデモについて">
+    <p class="lead">架空ホテル（全20室）で、予約から部屋割り・チェックイン・チェックアウトまでを試せます。サンプルの予約が入っているので、そのまま触ってみてください。<a href="#howto">詳しい説明は下へ ↓</a></p>
+    <ol class="steps">
+      <li><i>1</i>予約を登録</li>
+      <li><i>2</i>「割当」で部屋を決める</li>
+      <li><i>3</i>チェックイン</li>
+      <li><i>4</i>状況表・台帳で確認</li>
+    </ol>
   </section>
 
   <nav class="tabs" role="tablist">
@@ -341,13 +277,31 @@ footer.note{max-width:1100px;margin:14px auto 0;color:var(--muted);font-size:11p
   </section>
 </main>
 
-<footer class="note">
-  架空ホテル（2〜5階・各階5室＝ツイン2／シングル2／和室1、全20室）のデモです。
-  部屋の空きは滞在期間の全泊（画面に見えない先の日程を含む）で判定します。
-  予約は「予約→チェックイン済→チェックアウト済」のステータスで管理し、キャンセルは履歴として残ります（削除はキャンセル済のみ可）。
-  自動割当ルール（デモ用）：7泊以上の長期滞在はシングル→ツインの順で優先／人数が定員を超える部屋は候補外／ブロック中の部屋は候補外。
-  表示順は 5階→4階→3階→2階。料金・精算・OTA連携は含みません。
-</footer>
+<section class="howto" id="howto" aria-labelledby="howtoTitle">
+  <h2 id="howtoTitle">このデモの使い方</h2>
+  <p class="sub">インストールやログインは不要。入力した内容はこのブラウザの中だけに保存され、ほかの人には見えません。</p>
+
+  <div class="cards">
+    <div class="card"><h3><span class="tag">予約</span>予約を受ける</h3><p>宿泊者名・日付・人数を入れて「予約を登録」。一覧から割当・チェックイン・チェックアウト・キャンセルができます。</p></div>
+    <div class="card"><h3><span class="tag">部屋割り</span>部屋を決める</h3><p>今日から14日間の予定表。「割当」を押すと入れる部屋が緑に光るので、クリックで確定。「未割当を自動割当」でまとめて決められます。</p></div>
+    <div class="card"><h3><span class="tag">部屋割り</span>部屋を止める</h3><p>故障などで売れない部屋は「部屋ブロック」で期間を決めて止めます。斜線の帯がブロックで、帯を押すと解除できます。</p></div>
+    <div class="card"><h3><span class="tag">客室状況表</span>今日の部屋を見る</h3><p>全20室を階ごとにカードで表示。在室・本日到着・本日出発・ブロック・空室が色で分かります。</p></div>
+    <div class="card"><h3><span class="tag">当日台帳</span>その日の一覧</h3><p>選んだ日の「本日到着」「滞在中」「本日出発」を部屋番号順に表示。日付を変えると先の日も見られます。</p></div>
+    <div class="card"><h3><span class="tag">自動割当</span>割当のルール</h3><ul><li>到着日の早い予約から順に</li><li>人数が定員を超える部屋は外す</li><li>滞在中にふさがる日がある部屋は外す</li><li>希望タイプがあればそのタイプだけ</li><li>7泊以上はシングル → ツインを優先</li></ul></div>
+  </div>
+
+  <div class="cards">
+    <div class="card can"><h3>できること</h3><div class="chips"><span>予約の登録・キャンセル</span><span>手動／自動の部屋割り</span><span>部屋変更・割当解除</span><span>チェックイン／アウト</span><span>部屋ブロック</span><span>空き判定（先の日程も含む）</span><span>今日の客室状況表</span><span>日付を選べる当日台帳</span><span>スマホ・タブレット表示</span></div></div>
+    <div class="card cannot"><h3>できないこと</h3><div class="chips"><span>料金・精算・領収書</span><span>予約サイト（OTA）連携</span><span>登録後の予約の修正</span><span>チェックイン／アウトの取り消し</span><span>清掃管理</span><span>顧客台帳</span><span>売上・稼働率の集計</span><span>印刷・CSV出力</span><span>複数人でのデータ共有</span><span>部屋数・タイプの変更</span></div></div>
+  </div>
+
+  <div class="cards">
+    <div class="card wide"><h3>データについて</h3><p>サンプルの予約は最初に開いた日を基準に作られます。日付がずれたときや最初からやり直したいときは、ここで戻せます。デモのため、実在のお客様の名前や連絡先は入力しないでください。</p>
+      <div class="resetrow"><button class="btn small" type="button" id="btnReset">サンプルデータに戻す</button><span class="note">入力した予約・ブロックはすべて消え、今日の日付でサンプルを作り直します。</span></div></div>
+  </div>
+</section>
+
+<footer class="note">架空ホテル（2〜5階・各階5室＝ツイン2／シングル2／和室1、全20室）のデモです。表示順は 5階→4階→3階→2階。料金・精算・OTA連携は含みません。</footer>
 
 <script>
 "use strict";
