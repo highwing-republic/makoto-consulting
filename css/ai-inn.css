@@ -85,6 +85,7 @@
 .ai-cta{display:flex;align-items:center;justify-content:space-between;gap:28px;padding:30px 32px;border:1px solid var(--lab-border);border-radius:14px;background:#fff}
 .ai-cta p{max-width:640px;margin:0;color:var(--lab-ink-soft);font-size:14px;line-height:1.9}
 .ai-cta .button{flex:none}
+.ai-cta .ai-cta__pending,.ai-cta .ai-cta__pending:hover{border-color:var(--lab-border);background:var(--lab-surface-soft);color:var(--lab-ink-soft);box-shadow:none;cursor:default;transform:none}
 
 /* 対策前と対策後 */
 .ai-kpi dd .ai-before{margin:0;color:var(--lab-ink-soft);font-size:20px;font-weight:500;font-variant-numeric:tabular-nums}

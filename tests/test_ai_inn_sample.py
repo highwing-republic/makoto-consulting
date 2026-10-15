@@ -252,6 +252,15 @@ def test_demo_language_pages_point_to_each_other() -> None:
             assert (ROOT / image["src"].lstrip("/")).exists(), image["src"]
 
 
+
+def test_inquiry_button_is_marked_as_in_preparation() -> None:
+    # Diagnosis requests are not open yet: the button says so and leads nowhere.
+    cta = page().select_one("#request .ai-cta")
+    assert "診断について問い合わせる（準備中）" in cta.get_text()
+    assert "準備中" in cta.p.get_text() and "お問い合わせください" not in cta.get_text()
+    assert not cta.find("a")
+
+
 def test_sample_styles_follow_the_lab_brand_rules() -> None:
     css = read("css/ai-inn.css")
     assert "--data-self" not in css and "--gold" not in css
