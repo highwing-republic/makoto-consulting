@@ -6,8 +6,11 @@
   if (!model || !app) return;
 
   let step = 1;
+  let page = 0;
   let facility = Object.assign({}, model.initialFacility);
-  let answers = model.defaultAnswers();
+  // 初期選択はしない。未回答のまま進もうとしたら、その質問へ案内する。
+  let answers = {};
+  let missing = [];
   let result = null;
   let errors = {};
 
@@ -17,7 +20,7 @@
       return { "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;" }[character];
     });
   };
-  const stepNames = ["施設情報", "16の質問", "診断結果"];
+  const stepNames = ["16の質問", "施設の規模", "診断結果"];
   const CONTACT_URL = "https://forms.gle/yjinqFdntoXhTmgk7";
 
   function track(eventName) {
@@ -44,24 +47,36 @@
     return [hintId, errors[field] ? "error-" + field : ""].filter(Boolean).join(" ");
   }
 
+  function rangeField(name, id, label, hint, value) {
+    return '<div class="dx-field dx-range-field"><label for="' + id + '"><span>' + label + '</span><output id="' + id + '-output" for="' + id + '">' + value + '%</output></label><input id="' + id + '" name="' + name + '" type="range" min="0" max="100" step="1" value="' + value + '"' + invalidAttr(name) + ' aria-describedby="' + fieldDescribedBy(name, "hint-" + name) + '"><small id="hint-' + name + '">' + hint + '</small>' + errorText(name) + '</div>';
+  }
+
   function renderFacility() {
+    const optionalOpen = errors.adr || errors.occupancy || errors.hourlyCost;
     app.innerHTML = stepper() + '<section class="dx-panel dx-facility" aria-labelledby="dx-step-heading">' +
-      '<div class="dx-panel-heading"><h3 id="dx-step-heading" tabindex="-1">まず、施設のことを教えてください</h3><p>分かる範囲のおおよその数字で大丈夫です。</p></div>' +
-      '<p class="dx-privacy-note"><strong>このページ内で完結します</strong>入力内容はこのブラウザの中だけで計算し、送信・保存しません。施設名は任意です。</p>' +
+      '<div class="dx-panel-heading"><h3 id="dx-step-heading" tabindex="-1">あと少しです。施設の規模を教えてください</h3><p>作業時間の目安とOTA比率の確認に使います。おおよその数字で大丈夫です。</p></div>' +
+      '<p class="dx-privacy-note"><strong>このページ内で完結します</strong>入力内容はこのブラウザの中だけで計算し、送信・保存しません。</p>' +
       '<form id="dx-facility-form" novalidate><div class="dx-form-grid">' +
-      '<label class="dx-field dx-field--wide"><span>施設名 <small>任意</small></span><input name="name" type="text" maxlength="80" autocomplete="organization" value="' + escapeHtml(facility.name) + '"></label>' +
-      '<label class="dx-field"><span>客室数</span><span class="dx-input-unit"><input name="rooms" type="number" min="1" max="1000" step="1" required value="' + facility.rooms + '"' + invalidAttr("rooms") + ' aria-describedby="' + fieldDescribedBy("rooms", "hint-rooms") + '"><b>室</b></span><small id="hint-rooms">販売している客室のおおよその数</small>' + errorText("rooms") + '</label>' +
-      '<label class="dx-field"><span>従業員数</span><span class="dx-input-unit"><input name="employees" type="number" min="1" max="5000" step="1" required value="' + facility.employees + '"' + invalidAttr("employees") + ' aria-describedby="' + fieldDescribedBy("employees", "hint-employees") + '"><b>人</b></span><small id="hint-employees">正社員・パートを合わせた目安</small>' + errorText("employees") + '</label>' +
-      '<label class="dx-field"><span>平均客室単価（ADR）</span><span class="dx-input-unit"><input name="adr" type="number" min="0" max="500000" step="100" required value="' + facility.adr + '"' + invalidAttr("adr") + ' aria-describedby="' + fieldDescribedBy("adr", "hint-adr") + '"><b>円</b></span><small id="hint-adr">客室売上 ÷ 販売した客室数</small>' + errorText("adr") + '</label>' +
-      '<div class="dx-field dx-range-field"><label for="dx-occupancy"><span>客室稼働率</span><output id="dx-occupancy-output" for="dx-occupancy">' + facility.occupancy + '%</output></label><input id="dx-occupancy" name="occupancy" type="range" min="0" max="100" step="1" value="' + facility.occupancy + '"' + invalidAttr("occupancy") + ' aria-describedby="' + fieldDescribedBy("occupancy", "hint-occupancy") + '"><small id="hint-occupancy">参考RevPARは ADR × 客室稼働率</small>' + errorText("occupancy") + '</div>' +
-      '<div class="dx-field dx-range-field"><label for="dx-ota-ratio"><span>OTA比率</span><output id="dx-ota-output" for="dx-ota-ratio">' + facility.otaRatio + '%</output></label><input id="dx-ota-ratio" name="otaRatio" type="range" min="0" max="100" step="1" value="' + facility.otaRatio + '"' + invalidAttr("otaRatio") + ' aria-describedby="' + fieldDescribedBy("otaRatio", "hint-ota") + '"><small id="hint-ota">じゃらん・楽天・Booking.comなど</small>' + errorText("otaRatio") + '</div>' +
-      '</div><details class="dx-details"' + (errors.hourlyCost ? " open" : "") + '><summary>詳細設定</summary><label class="dx-field"><span>人件費の目安（1時間）</span><span class="dx-input-unit"><input name="hourlyCost" type="number" min="500" max="10000" step="100" required value="' + facility.hourlyCost + '"' + invalidAttr("hourlyCost") + ' aria-describedby="' + fieldDescribedBy("hourlyCost", "hint-hourly") + '"><b>円</b></span><small id="hint-hourly">改善できそうな作業時間の人件費換算に使います</small>' + errorText("hourlyCost") + '</label></details>' +
-      '<div class="dx-revpar"><span>現在の参考RevPAR</span><strong id="dx-revpar-value">¥' + formatNumber(model.revpar(facility)) + '</strong><small>ADR × 客室稼働率</small></div>' +
-      '<div class="dx-actions dx-actions--end"><button class="button" type="submit">16の質問へ進む <span aria-hidden="true">→</span></button></div></form></section>';
+      '<label class="dx-field"><span>客室数</span><span class="dx-input-unit"><input name="rooms" type="number" inputmode="numeric" min="1" max="1000" step="1" required value="' + facility.rooms + '"' + invalidAttr("rooms") + ' aria-describedby="' + fieldDescribedBy("rooms", "hint-rooms") + '"><b>室</b></span><small id="hint-rooms">販売している客室のおおよその数</small>' + errorText("rooms") + '</label>' +
+      '<label class="dx-field"><span>従業員数</span><span class="dx-input-unit"><input name="employees" type="number" inputmode="numeric" min="1" max="5000" step="1" required value="' + facility.employees + '"' + invalidAttr("employees") + ' aria-describedby="' + fieldDescribedBy("employees", "hint-employees") + '"><b>人</b></span><small id="hint-employees">正社員・パートを合わせた目安</small>' + errorText("employees") + '</label>' +
+      rangeField("otaRatio", "dx-ota-ratio", "OTA比率", "じゃらん・楽天・Booking.comなどを経由した予約の割合", facility.otaRatio) +
+      '</div><details class="dx-details"' + (optionalOpen ? " open" : "") + '><summary>施設名・売上指標・人件費も入れる（任意）</summary><div class="dx-form-grid">' +
+      '<label class="dx-field dx-field--wide"><span>施設名</span><input name="name" type="text" maxlength="80" autocomplete="organization" value="' + escapeHtml(facility.name) + '"><small>結果の見出しに表示します</small></label>' +
+      '<label class="dx-field"><span>平均客室単価（ADR）</span><span class="dx-input-unit"><input name="adr" type="number" inputmode="numeric" min="0" max="500000" step="100" required value="' + facility.adr + '"' + invalidAttr("adr") + ' aria-describedby="' + fieldDescribedBy("adr", "hint-adr") + '"><b>円</b></span><small id="hint-adr">客室売上 ÷ 販売した客室数。参考RevPARの計算に使います</small>' + errorText("adr") + '</label>' +
+      rangeField("occupancy", "dx-occupancy", "客室稼働率", "参考RevPARは ADR × 客室稼働率", facility.occupancy) +
+      '<label class="dx-field"><span>人件費の目安（1時間）</span><span class="dx-input-unit"><input name="hourlyCost" type="number" inputmode="numeric" min="500" max="10000" step="100" required value="' + facility.hourlyCost + '"' + invalidAttr("hourlyCost") + ' aria-describedby="' + fieldDescribedBy("hourlyCost", "hint-hourly") + '"><b>円</b></span><small id="hint-hourly">改善できそうな作業時間の人件費換算に使います</small>' + errorText("hourlyCost") + '</label>' +
+      '</div></details>' +
+      '<div class="dx-actions"><button class="button button--outline" type="button" data-back>質問に戻る</button><button class="button" type="submit">診断結果を見る <span aria-hidden="true">→</span></button></div></form></section>';
 
     const form = document.getElementById("dx-facility-form");
-    ["occupancy", "otaRatio", "adr"].forEach(function (name) {
+    ["occupancy", "otaRatio"].forEach(function (name) {
       form.elements[name].addEventListener("input", updateLiveMetrics);
+    });
+    form.querySelector("[data-back]").addEventListener("click", function () {
+      facility = readFacility(form);
+      errors = {};
+      page = model.categories.length - 1;
+      goToStep(1);
     });
     form.addEventListener("submit", submitFacility);
   }
@@ -82,8 +97,7 @@
     const form = event.currentTarget.form || document.getElementById("dx-facility-form");
     const current = readFacility(form);
     document.getElementById("dx-occupancy-output").textContent = current.occupancy + "%";
-    document.getElementById("dx-ota-output").textContent = current.otaRatio + "%";
-    document.getElementById("dx-revpar-value").textContent = Number.isFinite(current.adr) ? "¥" + formatNumber(model.revpar(current)) : "—";
+    document.getElementById("dx-ota-ratio-output").textContent = current.otaRatio + "%";
   }
 
   function submitFacility(event) {
@@ -96,29 +110,76 @@
       if (firstInvalid) firstInvalid.focus();
       return;
     }
-    track("analysis_run");
-    goToStep(2);
+    result = model.buildResult(answers, facility);
+    track("analysis_result_view");
+    goToStep(3);
+  }
+
+  function answeredCount() {
+    return model.questions.filter(function (question) { return answers[question.id] !== undefined; }).length;
+  }
+
+  function progressSegments() {
+    return '<div class="dx-segments" aria-hidden="true">' + model.questions.map(function (question) {
+      const current = question.category === model.categories[page];
+      return '<span class="' + [answers[question.id] !== undefined ? "is-answered" : "", current ? "is-current" : ""].join(" ").trim() + '"></span>';
+    }).join("") + '</div>';
   }
 
   function renderQuestions() {
+    const category = model.categories[page];
+    const last = page === model.categories.length - 1;
+    const questions = model.questions.filter(function (question) { return question.category === category; });
+    const firstNumber = model.questions.indexOf(questions[0]) + 1;
     app.innerHTML = stepper() + '<section class="dx-panel dx-questions" aria-labelledby="dx-step-heading">' +
-      '<div class="dx-panel-heading"><h3 id="dx-step-heading" tabindex="-1">16の質問に答えてください</h3><p>今の施設に最も近いものを選んでください。中央の選択肢を初期選択しています。</p></div>' +
-      '<form id="dx-question-form"><div class="dx-question-list">' + model.questions.map(function (question, index) {
-        return '<fieldset class="dx-question"><legend><span>' + String(index + 1).padStart(2, "0") + '</span>' + escapeHtml(question.question) + '</legend><p>' + escapeHtml(question.category) + '</p><div class="dx-options">' + question.options.map(function (option, optionIndex) {
+      '<div class="dx-question-head"><div class="dx-panel-heading"><p class="dx-category-count">カテゴリ ' + (page + 1) + ' / ' + model.categories.length + '</p><h3 id="dx-step-heading" tabindex="-1">' + category + '</h3></div>' +
+      '<p class="dx-answered" aria-live="polite"><b id="dx-answered-count">' + answeredCount() + '</b> / ' + model.questions.length + ' 問 回答済み</p></div>' +
+      progressSegments() +
+      '<p class="dx-question-lead">今の施設に一番近いものを選んでください。迷ったときは、だいたい当てはまる方で大丈夫です。</p>' +
+      '<form id="dx-question-form" novalidate><div class="dx-question-list">' + questions.map(function (question, index) {
+        const isMissing = missing.indexOf(question.id) > -1;
+        return '<fieldset class="dx-question' + (isMissing ? " is-missing" : "") + '" id="q-' + question.id + '"' + (isMissing ? ' aria-describedby="missing-' + question.id + '"' : "") + '><legend><span>Q' + (firstNumber + index) + '</span>' + escapeHtml(question.question) + '</legend>' +
+          (isMissing ? '<p class="dx-field-error" id="missing-' + question.id + '">この質問にまだ回答していません。</p>' : "") +
+          '<div class="dx-options">' + question.options.map(function (option, optionIndex) {
           const id = "answer-" + question.id + "-" + optionIndex;
           return '<label for="' + id + '"><input id="' + id + '" type="radio" name="' + question.id + '" value="' + optionIndex + '"' + (answers[question.id] === optionIndex ? " checked" : "") + '><span>' + escapeHtml(option.label) + '</span></label>';
         }).join("") + '</div></fieldset>';
-      }).join("") + '</div><div class="dx-actions"><button class="button button--outline" type="button" data-back>施設情報に戻る</button><button class="button" type="submit">診断結果を見る <span aria-hidden="true">→</span></button></div></form></section>';
+      }).join("") + '</div><div class="dx-actions">' +
+      (page > 0 ? '<button class="button button--outline" type="button" data-back>前のカテゴリへ</button>' : '<span></span>') +
+      '<button class="button" type="submit">' + (last ? '施設の規模の入力へ' : '次のカテゴリへ（' + model.categories[page + 1] + '）') + ' <span aria-hidden="true">→</span></button></div></form></section>';
+
     const form = document.getElementById("dx-question-form");
     form.addEventListener("change", function (event) {
-      if (event.target.matches('input[type="radio"]')) answers[event.target.name] = Number(event.target.value);
+      if (!event.target.matches('input[type="radio"]')) return;
+      answers[event.target.name] = Number(event.target.value);
+      document.getElementById("dx-answered-count").textContent = answeredCount();
+      const segments = app.querySelector(".dx-segments");
+      segments.outerHTML = progressSegments();
+      const fieldset = event.target.closest(".dx-question");
+      if (fieldset.classList.contains("is-missing")) {
+        missing = missing.filter(function (id) { return id !== event.target.name; });
+        fieldset.classList.remove("is-missing");
+        fieldset.removeAttribute("aria-describedby");
+        const note = fieldset.querySelector(".dx-field-error");
+        if (note) note.remove();
+      }
     });
-    form.querySelector("[data-back]").addEventListener("click", function () { goToStep(1); });
+    const back = form.querySelector("[data-back]");
+    if (back) back.addEventListener("click", function () { missing = []; page -= 1; goToStep(1); });
     form.addEventListener("submit", function (event) {
       event.preventDefault();
-      result = model.buildResult(answers, facility);
-      track("analysis_result_view");
-      goToStep(3);
+      missing = questions.filter(function (question) { return answers[question.id] === undefined; }).map(function (question) { return question.id; });
+      if (missing.length) {
+        renderQuestions();
+        const target = document.getElementById("q-" + missing[0]);
+        target.scrollIntoView({ block: "center" });
+        target.querySelector("input").focus({ preventScroll: true });
+        return;
+      }
+      if (!last) { page += 1; goToStep(1); return; }
+      // 16問すべてに回答したら1回だけ計測する（回答内容は送らない）。
+      track("analysis_run");
+      goToStep(2);
     });
   }
 
@@ -188,7 +249,7 @@
 
   function bindResultEvents() {
     app.querySelectorAll("[data-reset]").forEach(function (button) { button.addEventListener("click", resetDiagnosis); });
-    app.querySelector("[data-review]").addEventListener("click", function () { goToStep(2); });
+    app.querySelector("[data-review]").addEventListener("click", function () { page = 0; goToStep(1); });
     app.querySelector('[data-analytics-event="consultation_click"]').addEventListener("click", function () {
       track("consultation_click");
     });
@@ -196,7 +257,9 @@
 
   function resetDiagnosis() {
     facility = Object.assign({}, model.initialFacility);
-    answers = model.defaultAnswers();
+    answers = {};
+    missing = [];
+    page = 0;
     result = null;
     errors = {};
     goToStep(1);
@@ -212,8 +275,8 @@
   }
 
   function render() {
-    if (step === 1) renderFacility();
-    else if (step === 2) renderQuestions();
+    if (step === 1) renderQuestions();
+    else if (step === 2) renderFacility();
     else renderResult();
   }
 
