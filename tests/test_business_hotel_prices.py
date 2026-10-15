@@ -56,7 +56,7 @@ def client(routes):
 
 
 def test_cohort_has_ten_markets_with_five_core_hotels_each():
-    assert COHORT["cohort_version"] == "bh-v1"
+    assert COHORT["cohort_version"] == "bh-v2"
     assert COHORT["conditions"] == {"adults": 1, "rooms": 1, "nights": 1, "price_basis": "lowest_plan_any_meal"}
     assert [m["name"] for m in COHORT["markets"]] == ["札幌", "仙台", "名古屋", "広島", "福岡", "金沢", "那覇", "鹿児島", "熊本", "岡山"]
     for market in COHORT["markets"]:
@@ -66,12 +66,23 @@ def test_cohort_has_ten_markets_with_five_core_hotels_each():
         assert len(roles) <= bh.MAX_HOTELS_PER_REQUEST
 
 
-def test_every_market_has_the_cross_city_brand_in_core():
+def test_cross_city_brand_is_in_core_of_nine_markets():
+    # 都市横断の比較に使うブランドは、札幌以外の9市場のCOREにある（札幌の同ブランドは改装工事中のため外している）
     brand = COHORT["cross_city_brand"]
+    with_brand = []
     for market in COHORT["markets"]:
         core_brands = [p["brand"] for p in market["properties"] if p["role"] == "core"]
-        assert core_brands.count(brand) == 1, market["code"]
         assert all(core_brands.count(b) <= 2 for b in core_brands), market["code"]
+        if brand in core_brands:
+            with_brand.append(market["code"])
+    assert len(with_brand) == 9 and "sapporo" not in with_brand
+
+
+def test_cohort_v2_moved_toyoko_inn_to_backup_everywhere():
+    for market in COHORT["markets"]:
+        toyoko = [p for p in market["properties"] if p["brand"] == "東横イン"]
+        assert toyoko and all(p["role"] == "backup" for p in toyoko), market["code"]
+    assert COHORT["history"][0]["cohort_version"] == "bh-v1"
 
 
 def test_cohort_rejects_duplicate_hotels_and_unknown_roles():
@@ -179,7 +190,7 @@ def test_snapshot_is_compact_and_manifest_lists_newest_first(tmp_path):
     manifest = json.loads((tmp_path / "manifest.json").read_text(encoding="utf-8"))
     assert manifest["latest_snapshot"] == "2026-10-16"
     assert [s["date"] for s in manifest["snapshots"]] == ["2026-10-16", "2026-10-15"]
-    assert manifest["cohort_version"] == "bh-v1"
+    assert manifest["cohort_version"] == COHORT["cohort_version"]
 
 
 def test_error_ratio_counts_only_failed_lookups():
