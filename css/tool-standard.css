@@ -36,6 +36,7 @@
 .tool-related__card .tag{align-self:flex-start;display:inline-flex;align-items:center;min-height:22px;padding:2px 9px;border-radius:999px;background:var(--lab-surface-soft);color:var(--lab-ink-soft);font-size:11px;font-weight:700;letter-spacing:.02em}
 .tool-related__card strong{font-size:15px;line-height:1.5;color:var(--lab-navy)}
 .tool-related__card p{margin:0;color:var(--lab-ink-soft);font-size:12px;line-height:1.8}
+.tool-related__guides{margin-top:14px}
 
 @media(max-width:900px){
   .tool-overview__grid{grid-template-columns:1fr;padding:24px}

@@ -1,0 +1,222 @@
+---
+# Built by Jekyll: the shared header and footer come from _includes/.
+# 解説ページ。出典と関連ツールは、ツールページと同じ標準ブロック（tool-sources / tool-related）で表示する。
+# 8つの業務の名前と「診断で対応する質問」は js/dx-diagnosis-model.js と同じ（tests/test_guides.py で確認）。
+guide: operations-improvement
+tool_updated: 2026-10-15
+tool_updated_label: 更新日
+tool_notes:
+  - 各業務の内容は、DXかんたん診断の16問と改善施策の例（2026年10月時点）に合わせています。
+  - 特定の製品やサービスをおすすめするものではありません。減らせる時間や費用は、施設の状況によって異なります。
+  - ADR・RevPARは一般的な定義で説明しています。
+tool_related:
+  - dx-diagnosis
+  - mini-pms-demo
+  - booking-engine-demo
+  - hotel-price-trends
+tool_guides:
+  - shukuhaku-dx
+  - market-data
+---
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-QS9HSHCY33"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-QS9HSHCY33');gtag('config','GT-M3S9S5D7');</script>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>旅館・ホテルの業務改善 8つのチェックポイント｜宿泊DXラボ</title>
+  <meta name="description" content="旅館・ホテルの業務改善を、経営、予約・販売、会計、清掃・フロント、勤怠・シフト、システム、集客、データ活用の8つに分けて解説します。よくある手作業、改善の方向、確認する数字を業務ごとに整理しました。">
+  <meta name="robots" content="index,follow,max-image-preview:large">
+  <link rel="canonical" href="https://lab.ugatta-llc.com/guide/operations-improvement/">
+  <meta name="theme-color" content="#17324d">
+  <meta property="og:locale" content="ja_JP">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="宿泊DXラボ">
+  <meta property="og:title" content="旅館・ホテルの業務改善 8つのチェックポイント｜宿泊DXラボ">
+  <meta property="og:description" content="旅館・ホテルの業務を8つに分け、よくある手作業、改善の方向、確認する数字を業務ごとに整理しました。">
+  <meta property="og:url" content="https://lab.ugatta-llc.com/guide/operations-improvement/">
+  <meta property="og:image" content="https://lab.ugatta-llc.com/images/og-lab.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="旅館・ホテルの業務改善 8つのチェックポイント｜宿泊DXラボ">
+  <meta name="twitter:description" content="旅館・ホテルの業務を8つに分け、よくある手作業、改善の方向、確認する数字を整理しました。">
+  <meta name="twitter:image" content="https://lab.ugatta-llc.com/images/og-lab.jpg">
+  <link rel="icon" type="image/png" href="/favicon.png?v=20261013">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&amp;display=swap">
+  <link rel="stylesheet" href="/css/useful.css?v=20261012shell">
+  <link rel="stylesheet" href="/css/tool-standard.css?v=20261015guide">
+  <link rel="stylesheet" href="/css/guide.css?v=20261015guide">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {"@type": "ListItem", "position": 1, "name": "ホーム", "item": "https://lab.ugatta-llc.com/"},
+          {"@type": "ListItem", "position": 2, "name": "旅館・ホテルの業務改善", "item": "https://lab.ugatta-llc.com/guide/operations-improvement/"}
+        ]
+      },
+      {
+        "@type": "Article",
+        "@id": "https://lab.ugatta-llc.com/guide/operations-improvement/#article",
+        "headline": "旅館・ホテルの業務改善 ― 8つの業務別チェックポイント",
+        "description": "旅館・ホテルの業務を8つに分け、よくある手作業、改善の方向、確認する数字、DXかんたん診断で対応する質問を業務ごとに整理します。",
+        "url": "https://lab.ugatta-llc.com/guide/operations-improvement/",
+        "mainEntityOfPage": "https://lab.ugatta-llc.com/guide/operations-improvement/",
+        "image": "https://lab.ugatta-llc.com/images/og-lab.jpg",
+        "datePublished": "2026-10-15",
+        "dateModified": "2026-10-15",
+        "inLanguage": "ja-JP",
+        "isPartOf": {"@id": "https://lab.ugatta-llc.com/#website"},
+        "author": {"@type": "Organization", "@id": "https://lab.ugatta-llc.com/#organization", "name": "宿泊DXラボ", "url": "https://lab.ugatta-llc.com/"},
+        "publisher": {"@id": "https://lab.ugatta-llc.com/#organization"}
+      }
+    ]
+  }
+  </script>
+  <link rel="stylesheet" href="/css/site-shell.css?v=20261012shell">
+  <script src="/js/site-shell.js?v=20261012shell2" defer></script>
+</head>
+<body><a class="skip-link" href="#main">本文へ移動</a>
+  {% include site-header.html %}
+  <main id="main"><nav class="breadcrumb container" aria-label="パンくずリスト"><ol><li><a href="/">ホーム</a></li><li aria-current="page">旅館・ホテルの業務改善</li></ol></nav>
+    <section class="page-hero tool-page-hero guide-hero"><div class="container page-hero-grid"><div><span class="scope-badge">解説</span><h1>旅館・ホテルの業務改善<span>8つの業務別チェックポイント</span></h1></div><div><p class="lead-copy">お客様の目に触れない手作業から、減らしていく。</p><p class="guide-meta">公開日 <time datetime="2026-10-15">2026年10月15日</time></p></div></div></section>
+    <div class="guide"><div class="container guide__layout">
+      <nav class="guide-toc" aria-labelledby="guide-toc-title"><h2 id="guide-toc-title">このページの内容</h2><ol>
+        <li><a href="#management">1. 経営</a></li>
+        <li><a href="#sales">2. 予約・販売</a></li>
+        <li><a href="#accounting">3. 会計</a></li>
+        <li><a href="#operations">4. 業務（清掃・フロント）</a></li>
+        <li><a href="#staffing">5. 勤怠・シフト</a></li>
+        <li><a href="#systems">6. システム</a></li>
+        <li><a href="#marketing">7. 集客</a></li>
+        <li><a href="#data">8. データ活用</a></li>
+        <li><a href="#start">どこから手をつけるか</a></li>
+        <li><a href="#summary">まとめ</a></li>
+      </ol></nav>
+      <article class="guide-body">
+        <section>
+          <p>人手が足りないとき、真っ先に削りたいのは、お客様の目に触れない手作業です。紙の台帳、口頭での連絡、同じ数字の転記。こうした作業は一つずつは小さくても、毎日積み重なります。</p>
+          <p>このページでは、旅館・ホテルの業務を8つに分け、業務ごとに次の4点を整理します。8つの分け方は、宿泊DXラボの「<a href="/dx-diagnosis.html">DXかんたん診断</a>」と同じです。</p>
+          <ul>
+            <li>よくある手作業</li>
+            <li>改善の方向</li>
+            <li>確認する数字</li>
+            <li>診断で対応する質問</li>
+          </ul>
+        </section>
+
+        <section aria-labelledby="management" data-category="経営">
+          <h2 id="management">1. 経営</h2>
+          <dl class="guide-check">
+            <div><dt>よくある手作業</dt><dd>売上や稼働の数字を月末にまとめて確認し、部門別の収益は表計算で集計し直している。</dd></div>
+            <div><dt>改善の方向</dt><dd>毎日・毎週・毎月見る数字と、その数字を見て何を決めるかを決めます（経営KPIの設計）。数字の数を増やすより、判断につながる数字に絞ることが大切です。</dd></div>
+            <div><dt>確認する数字</dt><dd><p>毎週見る数字を3〜5個に絞ります。例として、稼働率、ADR、RevPAR、予約ペースがあります。</p><ul><li>ADR：客室売上 ÷ 販売した客室数</li><li>RevPAR：客室売上 ÷ 販売できる客室数</li></ul></dd></div>
+            <div><dt>診断で対応する質問</dt><dd><ul><li>主要な経営指標をどの頻度で確認していますか？</li><li>部門別・施設別の収益性を把握できますか？</li></ul></dd></div>
+          </dl>
+        </section>
+
+        <section aria-labelledby="sales" data-category="予約・販売">
+          <h2 id="sales">2. 予約・販売</h2>
+          <dl class="guide-check">
+            <div><dt>よくある手作業</dt><dd>複数のOTA（予約サイト）の在庫や料金を、それぞれの管理画面で手作業で更新している。自社予約を増やす施策が、思いついたときだけになっている。</dd></div>
+            <div><dt>改善の方向</dt><dd><ul><li>PMS、サイトコントローラー、OTA、自社予約の連携状態を整理し、在庫と料金の更新の手作業を減らします。</li><li>公式サイトの予約導線、プラン設計、Googleとの連携を見直し、自社予約を増やします。</li></ul></dd></div>
+            <div><dt>確認する数字</dt><dd>自社予約の比率と、OTA手数料の合計を一度見える化します。</dd></div>
+            <div><dt>診断で対応する質問</dt><dd><ul><li>PMS・サイトコントローラー・OTAの在庫／料金連携は？</li><li>自社予約を増やすための施策を継続的に行っていますか？</li></ul></dd></div>
+          </dl>
+          <p>公式サイトでの予約から、フロントの管理画面に予約が届くまでの流れは、ラボの「<a href="/demo/booking/">予約エンジンデモ</a>」で体験できます。</p>
+        </section>
+
+        <section aria-labelledby="accounting" data-category="会計">
+          <h2 id="accounting">3. 会計</h2>
+          <dl class="guide-check">
+            <div><dt>よくある手作業</dt><dd>PMSの売上を会計システムへ手入力で転記し、入金と売掛の照合も手作業で行っている。</dd></div>
+            <div><dt>改善の方向</dt><dd>PMSと会計の連携方式（CSVかAPIか）を検討し、転記の回数を減らします。仕訳の粒度、税区分、部門管理が会計側の要件に合うかも確認します。</dd></div>
+            <div><dt>確認する数字</dt><dd>売上が会計に届くまでに、何回手入力しているかを数えます。</dd></div>
+            <div><dt>診断で対応する質問</dt><dd><ul><li>売上データを会計システムへ入力する方法は？</li><li>入金照合・売掛管理はどの程度自動化されていますか？</li></ul></dd></div>
+          </dl>
+        </section>
+
+        <section aria-labelledby="operations" data-category="業務">
+          <h2 id="operations">4. 業務（清掃・フロント）</h2>
+          <dl class="guide-check">
+            <div><dt>よくある手作業</dt><dd>清掃の指示と完了報告を、紙や口頭、内線電話で行っている。チェックイン前後の定型業務（名簿の準備、案内の送付など）を、毎回手作業で行っている。</dd></div>
+            <div><dt>改善の方向</dt><dd>清掃の指示、完了報告、客室の状況（清掃中・点検済み・販売可など）を、スマートフォンなどで共有します。導入を比べるときは、PMSとの連携、多言語対応、使う端末、現場での操作のしやすさを確認します。</dd></div>
+            <div><dt>確認する数字</dt><dd>紙・口頭で行っている業務を3つ書き出し、それぞれにかかる時間を測ります。</dd></div>
+            <div><dt>診断で対応する質問</dt><dd><ul><li>客室清掃の指示・進捗確認は？</li><li>チェックイン前後の定型業務は？</li></ul></dd></div>
+          </dl>
+          <p>予約から部屋割り、客室状況表までのつながりは、ラボの「<a href="/demo/mini-pms/">簡易PMSデモ</a>」で試せます。</p>
+        </section>
+
+        <section aria-labelledby="staffing" data-category="勤怠・シフト">
+          <h2 id="staffing">5. 勤怠・シフト</h2>
+          <dl class="guide-check">
+            <div><dt>よくある手作業</dt><dd>シフトを表計算や紙で作り、勤怠の実績を給与計算のために入力し直している。</dd></div>
+            <div><dt>改善の方向</dt><dd>勤怠の実績、シフト、給与の連携をまとめ、集計の作業を減らします。導入を比べるときは、給与ソフトとの連携、変形労働時間制への対応、権限の設定、操作性を確認します。</dd></div>
+            <div><dt>確認する数字</dt><dd>シフトの作成と勤怠の集計に、毎月どれくらいの時間がかかっているかを測ります。</dd></div>
+            <div><dt>診断で対応する質問</dt><dd><ul><li>シフト作成は？</li><li>勤怠実績と給与・人件費管理は連携していますか？</li></ul></dd></div>
+          </dl>
+          <p>自分の地域が、全国と比べて人手を確保しにくい条件かどうかは、「<a href="/dx-necessity-analysis.html">地域の省人化・DX検討指標</a>」で確認できます。</p>
+        </section>
+
+        <section aria-labelledby="systems" data-category="システム">
+          <h2 id="systems">6. システム</h2>
+          <dl class="guide-check">
+            <div><dt>よくある手作業</dt><dd>同じ予約や顧客の情報を、PMS、予約サイト、会計、POSなど複数のシステムへ入力している。</dd></div>
+            <div><dt>改善の方向</dt><dd>PMS、会計、POS、予約、勤怠のあいだで、データがどう流れているかを棚卸しします。新しいシステムを足す前に、今あるシステムがCSVやAPIで連携できるかを把握します。</dd></div>
+            <div><dt>確認する数字</dt><dd>使っている仕組みのつながりを1枚の図にし、二重入力が起きている箇所に印を付けます。</dd></div>
+            <div><dt>診断で対応する質問</dt><dd><ul><li>同じ情報を複数システムへ二重入力することは？</li><li>主要システムのAPI／CSV連携可否を把握していますか？</li></ul></dd></div>
+          </dl>
+        </section>
+
+        <section aria-labelledby="marketing" data-category="集客">
+          <h2 id="marketing">7. 集客</h2>
+          <dl class="guide-check">
+            <div><dt>よくある手作業</dt><dd>OTA、自社サイト、Google、SNSの成果を、それぞれの管理画面で別々に見ていて、比べられていない。</dd></div>
+            <div><dt>改善の方向</dt><dd>予約経路ごとの売上、手数料、予約単価、キャンセル率を、同じ表で比べられるようにします（チャネル別の収益管理）。</dd></div>
+            <div><dt>確認する数字</dt><dd>予約経路ごとの売上と手数料を並べます。</dd></div>
+            <div><dt>診断で対応する質問</dt><dd><ul><li>OTA・自社・Google・SNSの成果を比較していますか？</li><li>チャネル別の獲得コストや手数料を把握していますか？</li></ul></dd></div>
+          </dl>
+          <p>海外からのお客様について、地域でどの国・地域の宿泊が多いかは「<a href="/inbound-analysis.html">インバウンド宿泊者分析</a>」で確認できます。</p>
+        </section>
+
+        <section aria-labelledby="data" data-category="データ活用">
+          <h2 id="data">8. データ活用</h2>
+          <dl class="guide-check">
+            <div><dt>よくある手作業</dt><dd>ADR、稼働率、RevPAR、予約ペースが別々のファイルにあり、判断のたびに集め直している。</dd></div>
+            <div><dt>改善の方向</dt><dd>主要な数字を一画面にまとめ（経営ダッシュボード）、定例の会議で使います。数字の定義と更新の頻度を先に決めておくと、部署ごとに数字が食い違うことを防げます。</dd></div>
+            <div><dt>確認する数字</dt><dd>ADR、稼働率、RevPARを毎週確認します。</dd></div>
+            <div><dt>診断で対応する質問</dt><dd><ul><li>ADR・稼働率・RevPAR・予約ペースを一画面で見られますか？</li><li>データを使って具体的な意思決定をしていますか？</li></ul></dd></div>
+          </dl>
+          <p>地域の料金の動きは、「<a href="/hotel-price-trends.html">宿泊料金トレンド</a>」で、同じ宿泊条件の比較施設群の値動きとして確認できます。</p>
+        </section>
+
+        <section aria-labelledby="start">
+          <h2 id="start">どこから手をつけるか</h2>
+          <p>8つすべてを一度に変える必要はありません。次の順番をおすすめします。</p>
+          <ol>
+            <li>「DXかんたん診断」で、点数が低かったカテゴリを1つ選ぶ</li>
+            <li>そのカテゴリの「確認する数字」を、改善の前に一度測る</li>
+            <li>改善を1つ試し、同じ数字をもう一度測る</li>
+          </ol>
+          <p>システムを選ぶ前に、「どの手作業を、どれだけ減らしたいか」を数字で決めておくと、比べる観点がはっきりします。</p>
+          <p class="guide-cta"><a class="button" href="/dx-diagnosis.html" data-analytics-event="tool_open" data-tool-id="dx-diagnosis">DXかんたん診断を始める <span aria-hidden="true">→</span></a></p>
+        </section>
+
+        <section class="guide-summary" aria-labelledby="summary">
+          <h2 id="summary">まとめ</h2>
+          <ul>
+            <li>業務改善は、お客様の目に触れない手作業から始める</li>
+            <li>業務を8つに分けると、どこに手間が集まっているかが見えやすい</li>
+            <li>改善の前後で、同じ数字を測って比べる</li>
+          </ul>
+        </section>
+      </article>
+    </div></div>
+    {% include tool-sources.html %}
+    {% include tool-related.html %}
+  </main>
+  {% include site-footer.html %}
+  <script defer src="/js/site.js?v=20260909c"></script>
+</body></html>

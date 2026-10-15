@@ -1,0 +1,66 @@
+/* 解説ページ（/guide/）の本文。
+   ヒーロー・出典・関連ツールはツールページと同じ（useful.css / tool-standard.css）で、
+   ここでは読み物の本文と目次だけを、同じ --lab-* の色と書体で組む。 */
+
+.guide-hero h1 span{display:block;margin-top:16px;color:var(--lab-ink-soft);font-size:clamp(17px,1.6vw,21px);font-weight:500;line-height:1.7}
+.guide-meta{margin:16px 0 0;color:var(--lab-ink-soft);font-size:13px}
+
+.guide{padding:56px 0 0}
+.guide__layout{display:grid;grid-template-columns:minmax(0,220px) minmax(0,740px);justify-content:space-between;gap:56px}
+
+.guide-toc{position:sticky;top:112px;align-self:start}
+.guide-toc h2{margin:0 0 12px;color:var(--lab-ink-soft);font-size:12px;font-weight:700;letter-spacing:.04em}
+.guide-toc ol{margin:0;padding:0;list-style:none;border-left:1px solid var(--lab-border)}
+.guide-toc a{display:block;padding:6px 0 6px 14px;color:var(--lab-ink-soft);font-size:13px;line-height:1.6;text-decoration:none}
+.guide-toc a:hover{color:var(--lab-navy);text-decoration:underline;text-underline-offset:3px}
+
+.guide-body{min-width:0;color:var(--lab-ink)}
+.guide-body>section{margin:0 0 56px}
+.guide-body>section:first-child>p:first-child{font-size:17px}
+.guide-body h2{margin:0 0 20px;padding-top:26px;border-top:1px solid var(--lab-ink);color:var(--lab-navy);font-size:clamp(22px,2.3vw,28px);font-weight:700;line-height:1.5;scroll-margin-top:104px}
+.guide-body h3{margin:34px 0 10px;color:var(--lab-navy);font-size:18px;font-weight:700;line-height:1.6}
+.guide-body p{margin:0 0 18px;font-size:16px;line-height:2}
+.guide-body ul,.guide-body ol{margin:0 0 20px;padding-left:1.5em}
+.guide-body li{margin:0 0 8px;font-size:16px;line-height:1.95}
+.guide-body li>span{display:block;color:var(--lab-ink-soft);font-size:15px}
+.guide-body strong{color:var(--lab-navy);font-weight:700}
+.guide-body a{color:var(--lab-navy);font-weight:700;text-decoration:underline;text-underline-offset:3px}
+.guide-body a:hover{color:var(--lab-teal)}
+.guide-body a.button,.guide-body a.button:hover{color:#fff;font-weight:500;text-decoration:none}
+
+.guide-table{margin:0 0 22px;overflow-x:auto}
+.guide-table table{width:100%;min-width:520px;border-collapse:collapse;font-size:14px;line-height:1.85}
+.guide-table th,.guide-table td{padding:11px 12px;border-bottom:1px solid var(--lab-border);text-align:left;vertical-align:top}
+.guide-table thead th{border-bottom:1px solid var(--lab-ink);color:var(--lab-ink-soft);font-size:12px;font-weight:700}
+.guide-table .guide-trend-table{min-width:0}
+.guide-table tbody th{color:var(--lab-navy);font-weight:700;white-space:nowrap}
+
+/* 業務別チェックポイント：tool-overview の対象・データ・条件と同じ、見出し＋本文の行組み */
+.guide-check{margin:0 0 18px;padding:6px 26px;border:1px solid var(--lab-border);border-radius:12px;background:var(--lab-card)}
+.guide-check>div{display:grid;grid-template-columns:132px minmax(0,1fr);gap:16px;padding:16px 0;border-top:1px solid var(--lab-border)}
+.guide-check>div:first-child{border-top:0}
+.guide-check dt{color:var(--lab-ink-soft);font-size:13px;font-weight:700;line-height:1.9}
+.guide-check dd{margin:0;font-size:15px;line-height:1.9}
+.guide-check dd p,.guide-check dd ul{margin:0 0 6px;font-size:15px}
+.guide-check dd>:last-child{margin-bottom:0}
+.guide-check dd li{margin:0 0 4px;font-size:15px}
+
+.guide-note{margin:0 0 20px;padding:16px 20px;border-left:3px solid var(--lab-teal);background:var(--lab-surface-soft);font-size:14px;line-height:1.9}
+.guide-note p{margin:0;font-size:14px}
+.guide-summary{padding:26px 30px;border:1px solid var(--lab-border);border-left:4px solid var(--lab-teal);border-radius:12px;background:var(--lab-card)}
+.guide-summary h2{padding-top:0;border-top:0}
+.guide-summary ul{margin:0}
+.guide-cta{margin:24px 0 0}
+
+@media(max-width:900px){
+  .guide__layout{grid-template-columns:1fr;gap:36px}
+  .guide-toc{position:static;padding:18px 20px;border:1px solid var(--lab-border);border-radius:12px;background:var(--lab-card)}
+}
+@media(max-width:620px){
+  .guide{padding-top:36px}
+  .guide-body>section{margin-bottom:44px}
+  .guide-check{padding:4px 18px}
+  .guide-check>div{grid-template-columns:1fr;gap:2px;padding:14px 0}
+  .guide-summary{padding:22px 20px}
+}
+@media print{.guide-toc{display:none}.guide__layout{grid-template-columns:1fr}}

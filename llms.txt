@@ -36,6 +36,12 @@
 - [多言語旅館サイトデモ（ホテル翠蓮）](https://lab.ugatta-llc.com/demo/hotel/): 架空の温泉旅館の公式サイト。旅館のAIO対策を行った後のサイトで、泉質、貸切風呂、夕食、子ども料金、送迎、キャンセル料をよくある質問にまとめています。
   - [英語版](https://lab.ugatta-llc.com/demo/hotel/en/) / [中国語（繁体字）版](https://lab.ugatta-llc.com/demo/hotel/zh-hant/) / [韓国語版](https://lab.ugatta-llc.com/demo/hotel/ko/)
 
+## 解説
+
+- [宿泊DXとは？ 旅館・ホテルのDXは何から始めるか](https://lab.ugatta-llc.com/guide/shukuhaku-dx/): 宿泊DXの意味（業務のデジタル化と、データで判断する仕組みの2層）と、手間のかかる業務の書き出し、二重入力の解消、数字で判断する、の3つの段階。客室数の規模別の目安と、地域による違いの例も載せています。
+- [旅館・ホテルの業務改善 8つのチェックポイント](https://lab.ugatta-llc.com/guide/operations-improvement/): DXかんたん診断と同じ8つの業務ごとに、よくある手作業、改善の方向、確認する数字、診断で対応する質問を整理しています。
+- [宿泊市場データの使い方](https://lab.ugatta-llc.com/guide/market-data/): 宿泊旅行統計調査で分かること・分からないこと（人泊、速報値、2026年1月の層化基準の変更）、地域を見る4つの視点、宿泊料金トレンドの読み方、自施設の実績と並べるときの注意。
+
 ## Optional
 
 - [ラボノート 古典 × AI](https://lab.ugatta-llc.com/classics-ai-management/): 『韓非子』などの古典を原文、読み下し、現代語訳で確かめ、AI、DX、組織、意思決定について考える実験的なノート。
