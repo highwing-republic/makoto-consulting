@@ -98,14 +98,14 @@ def test_topic_classification_pref_fallback_and_five_representative_cases():
     assert data["slugs"] == ["nagano", "tokyo", "tokyo"]
 
     assert data["dx"]["name"] == "長野県"
-    assert "04 宿泊DX必要度分析" in data["dx"]["references"]
+    assert "04 地域の省人化・DX検討指標" in data["dx"]["references"]
     assert data["inbound"]["name"] == "京都府"
-    assert data["inbound"]["references"] == ["02 インバウンド宿泊者分析", "05 宿泊市場需給ギャップ分析", "06 観光負荷・観光依存度分析"]
+    assert data["inbound"]["references"] == ["02 インバウンド宿泊者分析", "05 宿泊市場の成長・稼働ポジション", "06 宿泊集中度・宿泊業依存度"]
     assert data["sales"]["name"] == "鹿児島県"
     assert any(row["key"] == "occupancy" for row in data["sales"]["comparisons"])
     assert len(data["sales"]["matchedRules"]) >= 1
     assert data["market"]["name"] == "沖縄県"
-    assert "05 宿泊市場需給ギャップ分析" in data["market"]["references"]
+    assert "05 宿泊市場の成長・稼働ポジション" in data["market"]["references"]
     assert data["other"]["name"] == "東京都"
     assert data["other"]["references"] == ["相談テーマ一覧"]
     assert 2 <= len(data["multi"]["matchedRules"]) <= 3
