@@ -112,3 +112,10 @@ def test_tourism_signal_is_served_from_the_lab_domain() -> None:
     assert "repository: highwing-republic/tourism-market-signal" in workflow
     assert "rsync -a --delete" in workflow
     assert "git push" in workflow
+
+
+def test_footer_copyright_starts_from_the_operator_founding_year() -> None:
+    # 合同会社UGATTA は2024年設立。ビルド時のフッターと site-shell.js の予備のフッターで同じ表記にする。
+    for path in ("_includes/site-footer.html", "js/site-shell.js"):
+        assert "<span>© 2024 宿泊DXラボ</span>" in read(path), path
+    assert "<span>© 2024 宿泊DXラボ</span>" in rendered(ROOT / "index.html")
