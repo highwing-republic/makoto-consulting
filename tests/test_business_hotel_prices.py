@@ -190,7 +190,7 @@ def test_snapshot_is_compact_and_manifest_lists_newest_first(tmp_path):
     manifest = json.loads((tmp_path / "manifest.json").read_text(encoding="utf-8"))
     assert manifest["latest_snapshot"] == "2026-10-16"
     assert [s["date"] for s in manifest["snapshots"]] == ["2026-10-16", "2026-10-15"]
-    assert manifest["cohort_version"] == "bh-v1"
+    assert manifest["cohort_version"] == COHORT["cohort_version"]
 
 
 def test_error_ratio_counts_only_failed_lookups():
