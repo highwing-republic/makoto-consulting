@@ -14,9 +14,9 @@
   const RELATED_TOOLS = {
     diagnosis: { number: '01', label: 'DXかんたん診断を見る', href: 'dx-diagnosis.html' },
     inbound: { number: '02', label: 'インバウンド分析を見る', href: 'inbound-analysis.html' },
-    dx: { number: '04', label: '宿泊DX必要度を見る', href: 'dx-necessity-analysis.html' },
-    supply: { number: '05', label: '宿泊市場需給を見る', href: 'supply-demand-gap-analysis.html' },
-    tourism: { number: '06', label: '観光負荷・観光依存度を見る', href: 'tourism-pressure-analysis.html' }
+    dx: { number: '04', label: '地域の省人化・DX検討指標を見る', href: 'dx-necessity-analysis.html' },
+    supply: { number: '05', label: '宿泊市場の成長・稼働ポジションを見る', href: 'supply-demand-gap-analysis.html' },
+    tourism: { number: '06', label: '宿泊集中度・宿泊業依存度を見る', href: 'tourism-pressure-analysis.html' }
   };
 
   const isNumber = (value) => typeof value === 'number' && Number.isFinite(value);
@@ -313,10 +313,10 @@
       comparisons,
       matchedRules: matched.map((rule) => rule.id),
       missing,
-      references: topic === 'dx' ? ['01 DXかんたん診断', '04 宿泊DX必要度分析', '05 宿泊市場需給ギャップ分析']
-        : topic === 'inbound' ? ['02 インバウンド宿泊者分析', '05 宿泊市場需給ギャップ分析', '06 観光負荷・観光依存度分析']
-          : topic === 'sales' ? ['05 宿泊市場需給ギャップ分析', '04 宿泊DX必要度分析']
-            : topic === 'market' ? ['05 宿泊市場需給ギャップ分析', '06 観光負荷・観光依存度分析', '02 インバウンド宿泊者分析']
+      references: topic === 'dx' ? ['01 DXかんたん診断', '04 地域の省人化・DX検討指標', '05 宿泊市場の成長・稼働ポジション']
+        : topic === 'inbound' ? ['02 インバウンド宿泊者分析', '05 宿泊市場の成長・稼働ポジション', '06 宿泊集中度・宿泊業依存度']
+          : topic === 'sales' ? ['05 宿泊市場の成長・稼働ポジション', '04 地域の省人化・DX検討指標']
+            : topic === 'market' ? ['05 宿泊市場の成長・稼働ポジション', '06 宿泊集中度・宿泊業依存度', '02 インバウンド宿泊者分析']
               : ['相談テーマ一覧'],
       usedMetrics: topicFacts(context, topic, comparisons).map((fact) => fact.text)
     };

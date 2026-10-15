@@ -20,21 +20,21 @@
   pref: true
   summary: 外国人宿泊需要や国・地域別構成を、都道府県ごとに分析します。
 - id: dx-necessity
-  title: 宿泊DX必要度分析
+  title: 地域の省人化・DX検討指標
   url: /dx-necessity-analysis.html
   group: regional
   tag: 公的データ
   pref: true
   summary: 宿泊需要・人材負荷・人口から、地域のDX必要度を分析します。
 - id: supply-demand
-  title: 宿泊市場需給ギャップ分析
+  title: 宿泊市場の成長・稼働ポジション
   url: /supply-demand-gap-analysis.html
   group: regional
   tag: 公的データ
   pref: true
   summary: 需要・稼働率・宿泊事業所数から、地域の需給状況を分析します。
 - id: tourism-pressure
-  title: 観光負荷・観光依存度分析
+  title: 宿泊集中度・宿泊業依存度
   url: /tourism-pressure-analysis.html
   group: regional
   tag: 公的データ
@@ -53,7 +53,7 @@
   tag: 市場の動き
   summary: 同じ宿泊条件で、地域や施設ごとの料金と取得日ごとの推移を比較します。
 - id: management-issue-organizer
-  title: 宿泊経営AI
+  title: 宿泊経営の課題整理（β）
   url: /management-ai.html
   group: experimental
   tag: 実験的ツール（ルールベース）

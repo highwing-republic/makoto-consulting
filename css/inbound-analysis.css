@@ -3,7 +3,7 @@
 .inbound-page .page-hero-grid{gap:32px;align-items:center}
 
 .inbound-page .inbound-hero h1{font-size:clamp(28px,3.2vw,42px);line-height:1.5}
-.inbound-tool-name{margin:12px 0 0;color:var(--lab-ink-soft);font-size:13px}
+.inbound-tool-name{display:block;margin:12px 0 0;color:var(--lab-ink-soft);font-size:13px;font-weight:400;line-height:1.92}
 .inbound-page .inbound-hero__copy .lead-copy{font-size:19px;margin-bottom:12px;font-weight:700}
 .inbound-page .inbound-hero__copy .scope-badge{margin:16px 0 0}
 .inbound-page .inbound-tool{padding:28px 0 72px}
