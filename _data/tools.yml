@@ -52,6 +52,12 @@
   group: market
   tag: 市場の動き
   summary: 同じ宿泊条件で、地域や施設ごとの料金と取得日ごとの推移を比較します。
+- id: business-hotel-price-trends
+  title: ビジネスホテル料金トレンド
+  url: /business-hotel-price-trends.html
+  group: market
+  tag: 市場の動き
+  summary: 全国10都市のビジネスホテルの料金水準と値動きを、同じ条件で毎朝観測して比べます。
 - id: management-issue-organizer
   title: 宿泊経営の課題整理（β）
   url: /management-ai.html

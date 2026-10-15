@@ -1,0 +1,242 @@
+(function (root, factory) {
+  const api = factory();
+  if (typeof module === "object" && module.exports) module.exports = api;
+  if (root) root.BusinessHotelPriceModel = api;
+})(typeof globalThis === "undefined" ? this : globalThis, function () {
+  'use strict';
+
+  // ビジネスホテル版料金トレンドの集計（画面に依存しない純粋関数）。
+  // 料金は各施設の「大人1名・1室・1泊の最安プラン」。CORE施設だけで集計し、BACKUPでは補わない。
+
+  const WEEKDAYS = ["日", "月", "火", "水", "木", "金", "土"];
+  const MEALS = {R: "素泊まり", B: "朝食付き", D: "夕食付き", T: "朝夕食付き", "-": "販売プランなし", "?": "取得エラー"};
+  const MIN_CORE_FOR_MEDIAN = 4; // 5施設中4施設以上で中央値を表示
+  const REFERENCE_CORE = 3; // 3施設は参考値
+  const SPIKE_RATIO = 1.5; // 代表料金の1.5倍以上を急騰日とする
+  const BAND = 0.1; // カレンダーの「高い・低い」の境界（±10%）
+  const TREND_THRESHOLD = 3; // 7日変化の上昇・低下の境界（±3%）
+  const TREND_MIN_DATES = 10; // 施設ごとに共通宿泊日が10泊以上
+  const TREND_MIN_HOTELS = 4; // 市場の7日変化はCORE 4施設以上
+
+  const isPrice = (value) => typeof value === "number" && Number.isFinite(value) && value > 0;
+  const parseDate = (value) => (/^\d{4}-\d{2}-\d{2}$/.test(value || "") ? value.split("-").map(Number) : null);
+  const weekdayIndex = (value) => {
+    const parts = parseDate(value);
+    return parts ? new Date(Date.UTC(parts[0], parts[1] - 1, parts[2])).getUTCDay() : null;
+  };
+  const addDays = (value, days) => {
+    const parts = parseDate(value);
+    if (!parts) return null;
+    return new Date(Date.UTC(parts[0], parts[1] - 1, parts[2] + days)).toISOString().slice(0, 10);
+  };
+  const formatDate = (value) => {
+    const parts = parseDate(value);
+    if (!parts) return value || "";
+    return `${parts[1]}/${parts[2]}（${WEEKDAYS[weekdayIndex(value)]}）`;
+  };
+  const formatYen = (value) => (isPrice(value) ? `${Math.round(value).toLocaleString("ja-JP")}円` : "—");
+  const formatPercent = (value, {signed = true, digits = 1} = {}) => {
+    if (typeof value !== "number" || !Number.isFinite(value)) return "—";
+    const rounded = Number(value.toFixed(digits));
+    if (rounded === 0) return `${(0).toFixed(digits)}%`;
+    return `${signed && rounded > 0 ? "+" : ""}${rounded.toFixed(digits)}%`;
+  };
+
+  const quantile = (values, q) => {
+    const sorted = values.filter(isPrice).sort((a, b) => a - b);
+    if (!sorted.length) return null;
+    const position = (sorted.length - 1) * q;
+    const base = Math.floor(position);
+    const rest = position - base;
+    return sorted[base] + (sorted[base + 1] === undefined ? 0 : rest * (sorted[base + 1] - sorted[base]));
+  };
+  // 変化率（負の値も含む）の中央値
+  const medianOfNumbers = (values) => {
+    const sorted = values.filter((value) => typeof value === "number" && Number.isFinite(value)).sort((a, b) => a - b);
+    if (!sorted.length) return null;
+    const middle = Math.floor(sorted.length / 2);
+    return sorted.length % 2 ? sorted[middle] : (sorted[middle - 1] + sorted[middle]) / 2;
+  };
+  const median = (values) => {
+    const value = quantile(values, 0.5);
+    return value === null ? null : Math.round(value);
+  };
+  const coefficientOfVariation = (values) => {
+    const list = values.filter(isPrice);
+    if (list.length < 2) return null;
+    const mean = list.reduce((sum, value) => sum + value, 0) / list.length;
+    const variance = list.reduce((sum, value) => sum + (value - mean) ** 2, 0) / list.length;
+    return (Math.sqrt(variance) / mean) * 100;
+  };
+
+  // ---------------------------------------------------------------- データの組み立て
+
+  function marketView(cohort, snapshot, code, {nights} = {}) {
+    const market = cohort.markets.find((item) => item.code === code);
+    const observed = snapshot?.markets?.find((item) => item.code === code);
+    if (!market || !observed) return null;
+    const limit = nights ? Math.min(nights, snapshot.stay_dates.length) : snapshot.stay_dates.length;
+    const dates = snapshot.stay_dates.slice(0, limit);
+    const byNo = new Map(observed.hotels.map((hotel) => [hotel.hotel_no, hotel]));
+    const hotels = market.properties.map((property) => {
+      const row = byNo.get(property.hotel_no);
+      const prices = dates.map((_, index) => (row && isPrice(row.price[index]) ? row.price[index] : null));
+      const meals = dates.map((_, index) => (row && row.meal[index]) || "?");
+      return {...property, prices, meals};
+    });
+    return {code, name: market.name, prefecture: market.prefecture, dates, core: hotels.filter((hotel) => hotel.role === "core"), backup: hotels.filter((hotel) => hotel.role === "backup")};
+  }
+
+  function dailyMedians(view) {
+    return view.dates.map((date, index) => {
+      const prices = view.core.map((hotel) => hotel.prices[index]).filter(isPrice);
+      const count = prices.length;
+      const status = count >= MIN_CORE_FOR_MEDIAN ? "ok" : count === REFERENCE_CORE ? "reference" : "none";
+      return {
+        date,
+        weekday: weekdayIndex(date),
+        count,
+        total: view.core.length,
+        status,
+        median: status === "none" ? null : median(prices),
+        min: status === "none" ? null : Math.min(...prices),
+        max: status === "none" ? null : Math.max(...prices),
+      };
+    });
+  }
+
+  // ---------------------------------------------------------------- 市場の指標
+
+  function weekdayPattern(days, typical) {
+    return WEEKDAYS.map((label, weekday) => {
+      const values = days.filter((day) => day.status === "ok" && day.weekday === weekday).map((day) => day.median);
+      const value = median(values);
+      return {weekday, label, nights: values.length, median: value, index: value && typical ? (value / typical - 1) * 100 : null};
+    });
+  }
+
+  function marketSummary(view) {
+    const days = dailyMedians(view);
+    const ok = days.filter((day) => day.status === "ok");
+    const values = ok.map((day) => day.median);
+    const typical = median(values);
+    const weekend = median(ok.filter((day) => day.weekday === 5 || day.weekday === 6).map((day) => day.median));
+    const weekdays = median(ok.filter((day) => day.weekday >= 0 && day.weekday <= 4).map((day) => day.median));
+    const spikes = typical ? ok.filter((day) => day.median >= typical * SPIKE_RATIO) : [];
+    const low = ok.length ? Math.min(...values) : null;
+    const high = ok.length ? Math.max(...values) : null;
+    return {
+      code: view.code,
+      name: view.name,
+      nights: view.dates.length,
+      validNights: ok.length,
+      typical,
+      volatility: ok.length >= 7 ? coefficientOfVariation(values) : null,
+      spread: low && high ? high / low : null,
+      low,
+      high,
+      weekendPremium: weekend && weekdays ? (weekend / weekdays - 1) * 100 : null,
+      spikes: spikes.map((day) => ({date: day.date, median: day.median, ratio: day.median / typical})),
+      days,
+      weekdays: weekdayPattern(days, typical),
+    };
+  }
+
+  function calendarClass(day, typical) {
+    if (day.status === "none" || !typical) return "none";
+    const ratio = day.median / typical;
+    if (ratio >= SPIKE_RATIO) return "spike";
+    if (ratio >= 1 + BAND) return "high";
+    if (ratio <= 1 - BAND) return "low";
+    return "mid";
+  }
+
+  function hotelSummary(hotel) {
+    const prices = hotel.prices.filter(isPrice);
+    const priced = hotel.meals.filter((code) => MEALS[code] && code !== "-" && code !== "?");
+    const mealShare = {};
+    for (const code of priced) mealShare[code] = (mealShare[code] || 0) + 1;
+    const leadingMeal = Object.entries(mealShare).sort((a, b) => b[1] - a[1])[0];
+    return {
+      hotel_no: hotel.hotel_no,
+      name: hotel.name,
+      brand: hotel.brand,
+      area: hotel.area,
+      access: hotel.access,
+      rooms: hotel.rooms,
+      role: hotel.role,
+      nights: hotel.prices.length,
+      pricedNights: prices.length,
+      noPlanNights: hotel.meals.filter((code) => code === "-").length,
+      median: median(prices),
+      min: prices.length ? Math.min(...prices) : null,
+      max: prices.length ? Math.max(...prices) : null,
+      volatility: prices.length >= 7 ? coefficientOfVariation(prices) : null,
+      leadingMeal: leadingMeal ? {code: leadingMeal[0], label: MEALS[leadingMeal[0]], share: (leadingMeal[1] / priced.length) * 100} : null,
+    };
+  }
+
+  function crossCityBrand(cohort, snapshot, {nights} = {}) {
+    const brand = cohort.cross_city_brand;
+    return cohort.markets.map((market) => {
+      const view = marketView(cohort, snapshot, market.code, {nights});
+      const hotel = view && view.core.find((item) => item.brand === brand);
+      return {code: market.code, market: market.name, brand, hotel: hotel ? hotelSummary(hotel) : null};
+    });
+  }
+
+  // ---------------------------------------------------------------- 7日変化
+
+  // 今日と7日前の取得で、同じ宿泊日（今日以降）の料金を施設ごとに比べる。
+  // 施設ごとの変化率の中央値を出し、市場の値はCORE施設の中央値。同じ cohort_version 同士だけを比べる。
+  function weeklyChange(cohort, latest, previous, code) {
+    if (!latest || !previous) return {status: "insufficient", reason: "7日前のデータがまだありません"};
+    if (addDays(latest.snapshot_date, -7) !== previous.snapshot_date) return {status: "insufficient", reason: "7日前のデータがありません"};
+    if (latest.cohort_version !== previous.cohort_version) return {status: "insufficient", reason: "比較施設群が入れ替わったため比べません"};
+    const now = marketView(cohort, latest, code);
+    const before = marketView(cohort, previous, code);
+    if (!now || !before) return {status: "insufficient", reason: "比較データがありません"};
+    const beforeIndex = new Map(before.dates.map((date, index) => [date, index]));
+    const hotels = now.core.map((hotel) => {
+      const old = before.core.find((item) => item.hotel_no === hotel.hotel_no);
+      const changes = [];
+      now.dates.forEach((date, index) => {
+        const oldIndex = beforeIndex.get(date);
+        if (!old || oldIndex === undefined) return;
+        const a = old.prices[oldIndex];
+        const b = hotel.prices[index];
+        if (isPrice(a) && isPrice(b)) changes.push((b / a - 1) * 100);
+      });
+      const value = changes.length >= TREND_MIN_DATES ? medianOfNumbers(changes) : null;
+      return {hotel_no: hotel.hotel_no, name: hotel.name, commonDates: changes.length, change: value};
+    });
+    const valid = hotels.filter((hotel) => hotel.change !== null);
+    if (valid.length < TREND_MIN_HOTELS) return {status: "insufficient", reason: "比べられる施設が足りません", hotels};
+    const change = medianOfNumbers(valid.map((hotel) => hotel.change));
+    const direction = change >= TREND_THRESHOLD ? "up" : change <= -TREND_THRESHOLD ? "down" : "flat";
+    return {status: "ok", change, direction, hotels, hotelCount: valid.length};
+  }
+
+  return {
+    WEEKDAYS,
+    MEALS,
+    SPIKE_RATIO,
+    isPrice,
+    median,
+    medianOfNumbers,
+    quantile,
+    coefficientOfVariation,
+    weekdayIndex,
+    addDays,
+    formatDate,
+    formatYen,
+    formatPercent,
+    marketView,
+    dailyMedians,
+    marketSummary,
+    calendarClass,
+    hotelSummary,
+    crossCityBrand,
+    weeklyChange,
+  };
+});

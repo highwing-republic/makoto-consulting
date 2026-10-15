@@ -43,6 +43,7 @@ def test_registry_matches_the_home_page_cards():
 def test_converted_pages_use_the_three_standard_blocks():
     pages = converted_pages()
     assert [path.name for path in pages] == [
+        "business-hotel-price-trends.html",
         "dx-diagnosis.html",
         "dx-necessity-analysis.html",
         "hotel-price-trends.html",
@@ -102,6 +103,7 @@ PAGE_SCRIPTS = {
     "supply-demand-gap-analysis.html": ("cross-analysis", "CrossAnalysisModel"),
     "tourism-pressure-analysis.html": ("cross-analysis", "CrossAnalysisModel"),
     "inbound-analysis.html": ("inbound-analysis", "InboundAnalysisModel"),
+    "business-hotel-price-trends.html": ("business-hotel-price-trends", "BusinessHotelPriceModel"),
 }
 
 

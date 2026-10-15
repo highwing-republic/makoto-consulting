@@ -1,0 +1,200 @@
+/* ビジネスホテル料金トレンド。サイト共通のトークン（site-shell.css）にそろえる。
+   グラフの2系列（中央値の青、強調の金）は配色検証済み（白地でコントラスト3:1以上、色覚差ΔE≥18）。 */
+.bht-hero,.bht-tool{
+  --bht-series:#1a6f9a;
+  --bht-series-wash:rgba(26,111,154,.12);
+  --bht-accent:#a8782a;
+  --bht-grid:#e3e9ec;
+  --bht-axis:#5a6875;
+  --bht-weekend:rgba(23,50,77,.045);
+  --bht-low:#dcecef;
+  --bht-mid:#eef0ee;
+  --bht-high:#f2dccf;
+  --bht-spike:#e6b39a;
+  --bht-none:#f1f3f4;
+}
+
+.bht-hero{padding:82px 0 72px;background:linear-gradient(130deg,var(--lab-surface-soft) 0%,var(--lab-surface) 70%)}
+.bht-hero__grid{display:grid;grid-template-columns:1.1fr .9fr;gap:8vw;align-items:end}
+.bht-hero h1{font-size:clamp(36px,4.4vw,60px);font-weight:700;line-height:1.25;letter-spacing:-.01em}
+.bht-hero__copy{margin:26px 0 0;color:var(--accent);font-size:clamp(20px,2.1vw,28px);font-weight:700;line-height:1.5}
+.bht-hero__lead{max-width:620px;margin:12px 0 0;color:var(--lab-ink-soft);font-size:clamp(15px,1.4vw,18px);line-height:1.8}
+.bht-scope{display:flex;min-height:190px;padding:32px;border:1px solid var(--lab-border);border-radius:16px;background:var(--lab-card);box-shadow:0 18px 40px rgba(23,50,77,.08);flex-direction:column;justify-content:center}
+.bht-scope span{color:var(--signal);font-size:11px;font-weight:500;letter-spacing:.15em}
+.bht-scope strong{margin:18px 0 8px;color:var(--accent);font-size:clamp(22px,2.3vw,30px);font-weight:700}
+.bht-scope small{color:var(--ink-soft);font-size:12px;line-height:1.7}
+
+.bht-tool{padding:72px 0 120px;background:var(--paper-soft)}
+.bht-controls{padding:32px 38px;border:1px solid var(--line);border-top:3px solid var(--lab-navy);border-radius:16px;background:#fff;box-shadow:0 14px 38px rgba(23,50,77,.07)}
+.bht-controls__intro{display:flex;gap:28px;align-items:baseline;justify-content:space-between;margin-bottom:20px}
+.bht-controls__intro h2{margin:0;font-size:clamp(20px,2.2vw,26px);font-weight:700}
+.bht-controls__intro p{margin:0;color:var(--ink-soft);font-size:13px}
+.bht-filter-row{display:flex;flex-wrap:wrap;gap:14px}
+.bht-filter-row label{display:flex;flex:1 1 220px;max-width:340px;gap:7px;color:var(--lab-ink-soft);font-size:12px;font-weight:500;flex-direction:column}
+.bht-filter-row select{width:100%;min-height:48px;padding:0 38px 0 14px;border:1px solid #b8c6cf;border-radius:9px;background:#fff;color:var(--ink);font:500 14px/1.4 var(--sans)}
+.bht-filter-row select:focus{outline:2px solid var(--lab-focus);outline-offset:2px}
+.bht-freshness{margin:20px 0 0;padding-top:16px;border-top:1px solid var(--line);color:var(--lab-ink-soft);font-size:12px;font-weight:500}
+
+.bht-dashboard[hidden]{display:none!important}
+.bht-dashboard{margin-top:28px}
+.bht-panel{margin-top:24px;padding:36px 38px;border:1px solid var(--line);border-radius:16px;background:#fff;box-shadow:0 12px 34px rgba(23,50,77,.05)}
+.bht-heading{display:flex;align-items:flex-end;justify-content:space-between;gap:28px;margin-bottom:22px}
+.bht-heading h2{margin:0;font-size:clamp(20px,2.2vw,26px);font-weight:700;line-height:1.45}
+.bht-heading>p{max-width:320px;margin:0;color:var(--ink-soft);font-size:12px;text-align:right}
+.bht-note{margin:14px 0 0;color:var(--ink-soft);font-size:11px;line-height:1.8}
+.bht-empty{padding:30px;color:var(--ink-soft);text-align:center;font-size:13px}
+.bht-subhead{margin:22px 0 10px;font-size:13px;font-weight:700}
+
+/* 10都市の比較表 */
+.bht-table-wrap{overflow-x:auto}
+.bht-compare,.bht-hotels{width:100%;border-collapse:collapse;font-size:13px}
+.bht-compare th,.bht-compare td,.bht-hotels th,.bht-hotels td{padding:12px 12px;border-bottom:1px solid var(--line);text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.bht-compare thead th,.bht-hotels thead th{color:var(--lab-ink-soft);font-size:11px;font-weight:500}
+.bht-compare th:first-child,.bht-hotels th:first-child{text-align:left}
+.bht-compare tbody tr{cursor:pointer}
+.bht-compare tbody tr:hover{background:var(--lab-surface)}
+.bht-compare tbody tr.is-active{background:var(--lab-surface-soft);box-shadow:inset 3px 0 0 var(--bht-accent)}
+.bht-market-button{padding:4px 0;border:0;background:none;color:var(--accent);font:700 14px/1.4 var(--sans);cursor:pointer;text-decoration:underline;text-decoration-color:transparent;text-underline-offset:3px}
+.bht-market-button:hover,.bht-market-button:focus-visible{text-decoration-color:currentColor}
+.bht-market-button:focus-visible{outline:2px solid var(--lab-focus);outline-offset:2px}
+.bht-trend span{font-weight:700}
+.bht-trend small{display:block;color:var(--ink-soft);font-size:10px;font-weight:400}
+.bht-trend--none span{color:var(--ink-soft);font-weight:500}
+
+/* グラフ共通 */
+.bht-chart{position:relative;max-width:100%;overflow-x:auto;overscroll-behavior-inline:contain}
+.bht-chart svg{display:block;width:100%;height:auto}
+.bht-chart--interactive{border-radius:8px}
+.bht-chart--interactive:focus-visible{outline:2px solid var(--lab-focus);outline-offset:4px}
+.bht-grid{stroke:var(--bht-grid);stroke-width:1}
+.bht-baseline{stroke:#b9c4ca;stroke-width:1}
+.bht-axis{fill:var(--bht-axis);font:11px var(--sans);font-variant-numeric:tabular-nums}
+.bht-label{fill:var(--ink);font:500 13px var(--sans)}
+.bht-value{fill:var(--ink);font:500 12px var(--sans);font-variant-numeric:tabular-nums}
+.bht-muted{fill:var(--ink-soft);font:12px var(--sans)}
+.bht-hit{fill:transparent}
+.bht-weekend{fill:var(--bht-weekend)}
+.bht-band{fill:var(--bht-series-wash)}
+.bht-line{fill:none;stroke:var(--bht-series);stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+.bht-dot{fill:var(--bht-series);stroke:#fff;stroke-width:2}
+.bht-dot--reference{fill:#fff;stroke:var(--bht-series);stroke-width:2}
+.bht-dot--spike{fill:var(--bht-accent)}
+.bht-spike-label{fill:var(--ink);font:700 11px var(--sans);paint-order:stroke;stroke:#fff;stroke-width:3px;stroke-linejoin:round}
+.bht-typical{stroke:var(--bht-axis);stroke-width:1;opacity:.55}
+.bht-typical-label{fill:var(--bht-axis);font:11px var(--sans);font-variant-numeric:tabular-nums;paint-order:stroke;stroke:#fff;stroke-width:3px;stroke-linejoin:round}
+.bht-crosshair{stroke:var(--ink);stroke-width:1;opacity:0;pointer-events:none}.bht-crosshair.is-visible{opacity:.35}
+.bht-range{cursor:pointer}
+.bht-range__line{stroke:var(--bht-series);stroke-width:2;stroke-linecap:round;opacity:.45}
+.bht-range__dot{fill:var(--bht-series);stroke:#fff;stroke-width:2}
+.bht-range:hover .bht-label{text-decoration:underline}
+.bht-range.is-active .bht-range__line{stroke:var(--bht-accent);opacity:.7}
+.bht-range.is-active .bht-range__dot{fill:var(--bht-accent)}
+.bht-range.is-active .bht-label{font-weight:700}
+.bht-bar path{fill:var(--bht-series)}
+.bht-bar:hover path,.bht-bar:focus path{opacity:.8}
+.bht-bar:focus{outline:none}
+.bht-legend{display:flex;flex-wrap:wrap;gap:8px 18px;margin-bottom:12px;color:var(--ink-soft);font-size:12px}
+.bht-legend i{display:inline-block;margin-right:6px;vertical-align:middle}
+.bht-key-line{width:18px;border-top:2px solid var(--bht-series)}
+.bht-key-band{width:14px;height:10px;background:var(--bht-series-wash);border-radius:2px}
+.bht-key-weekend{width:14px;height:10px;background:rgba(23,50,77,.09);border-radius:2px}
+.bht-key-reference{width:8px;height:8px;border:2px solid var(--bht-series);border-radius:50%}
+
+.bht-tooltip{position:fixed;top:0;left:0;z-index:50;display:flex;max-width:280px;padding:10px 12px;border:1px solid rgba(23,50,77,.12);border-radius:8px;background:#fff;box-shadow:0 10px 26px rgba(23,50,77,.16);color:var(--ink-soft);font-size:12px;line-height:1.6;flex-direction:column;pointer-events:none}
+.bht-tooltip[hidden]{display:none}
+.bht-tooltip strong{color:var(--ink);font-size:15px;font-weight:700;font-variant-numeric:tabular-nums}
+
+.bht-accessible-table{margin-top:12px;overflow-x:auto}
+.bht-accessible-table summary{color:var(--ink-soft);font-size:12px;cursor:pointer}
+.bht-accessible-table table{width:100%;margin-top:10px;border-collapse:collapse}
+.bht-accessible-table th,.bht-accessible-table td{padding:8px 10px;border-bottom:1px solid var(--line);font-size:12px;text-align:right;font-variant-numeric:tabular-nums}
+.bht-accessible-table th:first-child,.bht-accessible-table td:first-child{text-align:left}
+
+/* 選択市場のKPI */
+.bht-market{margin-top:56px}
+.bht-market__head h2{margin:0;font-size:clamp(24px,2.8vw,34px);font-weight:700}
+.bht-market__head p{margin:8px 0 0;color:var(--ink-soft);font-size:12px}
+.bht-kpis{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;margin-top:20px}
+.bht-kpi{display:flex;min-height:150px;padding:20px;border:1px solid var(--line);border-radius:12px;background:#fff;box-shadow:0 8px 24px rgba(23,50,77,.05);flex-direction:column}
+.bht-kpi span{color:var(--lab-ink-soft);font-size:12px;font-weight:500}
+.bht-kpi strong{margin-top:auto;color:var(--accent);font-size:clamp(22px,2.2vw,30px);font-weight:700;line-height:1.25;overflow-wrap:anywhere}
+.bht-kpi strong.bht-kpi__status{color:var(--lab-ink-soft);font-size:clamp(17px,1.6vw,20px)}
+.bht-kpi small{margin-top:8px;color:var(--lab-ink-soft);font-size:11px;line-height:1.6}
+.bht-kpi--lead{background:var(--accent-deep);border-color:var(--accent-deep)}
+.bht-kpi--lead span,.bht-kpi--lead small{color:#c5d2dc}
+.bht-kpi--lead strong{color:#fff}
+
+.bht-two{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.bht-two>.bht-panel{margin-top:24px}
+
+/* 食事区分 */
+.bht-meal{display:grid;grid-template-columns:76px minmax(0,1fr) 44px;gap:12px;align-items:center;margin:10px 0}
+.bht-meal span{color:var(--ink);font-size:12px}
+.bht-meal strong{font-size:13px;text-align:right;font-variant-numeric:tabular-nums}
+.bht-meal__track{height:12px;border-radius:99px;background:var(--lab-surface-soft);overflow:hidden}
+.bht-meal__track i{display:block;height:100%;border-radius:0 4px 4px 0;background:var(--bht-series)}
+.bht-meal-hotels{margin:0;padding:0;list-style:none}
+.bht-meal-hotels li{display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-bottom:1px solid var(--line);font-size:12px}
+.bht-meal-hotels small{color:var(--ink-soft);white-space:nowrap}
+
+/* カレンダー */
+.bht-calendar-legend{display:flex;flex-wrap:wrap;gap:8px 16px;margin-bottom:16px;color:var(--ink-soft);font-size:11px}
+.bht-key:before{content:"";display:inline-block;width:10px;height:10px;margin-right:6px;border-radius:2px;vertical-align:-1px}
+.bht-key--low:before,.bht-cal--low{background:var(--bht-low)}
+.bht-key--mid:before,.bht-cal--mid{background:var(--bht-mid)}
+.bht-key--high:before,.bht-cal--high{background:var(--bht-high)}
+.bht-key--spike:before,.bht-cal--spike{background:var(--bht-spike)}
+.bht-key--none:before,.bht-cal--none{background:var(--bht-none)}
+.bht-calendar{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
+.bht-cal-grid{display:contents}
+.bht-cal-head{padding:0 4px 4px;color:var(--ink-soft);font-size:11px;text-align:center}
+.bht-cal{position:relative;min-height:78px;padding:8px 9px;border:1px solid rgba(23,50,77,.06);border-radius:8px}
+.bht-cal--blank{border:0;background:none}
+.bht-cal--reference{border-style:dashed;border-color:#9aa8b0}
+.bht-cal time{display:block;color:var(--bht-axis);font-size:11px;font-variant-numeric:tabular-nums}
+.bht-cal__price{display:block;margin-top:6px;color:var(--accent);font-size:13px;font-weight:700;font-variant-numeric:tabular-nums}
+.bht-cal__diff{display:block;color:#56636d;font-size:11px;font-variant-numeric:tabular-nums}
+.bht-cal em{position:absolute;top:7px;right:7px;padding:0 5px;border-radius:4px;background:#fff;color:var(--ink);font-size:10px;font-style:normal;font-weight:700}
+.bht-cal em.bht-cal__ref{font-weight:500;color:var(--ink-soft)}
+
+/* 比較施設群 */
+.bht-hotels th[scope=row]{white-space:normal;min-width:220px}
+.bht-hotels th[scope=row] a{color:var(--accent);font-weight:700;text-decoration:underline;text-decoration-color:rgba(23,50,77,.25);text-underline-offset:3px}
+.bht-hotels small{display:block;margin-top:3px;color:var(--ink-soft);font-size:11px;font-weight:400}
+.bht-hotels td small{display:inline;margin-left:4px}
+.bht-group th{padding-top:18px;color:var(--lab-ink-soft);font-size:11px;font-weight:700;text-align:left;background:none}
+.bht-backup td,.bht-backup th[scope=row] a{color:var(--ink-soft)}
+
+.bht-method{display:grid;grid-template-columns:.65fr 1.35fr;gap:54px;margin-top:64px;padding:44px 0;border-top:1px solid var(--ink);border-bottom:1px solid var(--ink)}
+.bht-method h2{margin:0;font-size:clamp(20px,2.2vw,26px);font-weight:700}
+.bht-method>div:last-child p{margin:0 0 11px;color:#5e6662;font-size:12px;line-height:1.9}
+.bht-method>div:last-child a{color:var(--accent);font-size:11px;font-weight:700;text-decoration:underline;text-underline-offset:3px}
+
+@media(max-width:1080px){.bht-kpis{grid-template-columns:repeat(3,minmax(0,1fr))}.bht-kpi--lead{grid-column:span 1}}
+@media(max-width:860px){.bht-two{grid-template-columns:1fr;gap:0}}
+@media(max-width:760px){
+  .bht-hero__grid{grid-template-columns:1fr;gap:34px}
+  .bht-controls{padding:26px 22px}
+  .bht-controls__intro{flex-direction:column;gap:6px}
+  .bht-panel{padding:26px 20px}
+  .bht-heading{align-items:flex-start;flex-direction:column;gap:6px}
+  .bht-heading>p{text-align:left}
+  .bht-method{grid-template-columns:1fr;gap:20px}
+  .bht-kpis{grid-template-columns:1fr 1fr;gap:8px}
+  .bht-kpi{min-height:0;padding:14px}
+  .bht-kpi strong{margin-top:10px;font-size:22px}
+  .bht-kpi--lead{grid-column:1/-1}
+}
+@media(max-width:620px){
+  .bht-tool{padding:48px 0 80px}
+  .bht-hero h1{font-size:32px}
+  .bht-filter-row label{max-width:none}
+  .bht-calendar{gap:3px}
+  .bht-cal{min-height:52px;padding:5px 4px}
+  .bht-cal time{font-size:10px}
+  .bht-cal__price{display:none}
+  .bht-cal__diff{margin-top:6px;font-size:11px;font-weight:700;color:var(--ink)}
+  .bht-cal em{position:static;display:block;margin-top:2px;padding:0;background:none;font-size:9px}
+  .bht-compare th,.bht-compare td{padding:10px 8px}
+}
+.bht-compare .visually-hidden{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
