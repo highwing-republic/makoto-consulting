@@ -195,8 +195,17 @@ def test_diagnosis_is_native_and_does_not_contact_the_external_app():
     for event in ("analysis_run", "analysis_result_view", "consultation_click"):
         assert f'track("{event}")' in ui
     assert "dx_total_score" not in ui and "dx_top_priority" not in ui
+    # No answer is preselected; unanswered questions are pointed out before moving on.
+    assert "model.defaultAnswers()" not in ui
+    assert "この質問にまだ回答していません。" in ui
+    # Optional figures the visitor did not change are labelled as defaults in the result.
+    assert "（標準値）" in ui
     # Validation errors mark the field and move focus to the first invalid input.
-    assert ui.count('invalidAttr("') == 6
+    for field in ("rooms", "employees", "adr", "hourlyCost"):
+        assert f'invalidAttr("{field}")' in ui
+    for field in ("otaRatio", "occupancy"):
+        assert f'rangeField("{field}"' in ui
+    assert "+ invalidAttr(name) +" in ui
     assert "app.querySelector('[aria-invalid=\"true\"]')" in ui
     assert f'const CONTACT_URL = "{contact_url}"' in ui
 
