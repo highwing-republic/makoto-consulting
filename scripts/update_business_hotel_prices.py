@@ -35,6 +35,8 @@ ROOT = Path(__file__).resolve().parents[1]
 DATA_DIR = ROOT / "data" / "business-hotel-price-trends"
 ENDPOINT = "https://openapi.rakuten.co.jp/engine/api/Travel/VacantHotelSearch/20170426"
 JST = timezone(timedelta(hours=9))
+# 楽天のアプリに登録した「許可されたWebサイト」。新しい楽天APIは Referer が無いと 403 を返す。
+DEFAULT_REFERER = "https://ugatta-llc.com/"
 MAX_HOTELS_PER_REQUEST = 15
 SCHEMA_VERSION = 1
 
@@ -154,6 +156,7 @@ def cheapest(plans: Iterable[tuple[int, str]]) -> tuple[int, str] | None:
 class RakutenClient:
     application_id: str
     access_key: str
+    referer: str = DEFAULT_REFERER
     min_interval: float = 1.1
     max_retries: int = 4
     session: requests.Session = field(default_factory=requests.Session)
@@ -165,7 +168,7 @@ class RakutenClient:
     def search(self, params: dict) -> dict:
         """1回の検索。該当なし（404）は空の結果として返す。"""
         query = {"applicationId": self.application_id, "format": "json", **params}
-        headers = {"accessKey": self.access_key, "User-Agent": "HOTEL-DX-Lab business-hotel-price-trends"}
+        headers = {"accessKey": self.access_key, "Referer": self.referer, "Origin": self.referer.rstrip("/"), "User-Agent": "HOTEL-DX-Lab business-hotel-price-trends"}
         for attempt in range(self.max_retries + 1):
             wait = self.min_interval - (self.clock() - self._last)
             if wait > 0:
@@ -195,9 +198,11 @@ class RakutenClient:
 def _error_text(response) -> str:
     try:
         body = response.json()
-        return f"{body.get('error')}: {body.get('error_description')}"
     except ValueError:
-        return "応答本文なし"
+        return (response.text or "応答本文なし")[:300]
+    if isinstance(body, dict) and ("error" in body or "error_description" in body):
+        return f"{body.get('error')}: {body.get('error_description')}"
+    return json.dumps(body, ensure_ascii=False)[:300]
 
 
 def base_params(stay: date, conditions: dict) -> dict:
@@ -336,7 +341,7 @@ def main(argv: list[str] | None = None) -> int:
     snapshot_date = date.fromisoformat(args.date) if args.date else datetime.now(JST).date()
     horizon = args.horizon or cohort["horizon_days"]
     market_codes = set(args.market) if args.market else None
-    client = RakutenClient(application_id, access_key)
+    client = RakutenClient(application_id, access_key, referer=os.environ.get("RAKUTEN_REFERER", "").strip() or DEFAULT_REFERER)
     if args.probe:
         params = {**base_params(snapshot_date + timedelta(days=1), cohort["conditions"]), "hotelNo": str(args.probe), "hits": 5}
         payload = client.search(params)

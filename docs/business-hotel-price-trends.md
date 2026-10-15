@@ -11,6 +11,7 @@
 - 条件: 大人1名・1室・1泊。施設ごとに「最安プラン（食事条件は問わない）」の1泊目料金と、そのプランの食事区分。
 - 宿泊日: 取得日当日から60泊分。
 - 取得元: 楽天トラベル空室検索API（`openapi.rakuten.co.jp`、applicationId＋accessKey）。
+  - 新しい楽天APIは、アプリに登録した「アプリケーションURL」と同じ `Referer` が無いと 403 を返す（`REQUEST_CONTEXT_BODY_HTTP_REFERRER_MISSING` / `HTTP_REFERRER_NOT_ALLOWED`）。既定は `https://ugatta-llc.com/`。変えるときは環境変数 `RAKUTEN_REFERER`。
 
 ## 取得の流れ
 

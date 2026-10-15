@@ -138,6 +138,7 @@ def test_observe_market_day_falls_back_per_hotel_and_marks_no_plan_and_errors():
     assert first["adultNum"] == 1 and first["roomNum"] == 1 and first["searchPattern"] == 1
     assert first["sort"] == "+roomCharge" and first["checkinDate"] == "2026-10-20" and first["checkoutDate"] == "2026-10-21"
     assert session.calls[0][1]["accessKey"] == "key" and "accessKey" not in first
+    assert session.calls[0][1]["Referer"] == "https://ugatta-llc.com/"
 
 
 def test_rate_limit_is_retried_with_backoff():
