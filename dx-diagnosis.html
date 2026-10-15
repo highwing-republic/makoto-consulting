@@ -55,7 +55,7 @@ tool_related:
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&amp;display=swap">
   <link rel="stylesheet" href="css/useful.css?v=20261012shell">
   <link rel="stylesheet" href="css/tool-standard.css?v=20261012tool">
-  <link rel="stylesheet" href="css/dx-diagnosis.css?v=20261002brand2">
+  <link rel="stylesheet" href="css/dx-diagnosis.css?v=20261015a">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -96,13 +96,13 @@ tool_related:
     <nav class="breadcrumb container" aria-label="パンくずリスト"><ol><li><a href="/">ホーム</a></li><li><a href="/#analysis-tools">分析・ツール</a></li><li aria-current="page">DXかんたん診断</li></ol></nav>
     <section class="page-hero tool-page-hero"><div class="container page-hero-grid"><div><span class="scope-badge scope-badge--facility">分析対象：自施設</span><h1>旅館・ホテルDX<br>かんたん診断</h1></div><p>約5分の自己診断で、施設のDXの現在地と、優先して見直したい業務を整理します。登録せずに無料で利用できます。</p></div></section>
     {% include tool-overview.html %}
-    <section class="section section--tint embedded-tool-section" id="tool"><div class="container"><div class="section-heading"><div><p class="eyebrow">ツールを使う</p><h2 class="section-title">DXかんたん診断</h2></div><p class="section-description">施設情報と16の質問に回答すると、このページ上で診断結果を表示します。</p></div><div id="dx-diagnosis-app"></div><noscript><p class="tool-disclaimer">診断にはJavaScriptを有効にしてください。</p></noscript><div class="next-action-panel"><h3>診断後に確認すること</h3><ul><li>二重入力が起きている業務と所要時間を記録する</li><li>清掃状況や引継ぎ情報の共有方法を整理する</li><li>改善対象を決めてから、必要な仕組みを比較する</li></ul></div></div></section>
+    <section class="section section--tint embedded-tool-section" id="tool"><div class="container"><h2 class="visually-hidden">DXかんたん診断</h2><div id="dx-diagnosis-app"></div><noscript><p class="tool-disclaimer">診断にはJavaScriptを有効にしてください。</p></noscript></div></section>
     {% include tool-sources.html %}
     {% include tool-related.html %}
   </main>
   {% include site-footer.html %}
-<script defer src="js/dx-diagnosis-model.js?v=20261002a"></script>
-<script defer src="js/dx-diagnosis.js?v=20261002a"></script>
+<script defer src="js/dx-diagnosis-model.js?v=20261015a"></script>
+<script defer src="js/dx-diagnosis.js?v=20261015a"></script>
 <script defer src="js/site.js?v=20260909c"></script>
 </body>
 </html>

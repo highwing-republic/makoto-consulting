@@ -120,10 +120,9 @@ def main(destination):
             capture('diagnosis-questions', width)
             page.locator('#dx-question-form button[type=submit]').click()
             assert page.locator('.dx-score-ring strong').inner_text().isdigit()
-            page.locator('#dx-tab-radar').click()
-            assert page.locator('#dx-panel-radar').is_visible()
-            page.locator('#dx-tab-radar').press('ArrowLeft')
-            assert page.locator('#dx-panel-bars').is_visible()
+            assert page.locator('.dx-bars li').count() == 8
+            assert page.locator('.dx-bars li.is-priority').count() == 3
+            assert page.locator('.dx-finding-link').count() == 3
             capture('diagnosis-results', width)
             page.locator('[data-reset]').first.click()
             assert page.locator('#dx-facility-form').is_visible()

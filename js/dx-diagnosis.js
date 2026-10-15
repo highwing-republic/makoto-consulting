@@ -10,7 +10,6 @@
   let answers = model.defaultAnswers();
   let result = null;
   let errors = {};
-  let chartView = "bars";
 
   const formatNumber = function (value) { return Number(value).toLocaleString("ja-JP"); };
   const escapeHtml = function (value) {
@@ -47,7 +46,7 @@
 
   function renderFacility() {
     app.innerHTML = stepper() + '<section class="dx-panel dx-facility" aria-labelledby="dx-step-heading">' +
-      '<div class="dx-panel-heading"><p class="eyebrow">STEP 1</p><h3 id="dx-step-heading" tabindex="-1">まず、施設のことを教えてください</h3><p>分かる範囲のおおよその数字で大丈夫です。</p></div>' +
+      '<div class="dx-panel-heading"><h3 id="dx-step-heading" tabindex="-1">まず、施設のことを教えてください</h3><p>分かる範囲のおおよその数字で大丈夫です。</p></div>' +
       '<p class="dx-privacy-note"><strong>このページ内で完結します</strong>入力内容はこのブラウザの中だけで計算し、送信・保存しません。施設名は任意です。</p>' +
       '<form id="dx-facility-form" novalidate><div class="dx-form-grid">' +
       '<label class="dx-field dx-field--wide"><span>施設名 <small>任意</small></span><input name="name" type="text" maxlength="80" autocomplete="organization" value="' + escapeHtml(facility.name) + '"></label>' +
@@ -103,7 +102,7 @@
 
   function renderQuestions() {
     app.innerHTML = stepper() + '<section class="dx-panel dx-questions" aria-labelledby="dx-step-heading">' +
-      '<div class="dx-panel-heading"><p class="eyebrow">STEP 2</p><h3 id="dx-step-heading" tabindex="-1">16の質問に答えてください</h3><p>今の施設に最も近いものを選んでください。中央の選択肢を初期選択しています。</p></div>' +
+      '<div class="dx-panel-heading"><h3 id="dx-step-heading" tabindex="-1">16の質問に答えてください</h3><p>今の施設に最も近いものを選んでください。中央の選択肢を初期選択しています。</p></div>' +
       '<form id="dx-question-form"><div class="dx-question-list">' + model.questions.map(function (question, index) {
         return '<fieldset class="dx-question"><legend><span>' + String(index + 1).padStart(2, "0") + '</span>' + escapeHtml(question.question) + '</legend><p>' + escapeHtml(question.category) + '</p><div class="dx-options">' + question.options.map(function (option, optionIndex) {
           const id = "answer-" + question.id + "-" + optionIndex;
@@ -123,70 +122,67 @@
     });
   }
 
-  function scoreTable() {
-    return '<table class="visually-hidden"><caption>カテゴリ別DXスコア</caption><thead><tr><th>カテゴリ</th><th>点数</th></tr></thead><tbody>' + model.categories.map(function (category) {
-      return '<tr><th scope="row">' + category + '</th><td>' + result.scores[category] + '点</td></tr>';
-    }).join("") + '</tbody></table>';
+  // 優先課題カードから試せるラボ内のツール。カテゴリごとに1つ。
+  const relatedTools = {
+    "経営": { label: "宿泊経営AIで課題を整理する", href: "/management-ai.html" },
+    "予約・販売": { label: "予約エンジンデモで自社予約の流れを見る", href: "/demo/booking/" },
+    "会計": { label: "宿泊経営AIで課題を整理する", href: "/management-ai.html" },
+    "業務": { label: "簡易PMSデモで客室ステータスの共有を試す", href: "/demo/mini-pms/" },
+    "勤怠・シフト": { label: "宿泊DX必要度分析で地域の人手不足を見る", href: "/dx-necessity-analysis.html" },
+    "システム": { label: "簡易PMSデモで予約から部屋割りまでを試す", href: "/demo/mini-pms/" },
+    "集客": { label: "予約エンジンデモで自社予約の流れを見る", href: "/demo/booking/" },
+    "データ活用": { label: "宿泊料金トレンドで地域の相場を見る", href: "/hotel-price-trends.html" }
+  };
+
+  function summaryPanel() {
+    const top = result.findings[0];
+    return '<section class="dx-summary" aria-labelledby="dx-summary-heading">' +
+      '<div class="dx-score-ring" style="--score:' + result.total + '"><div><strong>' + result.total + '</strong><span>/ 100</span></div></div>' +
+      '<div class="dx-summary-body"><h4 id="dx-summary-heading">DX総合スコア</h4>' +
+      '<div class="dx-score-scale"><span>これから</span><span>整備中</span><span>定着・活用</span><i class="dx-scale-marker" style="left:' + result.total + '%" aria-hidden="true"></i></div>' +
+      '<div class="dx-top-priority"><p><span class="dx-top-badge">最優先</span><strong>' + top.category + '</strong></p><p class="dx-top-action">まずやること：<b>' + escapeHtml(top.action) + '</b></p></div>' +
+      '<p class="dx-summary-comment">' + escapeHtml(result.comment) + '</p></div></section>';
   }
 
-  function barChart() {
-    const width = 720;
-    const left = 142;
-    const usable = 520;
-    return '<svg class="dx-score-svg" viewBox="0 0 ' + width + ' 390" role="img" aria-label="8カテゴリのDXスコア横棒グラフ">' + model.categories.map(function (category, index) {
-      const y = 25 + index * 46;
+  function findingsPanel() {
+    return '<section class="dx-result-section" aria-labelledby="dx-findings-heading"><h4 id="dx-findings-heading" class="dx-result-title">まず見直したい3つ</h4><div class="dx-findings">' + result.findings.map(function (finding, index) {
+      const tool = relatedTools[finding.category];
+      return '<article><p class="dx-priority">優先度 ' + (index + 1) + '</p><div class="dx-finding-title"><h5>' + finding.category + '</h5><strong>' + finding.score + '<small>点</small></strong></div><p>' + escapeHtml(finding.text) + '</p><div class="dx-finding-action"><span>まずやること</span><b>' + escapeHtml(finding.action) + '</b></div>' +
+        (tool ? '<a class="dx-finding-link" href="' + tool.href + '">' + tool.label + ' <span aria-hidden="true">→</span></a>' : "") + '</article>';
+    }).join("") + '</div></section>';
+  }
+
+  function scoreBars() {
+    const priority = result.findings.map(function (finding) { return finding.category; });
+    return '<section class="dx-result-section" aria-labelledby="dx-score-heading"><h4 id="dx-score-heading" class="dx-result-title">カテゴリ別スコア</h4><p class="dx-result-lead">色の濃い3つが、まず見直したいカテゴリです。</p><ul class="dx-bars">' + model.categories.map(function (category) {
       const score = result.scores[category];
-      return '<text class="dx-chart-label" x="0" y="' + (y + 15) + '">' + category + '</text><rect class="dx-chart-track" x="' + left + '" y="' + y + '" width="' + usable + '" height="20" rx="10"></rect><rect class="dx-chart-bar" x="' + left + '" y="' + y + '" width="' + (usable * score / 100) + '" height="20" rx="10"></rect><text class="dx-chart-score" x="' + (left + usable + 12) + '" y="' + (y + 15) + '">' + score + '</text>';
-    }).join("") + '</svg>';
+      const isPriority = priority.indexOf(category) > -1;
+      return '<li' + (isPriority ? ' class="is-priority"' : "") + '><span class="dx-bar-label">' + category + (isPriority ? '<span class="visually-hidden">（優先）</span>' : "") + '</span><span class="dx-bar-track" aria-hidden="true"><span style="width:' + score + '%"></span></span><b>' + score + '<span class="visually-hidden">点</span></b></li>';
+    }).join("") + '</ul></section>';
   }
 
-  function radarPoint(index, value, radius) {
-    const angle = -Math.PI / 2 + index * Math.PI * 2 / model.categories.length;
-    return [200 + Math.cos(angle) * radius * value / 100, 200 + Math.sin(angle) * radius * value / 100];
+  function timePanel() {
+    return '<section class="dx-time-panel" aria-labelledby="dx-time-heading"><h4 id="dx-time-heading" class="dx-result-title">改善できそうな作業時間の目安</h4><dl><div><dt>1か月</dt><dd>約 ' + formatNumber(result.monthlyHours) + ' 時間</dd></div><div><dt>1年間</dt><dd>約 ' + formatNumber(result.annualHours) + ' 時間</dd></div><div><dt>人件費換算</dt><dd>約 ' + formatNumber(Math.round(result.annualValue / 10000)) + ' 万円/年</dd></div></dl>' +
+      '<p>簡易モデルによる参考値です。正式な効果試算には、現場の作業時間を確認する必要があります。</p>' +
+      '<p class="dx-inputs">入力した数値：客室 ' + formatNumber(facility.rooms) + ' 室、従業員 ' + formatNumber(facility.employees) + ' 人、ADR ¥' + formatNumber(facility.adr) + '、客室稼働率 ' + facility.occupancy + '%、参考RevPAR ¥' + formatNumber(result.revpar) + '、OTA比率 ' + facility.otaRatio + '%、人件費の目安 ¥' + formatNumber(facility.hourlyCost) + '/時間</p></section>';
   }
 
-  function pointsFor(value, radius) {
-    return model.categories.map(function (_, index) { return radarPoint(index, value, radius).join(","); }).join(" ");
-  }
-
-  function radarChart() {
-    const radius = 126;
-    const dataPoints = model.categories.map(function (category, index) { return radarPoint(index, result.scores[category], radius).join(","); }).join(" ");
-    return '<svg class="dx-radar-svg" viewBox="0 0 400 400" role="img" aria-label="8カテゴリのDXスコアレーダーチャート">' +
-      [25, 50, 75, 100].map(function (value) { return '<polygon class="dx-radar-grid" points="' + pointsFor(value, radius) + '"></polygon>'; }).join("") +
-      model.categories.map(function (category, index) {
-        const end = radarPoint(index, 100, radius);
-        const label = radarPoint(index, 122, radius);
-        const anchor = label[0] < 180 ? "end" : label[0] > 220 ? "start" : "middle";
-        return '<line class="dx-radar-axis" x1="200" y1="200" x2="' + end[0] + '" y2="' + end[1] + '"></line><text class="dx-radar-label" x="' + label[0] + '" y="' + (label[1] + 4) + '" text-anchor="' + anchor + '">' + category + '</text>';
-      }).join("") + '<polygon class="dx-radar-data" points="' + dataPoints + '"></polygon>' +
-      model.categories.map(function (category, index) { const point = radarPoint(index, result.scores[category], radius); return '<circle class="dx-radar-point" cx="' + point[0] + '" cy="' + point[1] + '" r="4"></circle>'; }).join("") + '</svg>';
-  }
-
-  function chartPanel() {
-    const barsActive = chartView === "bars";
-    return '<section class="dx-result-section" aria-labelledby="dx-score-heading"><div class="dx-result-heading"><p class="eyebrow">CATEGORY SCORE</p><h4 id="dx-score-heading">カテゴリ別スコア</h4></div>' +
-      '<div class="dx-tabs" role="tablist" aria-label="スコア表示"><button id="dx-tab-bars" role="tab" aria-selected="' + barsActive + '" aria-controls="dx-panel-bars" tabindex="' + (barsActive ? "0" : "-1") + '" data-chart="bars">比較して見る</button><button id="dx-tab-radar" role="tab" aria-selected="' + (!barsActive) + '" aria-controls="dx-panel-radar" tabindex="' + (!barsActive ? "0" : "-1") + '" data-chart="radar">全体像を見る</button></div>' +
-      '<div id="dx-panel-bars" class="dx-chart-panel" role="tabpanel" aria-labelledby="dx-tab-bars"' + (barsActive ? "" : " hidden") + '>' + barChart() + '</div>' +
-      '<div id="dx-panel-radar" class="dx-chart-panel dx-chart-panel--radar" role="tabpanel" aria-labelledby="dx-tab-radar"' + (!barsActive ? "" : " hidden") + '>' + radarChart() + '</div>' + scoreTable() + '</section>';
+  function solutionsPanel() {
+    return '<section class="dx-result-section" aria-labelledby="dx-solutions-heading"><h4 id="dx-solutions-heading" class="dx-result-title">関連するDX施策</h4><div class="dx-solutions">' + result.matchedSolutions.map(function (solution) {
+      return '<details><summary><span>' + solution.category + '</span><strong>' + escapeHtml(solution.name) + '</strong></summary><div><p>' + escapeHtml(solution.summary) + '</p><dl><div><dt>向いている施設</dt><dd>' + escapeHtml(solution.fit) + '</dd></div><div><dt>比較ポイント</dt><dd>' + escapeHtml(solution.comparePoints) + '</dd></div></dl></div></details>';
+    }).join("") + '</div></section>';
   }
 
   function renderResult() {
     const title = facility.name ? escapeHtml(facility.name) + "の診断結果" : "診断結果";
     app.innerHTML = stepper() + '<section class="dx-panel dx-results" aria-labelledby="dx-step-heading">' +
-      '<div class="dx-result-top"><div class="dx-panel-heading"><p class="eyebrow">STEP 3</p><h3 id="dx-step-heading" tabindex="-1">' + title + '</h3><p>点数そのものより、優先して見直す場所を決めるために活用してください。</p></div><button class="dx-text-button" type="button" data-reset>最初から診断</button></div>' +
-      '<div class="dx-metrics"><article><span>ADR</span><strong>¥' + formatNumber(facility.adr) + '</strong></article><article><span>客室稼働率</span><strong>' + facility.occupancy + '%</strong></article><article><span>参考RevPAR</span><strong>¥' + formatNumber(result.revpar) + '</strong></article><article><span>OTA比率</span><strong>' + facility.otaRatio + '%</strong></article></div>' +
-      '<section class="dx-overview" aria-labelledby="dx-overview-heading"><div class="dx-score-ring" style="--score:' + result.total + '"><div><strong>' + result.total + '</strong><span>/ 100</span></div></div><div><p class="eyebrow">TOTAL SCORE</p><h4 id="dx-overview-heading">DX総合スコア</h4><div class="dx-score-scale"><span>これから</span><span>整備中</span><span>定着・活用</span></div></div></section>' +
-      '<section class="dx-comment"><p class="eyebrow">DIAGNOSIS COMMENT</p><h4>現在地から始める、無理のない一歩</h4><p>' + escapeHtml(result.comment) + '</p></section>' + chartPanel() +
-      '<section class="dx-result-section" aria-labelledby="dx-findings-heading"><div class="dx-result-heading"><p class="eyebrow">PRIORITIES</p><h4 id="dx-findings-heading">まず直したい3つ</h4></div><div class="dx-findings">' + result.findings.map(function (finding, index) {
-        return '<article><span class="dx-priority">優先度 0' + (index + 1) + '</span><div class="dx-finding-title"><h5>' + finding.category + '</h5><strong>' + finding.score + '<small>点</small></strong></div><p>' + escapeHtml(finding.text) + '</p><div><span>まずやること</span><b>' + escapeHtml(finding.action) + '</b></div></article>';
-      }).join("") + '</div></section>' +
-      '<section class="dx-time-panel" aria-labelledby="dx-time-heading"><div><p class="eyebrow">POTENTIAL</p><h4 id="dx-time-heading">改善できそうな作業時間の目安</h4></div><dl><div><dt>1か月</dt><dd>約 ' + formatNumber(result.monthlyHours) + ' 時間</dd></div><div><dt>1年間</dt><dd>約 ' + formatNumber(result.annualHours) + ' 時間</dd></div><div><dt>人件費換算</dt><dd>約 ' + formatNumber(Math.round(result.annualValue / 10000)) + ' 万円/年</dd></div></dl><p>簡易モデルによる参考値です。正式な効果試算には、現場の作業時間を確認する必要があります。</p></section>' +
-      '<section class="dx-result-section" aria-labelledby="dx-solutions-heading"><div class="dx-result-heading"><p class="eyebrow">NEXT SOLUTIONS</p><h4 id="dx-solutions-heading">関連するDX施策</h4></div><div class="dx-solutions">' + result.matchedSolutions.map(function (solution) {
-        return '<details><summary><span>' + solution.category + '</span><strong>' + escapeHtml(solution.name) + '</strong></summary><div><p>' + escapeHtml(solution.summary) + '</p><dl><div><dt>向いている施設</dt><dd>' + escapeHtml(solution.fit) + '</dd></div><div><dt>比較ポイント</dt><dd>' + escapeHtml(solution.comparePoints) + '</dd></div></dl></div></details>';
-      }).join("") + '</div></section>' +
-      '<section class="dx-consultation"><p class="eyebrow">CONSULTATION</p><h4>次の一歩を一緒に整理しませんか？</h4><p>診断結果をもとに、施設の状況に合った進め方を合同会社UGATTAが一緒に整理します。ご相談は無料です。</p><a class="button" href="' + CONTACT_URL + '" target="_blank" rel="noopener noreferrer" data-analytics-event="consultation_click" data-tool-id="dx-diagnosis-result">診断結果について相談する <span aria-hidden="true">↗</span></a></section>' +
-      '<div class="dx-actions"><button class="button button--outline" type="button" data-review>回答を見直す</button><button class="dx-text-button" type="button" data-reset>最初からやり直す</button></div></section>';
+      '<div class="dx-panel-heading"><h3 id="dx-step-heading" tabindex="-1">' + title + '</h3><p>点数そのものより、優先して見直す場所を決めるために活用してください。</p></div>' +
+      summaryPanel() +
+      '<div class="dx-result-tools"><button class="dx-chip" type="button" data-review>回答を見直す</button><button class="dx-chip" type="button" data-reset>最初からやり直す</button></div>' +
+      findingsPanel() + scoreBars() + timePanel() + solutionsPanel() +
+      '<section class="dx-next-steps" aria-labelledby="dx-next-heading"><h4 id="dx-next-heading" class="dx-result-title">診断後に確認すること</h4><ul><li>二重入力が起きている業務と所要時間を記録する</li><li>清掃状況や引継ぎ情報の共有方法を整理する</li><li>改善対象を決めてから、必要な仕組みを比較する</li></ul></section>' +
+      '<section class="dx-consultation"><div><h4>この結果をもとに、進め方を一緒に整理しませんか？</h4><p>診断結果をもとに、施設の状況に合った進め方を合同会社UGATTAが一緒に整理します。ご相談は無料です。</p></div><a class="button" href="' + CONTACT_URL + '" target="_blank" rel="noopener noreferrer" data-analytics-event="consultation_click" data-tool-id="dx-diagnosis-result">診断結果について相談する <span aria-hidden="true">↗</span></a></section>' +
+      '</section>';
     bindResultEvents();
   }
 
@@ -196,27 +192,6 @@
     app.querySelector('[data-analytics-event="consultation_click"]').addEventListener("click", function () {
       track("consultation_click");
     });
-    app.querySelectorAll('[role="tab"]').forEach(function (tab) {
-      tab.addEventListener("click", function () { setChartView(tab.dataset.chart, true); });
-      tab.addEventListener("keydown", function (event) {
-        if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
-        event.preventDefault();
-        setChartView(chartView === "bars" ? "radar" : "bars", true);
-      });
-    });
-  }
-
-  function setChartView(view, focus) {
-    chartView = view;
-    ["bars", "radar"].forEach(function (name) {
-      const selected = name === chartView;
-      const tab = document.getElementById("dx-tab-" + name);
-      const panel = document.getElementById("dx-panel-" + name);
-      tab.setAttribute("aria-selected", String(selected));
-      tab.tabIndex = selected ? 0 : -1;
-      panel.hidden = !selected;
-    });
-    if (focus) document.getElementById("dx-tab-" + chartView).focus();
   }
 
   function resetDiagnosis() {
@@ -224,7 +199,6 @@
     answers = model.defaultAnswers();
     result = null;
     errors = {};
-    chartView = "bars";
     goToStep(1);
   }
 
