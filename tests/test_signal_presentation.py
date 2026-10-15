@@ -1,7 +1,9 @@
+from pathlib import Path
+
 from bs4 import BeautifulSoup
 import pytest
 
-from scripts.prepare_signal_report import prepare
+from scripts.prepare_signal_report import EMBEDDED_ONLY, NOINDEX, prepare, prepare_tree, set_robots
 
 def original_report():
     return '''<!doctype html><html><head><title>Daily report</title>
@@ -49,3 +51,45 @@ def test_upstream_header_is_removed_and_new_report_date_is_used():
 def test_unrecognized_upstream_markup_fails_instead_of_dropping_data():
     with pytest.raises(ValueError):
         prepare('<html><body>Changed upstream structure</body></html>')
+
+
+def robots(html):
+    return [tag['content'] for tag in BeautifulSoup(html, 'html.parser').select('meta[name="robots"]')]
+
+
+def stock_page():
+    return '<!doctype html><html><head><meta charset="utf-8"><title>9722 | Signal</title></head><body><h1>9722</h1></body></html>'
+
+
+def test_robots_tag_is_added_once_and_replaces_upstream_values():
+    once = set_robots(stock_page(), NOINDEX)
+    assert robots(once) == ['noindex']
+    assert set_robots(once, NOINDEX) == once
+    upstream = stock_page().replace('<title>', '<meta name="robots" content="index,follow"><title>')
+    assert robots(set_robots(upstream, NOINDEX)) == ['noindex']
+
+
+def test_robots_tag_needs_a_head():
+    with pytest.raises(ValueError):
+        set_robots('<p>no head</p>', NOINDEX)
+
+
+def test_sync_keeps_daily_report_embeddable_and_stock_pages_out_of_search(tmp_path):
+    (tmp_path / 'reports/2026-10-15').mkdir(parents=True)
+    (tmp_path / 'index.html').write_text(original_report(), encoding='utf-8')
+    (tmp_path / 'reports/2026-10-15/index.html').write_text(stock_page(), encoding='utf-8')
+    (tmp_path / 'reports/2026-10-15/9722-t.html').write_text(stock_page(), encoding='utf-8')
+    prepare_tree(tmp_path)
+    first = {path: path.read_text(encoding='utf-8') for path in tmp_path.rglob('*.html')}
+    prepare_tree(tmp_path)
+    assert {path: path.read_text(encoding='utf-8') for path in tmp_path.rglob('*.html')} == first
+    index = first[tmp_path / 'index.html']
+    assert robots(index) == [EMBEDDED_ONLY]
+    assert 'class="report-summary"' in index
+    for name in ['reports/2026-10-15/index.html', 'reports/2026-10-15/9722-t.html']:
+        assert robots(first[tmp_path / name]) == ['noindex'], name
+
+
+def test_synced_report_is_not_listed_in_the_sitemap():
+    sitemap = (Path(__file__).resolve().parents[1] / 'sitemap.xml').read_text(encoding='utf-8')
+    assert '/tourism-market-signal/' not in sitemap

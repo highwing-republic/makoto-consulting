@@ -1,8 +1,19 @@
-"""Apply the Lab presentation to a freshly synced report; preserve its data."""
+"""Apply the Lab presentation to a freshly synced report; preserve its data.
+
+The synced pages also get a robots meta tag. The daily report is read through the
+iframe on /report.html, so its own URL stays out of search results while its
+content can still count for the embedding page (noindex, indexifembedded). The
+per-day and per-stock pages under reports/ are research notes on individual
+listed companies, outside the Lab's subject, so they are kept out of search.
+"""
 from pathlib import Path
 import re
 
 ROOT = Path(__file__).resolve().parents[1]
+REPORT = ROOT / 'tourism-market-signal'
+EMBEDDED_ONLY = 'noindex, indexifembedded'
+NOINDEX = 'noindex'
+ROBOTS = re.compile(r'<meta\s+name="robots"[^>]*>', re.I)
 STYLE = '<link rel="stylesheet" href="../css/report-signal.css?v=20261006compact1">'
 FONT = '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&amp;display=swap">'
 
@@ -34,9 +45,28 @@ def prepare(html: str) -> str:
     return html
 
 
-if __name__ == '__main__':
-    path = ROOT / 'tourism-market-signal/index.html'
+def set_robots(html: str, content: str) -> str:
+    """Set one robots meta tag in <head>, replacing any the upstream page carries."""
+    tag = f'<meta name="robots" content="{content}">'
+    if ROBOTS.search(html):
+        return ROBOTS.sub(tag, html, count=1)
+    if '</head>' not in html:
+        raise ValueError('Report structure changed: expected </head>')
+    return html.replace('</head>', f'  {tag}\n</head>', 1)
+
+
+def rewrite(path: Path, change) -> None:
     original = path.read_text(encoding='utf-8')
-    prepared = prepare(original)
-    if prepared != original:
-        path.write_text(prepared, encoding='utf-8')
+    changed = change(original)
+    if changed != original:
+        path.write_text(changed, encoding='utf-8')
+
+
+def prepare_tree(root: Path = REPORT) -> None:
+    rewrite(root / 'index.html', lambda html: set_robots(prepare(html), EMBEDDED_ONLY))
+    for path in sorted((root / 'reports').rglob('*.html')):
+        rewrite(path, lambda html: set_robots(html, NOINDEX))
+
+
+if __name__ == '__main__':
+    prepare_tree()
