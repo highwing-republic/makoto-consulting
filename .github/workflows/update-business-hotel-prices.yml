@@ -1,0 +1,92 @@
+name: Update business hotel price trends
+
+# ビジネスホテル版料金トレンド: 10市場・81施設の料金を毎朝取得して保存する。
+# 既存の宿泊料金トレンド（PCから14時台に取得）とは別の仕組み。同じ楽天アプリIDを使っても
+# 取得時間帯が重ならないよう、日本時間の早朝に動かす。
+# 必要なリポジトリシークレット: RAKUTEN_APPLICATION_ID, RAKUTEN_ACCESS_KEY
+
+on:
+  schedule:
+    # 06:10 JST（GitHub の cron は UTC）
+    - cron: "10 21 * * *"
+  workflow_dispatch:
+    inputs:
+      date:
+        description: "取得日（YYYY-MM-DD、空欄なら日本時間の今日）"
+        required: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-business-hotel-prices
+  cancel-in-progress: false
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    outputs:
+      changed: ${{ steps.commit.outputs.changed }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt
+
+      - name: Fetch prices from Rakuten Travel
+        env:
+          RAKUTEN_APPLICATION_ID: ${{ secrets.RAKUTEN_APPLICATION_ID }}
+          RAKUTEN_ACCESS_KEY: ${{ secrets.RAKUTEN_ACCESS_KEY }}
+          SNAPSHOT_DATE: ${{ github.event.inputs.date }}
+        run: |
+          if [ -n "$SNAPSHOT_DATE" ]; then
+            python scripts/update_business_hotel_prices.py --date "$SNAPSHOT_DATE"
+          else
+            python scripts/update_business_hotel_prices.py
+          fi
+
+      - name: Run collector tests
+        run: python -m pytest -q tests/test_business_hotel_prices.py
+
+      - name: Commit and push the snapshot
+        id: commit
+        shell: bash
+        run: |
+          if [ -z "$(git status --porcelain -- data/business-hotel-price-trends)" ]; then
+            echo "No price changes"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/business-hotel-price-trends
+          git commit -m "data: update business hotel price trends $(TZ=Asia/Tokyo date +%F)"
+          for attempt in 1 2 3; do
+            if git pull --rebase origin main && git push; then
+              echo "changed=true" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            sleep 10
+          done
+          exit 1
+
+  publish:
+    needs: collect
+    if: needs.collect.outputs.changed == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      pages: write
+    steps:
+      # GITHUB_TOKEN pushes do not trigger a Pages build automatically.
+      - name: Publish the updated data
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh api --method POST "repos/$GITHUB_REPOSITORY/pages/builds"
