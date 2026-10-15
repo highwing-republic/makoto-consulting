@@ -6,6 +6,12 @@
   group: facility
   tag: 無料診断
   summary: 施設の現状から、DXで優先したいポイントを整理します。
+- id: ai-inn-sample
+  title: AIに聞かれる宿 診断 サンプル
+  url: /ai-inn-diagnosis/sample/
+  group: facility
+  tag: サンプル（架空の宿）
+  summary: 旅館のAIO対策を、対策前と対策後で比べたサンプル。旅館ならではの12の質問にAIが答えられた数は、4問から12問に増えました。
 - id: inbound
   title: インバウンド宿泊者分析
   url: /inbound-analysis.html
@@ -70,4 +76,4 @@
   url: /demo/hotel/
   group: experimental
   tag: 体験デモ（架空データ）
-  summary: 架空の宿の公式サイトを日英中韓の4言語で体験できます。
+  summary: 架空の宿の公式サイトを日英中韓の4言語で体験できます。旅館のAIO対策を行った後のサイトです。

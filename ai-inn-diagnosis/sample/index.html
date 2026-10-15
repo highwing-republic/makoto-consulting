@@ -1,0 +1,336 @@
+---
+# Built by Jekyll: the shared header and footer come from _includes/.
+# Phase 3 標準ブロック（_includes/tool-overview / tool-sources / tool-related）の内容。
+tool: ai-inn-sample
+tool_purpose: 旅館のAIO対策を、対策前と対策後で比べたサンプルです。温泉、食事、客室など旅館ならではの12の質問をAIにして、何と答えるかを確かめました。架空の宿「ホテル翠蓮」のデモサイトで対策を実際に行い、同じ質問で答え合わせをしています。
+tool_scope:
+  - label: 対象
+    text: 架空の温泉旅館「ホテル翠蓮」の、対策前のサイトと対策後のサイト、共通の予約ページ。どれも宿泊DXラボで公開している体験デモです。
+  - label: データ
+    text: 各ページの本文、AIに本文だけを渡して旅館についての12の質問に答えさせた結果（対策前と対策後で各3回）、Lighthouseによる表示速度の計測結果。
+  - label: 条件
+    text: Googleビジネスプロフィール、口コミ、予約サイトの評価は、架空の宿のため対象外です。ChatGPTやGoogleのAI概要での回答は、実在の施設の診断で確認します。
+tool_cta:
+  label: 結果を見る
+  href: "#summary"
+  tool_id: ai-inn-sample-summary
+tool_updated: "2026-10-15"
+tool_updated_label: 調査日
+tool_sources:
+  - name: 対策前のサイト
+    publisher: ホテル翠蓮 公式サイト（体験デモ・対策前）
+    url: /demo/hotel-before/
+  - name: 対策後のサイト
+    publisher: ホテル翠蓮 公式サイト（体験デモ・対策後）
+    url: /demo/hotel/
+  - name: 予約ページ
+    publisher: ホテル翠蓮 予約ページ（体験デモ・対策前後で共通）
+    url: /demo/booking/
+  - name: AIへの質問
+    publisher: Claude（Anthropic）。JavaScriptを実行せずに読める本文だけを渡し、同じ12の質問を対策前と対策後で別々に3回ずつ行いました。
+  - name: 表示速度
+    publisher: Lighthouse 13.5.0。2026年10月15日、対策前と対策後を同じパソコンと同じ設定で計測。
+tool_notes:
+  - ホテル翠蓮は架空の宿です。住所、料金、温泉、送迎などはデモ用の創作で、実在の施設とは関係ありません。
+  - AIの答えは、聞くたび、AIの種類ごとに変わります。サンプルの結果は、本文だけを渡したときの1つの例です。
+  - 表示速度は手元のパソコンで計測しました。公開中のサイトで測ると数値は変わります。
+  - AI検索への対策は、AIOのほか、GEOやLLMOとも呼ばれます。AIの回答内容や紹介される順番を保証するものではありません。
+tool_related:
+  - hotel-site-demo
+  - dx-diagnosis
+  - inbound
+---
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-QS9HSHCY33"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-QS9HSHCY33');gtag('config','GT-M3S9S5D7');</script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>旅館のAIO対策｜AIに聞かれる宿 診断 サンプルレポート｜宿泊DXラボ</title>
+  <meta name="description" content="旅館のAIO対策を、対策前と対策後で比べたサンプル。泉質、露天風呂付き客室、部屋食、子ども料金など旅館ならではの12の質問に、AIが答えられた数は4問から12問に増えました。旅館のAIO対策チェックリスト付き。">
+  <meta name="robots" content="index,follow,max-image-preview:large">
+  <link rel="canonical" href="https://lab.ugatta-llc.com/ai-inn-diagnosis/sample/">
+  <meta property="og:locale" content="ja_JP">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="宿泊DXラボ">
+  <meta property="og:title" content="旅館のAIO対策｜AIに聞かれる宿 診断 サンプルレポート">
+  <meta property="og:description" content="旅館ならではの12の質問に、AIが答えられた数は対策前の4問から対策後の12問へ。対策前と対策後を比べたサンプルです。">
+  <meta property="og:url" content="https://lab.ugatta-llc.com/ai-inn-diagnosis/sample/">
+  <meta property="og:image" content="https://lab.ugatta-llc.com/images/og-lab.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="旅館のAIO対策｜AIに聞かれる宿 診断 サンプル">
+  <meta name="twitter:description" content="AIが答えられた旅館の質問は、対策前4問から対策後12問へ。対策前後の比較サンプルです。">
+  <meta name="twitter:image" content="https://lab.ugatta-llc.com/images/og-lab.jpg">
+  <meta name="theme-color" content="#17324d">
+  <link rel="icon" type="image/png" href="/favicon.png?v=20261013">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&amp;display=swap">
+  <link rel="stylesheet" href="/css/useful.css?v=20261012shell">
+  <link rel="stylesheet" href="/css/tool-standard.css?v=20261012tool">
+  <link rel="stylesheet" href="/css/ai-inn.css?v=20261015f">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {"@type": "ListItem", "position": 1, "name": "ホーム", "item": "https://lab.ugatta-llc.com/"},
+          {"@type": "ListItem", "position": 2, "name": "分析・ツール", "item": "https://lab.ugatta-llc.com/#analysis-tools"},
+          {"@type": "ListItem", "position": 3, "name": "旅館のAIO対策 AIに聞かれる宿 診断 サンプル", "item": "https://lab.ugatta-llc.com/ai-inn-diagnosis/sample/"}
+        ]
+      },
+      {
+        "@type": "Report",
+        "name": "旅館のAIO対策 AIに聞かれる宿 診断 サンプルレポート",
+        "url": "https://lab.ugatta-llc.com/ai-inn-diagnosis/sample/",
+        "inLanguage": "ja-JP",
+        "datePublished": "2026-10-15",
+        "description": "旅館のAIO対策を対策前と対策後で比べたサンプルレポート。旅館ならではの12の質問にAIが答えられた数は4問から12問に増えました。",
+        "publisher": {"@type": "Organization", "name": "宿泊DXラボ", "url": "https://lab.ugatta-llc.com/"}
+      }
+    ]
+  }
+  </script>
+  <link rel="stylesheet" href="/css/site-shell.css?v=20261012shell">
+  <script src="/js/site-shell.js?v=20261012shell2" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">本文へ移動</a>
+  {% include site-header.html %}
+  <main id="main">
+    <nav class="breadcrumb container" aria-label="パンくずリスト"><ol><li><a href="/">ホーム</a></li><li><a href="/#analysis-tools">分析・ツール</a></li><li aria-current="page">AIに聞かれる宿 診断 サンプル</li></ol></nav>
+    <section class="page-hero tool-page-hero"><div class="container page-hero-grid"><div><span class="scope-badge scope-badge--facility">旅館のAIO対策（サンプル）</span><h1>AIに聞かれる宿<br>診断<br>サンプルレポート</h1></div><div><p>「源泉かけ流しの宿は？」「部屋食で、露天風呂付きの客室がある旅館は？」。宿探しの相談相手は、検索窓からAIに移りつつあります。架空の温泉旅館「ホテル翠蓮」の公式サイトにAIO対策を行い、旅館ならではの12の質問で、対策前と対策後のAIの答えを比べました。</p><p class="ai-hero-note">注意：ホテル翠蓮は、宿泊DXラボの体験デモ用の架空の宿です。対策前のサイトも、比較用にそのまま残しています。</p></div></div></section>
+    {% include tool-overview.html %}
+
+    <section class="ai-section" id="summary" aria-labelledby="summary-title"><div class="container">
+      <h2 class="ai-h2" id="summary-title">対策後、AIは旅館についての12問すべてに答えられるようになりました</h2>
+      <p class="ai-lead">公式サイトと予約ページの本文だけをAIに渡し、温泉、食事、客室、子ども連れ、送迎について聞きました。対策前と対策後で3回ずつ試し、どちらも3回とも同じ結果でした。対策前は12問中8問が「宿に確認を」で終わっていました。</p>
+      <dl class="ai-kpis">
+        <div class="ai-kpi" data-kpi="answered"><dt>旅館らしい質問にAIが答えられた数</dt><dd><span class="ai-before">4</span><span class="ai-arrow" aria-hidden="true">→</span><span class="sr-only">から</span><strong>12</strong><span> / 12問</span></dd><p>対策前は、料金、チェックイン、大浴場の時間などだけでした。</p></div>
+        <div class="ai-kpi" data-kpi="ask"><dt>「宿に確認を」で終わった質問</dt><dd><span class="ai-before">8</span><span class="ai-arrow" aria-hidden="true">→</span><span class="sr-only">から</span><strong>0</strong><span> / 12問</span></dd><p>泉質、貸切風呂、部屋食、子ども、送迎などに答えが出ました。</p></div>
+        <div class="ai-kpi" data-kpi="missing"><dt>どこにも書かれていない旅館の情報</dt><dd><span class="ai-before">10</span><span class="ai-arrow" aria-hidden="true">→</span><span class="sr-only">から</span><strong>0</strong><span> / 19項目</span></dd><p>旅館の正解シートの項目を、すべて公式サイトに書きました。</p></div>
+        <div class="ai-kpi" data-kpi="languages"><dt>外国語でAIに読まれるページ</dt><dd><span class="ai-before">0</span><span class="ai-arrow" aria-hidden="true">→</span><span class="sr-only">から</span><strong>3</strong><span> / 3言語</span></dd><p>英語、中国語、韓国語のページを、別のURLに分けました。</p></div>
+      </dl>
+      <p class="ai-callout"><strong>一番の変化：</strong>対策前、AIは「おすすめは？」に対し、予約できない「季節の会席」を3回とも魅力として挙げていました。対策後は、夕食が予約後の事前申込制であることを添えて紹介するようになりました。AIの事実の誤りは、対策前も対策後も0件です。</p>
+    </div></section>
+
+    <section class="ai-section ai-section--plain" id="sites" aria-labelledby="sites-title"><div class="container">
+      <h2 class="ai-h2" id="sites-title">対策前のサイトと、対策後のサイト</h2>
+      <p class="ai-lead">見た目はほとんど変えていません。変えたのは、AIが読む文章と、ページの作りです。どちらも、このページの中か新しいタブで開いて、実際に比べられます。</p>
+      <div class="ai-sites">
+        <figure class="ai-site ai-site--before">
+          <figcaption><span class="ai-tag ai-tag--ask">対策前</span><a href="/demo/hotel-before/" target="_blank" rel="noopener">対策前のサイトを開く <span aria-hidden="true">↗</span></a></figcaption>
+          <div class="ai-site__screen"><img src="/ai-inn-diagnosis/sample/img/site-before.webp" width="960" height="624" alt="対策前のサイトのトップページ。上に、比較用に残している対策前のサイトであることを示す帯がある" loading="lazy" decoding="async"><button type="button" class="ai-site__load" data-frame-src="/demo/hotel-before/" data-frame-title="ホテル翠蓮 対策前のサイト">このページ内で開く</button></div>
+          <ul><li>旅館らしい情報は、料理と温泉の雰囲気の説明だけ</li><li>夕食の扱いが、公式と予約ページで食い違う</li><li>4言語を同じURLで切り替え。AIは日本語だけを読む</li></ul>
+        </figure>
+        <figure class="ai-site ai-site--after">
+          <figcaption><span class="ai-tag ai-tag--ok">対策後</span><a href="/demo/hotel/" target="_blank" rel="noopener">対策後のサイトを開く <span aria-hidden="true">↗</span></a></figcaption>
+          <div class="ai-site__screen"><img src="/ai-inn-diagnosis/sample/img/site-after.webp" width="960" height="624" alt="対策後のサイトのトップページ。メニューに「よくある質問」があり、写真の上に「蓮池温泉　ホテル翠蓮」の見出しがある" loading="lazy" decoding="async"><button type="button" class="ai-site__load" data-frame-src="/demo/hotel/" data-frame-title="ホテル翠蓮 対策後のサイト">このページ内で開く</button></div>
+          <ul><li>泉質、貸切風呂、部屋食、アレルギー、子ども、送迎、キャンセル料を明記し、よくある質問にも掲載</li><li>夕食は「予約後に事前申込」と明記して、予約ページとそろえた</li><li>ページ名と見出しに温泉地の名前「蓮池温泉」を入れ、言語ごとにURLを分けた</li></ul>
+        </figure>
+      </div>
+    </div></section>
+
+    <section class="ai-section" id="aio" aria-labelledby="aio-title"><div class="container">
+      <h2 class="ai-h2" id="aio-title">旅館のAIO対策とは：AIが旅館を紹介するときに使う4つの情報を整えること</h2>
+      <p class="ai-lead">AIO対策は、ChatGPTやGoogleのAI概要などのAI検索が、宿のことを正しく答えられるように情報を整える取り組みです。旅館の場合、AIに聞かれるのは温泉、食事、客室といった旅館ならではのことです。AIは主に次の4つから答えを組み立てます。</p>
+      <div class="ai-table-wrap"><table class="ai-table ai-table--sources">
+        <thead><tr><th scope="col">AIが使う情報</th><th scope="col">そこから拾われること</th><th scope="col">対策前</th><th scope="col">対策後</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">公式サイトの本文</th><td>温泉、料理、客室、アクセスなど、宿の事実の大部分</td><td><span class="ai-tag ai-tag--part">一部だけ</span></td><td><span class="ai-tag ai-tag--ok">そろった</span></td></tr>
+          <tr><th scope="row">構造化データ</th><td>宿名、住所、チェックイン時刻、設備を、機械が読める形で伝える</td><td><span class="ai-tag ai-tag--missing">なし</span></td><td><span class="ai-tag ai-tag--na">見本のみ</span><span class="ai-why">架空の宿のため埋め込まない</span></td></tr>
+          <tr><th scope="row">Googleビジネスプロフィール</th><td>地図検索に出る宿の情報、写真、口コミ。GoogleのAI概要やGeminiの宿探しの答えに使われやすい</td><td><span class="ai-tag ai-tag--na">対象外</span></td><td><span class="ai-tag ai-tag--na">対象外</span></td></tr>
+          <tr><th scope="row">予約サイトと口コミ</th><td>評価、口コミの内容、販売中のプラン</td><td><span class="ai-tag ai-tag--na">対象外</span></td><td><span class="ai-tag ai-tag--na">対象外</span></td></tr>
+        </tbody>
+      </table></div>
+      <p class="ai-note">架空の宿を実在の宿として検索エンジンに伝えないよう、構造化データはページに埋め込まず、後の章で見本として示しています。実在の施設では、4つすべてを整えます。</p>
+    </div></section>
+
+    <section class="ai-section ai-section--plain" id="answers" aria-labelledby="answers-title"><div class="container">
+      <h2 class="ai-h2" id="answers-title">旅館についての12の質問：対策前と対策後のAIの答え</h2>
+      <p class="ai-lead">AIの答えは、3回のうちの1回分を短くして載せています。判定は、旅館の正解シート（後の章）と照らしたものです。</p>
+      <div class="ai-table-wrap"><table class="ai-table ai-table--answers">
+        <thead><tr><th scope="col">旅の段階</th><th scope="col">質問</th><th scope="col">対策前</th><th scope="col">対策後のAIの答え（要約）</th><th scope="col">対策後</th></tr></thead>
+        <tbody>
+          <tr data-stage="know" data-before="caution" data-after="ok"><td>知る</td><th scope="row">どんな旅館？おすすめは？</th><td><span class="ai-tag ai-tag--caution">答えたが注意</span><span class="ai-why">予約できない会席を推した</span></td><td>蓮池温泉の源泉かけ流しの旅館です。大浴場、露天風呂、貸切風呂と、事前申込制の季節の会席が魅力です。</td><td><span class="ai-tag ai-tag--ok">答えた</span></td></tr>
+          <tr data-stage="know" data-before="ask" data-after="ok"><td>知る</td><th scope="row">源泉かけ流し？泉質は？</th><td><span class="ai-tag ai-tag--ask">宿に確認を</span></td><td>加水・加温・循環をしない源泉かけ流しで、泉質はナトリウム－塩化物泉です。</td><td><span class="ai-tag ai-tag--ok">答えた</span></td></tr>
+          <tr data-stage="compare" data-before="ask" data-after="ok"><td>比べる</td><th scope="row">露天風呂付きの客室はある？</th><td><span class="ai-tag ai-tag--ask">宿に確認を</span></td><td>ありません。男女別の大浴場と露天風呂、貸切風呂「蓮」を利用できます。</td><td><span class="ai-tag ai-tag--ok">答えた</span></td></tr>
+          <tr data-stage="compare" data-before="ok" data-after="ok"><td>比べる</td><th scope="row">部屋の広さと1泊の料金は？</th><td><span class="ai-tag ai-tag--ok">答えた</span></td><td>和室30㎡・4名で24,000円など。1室1泊、税・サービス料込みで、入湯税150円は別です。</td><td><span class="ai-tag ai-tag--ok">答えた</span></td></tr>
+          <tr data-stage="compare" data-before="ask" data-after="ok"><td>比べる</td><th scope="row">貸切風呂（家族風呂）はある？</th><td><span class="ai-tag ai-tag--ask">宿に確認を</span></td><td>貸切風呂「蓮」が1つあります。1回40分・2,200円で、チェックインの際に申し込みます。</td><td><span class="ai-tag ai-tag--ok">答えた</span></td></tr>
+          <tr data-stage="book" data-before="ask" data-after="ok"><td>予約する</td><th scope="row">夕食付きで泊まれる？部屋食？</th><td><span class="ai-tag ai-tag--ask">宿に確認を</span><span class="ai-why">公式と予約ページが矛盾</span></td><td>夕食は季節の会席（1名7,700円）で、予約後に前日17時までに申し込みます。食事処の個室で、部屋食はありません。</td><td><span class="ai-tag ai-tag--ok">答えた</span></td></tr>
+          <tr data-stage="book" data-before="ask" data-after="ok"><td>予約する</td><th scope="row">食物アレルギーに対応してもらえる？</th><td><span class="ai-tag ai-tag--ask">宿に確認を</span></td><td>卵、乳、小麦、えび、かに、そば、落花生の7品目に対応します。予約時に要望欄へ書きます。</td><td><span class="ai-tag ai-tag--ok">答えた</span></td></tr>
+          <tr data-stage="book" data-before="ask" data-after="ok"><td>予約する</td><th scope="row">子ども料金と添い寝は？</th><td><span class="ai-tag ai-tag--ask">宿に確認を</span></td><td>小学生以下の添い寝は無料（食事・布団なし）で、お子さま朝食は800円です。</td><td><span class="ai-tag ai-tag--ok">答えた</span></td></tr>
+          <tr data-stage="book" data-before="ask" data-after="ok"><td>予約する</td><th scope="row">キャンセル料はいつから？</th><td><span class="ai-tag ai-tag--ask">宿に確認を</span></td><td>前日は宿泊料金の50%、当日は100%です。</td><td><span class="ai-tag ai-tag--ok">答えた</span></td></tr>
+          <tr data-stage="go" data-before="ask" data-after="ok"><td>向かう</td><th scope="row">最寄り駅から送迎はある？</th><td><span class="ai-tag ai-tag--ask">宿に確認を</span></td><td>蓮池駅から無料送迎があります。15:00〜18:00で、前日までに予約します。駅から車で約10分です。</td><td><span class="ai-tag ai-tag--ok">答えた</span></td></tr>
+          <tr data-stage="go" data-before="ok" data-after="ok"><td>向かう</td><th scope="row">チェックインは何時まで？</th><td><span class="ai-tag ai-tag--ok">答えた</span></td><td>15:00〜22:00です。22時を過ぎる場合は宿へ連絡します。</td><td><span class="ai-tag ai-tag--ok">答えた</span></td></tr>
+          <tr data-stage="stay" data-before="ok" data-after="ok"><td>泊まる</td><th scope="row">大浴場は何時まで入れる？</th><td><span class="ai-tag ai-tag--ok">答えた</span></td><td>15:00〜24:00と、朝の6:00〜9:00です。露天風呂も同じ時間です。</td><td><span class="ai-tag ai-tag--ok">答えた</span></td></tr>
+        </tbody>
+      </table></div>
+      <div class="ai-next"><h3>対策後もAIが「宿に確認を」と添えた点</h3><p>答えの核は出ましたが、AIは次の3点を補足として確認するよう勧めました。次に書き足すとよい項目です。</p><ul><li>7品目以外の食物アレルギーへの対応</li><li>お子さまに食事や布団を付ける場合の料金</li><li>前日より前のキャンセル料（かからないなら、そう書く）</li></ul></div>
+    </div></section>
+
+    <section class="ai-section" id="journey" aria-labelledby="journey-title"><div class="container">
+      <h2 class="ai-h2" id="journey-title">対策前は「比べる」と「予約する」の段階で、AIが答えに詰まっていました</h2>
+      <p class="ai-lead">12の質問を、宿泊客の旅の5つの段階に並べました。対策前は、旅館を選ぶ決め手が問われる段階で、半分以上に答えられませんでした。対策後は、5つの段階すべてで答えられています。</p>
+      <ol class="ai-journey" aria-label="旅の5つの段階と、対策前にAIが答えられたかどうか">
+        <li class="ai-stage"><h3>知る</h3><ul><li class="ai-chip ai-chip--caution">おすすめは？</li><li class="ai-chip ai-chip--ask">泉質・かけ流し</li></ul></li>
+        <li class="ai-stage ai-stage--break"><h3>比べる</h3><ul><li class="ai-chip ai-chip--ask">露天風呂付き客室</li><li class="ai-chip ai-chip--ok">広さ・料金</li><li class="ai-chip ai-chip--ask">貸切風呂</li></ul></li>
+        <li class="ai-stage ai-stage--break"><h3>予約する</h3><ul><li class="ai-chip ai-chip--ask">夕食・部屋食</li><li class="ai-chip ai-chip--ask">アレルギー</li><li class="ai-chip ai-chip--ask">子ども・添い寝</li><li class="ai-chip ai-chip--ask">キャンセル料</li></ul></li>
+        <li class="ai-stage"><h3>向かう</h3><ul><li class="ai-chip ai-chip--ask">送迎</li><li class="ai-chip ai-chip--ok">チェックイン</li></ul></li>
+        <li class="ai-stage"><h3>泊まる</h3><ul><li class="ai-chip ai-chip--ok">大浴場の時間</li></ul></li>
+      </ol>
+      <ul class="ai-legend" aria-label="凡例"><li><span class="ai-chip ai-chip--ok">答えた</span></li><li><span class="ai-chip ai-chip--caution">答えたが注意</span></li><li><span class="ai-chip ai-chip--ask">宿に確認を</span></li><li class="ai-legend__note">図は対策前の状態です</li></ul>
+    </div></section>
+
+    <section class="ai-section ai-section--plain" id="facts" aria-labelledby="facts-title"><div class="container">
+      <h2 class="ai-h2" id="facts-title">旅館の正解シート：対策前は19項目のうち10項目がどこにも書かれていませんでした</h2>
+      <p class="ai-lead">AIの答え合わせの物差しになる「宿の正解」を、旅館の分野ごとに1枚にまとめました。実際の診断では、宿の方にこの表を確定していただきます。対策後のサイトは、この表の正解をそのまま書いたものです。</p>
+      <div class="ai-table-wrap"><table class="ai-table ai-table--facts">
+        <thead><tr><th scope="col">分野</th><th scope="col">項目</th><th scope="col">宿の正解</th><th scope="col">対策前</th><th scope="col">対策後</th></tr></thead>
+        <tbody>
+          <tr><td>温泉</td><th scope="row">泉質と効能</th><td>ナトリウム－塩化物泉</td><td><span class="ai-tag ai-tag--missing">どこにもない</span></td><td><span class="ai-tag ai-tag--ok">公式に記載</span></td></tr>
+          <tr><td>温泉</td><th scope="row">源泉かけ流しかどうか</th><td>加水・加温・循環なしの源泉かけ流し</td><td><span class="ai-tag ai-tag--missing">どこにもない</span></td><td><span class="ai-tag ai-tag--ok">公式に記載</span></td></tr>
+          <tr><td>温泉</td><th scope="row">大浴場と露天風呂の時間</th><td>男女別。15:00〜24:00、6:00〜9:00</td><td><span class="ai-tag ai-tag--part">片方だけ</span></td><td><span class="ai-tag ai-tag--ok">公式に記載</span></td></tr>
+          <tr><td>温泉</td><th scope="row">貸切風呂</th><td>「蓮」1室。40分・2,200円、15:00〜22:00</td><td><span class="ai-tag ai-tag--missing">どこにもない</span></td><td><span class="ai-tag ai-tag--ok">公式に記載</span></td></tr>
+          <tr class="ai-row--conflict"><td>食事</td><th scope="row">夕食の有無</th><td>季節の会席1名7,700円。予約後、前日17時までに申込</td><td><span class="ai-tag ai-tag--conflict">食い違い</span></td><td><span class="ai-tag ai-tag--ok">食い違い解消</span></td></tr>
+          <tr><td>食事</td><th scope="row">夕食の場所（部屋食か食事処か）</th><td>食事処「睡蓮」の個室。部屋食なし</td><td><span class="ai-tag ai-tag--missing">どこにもない</span></td><td><span class="ai-tag ai-tag--ok">公式に記載</span></td></tr>
+          <tr><td>食事</td><th scope="row">朝食</th><td>1人1泊1,500円。食事処「睡蓮」で和朝食</td><td><span class="ai-tag ai-tag--part">分かれている</span></td><td><span class="ai-tag ai-tag--ok">公式に記載</span></td></tr>
+          <tr><td>食事</td><th scope="row">食物アレルギーへの対応</th><td>特定原材料の7品目に対応</td><td><span class="ai-tag ai-tag--missing">どこにもない</span></td><td><span class="ai-tag ai-tag--ok">公式に記載</span></td></tr>
+          <tr><td>客室</td><th scope="row">客室数</th><td>全20室（和室4、ツイン8、シングル8）</td><td><span class="ai-tag ai-tag--ok">そろっている</span></td><td><span class="ai-tag ai-tag--ok">公式に記載</span></td></tr>
+          <tr><td>客室</td><th scope="row">客室の広さと定員</th><td>和室30㎡・4名、ツイン22㎡・2名、シングル14㎡・1名</td><td><span class="ai-tag ai-tag--part">片方だけ</span></td><td><span class="ai-tag ai-tag--ok">公式に記載</span></td></tr>
+          <tr><td>客室</td><th scope="row">料金（1室1泊）</th><td>和室24,000円、ツイン16,000円、シングル8,000円</td><td><span class="ai-tag ai-tag--ok">そろっている</span></td><td><span class="ai-tag ai-tag--ok">公式に記載</span></td></tr>
+          <tr><td>客室</td><th scope="row">露天風呂付き客室</th><td>なし</td><td><span class="ai-tag ai-tag--missing">どこにもない</span></td><td><span class="ai-tag ai-tag--ok">公式に記載</span></td></tr>
+          <tr><td>家族</td><th scope="row">子ども料金と添い寝</th><td>小学生以下の添い寝は無料。お子さま朝食800円</td><td><span class="ai-tag ai-tag--missing">どこにもない</span></td><td><span class="ai-tag ai-tag--ok">公式に記載</span></td></tr>
+          <tr><td>規約</td><th scope="row">キャンセル料</th><td>前日50%、当日100%</td><td><span class="ai-tag ai-tag--missing">どこにもない</span></td><td><span class="ai-tag ai-tag--ok">公式に記載</span></td></tr>
+          <tr><td>規約</td><th scope="row">支払い方法</th><td>現地精算（現金、クレジットカード）</td><td><span class="ai-tag ai-tag--part">片方だけ</span></td><td><span class="ai-tag ai-tag--ok">公式に記載</span></td></tr>
+          <tr><td>規約</td><th scope="row">税・サービス料と入湯税</th><td>税・サービス料込み。入湯税150円は別</td><td><span class="ai-tag ai-tag--missing">どこにもない</span></td><td><span class="ai-tag ai-tag--ok">公式に記載</span></td></tr>
+          <tr><td>アクセス</td><th scope="row">最寄り駅と送迎</th><td>蓮池駅から車で約10分。無料送迎あり（要予約）</td><td><span class="ai-tag ai-tag--missing">どこにもない</span></td><td><span class="ai-tag ai-tag--ok">公式に記載</span></td></tr>
+          <tr><td>アクセス</td><th scope="row">駐車場</th><td>20台、無料</td><td><span class="ai-tag ai-tag--part">片方だけ</span></td><td><span class="ai-tag ai-tag--ok">公式に記載</span></td></tr>
+          <tr><td>アクセス</td><th scope="row">チェックインとアウト</th><td>15:00〜22:00、10:00まで</td><td><span class="ai-tag ai-tag--part">片方だけ</span></td><td><span class="ai-tag ai-tag--ok">公式に記載</span></td></tr>
+        </tbody>
+      </table></div>
+      <p class="ai-note">宿の正解は、架空の宿のためデモ用に定めた値です。対策前にAIが「宿に確認を」と答えた8問は、すべて「どこにもない」か「食い違い」の項目から生まれていました。</p>
+    </div></section>
+
+    <section class="ai-section" id="checklist" aria-labelledby="checklist-title"><div class="container">
+      <h2 class="ai-h2" id="checklist-title">旅館のAIO対策チェックリスト：済んだ項目は15項目中1項目から10項目へ</h2>
+      <p class="ai-lead">直す順番は、手間ではなく「答えの重さ」で決めます。期待外れや苦情につながる答えを先に直し、次に「宿に確認を」で終わる質問を減らします。</p>
+      <div class="ai-table-wrap"><table class="ai-table ai-table--checklist">
+        <thead><tr><th scope="col">優先</th><th scope="col">分野</th><th scope="col">対策</th><th scope="col">対策前</th><th scope="col">対策後</th></tr></thead>
+        <tbody>
+          <tr><td><span class="ai-level ai-level--1">1 期待外れを防ぐ</span></td><td>食事</td><th scope="row">夕食の有無を決めて、公式と予約ページをそろえる</th><td><span class="ai-tag ai-tag--missing">未</span></td><td><span class="ai-tag ai-tag--ok">済</span></td></tr>
+          <tr><td><span class="ai-level ai-level--2">2 確認の質問を減らす</span></td><td>温泉</td><th scope="row">泉質、効能、源泉かけ流しかどうかを書く</th><td><span class="ai-tag ai-tag--missing">未</span></td><td><span class="ai-tag ai-tag--ok">済</span></td></tr>
+          <tr><td><span class="ai-level ai-level--2">2 確認の質問を減らす</span></td><td>温泉・客室</td><th scope="row">貸切風呂と露天風呂付き客室の有無を書く</th><td><span class="ai-tag ai-tag--missing">未</span></td><td><span class="ai-tag ai-tag--ok">済</span></td></tr>
+          <tr><td><span class="ai-level ai-level--2">2 確認の質問を減らす</span></td><td>食事</td><th scope="row">夕食の場所（部屋食か食事処か）と、アレルギー対応を書く</th><td><span class="ai-tag ai-tag--missing">未</span></td><td><span class="ai-tag ai-tag--ok">済</span></td></tr>
+          <tr><td><span class="ai-level ai-level--2">2 確認の質問を減らす</span></td><td>家族</td><th scope="row">子ども料金、添い寝、お子様向けの料理を書く</th><td><span class="ai-tag ai-tag--missing">未</span></td><td><span class="ai-tag ai-tag--ok">済</span></td></tr>
+          <tr><td><span class="ai-level ai-level--2">2 確認の質問を減らす</span></td><td>規約</td><th scope="row">キャンセル料、支払い方法、入湯税を公式に書く</th><td><span class="ai-tag ai-tag--part">一部</span></td><td><span class="ai-tag ai-tag--ok">済</span></td></tr>
+          <tr><td><span class="ai-level ai-level--2">2 確認の質問を減らす</span></td><td>アクセス</td><th scope="row">最寄り駅、送迎の有無と時刻を書く</th><td><span class="ai-tag ai-tag--missing">未</span></td><td><span class="ai-tag ai-tag--ok">済</span></td></tr>
+          <tr><td><span class="ai-level ai-level--2">2 確認の質問を減らす</span></td><td>FAQ</td><th scope="row">上の答えを、よくある質問にまとめる</th><td><span class="ai-tag ai-tag--missing">未</span></td><td><span class="ai-tag ai-tag--ok">済</span></td></tr>
+          <tr><td><span class="ai-level ai-level--3">3 AIに見つけてもらう</span></td><td>基本情報</td><th scope="row">チェックイン、料金、駐車場、大浴場の時間を書く</th><td><span class="ai-tag ai-tag--ok">済</span></td><td><span class="ai-tag ai-tag--ok">済</span></td></tr>
+          <tr><td><span class="ai-level ai-level--3">3 AIに見つけてもらう</span></td><td>構造化データ</td><th scope="row">正解シートから、旅館の構造化データを作る</th><td><span class="ai-tag ai-tag--missing">未</span></td><td><span class="ai-tag ai-tag--na">見本のみ</span><span class="ai-why">架空の宿のため埋め込まない</span></td></tr>
+          <tr><td><span class="ai-level ai-level--3">3 AIに見つけてもらう</span></td><td>ページ名</td><th scope="row">ページ名と見出しに「旅館名」と「温泉地の名前」を入れる</th><td><span class="ai-tag ai-tag--missing">未</span></td><td><span class="ai-tag ai-tag--ok">済</span></td></tr>
+          <tr><td><span class="ai-level ai-level--3">3 AIに見つけてもらう</span></td><td>Google</td><th scope="row">Googleビジネスプロフィールを、正解シートと同じ内容にそろえる</th><td><span class="ai-tag ai-tag--na">対象外</span></td><td><span class="ai-tag ai-tag--na">対象外</span></td></tr>
+          <tr><td><span class="ai-level ai-level--3">3 AIに見つけてもらう</span></td><td>口コミ</td><th scope="row">口コミに返信し、温泉や料理の良さを言葉で残す</th><td><span class="ai-tag ai-tag--na">対象外</span></td><td><span class="ai-tag ai-tag--na">対象外</span></td></tr>
+          <tr><td><span class="ai-level ai-level--4">4 外国語と速さ</span></td><td>多言語</td><th scope="row">言語ごとにページのURLを分け、予約ページを中韓に対応させる</th><td><span class="ai-tag ai-tag--missing">未</span></td><td><span class="ai-tag ai-tag--part">一部</span><span class="ai-why">予約ページの中韓対応は未</span></td></tr>
+          <tr><td><span class="ai-level ai-level--4">4 外国語と速さ</span></td><td>表示速度</td><th scope="row">スマートフォンでの表示を軽くする</th><td><span class="ai-tag ai-tag--missing">未</span></td><td><span class="ai-tag ai-tag--part">一部</span><span class="ai-why">目安の4秒には未達</span></td></tr>
+        </tbody>
+      </table></div>
+      <p class="ai-note">「対象外」は、架空の宿のため行えない項目です。実在の施設の診断では、すべての項目を確かめます。</p>
+    </div></section>
+
+    <section class="ai-section ai-section--plain" id="languages" aria-labelledby="languages-title"><div class="container">
+      <h2 class="ai-h2" id="languages-title">英語、中国語、韓国語のページを分け、AIに読まれるようにしました</h2>
+      <p class="ai-lead">対策前は、同じURLのまま、ボタンを押すとJavaScriptで言語が入れ替わる作りでした。多くのAIの巡回はJavaScriptを動かさないため、日本語だけを読んでいました。対策後は言語ごとにURLを分け、言語同士の関係もページに書いています。</p>
+      <div class="ai-table-wrap"><table class="ai-table">
+        <thead><tr><th scope="col">言語</th><th scope="col">対策後のURL</th><th scope="col">対策前</th><th scope="col">対策後</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">日本語</th><td><a href="/demo/hotel/">/demo/hotel/</a></td><td><span class="ai-tag ai-tag--ok">読める</span></td><td><span class="ai-tag ai-tag--ok">読める</span></td></tr>
+          <tr><th scope="row">英語</th><td><a href="/demo/hotel/en/">/demo/hotel/en/</a></td><td><span class="ai-tag ai-tag--missing">読めない</span></td><td><span class="ai-tag ai-tag--ok">読める</span></td></tr>
+          <tr><th scope="row">中国語（繁体字）</th><td><a href="/demo/hotel/zh-hant/">/demo/hotel/zh-hant/</a></td><td><span class="ai-tag ai-tag--missing">読めない</span></td><td><span class="ai-tag ai-tag--ok">読める</span></td></tr>
+          <tr><th scope="row">韓国語</th><td><a href="/demo/hotel/ko/">/demo/hotel/ko/</a></td><td><span class="ai-tag ai-tag--missing">読めない</span></td><td><span class="ai-tag ai-tag--ok">読める</span></td></tr>
+        </tbody>
+      </table></div>
+      <p class="ai-note">予約ページは、今も日本語と英語だけです。実在の施設の診断では、宿泊DXラボの<a href="/inbound-analysis.html">インバウンド宿泊者分析</a>で、その都道府県に泊まる外国人の国と地域を確かめ、多い国の言語から対応を決めます。</p>
+    </div></section>
+
+    <section class="ai-section" id="technical" aria-labelledby="technical-title"><div class="container">
+      <h2 class="ai-h2" id="technical-title">スマートフォンで主要な部分が表示されるまでの時間は、21.4秒から6.4秒になりました</h2>
+      <p class="ai-lead">和文Webフォントを見出しで使う文字だけに絞り、画像を軽い形式にして縮めました。通信の件数は90件から17件に、ページの総容量は約4分の1になりました。目安の4秒には、まだ届いていません。</p>
+      <div class="ai-table-wrap ai-table-wrap--narrow"><table class="ai-table">
+        <thead><tr><th scope="col">Lighthouseの計測（2026年10月15日）</th><th scope="col">対策前</th><th scope="col">対策後</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">スマートフォンの性能スコア</th><td>54</td><td>73</td></tr>
+          <tr><th scope="row">スマートフォンで主要な部分が表示されるまで（LCP）</th><td>21.4秒</td><td>6.4秒</td></tr>
+          <tr><th scope="row">スマートフォンで最初に表示されるまで（FCP）</th><td>13.0秒</td><td>2.5秒</td></tr>
+          <tr><th scope="row">パソコンの性能スコア</th><td>71</td><td>98</td></tr>
+          <tr><th scope="row">ページの総容量</th><td>4,325KiB</td><td>946KiB</td></tr>
+          <tr><th scope="row">通信の件数（うちWebフォント）</th><td>90件（75件）</td><td>17件（2件）</td></tr>
+        </tbody>
+      </table></div>
+      <p class="ai-note">数値は、対策前と対策後を同じパソコンで続けて測ったものです。スマートフォンの値は、Lighthouseが遅い回線と端末を想定して見積もったものです。</p>
+    </div></section>
+
+    <section class="ai-section ai-section--plain" id="deliverables" aria-labelledby="deliverables-title"><div class="container">
+      <h2 class="ai-h2" id="deliverables-title">実在の旅館の診断でお渡しするもの</h2>
+      <p class="ai-lead">サンプルでは、架空の宿のため次のうち一部を省いています。</p>
+      <div class="ai-cards">
+        <div class="ai-card"><h3>旅館の正解シート</h3><p>温泉、食事、客室、家族、規約、アクセスの正解を、宿の方と一緒に確定させる1枚の表です。公式サイト、予約サイト、FAQ、AI向けのデータは、すべてこの表から作ります。</p></div>
+        <div class="ai-card"><h3>AI検索での答え合わせ</h3><p>ChatGPT、Perplexity、Gemini、GoogleのAI概要に旅館についての質問をして、宿の名前が挙がるか、答えが正解と合うかを確かめます。対策の前後と、その後も月1回続けて、効果を確かめます。</p></div>
+        <div class="ai-card"><h3>Googleビジネスプロフィールと口コミの照合</h3><p>地図検索に出る宿の情報、楽天トラベルの評価、口コミの件数と内容を、正解シートと照らします。</p></div>
+        <div class="ai-card"><h3>予約データとの組み合わせ（選択制）</h3><p>宿の予約データから、お客様の到着時刻や、週末の空き方を分析します。AIでの見え方と、実際の売れ方を一緒に見られます。</p></div>
+      </div>
+      <details class="ai-code"><summary>正解シートから作るAI向けデータの見本（ホテル翠蓮・対策後）</summary>
+        <div class="ai-code__head"><span>トップページの&lt;head&gt;に置く構造化データの見本</span><button type="button" class="ai-copy" data-copy-target="code-hotel">コードをコピー</button></div>
+        <pre><code id="code-hotel">&lt;script type="application/ld+json"&gt;
+{
+  "@context": "https://schema.org",
+  "@type": "Hotel",
+  "name": "ホテル翠蓮",
+  "alternateName": "Hotel Suiren",
+  "description": "蓮池温泉の源泉かけ流しの温泉旅館。全20室。泉質はナトリウム－塩化物泉。大浴場、露天風呂、貸切風呂があり、夕食は事前申込制の季節の会席。",
+  "url": "https://lab.ugatta-llc.com/demo/hotel/",
+  "address": {
+    "@type": "PostalAddress",
+    "postalCode": "000-0000",
+    "addressRegion": "架空県",
+    "addressLocality": "蓮池市",
+    "streetAddress": "翠蓮1-2-3",
+    "addressCountry": "JP"
+  },
+  "checkinTime": "15:00",
+  "checkoutTime": "10:00",
+  "numberOfRooms": 20,
+  "priceRange": "1室1泊 8,000円〜24,000円（税・サービス料込み）",
+  "availableLanguage": ["ja", "en", "zh-Hant", "ko"],
+  "amenityFeature": [
+    {"@type": "LocationFeatureSpecification", "name": "源泉かけ流しの温泉（ナトリウム－塩化物泉）", "value": true},
+    {"@type": "LocationFeatureSpecification", "name": "男女別の大浴場と露天風呂（15:00〜24:00、6:00〜9:00）", "value": true},
+    {"@type": "LocationFeatureSpecification", "name": "貸切風呂（40分・2,200円）", "value": true},
+    {"@type": "LocationFeatureSpecification", "name": "蓮池駅から無料送迎（要予約）", "value": true},
+    {"@type": "LocationFeatureSpecification", "name": "無料駐車場（20台）", "value": true},
+    {"@type": "LocationFeatureSpecification", "name": "無料Wi-Fi（全館）", "value": true}
+  ]
+}
+&lt;/script&gt;</code></pre>
+        <p class="ai-note">旅館を表す専用の型はないため、ホテル型を使い、説明文で温泉旅館であることを伝えます。ホテル翠蓮は架空の宿なので、対策後のサイトにもこのデータは埋め込んでいません。</p>
+      </details>
+    </div></section>
+
+    <section class="ai-section" id="request" aria-labelledby="request-title"><div class="container">
+      <div class="ai-cta">
+        <div><h2 class="ai-h2" id="request-title">自館のAIO対策の診断をご希望の方へ</h2><p>旅館ならではの質問で、あなたの宿の答え合わせをします。実在の施設では、各社のAI検索での回答、Googleビジネスプロフィール、楽天トラベルの評価の確認も含めます。対策の実施と、対策後の答え合わせもご相談いただけます。診断の受付は準備中です。</p></div>
+        <span class="button ai-cta__pending">診断について問い合わせる（準備中）</span>
+      </div>
+    </div></section>
+
+    {% include tool-sources.html %}
+    {% include tool-related.html %}
+  </main>
+  {% include site-footer.html %}
+<script defer src="/js/ai-inn.js?v=20261015b"></script>
+<script defer src="/js/site.js?v=20261002-shell"></script>
+</body>
+</html>
