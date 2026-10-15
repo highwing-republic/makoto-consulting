@@ -86,3 +86,39 @@ def test_tool_pages_have_breadcrumbs_and_name_the_lab_as_provider():
         assert items[0]["item"] == LAB and items[-1]["item"] == canonical, path
         for app in by_type(nodes, "WebApplication"):
             assert app["provider"]["@id"] == LAB_ORG, path
+
+
+def scope_text(path, label):
+    page = soup(path)
+    for row in page.select(".tool-overview__scope > div"):
+        if row.dt.get_text(strip=True) == label:
+            return row.dd.get_text(strip=True)
+    raise AssertionError((path, label))
+
+
+def test_price_trends_names_its_observed_markets_without_javascript():
+    text = scope_text("hotel-price-trends.html", "対象")
+    count, names = re.match(r"全国(\d+)市場（(.+?)）", text).groups()
+    names = names.split("・")
+    manifest = json.loads((ROOT / "data/hotel-price-trends/manifest.json").read_text(encoding="utf-8"))
+    observed = {region["name"] for region in manifest["regions"]}
+    assert len(names) == int(count) and len(set(names)) == len(names)
+    assert set(names) <= observed, set(names) - observed
+
+
+def test_dx_diagnosis_names_all_eight_categories_without_javascript():
+    model = (ROOT / "js/dx-diagnosis-model.js").read_text(encoding="utf-8")
+    categories = list(dict.fromkeys(re.findall(r'id: "\w+", category: "([^"]+)"', model)))
+    text = scope_text("dx-diagnosis.html", "条件")
+    assert len(categories) == 8 and f"{len(categories)}カテゴリ" in text
+    assert all(category in text for category in categories), categories
+
+
+def test_area_headings_read_naturally_before_the_data_loads():
+    for path, fallback in [
+        ("inbound-analysis.html", "選択した地域"),
+        ("dx-necessity-analysis.html", "選択した都道府県"),
+        ("supply-demand-gap-analysis.html", "選択した都道府県"),
+        ("tourism-pressure-analysis.html", "選択した都道府県"),
+    ]:
+        assert soup(path).find(id="selected-area-name").get_text() == fallback, path
