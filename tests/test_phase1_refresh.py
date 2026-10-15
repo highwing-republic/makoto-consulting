@@ -41,6 +41,7 @@ def test_every_html_page_loads_the_canonical_site_shell():
         assert soup(name).find("script", src="/js/site.js?v=20261002-shell"), name
 
     shell = (ROOT / "js" / "site-shell.js").read_text(encoding="utf-8")
+    footer = (ROOT / "_includes" / "site-footer.html").read_text(encoding="utf-8")
     for href in (
         "/#facility-tools",
         "/#regional-tools",
@@ -48,9 +49,11 @@ def test_every_html_page_loads_the_canonical_site_shell():
         "/#demo-tools",
         "/#about-lab",
         "https://forms.gle/yjinqFdntoXhTmgk7",
+        "https://note.com/hotel_dx_lab",
         "/classics-ai-management/",
     ):
         assert href in shell
+        assert href in footer or href.startswith("/#"), href
     assert "body > header:not(.top)" in shell
     assert "pageFooter.matches('.shell.footer')" in shell
 
