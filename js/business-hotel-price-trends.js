@@ -131,17 +131,24 @@
         <td>${summary.volatility === null ? "—" : pct(summary.volatility, {signed: false})}</td>
         <td>${pct(summary.weekendPremium)}</td>
         <td>${summary.validNights ? `${summary.spikes.length}日` : "—"}</td>
-        <td class="bht-trend bht-trend--${trend.direction || "none"}"><span>${escapeHtml(trend.value)}</span>${trend.direction ? "" : `<small>${escapeHtml(trend.note)}</small>`}</td>
+        <td class="bht-trend bht-trend--${trend.direction || "none"}"><span>${escapeHtml(trend.value)}</span></td>
       </tr>`;
     }).join("");
     const table = $("#bht-compare");
     table.innerHTML = `<caption class="visually-hidden">10都市の比較（${state.nights}泊）</caption>${head}<tbody>${body}</tbody>`;
+    // 7日変化が出せない理由は行ごとに繰り返さず、表の下に1回だけ書く
+    const reasons = [...new Set(rows.filter((row) => row.weekly.status !== "ok").map((row) => row.weekly.reason))];
+    $("#bht-compare-note").textContent = reasons.length ? `7日変化の「蓄積中」: ${reasons.join("／")}。同じ比較施設群で7日前の取得がそろうと表示されます。` : "";
     table.querySelectorAll(".bht-market-button").forEach((button) => button.addEventListener("click", () => selectMarket(button.dataset.market, {scroll: true})));
   }
 
-  // 都市ごとの東横イン: 最安〜最高の線と中央値の点
+  // 都市ごとの同じブランド（cohort.cross_city_brand）: 最安〜最高の線と中央値の点
   function renderBrand() {
-    const rows = M.crossCityBrand(state.cohort, state.latest, {nights: state.nights}).filter((row) => row.hotel && row.hotel.median);
+    const all = M.crossCityBrand(state.cohort, state.latest, {nights: state.nights});
+    const rows = all.filter((row) => row.hotel && row.hotel.median);
+    const missing = all.filter((row) => !row.hotel).map((row) => row.market);
+    $("#bht-brand-name").textContent = state.cohort.cross_city_brand;
+    $("#bht-brand-meta").textContent = `各都市のCOREにある${state.cohort.cross_city_brand}1施設の、期間中の最安〜最高と中央値${missing.length ? `（${missing.join("・")}はCOREに無いため対象外）` : ""}`;
     const chart = $("#bht-brand-chart");
     if (!rows.length) {
       chart.innerHTML = `<p class="bht-empty">比較できるデータがありません</p>`;

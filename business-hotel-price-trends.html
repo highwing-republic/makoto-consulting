@@ -4,7 +4,7 @@ tool: business-hotel-price-trends
 tool_purpose: 全国10都市のビジネスホテルについて、同じ条件（大人1名・1室・1泊）の最安料金を毎朝観測します。都市ごとの代表料金、値動きの大きさ、週末と平日の差、料金が跳ね上がる日、直近7日間の変化を、宿泊日別のグラフとカレンダーで確認できます。
 tool_scope:
   - label: 対象
-    text: 札幌・仙台・名古屋・広島・福岡・金沢・那覇・鹿児島・熊本・岡山の10市場。主要駅・繁華街の中規模ビジネスホテルから、市場ごとに固定した比較施設群（CORE）5施設、計50施設で集計します。全市場のCOREに東横インを1施設ずつ入れ、同じブランドで都市を比べられるようにしています。
+    text: 札幌・仙台・名古屋・広島・福岡・金沢・那覇・鹿児島・熊本・岡山の10市場。主要駅・繁華街の中規模ビジネスホテルから、市場ごとに固定した比較施設群（CORE）5施設、計50施設で集計します。札幌以外の9市場のCOREにはダイワロイネットが入っていて、同じブランドで都市を比べられます。
   - label: データ
     text: 楽天トラベル空室検索APIから、大人1名・1室・1泊で販売中の最安プラン（食事条件は問わない）の料金とその食事区分を、当日から60泊分、毎朝取得します。
   - label: 条件
@@ -83,12 +83,12 @@ tool_related:
         <section class="bht-panel" aria-labelledby="bht-compare-title">
           <div class="bht-heading"><div><h2 id="bht-compare-title">10都市の比較</h2></div><p>行を選ぶと、その市場の詳しい料金に切り替わります。</p></div>
           <div class="bht-table-wrap"><table class="bht-compare" id="bht-compare"></table></div>
-          <p class="bht-note">代表料金は宿泊日ごとの中央値（CORE施設）の中央値。値動きの大きさは、宿泊日ごとの中央値のばらつき（変動係数）です。</p>
+          <p class="bht-note">代表料金は宿泊日ごとの中央値（CORE施設）の中央値。値動きの大きさは、宿泊日ごとの中央値のばらつき（変動係数）です。</p><p class="bht-note" id="bht-compare-note"></p>
         </section>
 
         <section class="bht-panel" aria-labelledby="bht-brand-title">
-          <div class="bht-heading"><div><h2 id="bht-brand-title">東横インで比べる10都市</h2></div><p>各都市の東横イン1施設の、期間中の最安〜最高と中央値</p></div>
-          <div class="bht-chart" id="bht-brand-chart" role="img" aria-label="都市別の東横インの料金範囲"></div>
+          <div class="bht-heading"><div><h2 id="bht-brand-title"><span id="bht-brand-name">同じブランド</span>で比べる都市</h2></div><p id="bht-brand-meta">各都市のCOREにある同じブランドの1施設の、期間中の最安〜最高と中央値</p></div>
+          <div class="bht-chart" id="bht-brand-chart" role="img" aria-label="都市別の同じブランドの料金範囲"></div>
           <div class="bht-accessible-table" id="bht-brand-table"></div>
         </section>
 
