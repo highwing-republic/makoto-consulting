@@ -1,0 +1,861 @@
+{
+  "schema_version": 1,
+  "cohort_version": "bh-v1",
+  "effective_from": "2026-10-16",
+  "description": "ビジネスホテル版料金トレンドの固定比較施設群。COREで集計し、BACKUPは観測のみ（日次の穴埋めには使わない）。入れ替え時はcohort_versionを上げる。",
+  "conditions": {
+    "adults": 1,
+    "rooms": 1,
+    "nights": 1,
+    "price_basis": "lowest_plan_any_meal"
+  },
+  "horizon_days": 60,
+  "cross_city_brand": "東横イン",
+  "markets": [
+    {
+      "code": "sapporo",
+      "name": "札幌",
+      "prefecture": "北海道",
+      "properties": [
+        {
+          "hotel_no": 153500,
+          "name": "JRイン札幌駅南口",
+          "brand": "JRイン",
+          "area": "札幌駅",
+          "access": "さっぽろ駅 徒歩2分",
+          "rooms": 204,
+          "role": "core",
+          "note": "2016年開業"
+        },
+        {
+          "hotel_no": 104743,
+          "name": "三井ガーデンホテル札幌",
+          "brand": "三井ガーデンホテル",
+          "area": "札幌駅",
+          "access": "JR札幌駅 徒歩4分",
+          "rooms": 177,
+          "role": "core",
+          "note": "2026/2/1リニューアル再開（改装後177室）"
+        },
+        {
+          "hotel_no": 167979,
+          "name": "東急ステイ札幌大通",
+          "brand": "東急ステイ",
+          "area": "大通",
+          "access": "大通駅 徒歩3分",
+          "rooms": 176,
+          "role": "core",
+          "note": "2018年開業"
+        },
+        {
+          "hotel_no": 53225,
+          "name": "東横INN札幌駅西口北大前",
+          "brand": "東横イン",
+          "area": "札幌駅西口",
+          "access": "JR札幌駅 徒歩5分",
+          "rooms": 179,
+          "role": "core",
+          "note": "都市横断比較用に東横インを採用"
+        },
+        {
+          "hotel_no": 172398,
+          "name": "ベッセルホテルカンパーナすすきの",
+          "brand": "ベッセルホテル",
+          "area": "すすきの",
+          "access": "すすきの駅 徒歩4分",
+          "rooms": 296,
+          "role": "core"
+        },
+        {
+          "hotel_no": 50125,
+          "name": "リッチモンドホテル札幌駅前",
+          "brand": "リッチモンドホテル",
+          "area": "札幌駅",
+          "access": "JR札幌駅 徒歩7分",
+          "rooms": 182,
+          "role": "backup"
+        },
+        {
+          "hotel_no": 79254,
+          "name": "ホテル京阪 札幌",
+          "brand": "ホテル京阪",
+          "area": "札幌駅北口",
+          "access": "JR札幌駅 徒歩4分",
+          "rooms": 200,
+          "role": "backup"
+        },
+        {
+          "hotel_no": 165708,
+          "name": "スマイルホテルプレミアム札幌すすきの",
+          "brand": "スマイルホテル",
+          "area": "すすきの",
+          "access": "豊水すすきの駅 徒歩1分",
+          "rooms": 284,
+          "role": "backup"
+        },
+        {
+          "hotel_no": 166910,
+          "name": "コンフォートホテル札幌すすきの",
+          "brand": "コンフォートホテル",
+          "area": "すすきの",
+          "access": "豊水すすきの駅 徒歩1分",
+          "rooms": 152,
+          "role": "backup",
+          "note": "COREから移動（朝食無料ブランド）"
+        }
+      ]
+    },
+    {
+      "code": "sendai",
+      "name": "仙台",
+      "prefecture": "宮城県",
+      "properties": [
+        {
+          "hotel_no": 107697,
+          "name": "ダイワロイネットホテル仙台",
+          "brand": "ダイワロイネット",
+          "area": "仙台駅東口",
+          "access": "仙台駅 徒歩2分",
+          "rooms": 270,
+          "role": "core"
+        },
+        {
+          "hotel_no": 40550,
+          "name": "東横INN仙台駅西口中央",
+          "brand": "東横イン",
+          "area": "仙台駅西口",
+          "access": "仙台駅 徒歩5分",
+          "rooms": 286,
+          "role": "core"
+        },
+        {
+          "hotel_no": 187247,
+          "name": "スーパーホテルPremier仙台国分町天然温泉",
+          "brand": "スーパーホテル",
+          "area": "国分町",
+          "access": "勾当台公園駅 徒歩6分",
+          "rooms": 184,
+          "role": "core",
+          "note": "2023/6開業。朝食無料ブランド"
+        },
+        {
+          "hotel_no": 151339,
+          "name": "ホテルビスタ仙台",
+          "brand": "ホテルビスタ",
+          "area": "仙台駅東口",
+          "access": "仙台駅 徒歩4分",
+          "rooms": 238,
+          "role": "core"
+        },
+        {
+          "hotel_no": 57055,
+          "name": "天然温泉 萩の湯 ドーミーイン仙台駅前",
+          "brand": "ドーミーイン",
+          "area": "仙台駅西口",
+          "access": "仙台駅 徒歩5分",
+          "rooms": 145,
+          "role": "core",
+          "note": "客室数は楽天145／じゃらん147"
+        },
+        {
+          "hotel_no": 70912,
+          "name": "リッチモンドホテルプレミア仙台駅前",
+          "brand": "リッチモンドホテル",
+          "area": "仙台駅西口",
+          "access": "仙台駅 徒歩3分",
+          "rooms": 182,
+          "role": "backup",
+          "note": "2027年6月は休館工事で全日販売停止予定"
+        },
+        {
+          "hotel_no": 79378,
+          "name": "三井ガーデンホテル仙台",
+          "brand": "三井ガーデンホテル",
+          "area": "広瀬通",
+          "access": "広瀬通駅 徒歩1分",
+          "rooms": 221,
+          "role": "backup",
+          "note": "2025年リニューアル休館→一部再開。全館再開日は未確認"
+        },
+        {
+          "hotel_no": 910,
+          "name": "スマイルホテル仙台国分町",
+          "brand": "スマイルホテル",
+          "area": "一番町",
+          "access": "広瀬通駅 徒歩3分",
+          "rooms": 192,
+          "role": "backup"
+        }
+      ]
+    },
+    {
+      "code": "nagoya",
+      "name": "名古屋",
+      "prefecture": "愛知県",
+      "properties": [
+        {
+          "hotel_no": 177937,
+          "name": "相鉄フレッサイン 名古屋駅桜通口",
+          "brand": "相鉄フレッサイン",
+          "area": "名駅",
+          "access": "名古屋駅 徒歩4分",
+          "rooms": 250,
+          "role": "core",
+          "note": "2020/2開業"
+        },
+        {
+          "hotel_no": 108396,
+          "name": "東横INN名古屋駅新幹線口",
+          "brand": "東横イン",
+          "area": "名駅",
+          "access": "名古屋駅 徒歩3分",
+          "rooms": 161,
+          "role": "core"
+        },
+        {
+          "hotel_no": 153118,
+          "name": "三井ガーデンホテル名古屋プレミア",
+          "brand": "三井ガーデンホテル",
+          "area": "名駅",
+          "access": "名古屋駅 徒歩5分",
+          "rooms": 295,
+          "role": "core",
+          "note": "2016年開業"
+        },
+        {
+          "hotel_no": 67307,
+          "name": "名鉄イン名古屋錦",
+          "brand": "名鉄イン",
+          "area": "錦",
+          "access": "久屋大通駅 徒歩3分",
+          "rooms": 280,
+          "role": "core"
+        },
+        {
+          "hotel_no": 147710,
+          "name": "天然温泉 錦鯱の湯 ドーミーインPREMIUM名古屋栄",
+          "brand": "ドーミーイン",
+          "area": "錦・伏見",
+          "access": "伏見駅 徒歩4分",
+          "rooms": 210,
+          "role": "core",
+          "note": "2026/5/10〜6/9修繕休館→6/10再開"
+        },
+        {
+          "hotel_no": 68242,
+          "name": "ダイワロイネットホテル名古屋駅前",
+          "brand": "ダイワロイネット",
+          "area": "名駅",
+          "access": "名古屋駅 徒歩5分",
+          "rooms": 185,
+          "role": "backup",
+          "note": "2026/5/1全館リニューアル"
+        },
+        {
+          "hotel_no": 168599,
+          "name": "ダイワロイネットホテル名古屋伏見",
+          "brand": "ダイワロイネット",
+          "area": "伏見",
+          "access": "伏見駅 徒歩2分",
+          "rooms": 233,
+          "role": "backup",
+          "note": "2019/4開業"
+        },
+        {
+          "hotel_no": 144939,
+          "name": "三交イン名古屋錦〜四季乃湯〜",
+          "brand": "三交イン",
+          "area": "栄・錦",
+          "access": "栄駅 徒歩3分",
+          "rooms": 147,
+          "role": "backup"
+        }
+      ]
+    },
+    {
+      "code": "hiroshima",
+      "name": "広島",
+      "prefecture": "広島県",
+      "properties": [
+        {
+          "hotel_no": 172592,
+          "name": "ダイワロイネットホテル広島駅前",
+          "brand": "ダイワロイネット",
+          "area": "広島駅北口",
+          "access": "広島駅 徒歩3分",
+          "rooms": 197,
+          "role": "core",
+          "note": "2019/4開業。「ダイワロイネットホテル広島」(74750)と別施設"
+        },
+        {
+          "hotel_no": 182635,
+          "name": "相鉄フレッサイン広島駅前",
+          "brand": "相鉄フレッサイン",
+          "area": "広島駅南口",
+          "access": "広島駅 徒歩3分",
+          "rooms": 250,
+          "role": "core",
+          "note": "シングル0室（1名でもダブル利用）"
+        },
+        {
+          "hotel_no": 108355,
+          "name": "東横INN広島駅新幹線口1",
+          "brand": "東横イン",
+          "area": "広島駅北口",
+          "access": "広島駅 徒歩4分",
+          "rooms": 189,
+          "role": "core",
+          "note": "代替：新幹線口2(181136)"
+        },
+        {
+          "hotel_no": 168417,
+          "name": "ホテルインターゲート広島",
+          "brand": "インターゲート",
+          "area": "八丁堀",
+          "access": "八丁堀電停 徒歩3分",
+          "rooms": 233,
+          "role": "core",
+          "note": "2019/1開業"
+        },
+        {
+          "hotel_no": 142872,
+          "name": "広島ワシントンホテル",
+          "brand": "ワシントンホテル",
+          "area": "八丁堀・新天地",
+          "access": "八丁堀電停 徒歩3分",
+          "rooms": 266,
+          "role": "core",
+          "note": "2013/10移転開業"
+        },
+        {
+          "hotel_no": 178452,
+          "name": "ヴィアインプライム広島新幹線口＜紅葉の湯＞",
+          "brand": "ヴィアイン",
+          "area": "広島駅北口",
+          "access": "広島駅 徒歩3分",
+          "rooms": 246,
+          "role": "backup",
+          "note": "2020/4開業"
+        },
+        {
+          "hotel_no": 167087,
+          "name": "ホテルビスタ広島",
+          "brand": "ホテルビスタ",
+          "area": "八丁堀",
+          "access": "八丁堀電停 徒歩2分",
+          "rooms": 228,
+          "role": "backup",
+          "note": "2018/8開業"
+        },
+        {
+          "hotel_no": 184446,
+          "name": "スマイルホテル広島",
+          "brand": "スマイルホテル",
+          "area": "流川",
+          "access": "胡町電停 徒歩8分",
+          "rooms": 160,
+          "role": "backup",
+          "note": "旧レッドプラネット（2022/9改称）"
+        }
+      ]
+    },
+    {
+      "code": "fukuoka",
+      "name": "福岡",
+      "prefecture": "福岡県",
+      "properties": [
+        {
+          "hotel_no": 54538,
+          "name": "東横INN博多口駅前",
+          "brand": "東横イン",
+          "area": "博多駅",
+          "access": "博多駅 徒歩2分",
+          "rooms": 256,
+          "role": "core"
+        },
+        {
+          "hotel_no": 140977,
+          "name": "JR九州ホテル ブラッサム博多中央",
+          "brand": "JR九州ホテル ブラッサム",
+          "area": "博多駅",
+          "access": "博多駅 徒歩2分",
+          "rooms": 247,
+          "role": "core"
+        },
+        {
+          "hotel_no": 67830,
+          "name": "西鉄イン福岡（アクロス福岡前）",
+          "brand": "西鉄イン",
+          "area": "天神・中洲",
+          "access": "中洲川端駅 徒歩3分",
+          "rooms": 271,
+          "role": "core",
+          "note": "2018年全館改装"
+        },
+        {
+          "hotel_no": 178294,
+          "name": "三井ガーデンホテル福岡中洲",
+          "brand": "三井ガーデンホテル",
+          "area": "中洲",
+          "access": "中洲川端駅 徒歩2分",
+          "rooms": 257,
+          "role": "core",
+          "note": "2020/7開業"
+        },
+        {
+          "hotel_no": 72791,
+          "name": "ホテルマイステイズ福岡天神",
+          "brand": "マイステイズ",
+          "area": "天神",
+          "access": "天神駅 徒歩5分",
+          "rooms": 217,
+          "role": "core"
+        },
+        {
+          "hotel_no": 16445,
+          "name": "リッチモンドホテル博多駅前",
+          "brand": "リッチモンドホテル",
+          "area": "博多駅",
+          "access": "博多駅 徒歩4分",
+          "rooms": 216,
+          "role": "backup",
+          "note": "2003年開業"
+        },
+        {
+          "hotel_no": 182563,
+          "name": "コンフォートイン福岡天神",
+          "brand": "コンフォートイン",
+          "area": "天神南",
+          "access": "天神南駅 徒歩1分",
+          "rooms": 125,
+          "role": "backup"
+        },
+        {
+          "hotel_no": 79344,
+          "name": "ダイワロイネットホテル博多祇園",
+          "brand": "ダイワロイネット",
+          "area": "祇園",
+          "access": "祇園駅 徒歩1分",
+          "rooms": 252,
+          "role": "backup",
+          "note": "2009/7開業"
+        }
+      ]
+    },
+    {
+      "code": "kanazawa",
+      "name": "金沢",
+      "prefecture": "石川県",
+      "properties": [
+        {
+          "hotel_no": 53171,
+          "name": "天然温泉 加賀の湧泉 ドーミーイン金沢",
+          "brand": "ドーミーイン",
+          "area": "金沢駅東口",
+          "access": "金沢駅 徒歩2分",
+          "rooms": 296,
+          "role": "core",
+          "note": "2023/7リニューアル"
+        },
+        {
+          "hotel_no": 54992,
+          "name": "東横INN金沢駅東口",
+          "brand": "東横イン",
+          "area": "金沢駅東口",
+          "access": "金沢駅 徒歩6分",
+          "rooms": 239,
+          "role": "core"
+        },
+        {
+          "hotel_no": 180547,
+          "name": "ダイワロイネットホテル金沢駅西口",
+          "brand": "ダイワロイネット",
+          "area": "金沢駅西口",
+          "access": "金沢駅 徒歩4分",
+          "rooms": 188,
+          "role": "core",
+          "note": "「金沢MIYABI」(172554)と別施設"
+        },
+        {
+          "hotel_no": 183232,
+          "name": "ホテルマイステイズ金沢片町",
+          "brand": "マイステイズ",
+          "area": "片町",
+          "access": "片町バス停 徒歩2分",
+          "rooms": 234,
+          "role": "core",
+          "note": "2021/11開業、2025/3全室改装。客室数は楽天234／開業時発表202"
+        },
+        {
+          "hotel_no": 184120,
+          "name": "KOKO HOTEL Premier 金沢香林坊",
+          "brand": "KOKO HOTEL",
+          "area": "香林坊",
+          "access": "香林坊バス停 徒歩1分",
+          "rooms": 207,
+          "role": "core",
+          "note": "2022/6改築"
+        },
+        {
+          "hotel_no": 54537,
+          "name": "ホテルルートイン金沢駅前",
+          "brand": "ルートイン",
+          "area": "金沢駅東口",
+          "access": "金沢駅 徒歩5分",
+          "rooms": 294,
+          "role": "backup"
+        },
+        {
+          "hotel_no": 2120,
+          "name": "アパホテル〈金沢片町〉",
+          "brand": "アパホテル",
+          "area": "片町",
+          "access": "片町バス停 徒歩5分",
+          "rooms": 148,
+          "role": "backup",
+          "note": "2018年全面改装"
+        },
+        {
+          "hotel_no": 18165,
+          "name": "ワシントンR&Bホテル金沢駅西口",
+          "brand": "R&Bホテル",
+          "area": "金沢駅西口",
+          "access": "金沢駅 徒歩3分",
+          "rooms": 232,
+          "role": "backup"
+        }
+      ]
+    },
+    {
+      "code": "naha",
+      "name": "那覇",
+      "prefecture": "沖縄県",
+      "properties": [
+        {
+          "hotel_no": 128440,
+          "name": "ダイワロイネットホテル那覇国際通り",
+          "brand": "ダイワロイネット",
+          "area": "牧志・国際通り",
+          "access": "牧志駅 直結",
+          "rooms": 258,
+          "role": "core",
+          "note": "2025/2全室改装"
+        },
+        {
+          "hotel_no": 149369,
+          "name": "ホテルグレイスリー那覇",
+          "brand": "グレイスリー",
+          "area": "県庁前・国際通り",
+          "access": "県庁前駅 徒歩5分",
+          "rooms": 198,
+          "role": "core",
+          "note": "2016/4開業"
+        },
+        {
+          "hotel_no": 19934,
+          "name": "リッチモンドホテル那覇久茂地",
+          "brand": "リッチモンドホテル",
+          "area": "久茂地",
+          "access": "美栄橋駅 徒歩3分",
+          "rooms": 225,
+          "role": "core",
+          "note": "2026/7/13全館リニューアル"
+        },
+        {
+          "hotel_no": 52641,
+          "name": "東横INN那覇旭橋駅前",
+          "brand": "東横イン",
+          "area": "旭橋",
+          "access": "旭橋駅 徒歩5分",
+          "rooms": 283,
+          "role": "core"
+        },
+        {
+          "hotel_no": 40768,
+          "name": "アルモントホテル那覇おもろまち",
+          "brand": "アルモントホテル",
+          "area": "おもろまち",
+          "access": "おもろまち駅 徒歩4分",
+          "rooms": 200,
+          "role": "core"
+        },
+        {
+          "hotel_no": 73870,
+          "name": "コンフォートホテル那覇県庁前",
+          "brand": "コンフォートホテル",
+          "area": "県庁前",
+          "access": "県庁前駅 徒歩3分",
+          "rooms": 132,
+          "role": "backup",
+          "note": "2024/5リニューアル"
+        },
+        {
+          "hotel_no": 134763,
+          "name": "ダイワロイネットホテル那覇おもろまち",
+          "brand": "ダイワロイネット",
+          "area": "おもろまち",
+          "access": "おもろまち駅 徒歩5分",
+          "rooms": 243,
+          "role": "backup",
+          "note": "PREMIER(188000)と別施設"
+        },
+        {
+          "hotel_no": 15424,
+          "name": "ホテルルートイン那覇旭橋駅東",
+          "brand": "ルートイン",
+          "area": "旭橋",
+          "access": "旭橋駅 徒歩5分",
+          "rooms": 118,
+          "role": "backup"
+        }
+      ]
+    },
+    {
+      "code": "kagoshima",
+      "name": "鹿児島",
+      "prefecture": "鹿児島県",
+      "properties": [
+        {
+          "hotel_no": 108387,
+          "name": "東横INN鹿児島中央駅西口",
+          "brand": "東横イン",
+          "area": "中央駅西口",
+          "access": "鹿児島中央駅 徒歩1分",
+          "rooms": 254,
+          "role": "core"
+        },
+        {
+          "hotel_no": 11031,
+          "name": "JR九州ホテル鹿児島",
+          "brand": "JR九州ホテル",
+          "area": "中央駅",
+          "access": "鹿児島中央駅 直結",
+          "rooms": 247,
+          "role": "core"
+        },
+        {
+          "hotel_no": 144497,
+          "name": "アパホテル〈鹿児島中央駅前〉",
+          "brand": "アパホテル",
+          "area": "中央駅西口",
+          "access": "鹿児島中央駅 徒歩1分",
+          "rooms": 185,
+          "role": "core",
+          "note": "2023/6リニューアル"
+        },
+        {
+          "hotel_no": 76912,
+          "name": "リッチモンドホテル鹿児島天文館",
+          "brand": "リッチモンドホテル",
+          "area": "天文館",
+          "access": "天文館通電停 徒歩1分",
+          "rooms": 125,
+          "role": "core"
+        },
+        {
+          "hotel_no": 183844,
+          "name": "ダイワロイネットホテル鹿児島天文館 PREMIER",
+          "brand": "ダイワロイネット",
+          "area": "天文館",
+          "access": "天文館通電停 徒歩1分",
+          "rooms": 217,
+          "role": "core",
+          "note": "2022/4開業"
+        },
+        {
+          "hotel_no": 135892,
+          "name": "ソラリア西鉄ホテル鹿児島",
+          "brand": "ソラリア西鉄ホテル",
+          "area": "中央駅東口",
+          "access": "鹿児島中央駅 徒歩3分",
+          "rooms": 230,
+          "role": "backup"
+        },
+        {
+          "hotel_no": 137044,
+          "name": "天然温泉 霧桜の湯 ドーミーイン鹿児島",
+          "brand": "ドーミーイン",
+          "area": "天文館",
+          "access": "高見馬場電停 徒歩2分",
+          "rooms": 185,
+          "role": "backup"
+        },
+        {
+          "hotel_no": 916,
+          "name": "ホテルマイステイズ鹿児島天文館",
+          "brand": "マイステイズ",
+          "area": "天文館",
+          "access": "高見馬場電停 徒歩1分",
+          "rooms": 196,
+          "role": "backup"
+        }
+      ]
+    },
+    {
+      "code": "kumamoto",
+      "name": "熊本",
+      "prefecture": "熊本県",
+      "properties": [
+        {
+          "hotel_no": 19738,
+          "name": "ホテルルートイン熊本駅前",
+          "brand": "ルートイン",
+          "area": "熊本駅",
+          "access": "熊本駅 徒歩3分",
+          "rooms": 170,
+          "role": "core"
+        },
+        {
+          "hotel_no": 69382,
+          "name": "天然温泉 六花の湯 ドーミーイン熊本",
+          "brand": "ドーミーイン",
+          "area": "新市街",
+          "access": "辛島町電停 徒歩2分",
+          "rooms": 291,
+          "role": "core"
+        },
+        {
+          "hotel_no": 70167,
+          "name": "リッチモンドホテル熊本新市街",
+          "brand": "リッチモンドホテル",
+          "area": "新市街",
+          "access": "辛島町電停 徒歩3分",
+          "rooms": 158,
+          "role": "core"
+        },
+        {
+          "hotel_no": 182514,
+          "name": "ダイワロイネットホテル熊本",
+          "brand": "ダイワロイネット",
+          "area": "花畑町",
+          "access": "花畑町電停 徒歩1分",
+          "rooms": 152,
+          "role": "core",
+          "note": "銀座通りPREMIER(183440)と別施設"
+        },
+        {
+          "hotel_no": 54012,
+          "name": "東横INN熊本城通町筋",
+          "brand": "東横イン",
+          "area": "通町筋",
+          "access": "水道町電停 徒歩1分",
+          "rooms": 198,
+          "role": "core"
+        },
+        {
+          "hotel_no": 183439,
+          "name": "スーパーホテル熊本駅前天然温泉",
+          "brand": "スーパーホテル",
+          "area": "熊本駅",
+          "access": "熊本駅 徒歩2分",
+          "rooms": 100,
+          "role": "backup",
+          "note": "2022/2開業"
+        },
+        {
+          "hotel_no": 1365,
+          "name": "三井ガーデンホテル熊本",
+          "brand": "三井ガーデンホテル",
+          "area": "辛島町",
+          "access": "辛島町電停 徒歩3分",
+          "rooms": 226,
+          "role": "backup",
+          "note": "1991年開業"
+        },
+        {
+          "hotel_no": 197943,
+          "name": "ヴィアインプライム熊本＜雲雀の湯＞",
+          "brand": "ヴィアイン",
+          "area": "熊本駅",
+          "access": "熊本駅 徒歩5分",
+          "rooms": 232,
+          "role": "backup",
+          "note": "2026/7/22開業（データ短い）"
+        }
+      ]
+    },
+    {
+      "code": "okayama",
+      "name": "岡山",
+      "prefecture": "岡山県",
+      "properties": [
+        {
+          "hotel_no": 68206,
+          "name": "ダイワロイネットホテル岡山駅前",
+          "brand": "ダイワロイネット",
+          "area": "駅東口",
+          "access": "岡山駅 徒歩1分",
+          "rooms": 216,
+          "role": "core"
+        },
+        {
+          "hotel_no": 139447,
+          "name": "ヴィアイン岡山",
+          "brand": "ヴィアイン",
+          "area": "駅西口",
+          "access": "岡山駅 直結",
+          "rooms": 251,
+          "role": "core"
+        },
+        {
+          "hotel_no": 219,
+          "name": "アークホテル岡山",
+          "brand": "アークホテル（ルートイン）",
+          "area": "駅東口・下石井",
+          "access": "岡山駅 徒歩7分",
+          "rooms": 181,
+          "role": "core"
+        },
+        {
+          "hotel_no": 184280,
+          "name": "天然温泉 吉備の湯 ドーミーイン岡山",
+          "brand": "ドーミーイン",
+          "area": "駅東口・錦町",
+          "access": "岡山駅 徒歩5〜7分",
+          "rooms": 149,
+          "role": "core",
+          "note": "客室数149／152で出典差"
+        },
+        {
+          "hotel_no": 108366,
+          "name": "東横INN岡山駅西口広場",
+          "brand": "東横イン",
+          "area": "駅西口",
+          "access": "岡山駅 徒歩2分",
+          "rooms": 178,
+          "role": "core",
+          "note": "東口店(109219)と別施設"
+        },
+        {
+          "hotel_no": 4926,
+          "name": "三井ガーデンホテル岡山",
+          "brand": "三井ガーデンホテル",
+          "area": "駅西口",
+          "access": "岡山駅 徒歩2分",
+          "rooms": 297,
+          "role": "backup",
+          "note": "2026/8/9全館リニューアル（352→297室）"
+        },
+        {
+          "hotel_no": 427,
+          "name": "岡山ワシントンホテルプラザ",
+          "brand": "ワシントンホテル",
+          "area": "駅東口・本町",
+          "access": "岡山駅 徒歩5分",
+          "rooms": 220,
+          "role": "backup"
+        },
+        {
+          "hotel_no": 2098,
+          "name": "ホテルエクセル岡山＜後楽園・岡山城前＞",
+          "brand": "ホテルエクセル",
+          "area": "城下・表町寄り",
+          "access": "城下電停 徒歩2分",
+          "rooms": 89,
+          "role": "backup",
+          "note": "条件付き（89室・駅から15分）"
+        }
+      ]
+    }
+  ]
+}
