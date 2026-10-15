@@ -20,6 +20,7 @@ TOOL_PAGES = [
     "dx-diagnosis.html", "inbound-analysis.html", "dx-necessity-analysis.html",
     "supply-demand-gap-analysis.html", "tourism-pressure-analysis.html",
     "management-ai.html", "hotel-price-trends.html", "report.html",
+    "business-hotel-price-trends.html",
 ]
 
 

@@ -1,0 +1,153 @@
+---
+# Built by Jekyll: the shared header and footer come from _includes/.
+tool: business-hotel-price-trends
+tool_purpose: 全国10都市のビジネスホテルについて、同じ条件（大人1名・1室・1泊）の最安料金を毎朝観測します。都市ごとの代表料金、値動きの大きさ、週末と平日の差、料金が跳ね上がる日、直近7日間の変化を、宿泊日別のグラフとカレンダーで確認できます。
+tool_scope:
+  - label: 対象
+    text: 札幌・仙台・名古屋・広島・福岡・金沢・那覇・鹿児島・熊本・岡山の10市場。主要駅・繁華街の中規模ビジネスホテルから、市場ごとに固定した比較施設群（CORE）5施設、計50施設で集計します。札幌以外の9市場のCOREにはダイワロイネットが入っていて、同じブランドで都市を比べられます。
+  - label: データ
+    text: 楽天トラベル空室検索APIから、大人1名・1室・1泊で販売中の最安プラン（食事条件は問わない）の料金とその食事区分を、当日から60泊分、毎朝取得します。
+  - label: 条件
+    text: 宿泊日ごとの値はCORE施設の中央値で、5施設中4施設以上で表示、3施設は参考値、2施設以下は表示しません。急騰日は代表料金の1.5倍以上の日です。7日変化はちょうど7日前の取得と、同じ宿泊日の料金を施設ごとに比べます。
+tool_updated_label: 取得日
+tool_updated: データ読み込み後に表示
+tool_sources:
+  - name: 料金
+    publisher: 楽天ウェブサービス（楽天トラベル空室検索API）
+    url: https://developers.rakuten.com/
+    note: Supported by Rakuten Developers
+tool_notes:
+  - 料金は各施設の指定条件での最安プランで、客室タイプ・食事・プラン内容は施設や日によって異なります。料金データだけでは需要や稼働状況は判断できません。
+  - 販売プランが見つからない日を満室とは判定しません。比較施設群はバージョン単位で固定し、料金が確認できないCORE施設をBACKUPで補うことはしません。
+  - 本ツールは宿泊DXラボ（合同会社UGATTA）が作成・運営しています。
+tool_related:
+  - hotel-price-trends
+  - supply-demand
+  - inbound
+  - market-signal
+---
+<!doctype html>
+<html lang="ja">
+<head>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-QS9HSHCY33"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-QS9HSHCY33');gtag('config','GT-M3S9S5D7');</script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>ビジネスホテル料金トレンド｜10都市の料金と値動き｜宿泊DXラボ</title>
+  <meta name="description" content="札幌・仙台・名古屋・広島・福岡など全国10都市のビジネスホテル50施設を、大人1名1室の同じ条件で毎朝観測。代表料金、値動きの大きさ、週末と平日の差、料金が跳ね上がる日を確認できる無料分析ツールです。">
+  <meta name="robots" content="index,follow,max-image-preview:large">
+  <meta name="theme-color" content="#17324d">
+  <link rel="canonical" href="https://lab.ugatta-llc.com/business-hotel-price-trends.html">
+  <link rel="icon" type="image/png" href="favicon.png?v=20261013">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&amp;display=swap">
+  <link rel="stylesheet" href="css/useful.css?v=20261012shell">
+  <link rel="stylesheet" href="css/tool-standard.css?v=20261015guide">
+  <link rel="stylesheet" href="css/business-hotel-price-trends.css?v=20261016bht1">
+  <meta property="og:type" content="website"><meta property="og:locale" content="ja_JP"><meta property="og:site_name" content="宿泊DXラボ">
+  <meta property="og:title" content="ビジネスホテル料金トレンド｜宿泊DXラボ"><meta property="og:description" content="出張の宿は、いくらで、どれだけ動くか。全国10都市・50施設のビジネスホテル料金を毎朝観測します。">
+  <meta property="og:url" content="https://lab.ugatta-llc.com/business-hotel-price-trends.html"><meta property="og:image" content="https://lab.ugatta-llc.com/images/og-lab.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"ホーム","item":"https://lab.ugatta-llc.com/"},{"@type":"ListItem","position":2,"name":"分析・ツール","item":"https://lab.ugatta-llc.com/#analysis-tools"},{"@type":"ListItem","position":3,"name":"ビジネスホテル料金トレンド","item":"https://lab.ugatta-llc.com/business-hotel-price-trends.html"}]},{"@type":"WebApplication","name":"ビジネスホテル料金トレンド","url":"https://lab.ugatta-llc.com/business-hotel-price-trends.html","applicationCategory":"BusinessApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"JPY"},"provider":{"@type":"Organization","@id":"https://lab.ugatta-llc.com/#organization","name":"宿泊DXラボ","url":"https://lab.ugatta-llc.com/","logo":"https://lab.ugatta-llc.com/images/lab-logo.png"}}]}</script>
+  <link rel="stylesheet" href="/css/site-shell.css?v=20261012shell">
+  <script src="/js/site-shell.js?v=20261012shell2" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">本文へ移動</a>
+  {% include site-header.html %}
+
+  <main id="main">
+    <nav class="breadcrumb container" aria-label="パンくずリスト"><ol><li><a href="/">ホーム</a></li><li><a href="/#analysis-tools">分析・ツール</a></li><li aria-current="page">ビジネスホテル料金トレンド</li></ol></nav>
+
+    <section class="page-hero bht-hero"><div class="container bht-hero__grid">
+      <div><h1>ビジネスホテル<br>料金トレンド</h1><p class="bht-hero__copy">出張の宿は、いくらで、どれだけ動くか。</p><p class="bht-hero__lead">全国10都市のビジネスホテルを同じ条件で毎朝観測し、都市ごとの料金水準と値動きを見える化します。</p></div>
+      <section class="bht-scope" aria-label="観測範囲"><span>観測範囲</span><strong>全国10都市・比較50施設</strong><small>大人1名・1室・1泊の最安プラン／当日から60泊分を毎朝観測</small></section>
+    </div></section>
+    {% include tool-overview.html %}
+
+    <section class="bht-tool" aria-labelledby="bht-controls-title"><div class="container">
+      <div class="bht-controls">
+        <div class="bht-controls__intro"><h2 id="bht-controls-title">表示条件を選ぶ</h2><p>市場と期間を選ぶと、下のすべての表とグラフが切り替わります。</p></div>
+        <div class="bht-filter-row">
+          <label>市場<select id="bht-market" aria-label="市場"></select></label>
+          <label>期間<select id="bht-nights" aria-label="期間"><option value="30">今日から30泊</option><option value="60">今日から60泊</option></select></label>
+        </div>
+        <p class="bht-freshness" id="bht-freshness" aria-live="polite">データを読み込んでいます…</p>
+      </div>
+
+      <div class="data-loading" id="bht-loading" role="status"><span aria-hidden="true"></span><p>料金データを読み込んでいます</p></div>
+      <div class="data-error" id="bht-error" hidden><strong id="bht-error-title">データを表示できませんでした</strong><p id="bht-error-message"></p><button class="button button--outline" id="bht-retry" type="button">もう一度読み込む</button></div>
+
+      <div class="bht-dashboard" id="bht-dashboard" hidden>
+        <section class="bht-panel" aria-labelledby="bht-compare-title">
+          <div class="bht-heading"><div><h2 id="bht-compare-title">10都市の比較</h2></div><p>行を選ぶと、その市場の詳しい料金に切り替わります。</p></div>
+          <div class="bht-table-wrap"><table class="bht-compare" id="bht-compare"></table></div>
+          <p class="bht-note">代表料金は宿泊日ごとの中央値（CORE施設）の中央値。値動きの大きさは、宿泊日ごとの中央値のばらつき（変動係数）です。</p><p class="bht-note" id="bht-compare-note"></p>
+        </section>
+
+        <section class="bht-panel" aria-labelledby="bht-brand-title">
+          <div class="bht-heading"><div><h2 id="bht-brand-title"><span id="bht-brand-name">同じブランド</span>で比べる都市</h2></div><p id="bht-brand-meta">各都市のCOREにある同じブランドの1施設の、期間中の最安〜最高と中央値</p></div>
+          <div class="bht-chart" id="bht-brand-chart" role="img" aria-label="都市別の同じブランドの料金範囲"></div>
+          <div class="bht-accessible-table" id="bht-brand-table"></div>
+        </section>
+
+        <section class="bht-market" aria-labelledby="bht-market-title">
+          <div class="bht-market__head"><h2 id="bht-market-title"><span id="bht-market-name">市場</span>の料金</h2><p id="bht-market-meta"></p></div>
+          <div class="bht-kpis" id="bht-kpis"></div>
+        </section>
+
+        <section class="bht-panel" aria-labelledby="bht-daily-title">
+          <div class="bht-heading"><div><h2 id="bht-daily-title">宿泊日別の料金</h2></div><p>CORE施設の中央値と、最安〜最高の幅</p></div>
+          <div class="bht-legend" id="bht-daily-legend"></div>
+          <div class="bht-chart bht-chart--interactive" id="bht-daily-chart" role="img" aria-label="宿泊日別の料金" tabindex="0"></div>
+          <div class="bht-accessible-table" id="bht-daily-table"></div>
+        </section>
+
+        <div class="bht-two">
+          <section class="bht-panel" aria-labelledby="bht-weekday-title">
+            <div class="bht-heading"><div><h2 id="bht-weekday-title">曜日別の料金</h2></div><p>代表料金との差</p></div>
+            <div class="bht-chart" id="bht-weekday-chart" role="img" aria-label="曜日別の料金"></div>
+            <div class="bht-accessible-table" id="bht-weekday-table"></div>
+          </section>
+          <section class="bht-panel" aria-labelledby="bht-meal-title">
+            <div class="bht-heading"><div><h2 id="bht-meal-title">最安プランの食事区分</h2></div><p>CORE施設の宿泊日ごとの最安プラン</p></div>
+            <div id="bht-meals"></div>
+          </section>
+        </div>
+
+        <section class="bht-panel" aria-labelledby="bht-calendar-title">
+          <div class="bht-heading"><div><h2 id="bht-calendar-title">料金カレンダー</h2></div><p>代表料金に対する宿泊日ごとの位置</p></div>
+          <div class="bht-calendar-legend"><span class="bht-key bht-key--low">10%以上安い</span><span class="bht-key bht-key--mid">代表料金付近</span><span class="bht-key bht-key--high">10%以上高い</span><span class="bht-key bht-key--spike">急騰（1.5倍以上）</span><span class="bht-key bht-key--none">比較データ不足</span></div>
+          <div class="bht-calendar" id="bht-calendar"></div>
+        </section>
+
+        <section class="bht-panel" aria-labelledby="bht-hotels-title">
+          <div class="bht-heading"><div><h2 id="bht-hotels-title">比較施設群</h2></div><p id="bht-hotels-meta">期間中の料金（大人1名・1室・1泊）</p></div>
+          <div class="bht-table-wrap"><table class="bht-hotels" id="bht-hotels"></table></div>
+        </section>
+
+        <section class="bht-method" aria-labelledby="bht-method-title"><div><h2 id="bht-method-title">データの見方</h2></div><div>
+          <p>料金は楽天トラベル空室検索APIで、大人1名・1室・1泊の条件で販売中のプランのうち最も安いプランの1泊目の料金です。食事条件は問わず、そのプランの食事区分をあわせて記録しています。客室タイプやプラン内容は施設や日によって異なります。</p>
+          <p>宿泊日ごとの値は、市場ごとに固定したCORE施設5施設の中央値です。4施設以上で料金を確認できた日を集計に使い、3施設の日は参考値、2施設以下の日は表示しません。代表料金は、集計に使った宿泊日の中央値のさらに中央値です。値動きの大きさは宿泊日ごとの中央値の変動係数（標準偏差÷平均）で、数字が大きいほど日によって料金が大きく動きます。週末の差は、金・土曜泊の中央値と日〜木曜泊の中央値の差です。</p>
+          <p>7日変化は、ちょうど7日前の取得と今日の取得で同じ宿泊日（今日以降）の料金を施設ごとに比べ、共通の宿泊日が10泊以上ある施設の変化率の中央値を出し、さらに4施設以上の中央値を市場の値とします。±3%以上を上昇・低下とします。比較施設群が入れ替わった場合は比べません。</p>
+          <p>販売プランが見つからない状態だけを理由に満室とは判定しません。表示内容は料金判断の参考情報であり、需要・稼働率・売上や因果関係を保証するものではありません。</p>
+          <!-- Rakuten Web Services Attribution Snippet FROM HERE -->
+          <a href="https://developers.rakuten.com/" target="_blank">Supported by Rakuten Developers</a>
+          <!-- Rakuten Web Services Attribution Snippet TO HERE -->
+        </div></section>
+      </div>
+
+      <div class="bht-tooltip" id="bht-tooltip" role="status" hidden></div>
+      <noscript><div class="data-error"><strong>JavaScriptを有効にしてください</strong><p>ビジネスホテル料金トレンドの表とグラフにはJavaScriptが必要です。札幌・仙台・名古屋・広島・福岡・金沢・那覇・鹿児島・熊本・岡山の10都市で、ビジネスホテル50施設の料金を毎朝観測しています。</p></div></noscript>
+    </div></section>
+    {% include tool-sources.html %}
+    {% include tool-related.html %}
+  </main>
+
+  {% include site-footer.html %}
+  <script src="js/site.js?v=20260912a" defer></script>
+  <script src="js/business-hotel-price-trends-model.js?v=20261016bht1" defer></script>
+  <script src="js/business-hotel-price-trends.js?v=20261016bht1" defer></script>
+</body>
+</html>

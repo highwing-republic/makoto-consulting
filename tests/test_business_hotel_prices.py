@@ -203,3 +203,24 @@ def test_main_refuses_to_run_without_credentials(monkeypatch, capsys):
     monkeypatch.delenv("RAKUTEN_ACCESS_KEY", raising=False)
     assert bh.main(["--dry-run"]) == 2
     assert "RAKUTEN_APPLICATION_ID" in capsys.readouterr().err
+
+
+# ---------------------------------------------------------------- ページ
+
+
+def test_page_names_the_observation_conditions_and_credits_rakuten():
+    from bs4 import BeautifulSoup
+    from site_pages import rendered
+
+    page = BeautifulSoup(rendered("business-hotel-price-trends.html"), "html.parser")
+    assert page.h1.get_text(strip=True) == "ビジネスホテル料金トレンド"
+    scope = page.select_one(".bht-scope").get_text()
+    assert "全国10都市・比較50施設" in scope and "大人1名・1室・1泊" in scope
+    attribution = page.find("a", href="https://developers.rakuten.com/", string="Supported by Rakuten Developers")
+    assert attribution is not None
+    noscript = page.find("noscript").get_text()
+    for market in COHORT["markets"]:
+        assert market["name"] in noscript
+    # 観測施設数の表記は比較施設群（CORE）の数と一致させる
+    core = sum(p["role"] == "core" for m in COHORT["markets"] for p in m["properties"])
+    assert core == 50
