@@ -57,7 +57,9 @@ def test_every_html_page_loads_the_canonical_site_shell():
 
 def test_home_is_concise_and_groups_all_tools_by_purpose():
     page = soup("index.html")
-    assert page.find("h1").get_text("", strip=True) == "現場のヒントが見つかる実践ツール"
+    h1 = page.find("h1")
+    assert h1.select_one(".home-hero__eyebrow").get_text(strip=True) == "旅館・ホテルのDXと経営に"
+    assert "".join(line.get_text("", strip=True) for line in h1.select(".home-hero__line")) == "現場のヒントが見つかる実践ツール"
     assert len(page.select("#analysis-tools .tool-card")) == 4
     assert [img["src"] for img in page.select(".tool-card__thumb img")] == [
         f"images/thumbs/{name}.svg" for name in ("hotel-price-trends", "inbound-analysis", "dx-diagnosis", "mini-pms")
