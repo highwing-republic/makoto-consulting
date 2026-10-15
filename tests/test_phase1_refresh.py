@@ -175,7 +175,7 @@ def test_diagnosis_is_native_and_does_not_contact_the_external_app():
     page = soup("dx-diagnosis.html")
     assert page.select_one("#dx-diagnosis-app")
     scripts = [script.get("src") for script in page.find_all("script", src=True)]
-    assert scripts.index("js/dx-diagnosis-model.js?v=20261002a") < scripts.index("js/dx-diagnosis.js?v=20261002a")
+    assert scripts.index("js/dx-diagnosis-model.js?v=20261015a") < scripts.index("js/dx-diagnosis.js?v=20261015a")
     assert page.find("iframe") is None
     assert "chatgpt.site" not in page.decode()
     assert page.select_one(".external-tool-notice") is None

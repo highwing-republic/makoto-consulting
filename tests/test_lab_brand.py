@@ -205,4 +205,4 @@ def test_diagnosis_gold_is_limited_to_own_score_visuals() -> None:
     css = (ROOT / "css/dx-diagnosis.css").read_text(encoding="utf-8")
     assert "var(--gold)" not in css
     assert {selector.strip() for selector, body in re.findall(r"([^{}]+)\{([^{}]*)\}", css)
-            if "var(--data-self)" in body} == {".dx-score-ring", ".dx-radar-point"}
+            if "var(--data-self)" in body} == {".dx-score-ring", ".dx-scale-marker", ".dx-top-badge"}
