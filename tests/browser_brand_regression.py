@@ -107,25 +107,34 @@ def main(destination):
                 capture(name, width)
 
             visit('dx-diagnosis.html')
+            # No answer is preselected: moving on with blanks marks them and focuses the first one.
+            assert page.locator('.dx-options input:checked').count() == 0
+            page.locator('#dx-question-form button[type=submit]').click()
+            assert page.locator('.dx-question.is-missing').count() == 2
+            assert page.locator('#answer-mgmt_1-0').evaluate('(e)=>document.activeElement===e')
+            for category in range(8):
+                for question in page.locator('.dx-question').all():
+                    question.locator('.dx-options label').first.click()
+                if category == 0:
+                    assert page.locator('.dx-options input').first.is_checked()
+                    capture('diagnosis-questions', width)
+                page.locator('#dx-question-form button[type=submit]').click()
+            assert page.locator('#dx-step-heading').evaluate('(e)=>document.activeElement===e')
             page.locator('input[name=rooms]').fill('0')
             page.locator('#dx-facility-form button[type=submit]').click()
             assert page.locator('input[name=rooms]').get_attribute('aria-invalid') == 'true'
             assert page.locator('input[name=rooms]').evaluate('(e)=>document.activeElement===e')
             page.locator('input[name=rooms]').fill('30')
             page.locator('#dx-facility-form button[type=submit]').click()
-            assert page.locator('.dx-question').count() == 16
-            assert page.locator('#dx-step-heading').evaluate('(e)=>document.activeElement===e')
-            page.locator('.dx-options label').first.click()
-            assert page.locator('.dx-options input').first.is_checked()
-            capture('diagnosis-questions', width)
-            page.locator('#dx-question-form button[type=submit]').click()
             assert page.locator('.dx-score-ring strong').inner_text().isdigit()
             assert page.locator('.dx-bars li').count() == 8
             assert page.locator('.dx-bars li.is-priority').count() == 3
             assert page.locator('.dx-finding-link').count() == 3
+            assert '（標準値）' in page.locator('.dx-inputs').inner_text()
             capture('diagnosis-results', width)
             page.locator('[data-reset]').first.click()
-            assert page.locator('#dx-facility-form').is_visible()
+            assert page.locator('#dx-question-form').is_visible()
+            assert page.locator('#dx-answered-count').inner_text() == '0'
 
             visit('management-ai.html?pref=nagano')
             page.locator('input[name=topic][value=sales]').locator('..').click()

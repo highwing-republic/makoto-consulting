@@ -11,6 +11,8 @@
   // 初期選択はしない。未回答のまま進もうとしたら、その質問へ案内する。
   let answers = {};
   let missing = [];
+  // 任意項目（ADR・客室稼働率・人件費）を利用者が変えたか。変えていなければ結果に「標準値」と示す。
+  let touched = {};
   let result = null;
   let errors = {};
 
@@ -47,8 +49,8 @@
     return [hintId, errors[field] ? "error-" + field : ""].filter(Boolean).join(" ");
   }
 
-  function rangeField(name, id, label, hint, value) {
-    return '<div class="dx-field dx-range-field"><label for="' + id + '"><span>' + label + '</span><output id="' + id + '-output" for="' + id + '">' + value + '%</output></label><input id="' + id + '" name="' + name + '" type="range" min="0" max="100" step="1" value="' + value + '"' + invalidAttr(name) + ' aria-describedby="' + fieldDescribedBy(name, "hint-" + name) + '"><small id="hint-' + name + '">' + hint + '</small>' + errorText(name) + '</div>';
+  function rangeField(name, id, label, hint, value, wide) {
+    return '<div class="dx-field dx-range-field' + (wide ? " dx-field--wide" : "") + '"><label for="' + id + '"><span>' + label + '</span><output id="' + id + '-output" for="' + id + '">' + value + '%</output></label><input id="' + id + '" name="' + name + '" type="range" min="0" max="100" step="1" value="' + value + '"' + invalidAttr(name) + ' aria-describedby="' + fieldDescribedBy(name, "hint-" + name) + '"><small id="hint-' + name + '">' + hint + '</small>' + errorText(name) + '</div>';
   }
 
   function renderFacility() {
@@ -59,7 +61,7 @@
       '<form id="dx-facility-form" novalidate><div class="dx-form-grid">' +
       '<label class="dx-field"><span>客室数</span><span class="dx-input-unit"><input name="rooms" type="number" inputmode="numeric" min="1" max="1000" step="1" required value="' + facility.rooms + '"' + invalidAttr("rooms") + ' aria-describedby="' + fieldDescribedBy("rooms", "hint-rooms") + '"><b>室</b></span><small id="hint-rooms">販売している客室のおおよその数</small>' + errorText("rooms") + '</label>' +
       '<label class="dx-field"><span>従業員数</span><span class="dx-input-unit"><input name="employees" type="number" inputmode="numeric" min="1" max="5000" step="1" required value="' + facility.employees + '"' + invalidAttr("employees") + ' aria-describedby="' + fieldDescribedBy("employees", "hint-employees") + '"><b>人</b></span><small id="hint-employees">正社員・パートを合わせた目安</small>' + errorText("employees") + '</label>' +
-      rangeField("otaRatio", "dx-ota-ratio", "OTA比率", "じゃらん・楽天・Booking.comなどを経由した予約の割合", facility.otaRatio) +
+      rangeField("otaRatio", "dx-ota-ratio", "OTA比率", "じゃらん・楽天・Booking.comなどを経由した予約の割合", facility.otaRatio, true) +
       '</div><details class="dx-details"' + (optionalOpen ? " open" : "") + '><summary>施設名・売上指標・人件費も入れる（任意）</summary><div class="dx-form-grid">' +
       '<label class="dx-field dx-field--wide"><span>施設名</span><input name="name" type="text" maxlength="80" autocomplete="organization" value="' + escapeHtml(facility.name) + '"><small>結果の見出しに表示します</small></label>' +
       '<label class="dx-field"><span>平均客室単価（ADR）</span><span class="dx-input-unit"><input name="adr" type="number" inputmode="numeric" min="0" max="500000" step="100" required value="' + facility.adr + '"' + invalidAttr("adr") + ' aria-describedby="' + fieldDescribedBy("adr", "hint-adr") + '"><b>円</b></span><small id="hint-adr">客室売上 ÷ 販売した客室数。参考RevPARの計算に使います</small>' + errorText("adr") + '</label>' +
@@ -71,6 +73,9 @@
     const form = document.getElementById("dx-facility-form");
     ["occupancy", "otaRatio"].forEach(function (name) {
       form.elements[name].addEventListener("input", updateLiveMetrics);
+    });
+    ["adr", "occupancy", "hourlyCost"].forEach(function (name) {
+      form.elements[name].addEventListener("input", function () { touched[name] = true; });
     });
     form.querySelector("[data-back]").addEventListener("click", function () {
       facility = readFacility(form);
@@ -133,7 +138,7 @@
     const firstNumber = model.questions.indexOf(questions[0]) + 1;
     app.innerHTML = stepper() + '<section class="dx-panel dx-questions" aria-labelledby="dx-step-heading">' +
       '<div class="dx-question-head"><div class="dx-panel-heading"><p class="dx-category-count">カテゴリ ' + (page + 1) + ' / ' + model.categories.length + '</p><h3 id="dx-step-heading" tabindex="-1">' + category + '</h3></div>' +
-      '<p class="dx-answered" aria-live="polite"><b id="dx-answered-count">' + answeredCount() + '</b> / ' + model.questions.length + ' 問 回答済み</p></div>' +
+      '<p class="dx-answered" aria-live="polite" aria-atomic="true"><b id="dx-answered-count">' + answeredCount() + '</b> / ' + model.questions.length + ' 問 回答済み</p></div>' +
       progressSegments() +
       '<p class="dx-question-lead">今の施設に一番近いものを選んでください。迷ったときは、だいたい当てはまる方で大丈夫です。</p>' +
       '<form id="dx-question-form" novalidate><div class="dx-question-list">' + questions.map(function (question, index) {
@@ -195,6 +200,14 @@
     "データ活用": { label: "宿泊料金トレンドで地域の相場を見る", href: "/hotel-price-trends.html" }
   };
 
+  function revparNote() {
+    const defaults = [];
+    if (!touched.adr) defaults.push(["ADR", "¥" + formatNumber(facility.adr)]);
+    if (!touched.occupancy) defaults.push(["客室稼働率", facility.occupancy + "%"]);
+    if (!defaults.length) return "";
+    return '<p class="dx-summary-note">参考RevPARは、入力されていない' + defaults.map(function (item) { return item[0]; }).join("・") + 'を標準値（' + defaults.map(function (item) { return item[1]; }).join("・") + '）として計算しています。「施設の規模」の任意項目で変更できます。</p>';
+  }
+
   function summaryPanel() {
     const top = result.findings[0];
     return '<section class="dx-summary" aria-labelledby="dx-summary-heading">' +
@@ -202,7 +215,9 @@
       '<div class="dx-summary-body"><h4 id="dx-summary-heading">DX総合スコア</h4>' +
       '<div class="dx-score-scale"><span>これから</span><span>整備中</span><span>定着・活用</span><i class="dx-scale-marker" style="left:' + result.total + '%" aria-hidden="true"></i></div>' +
       '<div class="dx-top-priority"><p><span class="dx-top-badge">最優先</span><strong>' + top.category + '</strong></p><p class="dx-top-action">まずやること：<b>' + escapeHtml(top.action) + '</b></p></div>' +
-      '<p class="dx-summary-comment">' + escapeHtml(result.comment) + '</p></div></section>';
+      '<p class="dx-summary-comment">' + escapeHtml(result.comment) + '</p>' +
+      revparNote() +
+      '</div></section>';
   }
 
   function findingsPanel() {
@@ -222,10 +237,14 @@
     }).join("") + '</ul></section>';
   }
 
+  function defaultMark(field) {
+    return touched[field] ? "" : "（標準値）";
+  }
+
   function timePanel() {
     return '<section class="dx-time-panel" aria-labelledby="dx-time-heading"><h4 id="dx-time-heading" class="dx-result-title">改善できそうな作業時間の目安</h4><dl><div><dt>1か月</dt><dd>約 ' + formatNumber(result.monthlyHours) + ' 時間</dd></div><div><dt>1年間</dt><dd>約 ' + formatNumber(result.annualHours) + ' 時間</dd></div><div><dt>人件費換算</dt><dd>約 ' + formatNumber(Math.round(result.annualValue / 10000)) + ' 万円/年</dd></div></dl>' +
       '<p>簡易モデルによる参考値です。正式な効果試算には、現場の作業時間を確認する必要があります。</p>' +
-      '<p class="dx-inputs">入力した数値：客室 ' + formatNumber(facility.rooms) + ' 室、従業員 ' + formatNumber(facility.employees) + ' 人、ADR ¥' + formatNumber(facility.adr) + '、客室稼働率 ' + facility.occupancy + '%、参考RevPAR ¥' + formatNumber(result.revpar) + '、OTA比率 ' + facility.otaRatio + '%、人件費の目安 ¥' + formatNumber(facility.hourlyCost) + '/時間</p></section>';
+      '<p class="dx-inputs">計算に使った数値：客室 ' + formatNumber(facility.rooms) + ' 室、従業員 ' + formatNumber(facility.employees) + ' 人、OTA比率 ' + facility.otaRatio + '%、ADR ¥' + formatNumber(facility.adr) + defaultMark("adr") + '、客室稼働率 ' + facility.occupancy + '%' + defaultMark("occupancy") + '、参考RevPAR ¥' + formatNumber(result.revpar) + '、人件費の目安 ¥' + formatNumber(facility.hourlyCost) + '/時間' + defaultMark("hourlyCost") + '</p></section>';
   }
 
   function solutionsPanel() {
@@ -259,6 +278,7 @@
     facility = Object.assign({}, model.initialFacility);
     answers = {};
     missing = [];
+    touched = {};
     page = 0;
     result = null;
     errors = {};

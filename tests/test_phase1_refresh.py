@@ -198,6 +198,8 @@ def test_diagnosis_is_native_and_does_not_contact_the_external_app():
     # No answer is preselected; unanswered questions are pointed out before moving on.
     assert "model.defaultAnswers()" not in ui
     assert "この質問にまだ回答していません。" in ui
+    # Optional figures the visitor did not change are labelled as defaults in the result.
+    assert "（標準値）" in ui
     # Validation errors mark the field and move focus to the first invalid input.
     for field in ("rooms", "employees", "adr", "hourlyCost"):
         assert f'invalidAttr("{field}")' in ui
