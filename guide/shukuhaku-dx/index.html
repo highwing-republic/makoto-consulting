@@ -1,0 +1,208 @@
+---
+# Built by Jekyll: the shared header and footer come from _includes/.
+# 解説ページ。出典と関連ツールは、ツールページと同じ標準ブロック（tool-sources / tool-related）で表示する。
+guide: shukuhaku-dx
+tool_sources:
+  - name: 観光庁「宿泊旅行統計調査」
+    publisher: 宿泊旅行統計調査（第2次速報）
+    url: https://www.mlit.go.jp/kankocho/tokei_hakusyo/shukuhakutokei.html
+    note: 対象期間：2025-08〜2026-07（比較は2024-08〜2025-07）／公表日：2026-09-30
+  - name: 総務省・経済産業省「令和6年経済センサス―基礎調査」
+    publisher: 甲調査（民営事業所）事業所に関する集計 表2 産業（中分類）×経営組織別（e-Stat）
+    url: https://www.e-stat.go.jp/dbview?sid=0004040078
+    note: 基準時点：2024-06／公表日：2025-12-24
+  - name: 総務省統計局「人口推計」
+    publisher: 第3表 都道府県、年齢（3区分）、男女別人口―総人口
+    url: https://www.stat.go.jp/data/jinsui/2024np/index.htm
+    note: 基準時点：2024-10-01（比較は2019-10-01）／公表日：2025-04-14
+tool_updated: 2026-10-15
+tool_updated_label: 更新日
+tool_notes:
+  - 地域の数値は、宿泊DXラボ「地域の省人化・DX検討指標」の2026年10月時点の値です（データ取得日：2026-10-06）。最新の値はツールで確認してください。
+  - 宿泊旅行統計調査は2026年1月から層化基準が変更されています。2025年以前との比較には、この変更の影響が含まれる可能性があります。
+  - 規模別の表は目安です。実際に手間のかかる業務は、施設ごとに異なります。
+tool_related:
+  - dx-diagnosis
+  - dx-necessity
+  - mini-pms-demo
+  - management-issue-organizer
+tool_guides:
+  - operations-improvement
+  - market-data
+---
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-QS9HSHCY33"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-QS9HSHCY33');gtag('config','GT-M3S9S5D7');</script>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>宿泊DXとは？旅館・ホテルのDXは何から始めるか｜宿泊DXラボ</title>
+  <meta name="description" content="宿泊DXとは、予約・客室・清掃・会計・勤怠といった日々の業務と経営の判断を、データとデジタルの道具で見直すことです。旅館・ホテルが最初の一歩を選ぶための3つの段階と、地域ごとの違いを公的統計で解説します。">
+  <meta name="robots" content="index,follow,max-image-preview:large">
+  <link rel="canonical" href="https://lab.ugatta-llc.com/guide/shukuhaku-dx/">
+  <meta name="theme-color" content="#17324d">
+  <meta property="og:locale" content="ja_JP">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="宿泊DXラボ">
+  <meta property="og:title" content="宿泊DXとは？旅館・ホテルのDXは何から始めるか｜宿泊DXラボ">
+  <meta property="og:description" content="宿泊DXの意味と、旅館・ホテルが最初の一歩を選ぶための3つの段階を、診断と公的統計をもとに解説します。">
+  <meta property="og:url" content="https://lab.ugatta-llc.com/guide/shukuhaku-dx/">
+  <meta property="og:image" content="https://lab.ugatta-llc.com/images/og-lab.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="宿泊DXとは？旅館・ホテルのDXは何から始めるか｜宿泊DXラボ">
+  <meta name="twitter:description" content="宿泊DXの意味と、旅館・ホテルが最初の一歩を選ぶための3つの段階を解説します。">
+  <meta name="twitter:image" content="https://lab.ugatta-llc.com/images/og-lab.jpg">
+  <link rel="icon" type="image/png" href="/favicon.png?v=20261013">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&amp;display=swap">
+  <link rel="stylesheet" href="/css/useful.css?v=20261012shell">
+  <link rel="stylesheet" href="/css/tool-standard.css?v=20261015guide">
+  <link rel="stylesheet" href="/css/guide.css?v=20261015guide">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {"@type": "ListItem", "position": 1, "name": "ホーム", "item": "https://lab.ugatta-llc.com/"},
+          {"@type": "ListItem", "position": 2, "name": "宿泊DXとは？", "item": "https://lab.ugatta-llc.com/guide/shukuhaku-dx/"}
+        ]
+      },
+      {
+        "@type": "Article",
+        "@id": "https://lab.ugatta-llc.com/guide/shukuhaku-dx/#article",
+        "headline": "宿泊DXとは？ 旅館・ホテルのDXは何から始めるか",
+        "description": "宿泊DXの意味と、旅館・ホテルが最初の一歩を選ぶための3つの段階を、DXかんたん診断と公的統計の分析をもとに解説します。",
+        "url": "https://lab.ugatta-llc.com/guide/shukuhaku-dx/",
+        "mainEntityOfPage": "https://lab.ugatta-llc.com/guide/shukuhaku-dx/",
+        "image": "https://lab.ugatta-llc.com/images/og-lab.jpg",
+        "datePublished": "2026-10-15",
+        "dateModified": "2026-10-15",
+        "inLanguage": "ja-JP",
+        "isPartOf": {"@id": "https://lab.ugatta-llc.com/#website"},
+        "author": {"@type": "Organization", "@id": "https://lab.ugatta-llc.com/#organization", "name": "宿泊DXラボ", "url": "https://lab.ugatta-llc.com/"},
+        "publisher": {"@id": "https://lab.ugatta-llc.com/#organization"}
+      }
+    ]
+  }
+  </script>
+  <link rel="stylesheet" href="/css/site-shell.css?v=20261012shell">
+  <script src="/js/site-shell.js?v=20261012shell2" defer></script>
+</head>
+<body><a class="skip-link" href="#main">本文へ移動</a>
+  {% include site-header.html %}
+  <main id="main"><nav class="breadcrumb container" aria-label="パンくずリスト"><ol><li><a href="/">ホーム</a></li><li aria-current="page">宿泊DXとは？</li></ol></nav>
+    <section class="page-hero tool-page-hero guide-hero"><div class="container page-hero-grid"><div><span class="scope-badge">解説</span><h1>宿泊DXとは？<span>旅館・ホテルのDXは何から始めるか</span></h1></div><div><p class="lead-copy">道具を選ぶ前に、手間のかかっている業務を確かめる。</p><p class="guide-meta">公開日 <time datetime="2026-10-15">2026年10月15日</time></p></div></div></section>
+    <div class="guide"><div class="container guide__layout">
+      <nav class="guide-toc" aria-labelledby="guide-toc-title"><h2 id="guide-toc-title">このページの内容</h2><ol>
+        <li><a href="#what">宿泊DXとは</a></li>
+        <li><a href="#steps">何から始めるか：3つの段階</a></li>
+        <li><a href="#size">施設の規模によって、最初の一歩は変わる</a></li>
+        <li><a href="#region">地域によって、DXの必要度は違う</a></li>
+        <li><a href="#check">自分の施設で確かめる</a></li>
+        <li><a href="#summary">まとめ</a></li>
+      </ol></nav>
+      <article class="guide-body">
+        <section>
+          <p>「DXを進めたほうがいい」と言われても、旅館やホテルの現場では、何から手をつければよいのかが分かりにくいものです。システムを入れることがDXなのか、どの業務から見直すべきなのか。このページでは、宿泊DXの意味と、最初の一歩を選ぶための考え方を、宿泊DXラボの診断と公的統計の分析をもとに整理します。</p>
+        </section>
+
+        <section aria-labelledby="what">
+          <h2 id="what">宿泊DXとは</h2>
+          <p>宿泊DXとは、予約・客室・清掃・会計・勤怠といった日々の業務と経営の判断を、データとデジタルの道具で見直していくことです。</p>
+          <p>宿泊DXには、2つの層があります。</p>
+          <ol>
+            <li><strong>業務のデジタル化</strong><span>紙の台帳、口頭や電話での連絡、同じ情報の転記といった手作業を減らし、スタッフが接客や準備に使える時間を増やします。</span></li>
+            <li><strong>データで判断する仕組み</strong><span>稼働率、ADR（販売した客室1室あたりの平均単価）、RevPAR（販売できる客室1室あたりの客室売上）、予約経路ごとの売上などを、毎週同じ定義で確認し、料金や販売、人員配置の判断に使います。</span></li>
+          </ol>
+          <p>新しいシステムを入れること自体が目的ではありません。システムを増やした結果、かえって二重入力が増えることもあります。どの業務に、どれだけ手間がかかっているかを先に確かめることが、宿泊DXの出発点です。</p>
+        </section>
+
+        <section aria-labelledby="steps">
+          <h2 id="steps">何から始めるか：3つの段階</h2>
+          <p>宿泊DXラボの「<a href="/dx-diagnosis.html">DXかんたん診断</a>」は、経営、予約・販売、会計、業務（清掃・チェックイン前後）、勤怠・シフト、システム、集客、データ活用の8つのカテゴリで現状を確かめます。その設問と改善施策の考え方をもとに、取り組みの順番を3つの段階に分けます。</p>
+
+          <h3>段階1：手間のかかっている業務を書き出す</h3>
+          <p>最初は、道具を選ぶ前に、今の業務を見える形にします。</p>
+          <ul>
+            <li>紙・口頭・電話で行っている業務を3つ書き出す（例：清掃の指示と完了報告、フロントと調理場の連絡）</li>
+            <li>売上が会計に届くまでに、何回手入力しているかを数える</li>
+            <li>シフトの作成と勤怠の集計に、毎月どれくらいの時間がかかっているかを測る</li>
+          </ul>
+          <p>ここで出てきた業務が、改善の候補になります。時間を測っておくと、あとで改善の効果を確かめることもできます。</p>
+
+          <h3>段階2：二重入力をなくす</h3>
+          <p>次に、同じ情報を何度も入力している箇所を減らします。</p>
+          <ul>
+            <li>PMS（予約・客室管理システム）、会計、予約サイト、勤怠など、使っている仕組みのつながりを1枚の図にする</li>
+            <li>同じ予約や売上を、複数のシステムへ入力していないかを確認する</li>
+            <li>各システムがCSVやAPIで連携できるかを把握する</li>
+          </ul>
+          <p>予約から部屋割り、客室の状況表までがどうつながるかは、ラボの「<a href="/demo/mini-pms/">簡易PMSデモ</a>」で、架空のホテルを使ってブラウザ上で試せます。</p>
+
+          <h3>段階3：数字で判断する</h3>
+          <p>業務の手間が減ってきたら、判断に使う数字を決めます。</p>
+          <ul>
+            <li>毎週見る数字を3〜5個に絞る（例：稼働率、ADR、RevPAR、予約ペース）</li>
+            <li>予約経路ごとの売上と手数料を並べ、OTA（予約サイト）と自社予約の採算を比べる</li>
+            <li>数字を見たあとに、誰が何を決めるかを決めておく</li>
+          </ul>
+          <p>数字を集めること自体ではなく、料金や販売、人員配置の判断に使える状態にすることが目的です。</p>
+        </section>
+
+        <section aria-labelledby="size">
+          <h2 id="size">施設の規模によって、最初の一歩は変わる</h2>
+          <p>観光庁の宿泊旅行統計調査も、施設を客室数で区分しています（1〜19室、20〜199室、200室以上）。規模によって、手間のかかりやすい場所は変わります。以下は目安で、実際は施設ごとに異なります。</p>
+          <div class="guide-table" role="region" aria-label="施設の規模別の目安" tabindex="0"><table>
+            <thead><tr><th scope="col">規模の目安</th><th scope="col">起こりやすいこと</th><th scope="col">最初の一歩の例</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">1〜19室</th><td>少人数で予約・接客・会計を兼務し、OTAの管理画面と紙の台帳を行き来している</td><td>予約台帳を1か所にまとめ、在庫と料金の更新を手作業で何回しているか数える</td></tr>
+              <tr><th scope="row">20〜199室</th><td>フロント・清掃・調理場など部署が分かれ、情報の受け渡しに口頭や紙が残る</td><td>清掃の指示と完了報告、客室の状況を、スマートフォンなどで共有する</td></tr>
+              <tr><th scope="row">200室以上</th><td>システムが部署ごとに増え、データが分散する</td><td>システム間のデータの流れを棚卸しし、部門別の収益を同じ定義で見る</td></tr>
+            </tbody>
+          </table></div>
+        </section>
+
+        <section aria-labelledby="region">
+          <h2 id="region">地域によって、DXの必要度は違う</h2>
+          <p>同じ規模の施設でも、地域によって人手の確保のしやすさや需要の伸び方が違います。宿泊DXラボの「<a href="/dx-necessity-analysis.html">地域の省人化・DX検討指標</a>」は、需要の伸び、客室稼働率、宿泊業の運営負荷、生産年齢人口の減少を、47都道府県で比べています。</p>
+          <p>たとえば、2026年10月時点のデータで、宿泊業の従業者1人あたりの年間延べ宿泊者数は、全国で約1,049人泊です。都道府県別に見ると、大阪府は約1,812人泊、佐賀県は約560人泊で、3倍以上の差があります。</p>
+          <ul>
+            <li>延べ宿泊者数：2025年8月〜2026年7月</li>
+            <li>宿泊業の従業者数：令和6年経済センサス</li>
+          </ul>
+          <p>この指標で総合の参考スコアが最も高かったのは青森県です。延べ宿泊者数は前年の同じ期間より14.5%増え、生産年齢人口は2019年から2024年に9.3%減っています。需要が伸びる一方で働き手が減っている地域ほど、業務の省力化を早めに検討する理由が大きくなります。</p>
+          <div class="guide-note"><p>これは地域全体の参考指標で、個々の施設のDXの進み具合や導入の優先度を示すものではありません。自分の地域の値は、「地域の省人化・DX検討指標」で確認できます。</p></div>
+        </section>
+
+        <section aria-labelledby="check">
+          <h2 id="check">自分の施設で確かめる</h2>
+          <p>自施設のどこから見直すかは、「DXかんたん診断」で確かめられます。</p>
+          <ul>
+            <li>施設の基本情報と16の質問に答えると、8つのカテゴリ別のスコアが表示されます</li>
+            <li>優先して見直したい業務と、改善施策の例も表示されます</li>
+            <li>登録不要・無料で、目安は約5分です</li>
+            <li>入力内容に基づく自己評価で、専門家による診断ではありません</li>
+          </ul>
+          <p class="guide-cta"><a class="button" href="/dx-diagnosis.html" data-analytics-event="tool_open" data-tool-id="dx-diagnosis">DXかんたん診断を始める <span aria-hidden="true">→</span></a></p>
+          <p>地域の統計と施設の情報を並べて、次に確認したい論点を整理したいときは、「<a href="/management-ai.html">宿泊経営の課題整理（β）</a>」も使えます。</p>
+        </section>
+
+        <section class="guide-summary" aria-labelledby="summary">
+          <h2 id="summary">まとめ</h2>
+          <ul>
+            <li>宿泊DXは、業務のデジタル化と、データで判断する仕組みの2層で考える</li>
+            <li>最初は道具を選ぶ前に、手間のかかっている業務を書き出して時間を測る</li>
+            <li>二重入力をなくしてから、毎週見る数字を決める</li>
+            <li>規模と地域によって、最初の一歩は変わる</li>
+          </ul>
+        </section>
+      </article>
+    </div></div>
+    {% include tool-sources.html %}
+    {% include tool-related.html %}
+  </main>
+  {% include site-footer.html %}
+  <script defer src="/js/site.js?v=20260909c"></script>
+</body></html>

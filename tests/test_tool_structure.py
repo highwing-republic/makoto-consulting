@@ -80,7 +80,8 @@ def test_converted_pages_use_the_three_standard_blocks():
         assert bool(sources.find(id="source-updated")) == bool(page.get("tool_updated")), path
         assert len(sources.select(".tool-sources__notes li")) == len(page["tool_notes"])
         related = html.select_one(".tool-related")
-        cards = related.select(".tool-related__card")
+        # Tool cards first; an explainer card (tool_guides) sits in its own row below.
+        cards = related.select(".tool-related__grid:not(.tool-related__guides) .tool-related__card")
         assert [card["data-tool-id"] for card in cards] == page["tool_related"]
         for card in cards:
             tool = registry[card["data-tool-id"]]

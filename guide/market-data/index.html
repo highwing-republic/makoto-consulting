@@ -1,0 +1,237 @@
+---
+# Built by Jekyll: the shared header and footer come from _includes/.
+# 解説ページ。出典と関連ツールは、ツールページと同じ標準ブロック（tool-sources / tool-related）で表示する。
+# 料金の判定のしきい値は js/hotel-price-trends-model.js と同じ（tests/test_guides.py で確認）。
+guide: market-data
+tool_sources:
+  - name: 観光庁「宿泊旅行統計調査」
+    publisher: 宿泊旅行統計調査
+    url: https://www.mlit.go.jp/kankocho/tokei_hakusyo/shukuhakutokei.html
+    note: 延べ宿泊者数、客室稼働率、国籍（出身地）別の外国人延べ宿泊者数
+  - name: 総務省・経済産業省「令和6年経済センサス―基礎調査」
+    publisher: 甲調査（民営事業所）事業所に関する集計（e-Stat）
+    url: https://www.e-stat.go.jp/dbview?sid=0004040078
+    note: 宿泊業の事業所数・従業者数
+  - name: 総務省統計局「人口推計」
+    publisher: 人口推計
+    url: https://www.stat.go.jp/data/jinsui/2024np/index.htm
+    note: 都道府県別の総人口・生産年齢人口
+  - name: 料金・施設情報
+    publisher: 楽天ウェブサービス（楽天トラベル空室検索API・施設基本情報）
+    url: https://developers.rakuten.com/
+    note: Supported by Rakuten Developers
+tool_updated: 2026-10-15
+tool_updated_label: 更新日
+tool_notes:
+  - このページには、更新で古くなる数値を載せていません。最新の値と、それぞれの出典の時点は、各ツールで確認してください。
+  - 宿泊旅行統計調査は2026年1月から層化基準が変更されています。2025年以前との比較には、この変更の影響が含まれる可能性があります。
+  - 地域の分析は、地域全体の参考情報です。個々の施設の成果や将来の需要を保証するものではありません。
+tool_related:
+  - inbound
+  - supply-demand
+  - tourism-pressure
+  - hotel-price-trends
+tool_guides:
+  - shukuhaku-dx
+  - operations-improvement
+---
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-QS9HSHCY33"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-QS9HSHCY33');gtag('config','GT-M3S9S5D7');</script>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>宿泊市場データの使い方｜公的統計と料金の読み方｜宿泊DXラボ</title>
+  <meta name="description" content="観光庁の宿泊旅行統計調査と、同じ条件で観測した宿泊料金を、旅館・ホテルの販売や集客の判断にどう使うかを解説します。統計で分かること・分からないこと、自地域を見る4つの視点、自施設の実績と比べるときの注意をまとめました。">
+  <meta name="robots" content="index,follow,max-image-preview:large">
+  <link rel="canonical" href="https://lab.ugatta-llc.com/guide/market-data/">
+  <meta name="theme-color" content="#17324d">
+  <meta property="og:locale" content="ja_JP">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="宿泊DXラボ">
+  <meta property="og:title" content="宿泊市場データの使い方｜公的統計と料金の読み方｜宿泊DXラボ">
+  <meta property="og:description" content="宿泊旅行統計調査と料金データで分かること・分からないこと、自地域を見る4つの視点、自施設の実績と比べるときの注意をまとめました。">
+  <meta property="og:url" content="https://lab.ugatta-llc.com/guide/market-data/">
+  <meta property="og:image" content="https://lab.ugatta-llc.com/images/og-lab.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="宿泊市場データの使い方｜公的統計と料金の読み方｜宿泊DXラボ">
+  <meta name="twitter:description" content="宿泊旅行統計調査と料金データで分かること・分からないこと、自地域を見る視点をまとめました。">
+  <meta name="twitter:image" content="https://lab.ugatta-llc.com/images/og-lab.jpg">
+  <link rel="icon" type="image/png" href="/favicon.png?v=20261013">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&amp;display=swap">
+  <link rel="stylesheet" href="/css/useful.css?v=20261012shell">
+  <link rel="stylesheet" href="/css/tool-standard.css?v=20261015guide">
+  <link rel="stylesheet" href="/css/guide.css?v=20261015guide">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {"@type": "ListItem", "position": 1, "name": "ホーム", "item": "https://lab.ugatta-llc.com/"},
+          {"@type": "ListItem", "position": 2, "name": "宿泊市場データの使い方", "item": "https://lab.ugatta-llc.com/guide/market-data/"}
+        ]
+      },
+      {
+        "@type": "Article",
+        "@id": "https://lab.ugatta-llc.com/guide/market-data/#article",
+        "headline": "宿泊市場データの使い方 ― 公的統計と料金データで、自地域の需要・稼働・インバウンドを読む",
+        "description": "観光庁の宿泊旅行統計調査と、同じ条件で観測した宿泊料金を、旅館・ホテルの販売や集客の判断にどう使うかを解説します。",
+        "url": "https://lab.ugatta-llc.com/guide/market-data/",
+        "mainEntityOfPage": "https://lab.ugatta-llc.com/guide/market-data/",
+        "image": "https://lab.ugatta-llc.com/images/og-lab.jpg",
+        "datePublished": "2026-10-15",
+        "dateModified": "2026-10-15",
+        "inLanguage": "ja-JP",
+        "isPartOf": {"@id": "https://lab.ugatta-llc.com/#website"},
+        "author": {"@type": "Organization", "@id": "https://lab.ugatta-llc.com/#organization", "name": "宿泊DXラボ", "url": "https://lab.ugatta-llc.com/"},
+        "publisher": {"@id": "https://lab.ugatta-llc.com/#organization"}
+      }
+    ]
+  }
+  </script>
+  <link rel="stylesheet" href="/css/site-shell.css?v=20261012shell">
+  <script src="/js/site-shell.js?v=20261012shell2" defer></script>
+</head>
+<body><a class="skip-link" href="#main">本文へ移動</a>
+  {% include site-header.html %}
+  <main id="main"><nav class="breadcrumb container" aria-label="パンくずリスト"><ol><li><a href="/">ホーム</a></li><li aria-current="page">宿泊市場データの使い方</li></ol></nav>
+    <section class="page-hero tool-page-hero guide-hero"><div class="container page-hero-grid"><div><span class="scope-badge">解説</span><h1>宿泊市場データの使い方<span>公的統計と料金データで、自地域の需要・稼働・インバウンドを読む</span></h1></div><div><p class="lead-copy">地域の傾向は統計で、手元の事情は自施設の実績で確かめる。</p><p class="guide-meta">公開日 <time datetime="2026-10-15">2026年10月15日</time></p></div></div></section>
+    <div class="guide"><div class="container guide__layout">
+      <nav class="guide-toc" aria-labelledby="guide-toc-title"><h2 id="guide-toc-title">このページの内容</h2><ol>
+        <li><a href="#statistics">1. 宿泊旅行統計調査で分かること・分からないこと</a></li>
+        <li><a href="#viewpoints">2. 自地域を見る4つの視点</a></li>
+        <li><a href="#prices">3. 料金データの読み方</a></li>
+        <li><a href="#own-results">4. 自施設の実績と並べるときの注意</a></li>
+        <li><a href="#summary">まとめ</a></li>
+      </ol></nav>
+      <article class="guide-body">
+        <section>
+          <p>自分の地域に、どの国・地域のお客様が、どの時期に泊まっているのか。地域の宿泊市場は伸びているのか、それとも客室が埋まりにくくなっているのか。こうした問いには、公的統計がある程度まで答えてくれます。</p>
+          <p>一方で、統計で分かるのは地域全体の傾向までです。このページでは、宿泊DXラボが使っている公的統計と料金データについて、次の3点をまとめます。</p>
+          <ul>
+            <li>それぞれのデータで分かること・分からないこと</li>
+            <li>自地域を見るときの視点</li>
+            <li>自施設の実績と並べるときの注意</li>
+          </ul>
+        </section>
+
+        <section aria-labelledby="statistics">
+          <h2 id="statistics">1. 宿泊旅行統計調査で分かること・分からないこと</h2>
+          <p>宿泊DXラボの地域分析は、主に観光庁の「宿泊旅行統計調査」を使っています。全国の宿泊施設を対象に、毎月の宿泊者数や客室稼働率を調べている統計です。</p>
+
+          <h3>分かること</h3>
+          <ul>
+            <li><strong>延べ宿泊者数</strong><span>単位は「人泊」で、1人が2泊すると2人泊と数えます。宿泊した人数そのものではない点に注意が必要です。</span></li>
+            <li><strong>客室稼働率</strong><span>利用された客室の割合です。</span></li>
+            <li><strong>外国人延べ宿泊者数と、国籍（出身地）別の構成</strong><span>宿泊DXラボのインバウンド分析では、客室数20室以上の施設を対象とする国籍（出身地）別の集計を使っています。</span></li>
+            <li><strong>都道府県ごとの月別の動き</strong><span>直近12か月の推移から、季節ごとの差が分かります。</span></li>
+          </ul>
+
+          <h3>分からないこと</h3>
+          <ul>
+            <li>個々の施設の客層や、予約経路、予約の取りこぼし</li>
+            <li>宿泊料金や客室単価</li>
+            <li>市区町村や観光地点ごとの混雑、日帰り客の動き</li>
+          </ul>
+
+          <h3>数値を見るときの注意</h3>
+          <ul>
+            <li><strong>速報値は、あとで修正されることがある</strong><span>毎月の数値は「第1次速報」「第2次速報」として公表され、年の確定値でまとめ直されます。宿泊DXラボの地域分析は、第2次速報の値を使っています。</span></li>
+            <li><strong>2026年1月から、施設の区分け（層化）の基準が変わった</strong><span>区分けの基準が「従業者数」から「客室数」に変わったため、2025年以前と比べるときは、この変更の影響が含まれる可能性があります。</span></li>
+          </ul>
+        </section>
+
+        <section aria-labelledby="viewpoints">
+          <h2 id="viewpoints">2. 自地域を見る4つの視点</h2>
+          <p>宿泊DXラボでは、同じ公的統計を4つの視点で整理しています。どれも地域全体の参考情報で、個々の施設の成果や将来の需要を保証するものではありません。</p>
+
+          <h3>インバウンド：どの国・地域から泊まりに来ているか</h3>
+          <p>「<a href="/inbound-analysis.html">インバウンド宿泊者分析</a>」では、全国と都道府県の外国人延べ宿泊者数と、国・地域別の構成を確認できます。</p>
+          <ul>
+            <li><strong>地域特化度</strong><span>地域内のシェアを全国のシェアで割った値です。1を超える市場は、その地域で全国より構成比が高い市場です。</span></li>
+            <li><strong>注目度</strong><span>市場の大きさと地域特化度を組み合わせ、詳しく調べたい市場の候補を示します。</span></li>
+          </ul>
+
+          <h3>成長・稼働：市場は伸びているか、埋まっているか</h3>
+          <p>「<a href="/supply-demand-gap-analysis.html">宿泊市場の成長・稼働ポジション</a>」では、需要の伸び率と客室稼働率を全国値と比べ、地域を4つのタイプに分けます。</p>
+          <p>これは全国との相対的な位置で、供給不足や供給過剰を断定する分類ではありません。この結果だけで、新規出店、増室、値上げ、撤退などを判断しないでください。</p>
+
+          <h3>人手：省力化を検討する理由はどれくらいあるか</h3>
+          <p>「<a href="/dx-necessity-analysis.html">地域の省人化・DX検討指標</a>」では、次の4つを組み合わせた参考スコアを47都道府県で比べます。</p>
+          <ul>
+            <li>需要の伸び</li>
+            <li>客室稼働率</li>
+            <li>宿泊業の運営負荷（従業者1人あたりの延べ宿泊者数）</li>
+            <li>生産年齢人口の減少</li>
+          </ul>
+          <p>スコアが高い地域ほど、業務の標準化や省力化を検討する余地が相対的に大きいことを示します。</p>
+
+          <h3>集中・依存：宿泊が地域にどれだけ集まっているか</h3>
+          <p>「<a href="/tourism-pressure-analysis.html">宿泊集中度・宿泊業依存度</a>」では、次の2つを分けて比べます。</p>
+          <ul>
+            <li><strong>宿泊集中度</strong>：人口あたりの宿泊需要や施設の密度</li>
+            <li><strong>宿泊業依存度</strong>：地域の雇用や事業所に占める宿泊業の割合</li>
+          </ul>
+          <p>宿泊集中度が高くても、それだけでオーバーツーリズムとは言えません。市区町村ごとの混雑や住民の受け止め方は、別に確かめる必要があります。</p>
+        </section>
+
+        <section aria-labelledby="prices">
+          <h2 id="prices">3. 料金データの読み方</h2>
+          <p>公的統計には宿泊料金が含まれません。宿泊DXラボの「<a href="/hotel-price-trends.html">宿泊料金トレンド</a>」は、全国9市場の固定した比較施設群（45施設）について、同じ宿泊条件の料金を毎日観測しています。宿泊条件は、大人2名・1室・1泊、食事条件別です。</p>
+
+          <h3>同じ条件で比べる理由</h3>
+          <p>宿泊料金は、人数、部屋数、泊数、食事の有無で大きく変わります。条件をそろえずに並べると、料金の差が「市場の動き」なのか「条件の違い」なのか分かりません。そのため、条件と比較施設群を固定し、比較施設群が入れ替わったときは、前後を比べないようにしています。</p>
+
+          <h3>7日前と比べる</h3>
+          <p>「7日トレンド」は、同じ宿泊日の料金が7日前と比べてどう動いたかを、比較施設群の変化率の中央値で示します。</p>
+          <div class="guide-table" role="region" aria-label="7日トレンドの判定" tabindex="0"><table class="guide-trend-table">
+            <thead><tr><th scope="col">7日前との差</th><th scope="col">判定</th></tr></thead>
+            <tbody>
+              <tr><td>＋10%以上</td><td>上昇</td></tr>
+              <tr><td>＋3%以上、＋10%未満</td><td>やや上昇</td></tr>
+              <tr><td>−3%より大きく、＋3%未満</td><td>大きな変化なし</td></tr>
+              <tr><td>−10%より大きく、−3%以下</td><td>やや低下</td></tr>
+              <tr><td>−10%以下</td><td>低下</td></tr>
+            </tbody>
+          </table></div>
+          <p>8回の観測すべてで料金を確認できた宿泊日だけを使うので、たまたま取得できなかった日に結果が引っ張られにくくなっています。</p>
+
+          <h3>読むときの注意</h3>
+          <ul>
+            <li><strong>料金が確認できないことは、満室を意味しない</strong><span>販売停止やプランの都合で、料金が取れないこともあります。</span></li>
+            <li><strong>料金だけでは、需要や稼働状況は判断できない</strong><span>料金が上がっていても、予約が入っているとは限りません。</span></li>
+            <li><strong>自施設の位置は「中央値より高い・低い」で見る</strong><span>比較施設群の中央値と比べて、10%以上高い・低いかで、価格の位置をおおまかに確かめられます。</span></li>
+          </ul>
+        </section>
+
+        <section aria-labelledby="own-results">
+          <h2 id="own-results">4. 自施設の実績と並べるときの注意</h2>
+          <p>地域のデータは、自施設の実績と並べたときに役立ちます。並べるときは、次の点に注意します。</p>
+          <ol>
+            <li><strong>同じ月・同じ単位で比べる</strong><span>PMSなどから同じ月の外国人宿泊者数を出すときは、予約件数と人泊を混ぜないようにします。</span></li>
+            <li><strong>違いが大きい市場は、予約経路と案内を確認する</strong><span>地域では多いのに自施設では少ない市場があれば、利用される予約サイト、対応言語、宿へのアクセス案内を確かめます。立地、価格帯、施設のタイプの違いも考慮します。</span></li>
+            <li><strong>案内を1つ改善して、実績を追う</strong><span>アクセス、食事、支払い、キャンセル条件など、問い合わせの多い案内から改善し、閲覧数・予約件数・キャンセル率の変化を続けて見ます。</span></li>
+            <li><strong>公表値の修正と、統計の基準変更を意識する</strong><span>速報値の修正や、2026年1月の区分けの変更をまたいで比べるときは、差の一部が統計側の変化による可能性があります。</span></li>
+          </ol>
+        </section>
+
+        <section class="guide-summary" aria-labelledby="summary">
+          <h2 id="summary">まとめ</h2>
+          <ul>
+            <li>公的統計で分かるのは地域全体の傾向まで。自施設の客層や単価は、自施設の実績で確かめる</li>
+            <li>延べ宿泊者数は「人泊」。速報値の修正と、2026年1月の基準変更に注意する</li>
+            <li>料金は、条件と比較対象をそろえて、時間の変化として見る</li>
+            <li>地域のデータと自施設の実績を同じ月・同じ単位で並べ、違いの大きいところから確かめる</li>
+          </ul>
+        </section>
+      </article>
+    </div></div>
+    {% include tool-sources.html %}
+    {% include tool-related.html %}
+  </main>
+  {% include site-footer.html %}
+  <script defer src="/js/site.js?v=20260909c"></script>
+</body></html>

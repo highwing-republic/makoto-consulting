@@ -1,0 +1,14 @@
+# 解説ページ（/guide/）の一覧。ツールページの関連カード（_includes/tool-related.html）が
+# フロントマターの tool_guides から参照します。ツールページからは 1 ページ 1 本まで。
+- id: shukuhaku-dx
+  title: 宿泊DXとは？ 旅館・ホテルのDXは何から始めるか
+  url: /guide/shukuhaku-dx/
+  summary: 宿泊DXの意味と、最初の一歩を選ぶための3つの段階を、診断と公的統計をもとに整理します。
+- id: operations-improvement
+  title: 旅館・ホテルの業務改善 8つのチェックポイント
+  url: /guide/operations-improvement/
+  summary: 8つの業務ごとに、よくある手作業、改善の方向、確認する数字をまとめています。
+- id: market-data
+  title: 宿泊市場データの使い方
+  url: /guide/market-data/
+  summary: 宿泊旅行統計調査と料金データで分かること・分からないことと、自地域を見る視点を解説します。

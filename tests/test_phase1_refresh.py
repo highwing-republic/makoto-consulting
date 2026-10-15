@@ -31,7 +31,7 @@ def test_lab_notes_link_is_kept_out_of_headers_and_small_at_page_bottom():
 def test_every_html_page_loads_the_canonical_site_shell():
     # Demo pages are standalone mock sites with their own header and footer.
     pages = [path for path in filter(is_published, ROOT.rglob("*.html")) if not {"demo", "tourism-market-signal"} & set(path.relative_to(ROOT).parts) and not is_redirect_stub(path)]
-    assert len(pages) == 17
+    assert len(pages) == 20
     for path in pages:
         page = BeautifulSoup(rendered(path), "html.parser")
         assert page.find("link", href="/css/site-shell.css?v=20261012shell"), path
@@ -300,7 +300,7 @@ def test_lab_pages_get_the_shared_header_and_footer_at_build_time():
     # Every Lab page except the standalone demos and the synced signal report
     # is built by Jekyll from the shared includes.
     pages = [path for path in filter(is_published, ROOT.rglob("*.html")) if not {"demo", "tourism-market-signal"} & set(path.relative_to(ROOT).parts) and not is_redirect_stub(path)]
-    assert len(pages) == 17
+    assert len(pages) == 20
     for path in pages:
         source = path.read_text(encoding="utf-8")
         assert source.startswith("---\n"), path
