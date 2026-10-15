@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "cohort_version": "bh-v1",
-  "effective_from": "2026-10-16",
+  "cohort_version": "bh-v2",
+  "effective_from": "2026-10-17",
   "description": "ビジネスホテル版料金トレンドの固定比較施設群。COREで集計し、BACKUPは観測のみ（日次の穴埋めには使わない）。入れ替え時はcohort_versionを上げる。",
   "conditions": {
     "adults": 1,
@@ -10,7 +10,7 @@
     "price_basis": "lowest_plan_any_meal"
   },
   "horizon_days": 60,
-  "cross_city_brand": "東横イン",
+  "cross_city_brand": "ダイワロイネット",
   "markets": [
     {
       "code": "sapporo",
@@ -48,16 +48,6 @@
           "note": "2018年開業"
         },
         {
-          "hotel_no": 53225,
-          "name": "東横INN札幌駅西口北大前",
-          "brand": "東横イン",
-          "area": "札幌駅西口",
-          "access": "JR札幌駅 徒歩5分",
-          "rooms": 179,
-          "role": "core",
-          "note": "都市横断比較用に東横インを採用"
-        },
-        {
           "hotel_no": 172398,
           "name": "ベッセルホテルカンパーナすすきの",
           "brand": "ベッセルホテル",
@@ -67,21 +57,31 @@
           "role": "core"
         },
         {
-          "hotel_no": 50125,
-          "name": "リッチモンドホテル札幌駅前",
-          "brand": "リッチモンドホテル",
-          "area": "札幌駅",
-          "access": "JR札幌駅 徒歩7分",
-          "rooms": 182,
-          "role": "backup"
-        },
-        {
           "hotel_no": 79254,
           "name": "ホテル京阪 札幌",
           "brand": "ホテル京阪",
           "area": "札幌駅北口",
           "access": "JR札幌駅 徒歩4分",
           "rooms": 200,
+          "role": "core"
+        },
+        {
+          "hotel_no": 53225,
+          "name": "東横INN札幌駅西口北大前",
+          "brand": "東横イン",
+          "area": "札幌駅西口",
+          "access": "JR札幌駅 徒歩5分",
+          "rooms": 179,
+          "role": "backup",
+          "note": "都市横断比較用に東横インを採用。bh-v1の初回取得（2026-10-16）で楽天の販売プランなしが多かったためBACKUPへ"
+        },
+        {
+          "hotel_no": 50125,
+          "name": "リッチモンドホテル札幌駅前",
+          "brand": "リッチモンドホテル",
+          "area": "札幌駅",
+          "access": "JR札幌駅 徒歩7分",
+          "rooms": 182,
           "role": "backup"
         },
         {
@@ -120,15 +120,6 @@
           "role": "core"
         },
         {
-          "hotel_no": 40550,
-          "name": "東横INN仙台駅西口中央",
-          "brand": "東横イン",
-          "area": "仙台駅西口",
-          "access": "仙台駅 徒歩5分",
-          "rooms": 286,
-          "role": "core"
-        },
-        {
           "hotel_no": 187247,
           "name": "スーパーホテルPremier仙台国分町天然温泉",
           "brand": "スーパーホテル",
@@ -158,6 +149,26 @@
           "note": "客室数は楽天145／じゃらん147"
         },
         {
+          "hotel_no": 79378,
+          "name": "三井ガーデンホテル仙台",
+          "brand": "三井ガーデンホテル",
+          "area": "広瀬通",
+          "access": "広瀬通駅 徒歩1分",
+          "rooms": 221,
+          "role": "core",
+          "note": "2025年リニューアル休館→一部再開。全館再開日は未確認"
+        },
+        {
+          "hotel_no": 40550,
+          "name": "東横INN仙台駅西口中央",
+          "brand": "東横イン",
+          "area": "仙台駅西口",
+          "access": "仙台駅 徒歩5分",
+          "rooms": 286,
+          "role": "backup",
+          "note": "bh-v1の初回取得（2026-10-16）で楽天の販売プランなしが多かったためBACKUPへ"
+        },
+        {
           "hotel_no": 70912,
           "name": "リッチモンドホテルプレミア仙台駅前",
           "brand": "リッチモンドホテル",
@@ -166,16 +177,6 @@
           "rooms": 182,
           "role": "backup",
           "note": "2027年6月は休館工事で全日販売停止予定"
-        },
-        {
-          "hotel_no": 79378,
-          "name": "三井ガーデンホテル仙台",
-          "brand": "三井ガーデンホテル",
-          "area": "広瀬通",
-          "access": "広瀬通駅 徒歩1分",
-          "rooms": 221,
-          "role": "backup",
-          "note": "2025年リニューアル休館→一部再開。全館再開日は未確認"
         },
         {
           "hotel_no": 910,
@@ -202,15 +203,6 @@
           "rooms": 250,
           "role": "core",
           "note": "2020/2開業"
-        },
-        {
-          "hotel_no": 108396,
-          "name": "東横INN名古屋駅新幹線口",
-          "brand": "東横イン",
-          "area": "名駅",
-          "access": "名古屋駅 徒歩3分",
-          "rooms": 161,
-          "role": "core"
         },
         {
           "hotel_no": 153118,
@@ -248,8 +240,18 @@
           "area": "名駅",
           "access": "名古屋駅 徒歩5分",
           "rooms": 185,
-          "role": "backup",
+          "role": "core",
           "note": "2026/5/1全館リニューアル"
+        },
+        {
+          "hotel_no": 108396,
+          "name": "東横INN名古屋駅新幹線口",
+          "brand": "東横イン",
+          "area": "名駅",
+          "access": "名古屋駅 徒歩3分",
+          "rooms": 161,
+          "role": "backup",
+          "note": "bh-v1の初回取得（2026-10-16）で楽天の販売プランなしが多かったためBACKUPへ"
         },
         {
           "hotel_no": 168599,
@@ -298,16 +300,6 @@
           "note": "シングル0室（1名でもダブル利用）"
         },
         {
-          "hotel_no": 108355,
-          "name": "東横INN広島駅新幹線口1",
-          "brand": "東横イン",
-          "area": "広島駅北口",
-          "access": "広島駅 徒歩4分",
-          "rooms": 189,
-          "role": "core",
-          "note": "代替：新幹線口2(181136)"
-        },
-        {
           "hotel_no": 168417,
           "name": "ホテルインターゲート広島",
           "brand": "インターゲート",
@@ -334,8 +326,18 @@
           "area": "広島駅北口",
           "access": "広島駅 徒歩3分",
           "rooms": 246,
-          "role": "backup",
+          "role": "core",
           "note": "2020/4開業"
+        },
+        {
+          "hotel_no": 108355,
+          "name": "東横INN広島駅新幹線口1",
+          "brand": "東横イン",
+          "area": "広島駅北口",
+          "access": "広島駅 徒歩4分",
+          "rooms": 189,
+          "role": "backup",
+          "note": "代替：新幹線口2(181136)。bh-v1の初回取得（2026-10-16）で楽天の販売プランなしが多かったためBACKUPへ"
         },
         {
           "hotel_no": 167087,
@@ -365,15 +367,6 @@
       "prefecture": "福岡県",
       "properties": [
         {
-          "hotel_no": 54538,
-          "name": "東横INN博多口駅前",
-          "brand": "東横イン",
-          "area": "博多駅",
-          "access": "博多駅 徒歩2分",
-          "rooms": 256,
-          "role": "core"
-        },
-        {
           "hotel_no": 140977,
           "name": "JR九州ホテル ブラッサム博多中央",
           "brand": "JR九州ホテル ブラッサム",
@@ -381,16 +374,6 @@
           "access": "博多駅 徒歩2分",
           "rooms": 247,
           "role": "core"
-        },
-        {
-          "hotel_no": 67830,
-          "name": "西鉄イン福岡（アクロス福岡前）",
-          "brand": "西鉄イン",
-          "area": "天神・中洲",
-          "access": "中洲川端駅 徒歩3分",
-          "rooms": 271,
-          "role": "core",
-          "note": "2018年全館改装"
         },
         {
           "hotel_no": 178294,
@@ -418,8 +401,38 @@
           "area": "博多駅",
           "access": "博多駅 徒歩4分",
           "rooms": 216,
-          "role": "backup",
+          "role": "core",
           "note": "2003年開業"
+        },
+        {
+          "hotel_no": 79344,
+          "name": "ダイワロイネットホテル博多祇園",
+          "brand": "ダイワロイネット",
+          "area": "祇園",
+          "access": "祇園駅 徒歩1分",
+          "rooms": 252,
+          "role": "core",
+          "note": "2009/7開業"
+        },
+        {
+          "hotel_no": 54538,
+          "name": "東横INN博多口駅前",
+          "brand": "東横イン",
+          "area": "博多駅",
+          "access": "博多駅 徒歩2分",
+          "rooms": 256,
+          "role": "backup",
+          "note": "bh-v1の初回取得（2026-10-16）で楽天の販売プランなしが多かったためBACKUPへ"
+        },
+        {
+          "hotel_no": 67830,
+          "name": "西鉄イン福岡（アクロス福岡前）",
+          "brand": "西鉄イン",
+          "area": "天神・中洲",
+          "access": "中洲川端駅 徒歩3分",
+          "rooms": 271,
+          "role": "backup",
+          "note": "2018年全館改装。bh-v1の初回取得（2026-10-16）で楽天の販売プランなしが多かったためBACKUPへ"
         },
         {
           "hotel_no": 182563,
@@ -429,16 +442,6 @@
           "access": "天神南駅 徒歩1分",
           "rooms": 125,
           "role": "backup"
-        },
-        {
-          "hotel_no": 79344,
-          "name": "ダイワロイネットホテル博多祇園",
-          "brand": "ダイワロイネット",
-          "area": "祇園",
-          "access": "祇園駅 徒歩1分",
-          "rooms": 252,
-          "role": "backup",
-          "note": "2009/7開業"
         }
       ]
     },
@@ -456,15 +459,6 @@
           "rooms": 296,
           "role": "core",
           "note": "2023/7リニューアル"
-        },
-        {
-          "hotel_no": 54992,
-          "name": "東横INN金沢駅東口",
-          "brand": "東横イン",
-          "area": "金沢駅東口",
-          "access": "金沢駅 徒歩6分",
-          "rooms": 239,
-          "role": "core"
         },
         {
           "hotel_no": 180547,
@@ -497,6 +491,26 @@
           "note": "2022/6改築"
         },
         {
+          "hotel_no": 2120,
+          "name": "アパホテル〈金沢片町〉",
+          "brand": "アパホテル",
+          "area": "片町",
+          "access": "片町バス停 徒歩5分",
+          "rooms": 148,
+          "role": "core",
+          "note": "2018年全面改装"
+        },
+        {
+          "hotel_no": 54992,
+          "name": "東横INN金沢駅東口",
+          "brand": "東横イン",
+          "area": "金沢駅東口",
+          "access": "金沢駅 徒歩6分",
+          "rooms": 239,
+          "role": "backup",
+          "note": "bh-v1の初回取得（2026-10-16）で楽天の販売プランなしが多かったためBACKUPへ"
+        },
+        {
           "hotel_no": 54537,
           "name": "ホテルルートイン金沢駅前",
           "brand": "ルートイン",
@@ -504,16 +518,6 @@
           "access": "金沢駅 徒歩5分",
           "rooms": 294,
           "role": "backup"
-        },
-        {
-          "hotel_no": 2120,
-          "name": "アパホテル〈金沢片町〉",
-          "brand": "アパホテル",
-          "area": "片町",
-          "access": "片町バス停 徒歩5分",
-          "rooms": 148,
-          "role": "backup",
-          "note": "2018年全面改装"
         },
         {
           "hotel_no": 18165,
@@ -562,15 +566,6 @@
           "note": "2026/7/13全館リニューアル"
         },
         {
-          "hotel_no": 52641,
-          "name": "東横INN那覇旭橋駅前",
-          "brand": "東横イン",
-          "area": "旭橋",
-          "access": "旭橋駅 徒歩5分",
-          "rooms": 283,
-          "role": "core"
-        },
-        {
           "hotel_no": 40768,
           "name": "アルモントホテル那覇おもろまち",
           "brand": "アルモントホテル",
@@ -578,6 +573,26 @@
           "access": "おもろまち駅 徒歩4分",
           "rooms": 200,
           "role": "core"
+        },
+        {
+          "hotel_no": 134763,
+          "name": "ダイワロイネットホテル那覇おもろまち",
+          "brand": "ダイワロイネット",
+          "area": "おもろまち",
+          "access": "おもろまち駅 徒歩5分",
+          "rooms": 243,
+          "role": "core",
+          "note": "PREMIER(188000)と別施設"
+        },
+        {
+          "hotel_no": 52641,
+          "name": "東横INN那覇旭橋駅前",
+          "brand": "東横イン",
+          "area": "旭橋",
+          "access": "旭橋駅 徒歩5分",
+          "rooms": 283,
+          "role": "backup",
+          "note": "bh-v1の初回取得（2026-10-16）で楽天の販売プランなしが多かったためBACKUPへ"
         },
         {
           "hotel_no": 73870,
@@ -588,16 +603,6 @@
           "rooms": 132,
           "role": "backup",
           "note": "2024/5リニューアル"
-        },
-        {
-          "hotel_no": 134763,
-          "name": "ダイワロイネットホテル那覇おもろまち",
-          "brand": "ダイワロイネット",
-          "area": "おもろまち",
-          "access": "おもろまち駅 徒歩5分",
-          "rooms": 243,
-          "role": "backup",
-          "note": "PREMIER(188000)と別施設"
         },
         {
           "hotel_no": 15424,
@@ -615,15 +620,6 @@
       "name": "鹿児島",
       "prefecture": "鹿児島県",
       "properties": [
-        {
-          "hotel_no": 108387,
-          "name": "東横INN鹿児島中央駅西口",
-          "brand": "東横イン",
-          "area": "中央駅西口",
-          "access": "鹿児島中央駅 徒歩1分",
-          "rooms": 254,
-          "role": "core"
-        },
         {
           "hotel_no": 11031,
           "name": "JR九州ホテル鹿児島",
@@ -663,6 +659,25 @@
           "note": "2022/4開業"
         },
         {
+          "hotel_no": 916,
+          "name": "ホテルマイステイズ鹿児島天文館",
+          "brand": "マイステイズ",
+          "area": "天文館",
+          "access": "高見馬場電停 徒歩1分",
+          "rooms": 196,
+          "role": "core"
+        },
+        {
+          "hotel_no": 108387,
+          "name": "東横INN鹿児島中央駅西口",
+          "brand": "東横イン",
+          "area": "中央駅西口",
+          "access": "鹿児島中央駅 徒歩1分",
+          "rooms": 254,
+          "role": "backup",
+          "note": "bh-v1の初回取得（2026-10-16）で楽天の販売プランなしが多かったためBACKUPへ"
+        },
+        {
           "hotel_no": 135892,
           "name": "ソラリア西鉄ホテル鹿児島",
           "brand": "ソラリア西鉄ホテル",
@@ -678,15 +693,6 @@
           "area": "天文館",
           "access": "高見馬場電停 徒歩2分",
           "rooms": 185,
-          "role": "backup"
-        },
-        {
-          "hotel_no": 916,
-          "name": "ホテルマイステイズ鹿児島天文館",
-          "brand": "マイステイズ",
-          "area": "天文館",
-          "access": "高見馬場電停 徒歩1分",
-          "rooms": 196,
           "role": "backup"
         }
       ]
@@ -734,13 +740,24 @@
           "note": "銀座通りPREMIER(183440)と別施設"
         },
         {
+          "hotel_no": 197943,
+          "name": "ヴィアインプライム熊本＜雲雀の湯＞",
+          "brand": "ヴィアイン",
+          "area": "熊本駅",
+          "access": "熊本駅 徒歩5分",
+          "rooms": 232,
+          "role": "core",
+          "note": "2026/7/22開業（データ短い）"
+        },
+        {
           "hotel_no": 54012,
           "name": "東横INN熊本城通町筋",
           "brand": "東横イン",
           "area": "通町筋",
           "access": "水道町電停 徒歩1分",
           "rooms": 198,
-          "role": "core"
+          "role": "backup",
+          "note": "bh-v1の初回取得（2026-10-16）で楽天の販売プランなしが多かったためBACKUPへ"
         },
         {
           "hotel_no": 183439,
@@ -761,16 +778,6 @@
           "rooms": 226,
           "role": "backup",
           "note": "1991年開業"
-        },
-        {
-          "hotel_no": 197943,
-          "name": "ヴィアインプライム熊本＜雲雀の湯＞",
-          "brand": "ヴィアイン",
-          "area": "熊本駅",
-          "access": "熊本駅 徒歩5分",
-          "rooms": 232,
-          "role": "backup",
-          "note": "2026/7/22開業（データ短い）"
         }
       ]
     },
@@ -817,24 +824,24 @@
           "note": "客室数149／152で出典差"
         },
         {
-          "hotel_no": 108366,
-          "name": "東横INN岡山駅西口広場",
-          "brand": "東横イン",
-          "area": "駅西口",
-          "access": "岡山駅 徒歩2分",
-          "rooms": 178,
-          "role": "core",
-          "note": "東口店(109219)と別施設"
-        },
-        {
           "hotel_no": 4926,
           "name": "三井ガーデンホテル岡山",
           "brand": "三井ガーデンホテル",
           "area": "駅西口",
           "access": "岡山駅 徒歩2分",
           "rooms": 297,
-          "role": "backup",
+          "role": "core",
           "note": "2026/8/9全館リニューアル（352→297室）"
+        },
+        {
+          "hotel_no": 108366,
+          "name": "東横INN岡山駅西口広場",
+          "brand": "東横イン",
+          "area": "駅西口",
+          "access": "岡山駅 徒歩2分",
+          "rooms": 178,
+          "role": "backup",
+          "note": "東口店(109219)と別施設。bh-v1の初回取得（2026-10-16）で楽天の販売プランなしが多かったためBACKUPへ"
         },
         {
           "hotel_no": 427,
@@ -856,6 +863,14 @@
           "note": "条件付き（89室・駅から15分）"
         }
       ]
+    }
+  ],
+  "history": [
+    {
+      "cohort_version": "bh-v1",
+      "from": "2026-10-16",
+      "to": "2026-10-16",
+      "note": "東横インを全市場のCOREに入れていた版。楽天での販売プランなしが多く（60泊中14〜59泊）、1日で入れ替え"
     }
   ]
 }
