@@ -54,6 +54,7 @@ def test_home_structured_data_links_site_operator_and_note():
     nodes = graph(soup("index.html"))
     [site] = by_type(nodes, "WebSite")
     assert site["name"] == "宿泊DXラボ" and site["url"] == LAB
+    assert site["alternateName"] == ["HOTEL DX Lab"]
     assert site["publisher"] == {"@id": LAB_ORG}
     orgs = {node["@id"]: node for node in by_type(nodes, "Organization")}
     lab = orgs[LAB_ORG]
