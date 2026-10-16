@@ -102,7 +102,7 @@ NOTO_URL = "https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;7
 def test_pages_link_web_fonts_in_head_instead_of_css_import() -> None:
     assert not re.search(r"@import\s+url", SHELL_CSS.read_text(encoding="utf-8"))
     shell_pages = [path for path in public_files(".html") if "site-shell.css" in path.read_text(encoding="utf-8")]
-    assert len(shell_pages) == 21
+    assert len(shell_pages) == 20
     for path in shell_pages:
         head = BeautifulSoup(path.read_text(encoding="utf-8"), "html.parser").head
         preconnects = [link.get("href") for link in head.find_all("link", rel="preconnect")]
@@ -196,7 +196,7 @@ def test_hotel_calendar_and_legend_share_fixed_semantic_tokens() -> None:
 def test_tool_page_heroes_carry_no_english_eyebrow() -> None:
     for filename in (
         "hotel-price-trends.html", "dx-diagnosis.html", "management-ai.html", "inbound-analysis.html",
-        "dx-necessity-analysis.html", "supply-demand-gap-analysis.html", "tourism-pressure-analysis.html", "report.html",
+        "supply-demand-gap-analysis.html", "tourism-pressure-analysis.html", "report.html",
     ):
         page = BeautifulSoup((ROOT / filename).read_text(encoding="utf-8"), "html.parser")
         assert not page.select(".page-hero .eyebrow"), filename
@@ -209,7 +209,7 @@ def test_caution_notes_are_labeled_without_gold_decoration() -> None:
         rule = re.search(re.escape(selector) + r"\{([^}]+)\}", css).group(1)
         assert "var(--lab-navy)" in rule
         assert "--gold" not in rule and "--data-self" not in rule
-    for filename in ["inbound-analysis.html", "dx-necessity-analysis.html"]:
+    for filename in ["inbound-analysis.html", "supply-demand-gap-analysis.html"]:
         page = BeautifulSoup((ROOT / filename).read_text(encoding="utf-8"), "html.parser")
         for note in page.select(".survey-change-note"):
             assert note.get_text().startswith("注意：")

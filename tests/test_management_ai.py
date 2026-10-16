@@ -151,7 +151,8 @@ def test_topic_classification_pref_fallback_and_five_representative_cases():
     assert data["slugs"] == ["nagano", "tokyo", "tokyo"]
 
     assert data["dx"]["name"] == "長野県"
-    assert "04 地域の省人化・DX検討指標" in data["dx"]["references"]
+    assert "省人化・DX参考スコア（当サイトの集計）" in data["dx"]["references"]
+    assert all("dx-necessity-analysis" not in tool["href"] for tool in data["dx"]["relatedTools"])
     diagnosis_link = next(tool["href"] for tool in data["dx"]["relatedTools"] if tool["number"] == "01")
     regional_links = [tool["href"] for tool in data["dx"]["relatedTools"] if tool["number"] != "01"]
     assert diagnosis_link == "dx-diagnosis.html"

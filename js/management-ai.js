@@ -47,7 +47,7 @@
   const RULE_LABELS = {
     'facility-occupancy-gap': '自施設の稼働率が地域値を10ポイント以上下回る',
     'facility-foreign-gap': '自施設の外国人宿泊比率が地域値を10ポイント以上下回る',
-    'dx-high-workforce-decline': 'DX必要度が比較的高く、生産年齢人口が減少傾向',
+    'dx-high-workforce-decline': '省人化・DX参考スコアが比較的高く、生産年齢人口が減少傾向',
     'dx-operation-load': '従業者あたり宿泊需要が全国上位',
     'supply-tight-candidate': '市場タイプが「需給ひっ迫候補」',
     'market-growth': '宿泊需要伸び率が全国値を上回る',

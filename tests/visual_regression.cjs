@@ -30,8 +30,6 @@ const PAGES = [
   '/dx-diagnosis.html',
   '/inbound-analysis.html',
   '/inbound-analysis.html?pref=nagano',
-  '/dx-necessity-analysis.html?pref=nagano',
-  '/dx-necessity-analysis.html?pref=tokyo',
   '/supply-demand-gap-analysis.html?pref=okinawa',
   '/supply-demand-gap-analysis.html?pref=tokyo',
   '/tourism-pressure-analysis.html?pref=nagano',
