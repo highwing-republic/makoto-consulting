@@ -93,6 +93,19 @@ def test_number_inputs_allow_blank_but_reject_out_of_range_in_markup():
     assert soup.find(id="facility-employees")["min"] == "1"
 
 
+def test_primary_controls_are_prominent_and_facility_details_stay_optional():
+    soup = BeautifulSoup(PAGE.read_text(encoding="utf-8"), "html.parser")
+    intro = soup.select_one(".management-form__intro")
+    assert "必須なのは「相談テーマ」と「都道府県」だけ" in intro.get_text()
+    primary = soup.select_one(".management-primary-controls")
+    assert primary.find(id="management-topic-title")
+    assert primary.find(id="management-prefecture")
+    optional = soup.select_one("details.management-optional")
+    assert optional and not optional.has_attr("open")
+    assert "施設情報を追加する" in optional.summary.get_text()
+    assert "生成AIではありません" in soup.get_text()
+
+
 def test_v1_uses_only_local_rules_and_public_json():
     combined = RULES.read_text(encoding="utf-8") + UI.read_text(encoding="utf-8")
     for forbidden in ("api.openai.com", "generativelanguage.googleapis.com", "OPENAI_API_KEY", "GEMINI_API_KEY"):
