@@ -65,7 +65,7 @@ CONTENT = {
         "roomFacts": [
             ("寝具", "和室はお布団、ツインとシングルはベッドです。"),
             ("客室のお風呂", "客室に露天風呂は付いていません。温泉は大浴場、露天風呂、貸切風呂でお楽しみください。"),
-            ("料金", "1室1泊の料金で、税とサービス料を含みます。入湯税（1名1泊150円）は別にいただきます。"),
+            ("料金", "1室1泊の料金で、泊まる人数によって変わります。和室は1名16,000円、2名20,000円、3名22,000円、4名24,000円。ツインは1名12,000円、2名16,000円。シングルは8,000円。税とサービス料を含み、入湯税（1名1泊150円）は別にいただきます。"),
         ],
         "bathH": "翠の湯",
         "bathP": "湯船に満ちる、やわらかな翠色のにごり湯。夜は湯けむりの向こうに星を、朝は木々の光を眺めながら。（架空の温泉です）",
@@ -132,7 +132,7 @@ CONTENT = {
         "roomFacts": [
             ("Bedding", "Futon in Japanese-style rooms; beds in twin and single rooms."),
             ("In-room baths", "Rooms do not have private open-air baths. Please enjoy the grand baths, open-air baths and our private bath."),
-            ("Rates", "Per room per night, including tax and service charge. A bathing tax of ¥150 per person per night is charged separately."),
+            ("Rates", "Per room per night, depending on the number of guests. Japanese-style room: ¥16,000 for 1, ¥20,000 for 2, ¥22,000 for 3, ¥24,000 for 4. Twin room: ¥12,000 for 1, ¥16,000 for 2. Single room: ¥8,000. Rates include tax and service charge; a bathing tax of ¥150 per person per night is charged separately."),
         ],
         "bathH": "The Jade Bath",
         "bathP": "A soft, jade-green hot spring fills the baths. Stars above the steam at night; morning light through the trees at dawn. (A fictional hot spring.)",
@@ -198,7 +198,7 @@ CONTENT = {
         "roomFacts": [
             ("寢具", "和室為日式床墊（布團），雙床房與單人房為床鋪。"),
             ("客房浴池", "客房不附露天浴池。溫泉請至大浴場、露天風呂與包租湯屋享用。"),
-            ("價格", "為每房每晚價格，含稅及服務費。另收入湯稅（每人每晚150日圓）。"),
+            ("價格", "為每房每晚價格，依入住人數而異。和室：1人16,000日圓、2人20,000日圓、3人22,000日圓、4人24,000日圓。雙床房：1人12,000日圓、2人16,000日圓。單人房：8,000日圓。含稅及服務費，另收入湯稅（每人每晚150日圓）。"),
         ],
         "bathH": "翠之湯",
         "bathP": "浴池中盈滿柔和的翠綠色濁湯。夜晚隔著湯煙仰望星空，清晨在林間光影中入浴。（虛構溫泉）",
@@ -264,7 +264,7 @@ CONTENT = {
         "roomFacts": [
             ("침구", "일본식 객실은 이불, 트윈룸과 싱글룸은 침대입니다."),
             ("객실 욕조", "객실에 노천탕은 없습니다. 대욕장, 노천탕, 전세탕을 이용해 주세요."),
-            ("요금", "1실 1박 요금이며 세금과 서비스료가 포함되어 있습니다. 입탕세(1인 1박 150엔)는 별도입니다."),
+            ("요금", "1실 1박 요금이며 숙박 인원에 따라 달라집니다. 일본식 객실은 1인 16,000엔, 2인 20,000엔, 3인 22,000엔, 4인 24,000엔. 트윈룸은 1인 12,000엔, 2인 16,000엔. 싱글룸은 8,000엔. 세금과 서비스료가 포함되어 있으며 입탕세(1인 1박 150엔)는 별도입니다."),
         ],
         "bathH": "비취의 탕",
         "bathP": "욕조 가득 부드러운 비취빛 탁탕. 밤에는 수증기 너머 별을, 아침에는 나무 사이 빛을 바라보며. (가상의 온천입니다)",
@@ -461,7 +461,7 @@ def render(lang: str) -> str:
     nav = "".join(f'<a href="#{i}">{esc(label)}</a>' for i, label in zip(nav_ids, t["nav"]))
     rooms = "".join(
         f'<tr><td><span>{esc(name)}</span><span class="cap">{esc(cap)}</span></td><td>{price}<span class="note">{esc(t["perNight"])}</span></td></tr>'
-        for (name, cap), price in zip(t["rooms"], ["¥24,000", "¥16,000", "¥8,000"])
+        for (name, cap), price in zip(t["rooms"], ["¥16,000〜¥24,000", "¥12,000〜¥16,000", "¥8,000"])
     )
     gallery = "".join(
         f"<figure>{img(name, t['alt'][name])}<figcaption>{esc(caption)}</figcaption></figure>"
