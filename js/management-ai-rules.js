@@ -2,6 +2,7 @@
   'use strict';
 
   // 1.1.0: 外国人宿泊比率は「延べ宿泊者数（人泊）」で数えた場合だけ地域値との差を判定する。
+  //        インバウンドに「季節の差」「上位3つの国・地域への集中」を全国と比べるルールを追加。
   const RULE_VERSION = '1.1.0';
 
   // 外国人宿泊比率の数え方。地域値（延べ宿泊者数に占める外国人の割合）と同じ数え方のときだけ差を出す。
@@ -134,6 +135,71 @@
       .sort((a, b) => b.index - a.index)[0] || null;
   }
 
+  // 最新の集計対象（survey_scope）が続く月だけを取り出す。集計対象の変更をまたいで比べないため。
+  function latestScopeMonths(record) {
+    const monthly = (record?.monthly || [])
+      .filter((row) => isNumber(row.year) && isNumber(row.month))
+      .slice()
+      .sort((a, b) => (a.year - b.year) || (a.month - b.month));
+    if (!monthly.length) return [];
+    const scope = monthly[monthly.length - 1].survey_scope || '';
+    let start = monthly.length - 1;
+    while (start > 0 && (monthly[start - 1].survey_scope || '') === scope) start -= 1;
+    return monthly.slice(start);
+  }
+
+  function peakToLow(months) {
+    const valued = months.filter((row) => isNumber(row.foreign_guest_nights));
+    if (valued.length < 3) return null;
+    const peak = valued.reduce((best, row) => row.foreign_guest_nights > best.foreign_guest_nights ? row : best);
+    const low = valued.reduce((best, row) => row.foreign_guest_nights < best.foreign_guest_nights ? row : best);
+    if (!(low.foreign_guest_nights > 0)) return null;
+    return { peak, low, ratio: peak.foreign_guest_nights / low.foreign_guest_nights };
+  }
+
+  function topShare(record, count = 3) {
+    if (!record?.nationality || !isNumber(record.foreign_guest_nights) || record.foreign_guest_nights <= 0) return null;
+    const top = Object.entries(record.nationality)
+      .filter(([name, value]) => name !== 'その他' && isNumber(value) && value > 0)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, count);
+    if (top.length < count) return null;
+    return { names: top.map(([name]) => name), share: top.reduce((sum, [, value]) => sum + value, 0) / record.foreign_guest_nights };
+  }
+
+  // 地域の外国人宿泊の特徴を全国と比べる材料（季節の差・上位3つの国・地域への集中）。
+  function inboundProfile(datasets, prefectureName) {
+    const record = datasets.inbound?.prefectures?.[prefectureName];
+    const national = datasets.inbound?.national;
+    const meta = datasets.inbound?.metadata;
+    if (!record || !national) return null;
+    const months = latestScopeMonths(record);
+    const region = peakToLow(months);
+    const keys = new Set(months.map((row) => `${row.year}-${row.month}`));
+    const nationalSeason = peakToLow((national.monthly || []).filter((row) => keys.has(`${row.year}-${row.month}`) && (row.survey_scope || '') === (months[0]?.survey_scope || '')));
+    const label = (row) => `${row.year}年${row.month}月`;
+    const regionTop = topShare(record);
+    const nationalTop = topShare(national);
+    return {
+      seasonality: region && nationalSeason ? {
+        ratio: region.ratio,
+        nationalRatio: nationalSeason.ratio,
+        peak: region.peak,
+        low: region.low,
+        period: `${label(months[0])}〜${label(months[months.length - 1])}`,
+        scope: months[0].survey_scope || ''
+      } : null,
+      concentration: regionTop && nationalTop ? {
+        share: regionTop.share,
+        nationalShare: nationalTop.share,
+        names: regionTop.names,
+        period: meta ? `${meta.year}年${meta.month}月` : ''
+      } : null
+    };
+  }
+
+  const timesText = (value) => `約${formatNumber(value, 1)}倍`;
+
   function getRegionContext(datasets, requestedSlug) {
     const slug = resolvePrefectureSlug(datasets.statistics?.prefectures, requestedSlug);
     const statistics = findBySlug(datasets.statistics, slug);
@@ -162,7 +228,8 @@
         ? statistics.foreign_guest_nights / statistics.total_guest_nights : null,
       nationalForeignShare: isNumber(national.foreign_guest_nights) && isNumber(national.total_guest_nights) && national.total_guest_nights > 0
         ? national.foreign_guest_nights / national.total_guest_nights : null,
-      specializedMarket: specialization(datasets.inbound, statistics.prefecture_name)
+      specializedMarket: specialization(datasets.inbound, statistics.prefecture_name),
+      inboundProfile: inboundProfile(datasets, statistics.prefecture_name)
     };
   }
 
@@ -251,6 +318,28 @@
       id: 'inbound-market-opportunity', category: 'inbound', priority: 75,
       condition: ({ context }) => isNumber(context.foreignShare) && isNumber(context.nationalForeignShare) && context.foreignShare > context.nationalForeignShare,
       message: () => '外国人宿泊の構成比は全国値を上回っています。国・地域別の構成と自施設の予約経路を照らすことで、対応の優先順位を考えやすくなります。'
+    },
+    {
+      id: 'inbound-seasonality', category: 'inbound', priority: 85,
+      condition: ({ context }) => {
+        const season = context.inboundProfile?.seasonality;
+        return Boolean(season) && season.ratio >= 2 && season.ratio >= season.nationalRatio * 1.5;
+      },
+      message: ({ context }) => {
+        const season = context.inboundProfile.seasonality;
+        return `外国人宿泊は${season.peak.month}月が${season.low.month}月の${timesText(season.ratio)}で、全国（${timesText(season.nationalRatio)}）より季節による差が大きい地域です。多い時期と少ない時期で、販売の仕方や受け入れ体制を分けて考える余地があります。`;
+      }
+    },
+    {
+      id: 'inbound-concentration', category: 'inbound', priority: 70,
+      condition: ({ context }) => {
+        const concentration = context.inboundProfile?.concentration;
+        return Boolean(concentration) && concentration.share >= concentration.nationalShare + 0.1;
+      },
+      message: ({ context }) => {
+        const concentration = context.inboundProfile.concentration;
+        return `外国人宿泊の${formatPercent(concentration.share, 0)}を上位3つの国・地域（${concentration.names.join('・')}）が占め、全国（${formatPercent(concentration.nationalShare, 0)}）より特定の国・地域への集中が強い地域です。主要な国・地域の渡航環境が変わると影響を受けやすい点も、あわせて確認しておきましょう。`;
+      }
     },
     {
       id: 'tourism-context', category: 'market', priority: 60,
@@ -411,6 +500,7 @@
     const marketData = markets ? {
       lines: [
         ...markets.top.map((row, index) => ({ label: `${index + 1}位 ${row.name}`, value: `${fmt(row.value)}（構成比${formatPercent(row.localShare)}）` })),
+        ...(context.inboundProfile?.concentration ? [{ label: '上位3つの合計', value: `${formatPercent(context.inboundProfile.concentration.share)}（全国 ${formatPercent(context.inboundProfile.concentration.nationalShare)}）` }] : []),
         ...(markets.specialized ? [{ label: '全国と比べて構成比が高い', value: `${markets.specialized.name}（地域特化度${markets.specialized.specialization.toFixed(2)}）` }] : [])
       ],
       note: `${markets.period}の1か月分・${markets.scope}・単位は人泊。季節によって構成は変わるため、②の時期とあわせてご覧ください。${markets.specialized ? '地域特化度は「地域内の構成比÷全国の構成比」で、1を超えると全国より構成比が高い国・地域です。宿泊数が少なくても高くなることがあります。' : ''}`
@@ -419,6 +509,8 @@
       label: `${segment.label}${seasons.scopeChanged ? `（${segment.scope}）` : ''}`,
       value: `多い月 ${segment.peak.month}月（${fmt(segment.peak.foreign_guest_nights)}）\n少ない月 ${segment.low.month}月（${fmt(segment.low.foreign_guest_nights)}）`
     })) : [];
+    const season = context.inboundProfile?.seasonality;
+    if (season) seasonLines.push({ label: `季節の差（${season.period}）`, value: `最多月は最少月の${timesText(season.ratio)}\n全国は${timesText(season.nationalRatio)}` });
     const seasonData = seasonLines.length ? {
       lines: seasonLines,
       note: seasons.scopeChanged
@@ -485,8 +577,26 @@
         const row = comparisons.find((item) => item.key === 'foreignShare');
         return { title: '地域と比べて、自施設の外国人宿泊が少ない理由はどこにあるか', note: `入力された外国人宿泊比率（${row.facility}）は、地域値（${row.region}）より10ポイント以上低くなっています。地域で宿泊の多い国・地域に向けた案内や予約経路から確認しましょう。集計対象が異なるため、差は参考としてご覧ください。`, ruleId, evidence };
       }
+      if (ruleId === 'inbound-seasonality') {
+        const season = context.inboundProfile.seasonality;
+        return {
+          title: '外国人宿泊が集中する時期に、自施設の販売と受け入れが合っているか',
+          note: `${context.name}の外国人宿泊は${season.peak.month}月が${season.low.month}月の${timesText(season.ratio)}で、全国（${timesText(season.nationalRatio)}）より季節の差が大きい地域です。地域で多い時期に自施設も予約を取れているか、少ない時期の集客をどう考えるかを確認しましょう。`,
+          ruleId,
+          evidence: [`外国人延べ宿泊者数 ${season.peak.month}月 ${formatNumber(season.peak.foreign_guest_nights)}人泊・${season.low.month}月 ${formatNumber(season.low.foreign_guest_nights)}人泊（${season.period}・${season.scope}）`, ...evidence]
+        };
+      }
+      if (ruleId === 'inbound-concentration') {
+        const concentration = context.inboundProfile.concentration;
+        return {
+          title: '特定の国・地域への偏りが、自施設の集客にも表れているか',
+          note: `${context.name}の外国人宿泊は上位3つの国・地域（${concentration.names.join('・')}）で${formatPercent(concentration.share, 0)}を占め、全国（${formatPercent(concentration.nationalShare, 0)}）より集中しています。自施設の予約も同じ国・地域に偏っているか、偏りが経営上のリスクにならないかを確認しましょう。`,
+          ruleId,
+          evidence: [`上位3つの国・地域の構成比 ${formatPercent(concentration.share)}（全国 ${formatPercent(concentration.nationalShare)}）・${concentration.period}`, ...evidence]
+        };
+      }
       if (ruleId === 'inbound-market-opportunity') {
-        return { title: '地域の外国人宿泊需要と、自施設の集客状況に違いがないか', note: '地域の外国人宿泊比率は全国を上回っています。地域の主要な国・地域と、自施設の予約実績を照らし合わせてみましょう。', ruleId, evidence };
+        return { title: '地域の外国人宿泊需要と、自施設の集客状況に違いがないか', note: `${context.name}の外国人宿泊比率は${share}で、全国（${nationalShare}）を上回っています。地域の主要な国・地域と、自施設の予約実績を照らし合わせてみましょう。`, ruleId, evidence };
       }
       return {
         title: '地域で宿泊の多い国・地域と時期が、自施設の実績と合っているか',

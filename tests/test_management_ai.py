@@ -282,8 +282,9 @@ console.log(JSON.stringify({mismatches,segments:seasons.segments.map((s)=>({scop
     assert data["reception"]["status"] == "self-check" and data["reception"]["data"] is None
     assert "判定せず" in data["reception"]["selfCheck"]
     assert "大浴場" in data["reception"]["checks"][0]
-    assert data["lead"]["title"] == "地域で宿泊の多い国・地域と時期が、自施設の実績と合っているか"
-    assert "8.3%" in data["lead"]["note"] and "26.6%" in data["lead"]["note"]
+    assert data["lead"]["title"] == "外国人宿泊が集中する時期に、自施設の販売と受け入れが合っているか"
+    assert "2月が5月の約6.1倍" in data["lead"]["note"] and "全国（約1.2倍）" in data["lead"]["note"]
+    assert "2026年1月〜2026年7月・客室数20室以上の施設" in data["lead"]["evidence"][0]
     assert all(fact["note"] for fact in data["facts"])
     assert "2025-08〜2026-07" in data["facts"][0]["note"] and "人泊" in data["facts"][0]["note"]
 
@@ -356,3 +357,32 @@ def test_hidden_facility_fields_are_not_read_and_url_keeps_only_pref_and_topic()
     assert update_url.count("searchParams.set") == 2
     for forbidden in ("rooms", "employees", "occupancy", "foreign"):
         assert forbidden not in update_url
+
+
+def test_regional_features_are_compared_with_national_within_one_survey_scope():
+    data = run_node(LOAD_DATASETS + r"""
+const pick=(slug)=>{const c=R.getRegionContext(datasets,slug);const a=R.generateInsights(c,'inbound',{},'');return {profile:c.inboundProfile,rules:a.matchedRules,lead:a.lead,trend:a.trendNotes};};
+const leads={};
+for (const row of Object.values(datasets.statistics.prefectures)) {
+  const a=R.generateInsights(R.getRegionContext(datasets,row.prefecture_slug),'inbound',{},'');
+  leads[a.lead.ruleId||'none']=(leads[a.lead.ruleId||'none']||0)+1;
+}
+const others={};
+for (const topic of ['dx','sales','market','other']) others[topic]=R.generateInsights(R.getRegionContext(datasets,'niigata'),topic,{},'').matchedRules;
+console.log(JSON.stringify({niigata:pick('niigata'),kagawa:pick('kagawa'),tokyo:pick('tokyo'),leads,others}));
+""")
+    season = data["niigata"]["profile"]["seasonality"]
+    # 2026年1月以降（客室数20室以上の施設）の月だけで、地域と全国の最多月÷最少月を比べる。
+    assert season["period"] == "2026年1月〜2026年7月" and season["scope"] == "客室数20室以上の施設"
+    assert (season["peak"]["month"], season["low"]["month"]) == (2, 5)
+    assert round(season["ratio"], 1) == 6.1 and round(season["nationalRatio"], 1) == 1.2
+    assert data["niigata"]["rules"][0] == "inbound-seasonality"
+    assert "inbound-concentration" not in data["niigata"]["rules"]  # 上位3つは46.1%で全国（46.6%）並み
+    concentration = data["kagawa"]["profile"]["concentration"]
+    assert concentration["names"] == ["台湾", "韓国", "中国"] and round(concentration["share"] * 100) == 82
+    assert data["kagawa"]["lead"]["ruleId"] == "inbound-concentration" and "82%" in data["kagawa"]["lead"]["note"]
+    assert data["tokyo"]["lead"]["ruleId"] == "inbound-market-opportunity" and "56.3%" in data["tokyo"]["lead"]["note"]
+    # 冒頭の論点は地域ごとに分かれ、一律の案内だけにならない。
+    assert sum(data["leads"].values()) == 47 and data["leads"].get("none", 0) < 15
+    # 追加ルールはインバウンドだけに効く。
+    assert not any(rule.startswith("inbound-") for rules in data["others"].values() for rule in rules)

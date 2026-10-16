@@ -52,6 +52,8 @@
     'supply-tight-candidate': '市場タイプが「需給ひっ迫候補」',
     'market-growth': '宿泊需要伸び率が全国値を上回る',
     'inbound-market-opportunity': '外国人宿泊比率が全国値を上回る',
+    'inbound-seasonality': '外国人宿泊の季節差（最多月÷最少月）が2倍以上で、全国の1.5倍以上',
+    'inbound-concentration': '上位3つの国・地域の構成比が全国より10ポイント以上高い',
     'tourism-context': '観光負荷または観光依存度の参考スコアが比較的高い'
   };
 
