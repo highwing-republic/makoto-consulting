@@ -217,7 +217,7 @@
   const hasEvent = (code, date) => Boolean(state.eventView && state.eventView.byDay.has(`${code}|${date}`));
 
   function rankNote(key) {
-    const eventNote = state.eventView && state.eventView.items.length ? "「催し候補あり」は、下の「急騰・売り切れの日に重なる催しの候補」に載っている日です。" : "";
+    const eventNote = state.eventView && state.eventView.items.length ? "「催し候補あり」は、その泊または翌日に催しがある日です（下の「急騰・売り切れの日に重なる催し」）。" : "";
     if (key === "spikeDays") return `宿泊日ごとの中央値（CORE施設）が、その都市の代表料金の何倍か。売り切れで料金を確認できたのが3施設の日も含めます（参考）。${eventNote}`;
     if (key === "busyDays") return `COREのうち、楽天トラベルで大人1名で予約できるプランが無かった施設の数。${M.SOLD_OUT_MIN}施設以上の日を、売り切れが目立つ日としています（楽天での売り切れで、施設全体の満室とは限りません）。${eventNote}`;
     if (key === "rising") return "ちょうど7日前の取得と比べた、同じ宿泊日の料金の変化率（中央値）。";
@@ -449,11 +449,12 @@
       const tags = [];
       if (cls === "spike") tags.push(`<em class="bht-tag bht-tag--spike">急騰</em>`);
       if (day.busy) tags.push(`<em class="bht-tag bht-tag--busy">売切${day.soldOut}</em>`);
-      const event = state.eventView && state.eventView.byDay.get(`${state.market}|${day.date}`);
-      if (event) tags.push(`<em class="bht-tag bht-tag--event">催し</em>`);
+      // 「催し」は催しの開催日に付ける（前泊の夜には付けない）
+      const held = (state.eventView?.byMarket.get(state.market) || []).filter((event) => event.start <= day.date && day.date <= event.end);
+      if (held.length) tags.push(`<em class="bht-tag bht-tag--event">催し</em>`);
       if (!tags.length && day.status === "reference") tags.push(`<em class="bht-tag bht-tag--ref">参考</em>`);
       const holiday = day.holiday ? `<span class="bht-cal__holiday">祝</span>` : day.eveOf && day.weekday !== 5 && day.weekday !== 6 ? `<span class="bht-cal__holiday bht-cal__holiday--eve">祝前</span>` : "";
-      const label = `${M.formatDate(day.date)}${day.holiday ? ` ${day.holiday}` : ""}${day.eveOf ? ` ${day.eveOf}の前日` : ""} ${day.status === "none" ? "比較データ不足" : `${yen(day.median)} 代表料金比 ${pct(diff)}`}${day.status === "reference" ? "（参考値）" : ""}${cls === "spike" ? " 急騰" : ""}${day.busy ? ` 楽天で売り切れ${day.soldOut}施設` : ""}${event ? ` 催しの候補 ${event.candidates.map((c) => c.name).join("、")}` : ""}`;
+      const label = `${M.formatDate(day.date)}${day.holiday ? ` ${day.holiday}` : ""}${day.eveOf ? ` ${day.eveOf}の前日` : ""} ${day.status === "none" ? "比較データ不足" : `${yen(day.median)} 代表料金比 ${pct(diff)}`}${day.status === "reference" ? "（参考値）" : ""}${cls === "spike" ? " 急騰" : ""}${day.busy ? ` 楽天で売り切れ${day.soldOut}施設` : ""}${held.length ? ` 催し ${held.map((event) => event.name).join("、")}` : ""}`;
       return `<div class="bht-cal bht-cal--${cls}${day.status === "reference" ? " bht-cal--reference" : ""}${day.busy ? " bht-cal--busy" : ""}" role="listitem" aria-label="${escapeHtml(label)}">
         <time datetime="${day.date}">${date === 1 || day === days[0] ? `${month}/` : ""}${date}${holiday}</time>
         ${day.status === "none" ? `<span class="bht-cal__price">—</span><span class="bht-cal__diff bht-cal__na">${day.busy ? "比較不可" : ""}</span>` : `<strong class="bht-cal__price">${yen(day.median)}</strong><span class="bht-cal__diff">${pct(diff, {digits: 0})}</span>`}
@@ -473,42 +474,59 @@
     }
   };
 
-  function eventCard(item, {withMarket}) {
-    const kinds = [item.kinds?.includes("busy") ? "売り切れが目立つ" : "", item.kinds?.includes("spike") ? "急騰" : ""].filter(Boolean).join("・");
-    const head = withMarket
-      ? `<button type="button" class="bht-event__market" data-market="${escapeHtml(item.market)}">${escapeHtml(item.name)}<span aria-hidden="true">→</span></button>`
-      : "";
-    const candidates = item.candidates.map((candidate) => {
-      const sources = candidate.sources.filter((source) => /^https?:\/\//.test(source.url)).map((source) => `<a href="${escapeHtml(source.url)}" target="_blank" rel="noopener noreferrer nofollow">${escapeHtml(hostOf(source.url) || "出典")}</a>`).join("・");
-      const meta = [M.formatPeriod(candidate.start, candidate.end), candidate.venue].filter(Boolean).map(escapeHtml).join("／");
-      return `<li><strong>${escapeHtml(candidate.name)}</strong><span>${meta}</span>${candidate.note ? `<small>${escapeHtml(candidate.note)}</small>` : ""}<span class="bht-event__src">出典：${sources}</span></li>`;
-    }).join("");
+  const CATEGORY = {concert: "公演", sports: "スポーツ", marathon: "マラソン", convention: "学会・大会", trade_show: "見本市", festival: "祭り", exam: "試験"};
+
+  const sourceLinks = (event) => event.sources.map((source) => `<a href="${escapeHtml(source.url)}" target="_blank" rel="noopener noreferrer nofollow">${escapeHtml(hostOf(source.url) || "出典")}</a>`).join("・");
+  const eventMeta = (event) => [M.formatPeriod(event.start, event.end), event.venue].filter(Boolean).map(escapeHtml).join("／");
+  const nightText = (night) => `${M.formatDate(night.date)}${[night.spike ? "急騰" : "", night.busy ? `売切${night.soldOut}` : ""].filter(Boolean).map((t) => ` ${t}`).join("")}`;
+
+  function eventCard(event) {
     return `<article class="bht-event">
-      <header>${head}<span class="bht-event__dates">${escapeHtml(M.formatPeriod(item.dates[0], item.dates[item.dates.length - 1]))}の泊</span>${kinds ? `<em class="bht-event__kind">${escapeHtml(kinds)}</em>` : ""}</header>
-      <ul>${candidates}</ul>
-      <p class="bht-event__by">AI調べ ${escapeHtml(item.researched_on || "")}</p>
+      <header><button type="button" class="bht-event__market" data-market="${escapeHtml(event.market)}">${escapeHtml(event.marketName)}<span aria-hidden="true">→</span></button><em class="bht-event__kind">${escapeHtml(CATEGORY[event.category] || "催し")}</em></header>
+      <strong class="bht-event__name">${escapeHtml(event.name)}</strong>
+      <span class="bht-event__meta">${eventMeta(event)}</span>
+      ${event.note ? `<small class="bht-event__meta">${escapeHtml(event.note)}</small>` : ""}
+      <p class="bht-event__nights"><span>重なる泊</span>${event.nights.map((night) => escapeHtml(nightText(night))).join("、")}</p>
+      <span class="bht-event__src">出典：${sourceLinks(event)}</span>
     </article>`;
+  }
+
+  function researchedText(view) {
+    return view.researchedOn ? `調べた日 ${view.researchedOn}（月1回更新）` : "";
   }
 
   function renderEvents(view) {
     const box = $("#bht-events");
-    if (!view.researched) {
+    if (!view.available) {
       box.hidden = true;
       return;
     }
     box.hidden = false;
+    const top = view.items.slice(0, M.EVENT_TOP);
+    const rest = view.items.slice(M.EVENT_TOP);
     $("#bht-events-list").innerHTML = view.items.length
-      ? view.items.map((item) => eventCard(item, {withMarket: true})).join("")
-      : `<p class="bht-empty">調べた期間では、重なりそうな催しは見つかりませんでした。</p>`;
-    $("#bht-events-meta").textContent = `急騰日・売り切れが目立つ日のうち${view.researched}期間を調べ、${view.items.length}期間で候補が見つかりました${view.notFound ? `（${view.notFound}期間は見つからず）` : ""}。`;
+      ? `<div class="bht-event-list">${top.map(eventCard).join("")}</div>${rest.length ? `<details class="bht-event-more"><summary>ほかの${rest.length}件を見る</summary><div class="bht-event-list">${rest.map(eventCard).join("")}</div></details>` : ""}`
+      : `<p class="bht-empty">表示中の期間では、急騰日・売り切れが目立つ日に重なる催しは見つかっていません。</p>`;
+    $("#bht-events-meta").textContent = `10都市の向こう2か月の催し${view.total}件のうち、表示中の期間の急騰日・売り切れが目立つ日に重なる${view.items.length}件。売り切れと料金の跳ね上がりが大きい順。${researchedText(view)}`;
     box.querySelectorAll("button[data-market]").forEach((button) => button.addEventListener("click", () => selectMarket(button.dataset.market, {scroll: true})));
   }
 
   function renderMarketEvents(view) {
     const box = $("#bht-market-events");
-    const items = state.eventView ? state.eventView.items.filter((item) => item.market === view.code) : [];
-    box.hidden = !items.length;
-    $("#bht-market-events-list").innerHTML = items.map((item) => eventCard(item, {withMarket: false})).join("");
+    if (!state.eventView || !state.eventView.available) {
+      box.hidden = true;
+      return;
+    }
+    box.hidden = false;
+    const events = (state.eventView.byMarket.get(view.code) || []).slice().sort((a, b) => (a.start < b.start ? -1 : 1));
+    $("#bht-market-events-meta").textContent = researchedText(state.eventView);
+    $("#bht-market-events-list").innerHTML = events.length
+      ? `<ul class="bht-event-rows">${events.map((event) => `<li class="${event.nights.length ? "is-matched" : ""}">
+          <span class="bht-event-rows__date">${escapeHtml(M.formatPeriod(event.start, event.end))}</span>
+          <span class="bht-event-rows__body"><strong>${escapeHtml(event.name)}</strong><small>${escapeHtml(CATEGORY[event.category] || "催し")}・${escapeHtml(event.venue || "")}${event.note ? `・${escapeHtml(event.note)}` : ""}</small>
+          ${event.nights.length ? `<em class="bht-tag bht-tag--event">急騰・売り切れの泊に重なる</em>` : ""}<span class="bht-event__src">出典：${sourceLinks(event)}</span></span>
+        </li>`).join("")}</ul>`
+      : `<p class="bht-empty">向こう2か月で、遠方から人が集まる大きな催しは見つかりませんでした。</p>`;
   }
 
   function renderHotels(view) {

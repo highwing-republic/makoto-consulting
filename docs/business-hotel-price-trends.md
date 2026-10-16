@@ -59,26 +59,17 @@ python scripts/update_business_hotel_prices.py --dry-run             # 全件取
 
 閉館・長期休館などで CORE を入れ替えるときは、`cohort_version` を上げて（例: `bh-v2`）`effective_from` を更新する。異なるバージョンのデータは比較しない。
 
-## 催しの候補（AI調べ・参考）
+## 催しカレンダー（AI調べ・参考）
 
-料金の集計・ページの数字と文はAIを使わず、決まった規則で出す。そのうえで、急騰日と売り切れが目立つ日について、
-背景になりそうな催し（コンサート、スポーツ、マラソン、学会・見本市など）を Claude API の Web 検索で探し、
-`data/business-hotel-price-trends/events.json` に保存してページに「AI調べ・参考」として並べる。
+料金の集計・ページの数字と文はAIを使わず、決まった規則で出す。それとは別に、10都市の向こう2か月に開かれる
+遠方から人が集まる催し（大きな会場での公演、スポーツ大会、マラソン、学会・全国大会、見本市、大規模な祭りなど）を
+月1回 Claude が調べ、`data/business-hotel-price-trends/events.json` に保存する。
 
-- 実行: GitHub Actions `Research business hotel events`。料金の取得が成功したあとに自動で動く（手動実行も可）。
-  ここが失敗しても料金データには影響しない。
-- 必要なシークレット: `ANTHROPIC_API_KEY`（未登録なら何もせずに終わる）。モデルは既定で `claude-sonnet-5-5`。
-  変えるときはスクリプトの `--model` か環境変数 `BHT_EVENTS_MODEL` を使う。
-- 対象: ページと同じ判定の急騰日・売り切れが目立つ日のうち、ランキング上位5件に出る日、売り切れが目立つ日、
-  同じ曜日のふだんの料金より3割以上高い日。同じ都市で続く日は1つの期間にまとめる（土曜泊がいつも高いだけの日は調べない）。
-- 費用の上限: 1日に新しく調べるのは最大5期間、1期間あたりWeb検索は最大3回。調べた結果は使い回し、
-  「見つからず」は7日後に調べ直す。宿泊日が過ぎた結果は消す。実行ログに使ったトークン数と検索回数を出す。
-- 検証: 出典URLはその回の検索で実際に返ったURLに限る。出典の残らない候補、宿泊期間（翌日を含む）と日付が重ならない候補、
-  料金・満室・予約に触れた文は捨てる。ページでは、いま表示している期間の急騰日・売り切れ日に重なる結果だけを出す。
-
-手元で対象の期間だけ確かめる:
-
-```bash
-python scripts/research_business_hotel_events.py --dry-run
-ANTHROPIC_API_KEY=... python scripts/research_business_hotel_events.py --max-new 1
-```
+- 調べ方・載せる基準・ファイルの形: [business-hotel-events-research.md](business-hotel-events-research.md)
+- 更新: Claude の予約タスクが毎月1日に調べ、`scripts/business_hotel_events.py merge` でまとめて検証し、PR を作ってマージする。
+  APIキーや追加の費用はかからない（Claude の契約の範囲で動く）。
+- ページ: 催しの前日の泊（前泊）から最終日の泊までに急騰日・売り切れが目立つ日があれば「重なる催し」として表示し、
+  ランキングに「催し候補あり」、カレンダーの開催日に「催し」を付ける。全国の欄は売り切れ施設数と料金の倍率が大きい順に6件を開いて見せ、
+  残りは折りたたむ。都市ごとに向こう2か月の催しの一覧も出す。
+- 検証（`python scripts/business_hotel_events.py check`、テスト `tests/test_business_hotel_events.py`）:
+  市場コード、日付、調査期間との重なり、出典URL（http/https）、文に料金・満室・予約などの推測がないこと、重複。

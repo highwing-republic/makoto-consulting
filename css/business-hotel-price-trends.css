@@ -274,16 +274,30 @@
 .bht-event__market:focus-visible{outline:2px solid var(--lab-focus);outline-offset:2px}
 .bht-event__dates{font-size:13px;font-weight:700;font-variant-numeric:tabular-nums}
 .bht-event__kind{color:var(--ink-soft);font-size:11px;font-style:normal}
-.bht-event ul{margin:0;padding:0;list-style:none}
-.bht-event li{display:grid;gap:2px;padding:8px 0;border-top:1px dashed var(--line)}
-.bht-event li:first-child{border-top:0;padding-top:0}
-.bht-event li strong{font-size:14px;line-height:1.5}
-.bht-event li span,.bht-event li small{color:var(--ink-soft);font-size:12px;line-height:1.6}
 .bht-event__src a{color:var(--accent);word-break:break-all}
-.bht-event__by{margin:auto 0 0;padding-top:8px;color:var(--ink-soft);font-size:10px}
 .bht-tag--event{border:1px solid var(--bht-series);background:#fff;color:var(--bht-series)}
 .bht-rank__name strong .bht-tag--event{margin-left:8px;vertical-align:1px}
 .bht-cal .bht-cal__tags .bht-tag--event{border-width:1px}
 .bht-market-events{margin-top:22px}
 .bht-market-events h3{margin:0 0 12px;font-size:15px;font-weight:700}
 @media(max-width:620px){.bht-event-list{grid-template-columns:1fr}.bht-event{padding:14px}}
+.bht-event__name{font-size:15px;line-height:1.5}
+.bht-event__meta{color:var(--ink-soft);font-size:12px;line-height:1.6}
+.bht-event__nights{margin:8px 0 6px;font-size:12px;line-height:1.6}
+.bht-event__nights span{margin-right:8px;color:var(--bht-series);font-weight:700}
+.bht-event .bht-event__src{color:var(--ink-soft);font-size:12px}
+.bht-event-rows{margin:0;padding:0;list-style:none;border-top:1px solid var(--line)}
+.bht-event-rows li{display:grid;grid-template-columns:150px 1fr;gap:14px;padding:12px 0;border-bottom:1px solid var(--line)}
+.bht-event-rows li.is-matched{box-shadow:inset 3px 0 0 var(--bht-series);padding-left:12px}
+.bht-event-rows__date{font-size:13px;font-weight:700;font-variant-numeric:tabular-nums}
+.bht-event-rows__body{display:grid;gap:2px;justify-items:start}
+.bht-event-rows__body strong{font-size:14px;line-height:1.5}
+.bht-event-rows__body small,.bht-event-rows__body .bht-event__src{color:var(--ink-soft);font-size:12px;line-height:1.6}
+.bht-event-rows .bht-tag--event{margin:2px 0}
+.bht-market-events .bht-note{margin:0 0 8px}
+@media(max-width:620px){.bht-event-rows li{grid-template-columns:1fr;gap:4px}}
+.bht-event-more{margin-top:14px}
+.bht-event-more summary{display:inline-block;padding:6px 14px;border:1px solid var(--line);border-radius:999px;color:var(--accent);font-size:13px;font-weight:700;cursor:pointer;list-style:none}
+.bht-event-more summary::-webkit-details-marker{display:none}
+.bht-event-more summary:focus-visible{outline:2px solid var(--lab-focus);outline-offset:2px}
+.bht-event-more[open] summary{margin-bottom:14px}
