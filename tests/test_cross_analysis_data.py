@@ -229,3 +229,41 @@ def test_source_metadata_has_official_ids_and_periods():
     assert sources["economic_census"]["stats_data_id"] == "0004040078"
     assert sources["economic_census"]["stat_inf_id"] == "000040389322"
     assert sources["lodging"]["release_type"] == "第2次速報"
+
+
+def test_monthly_lodging_keeps_each_month_and_marks_the_basis_change():
+    from scripts.update_cross_analysis_data import build_monthly_lodging, validate_monthly_lodging
+
+    def record(total, foreign, occupancy):
+        return {"total_guest_nights": total, "foreign_guest_nights": foreign, "used_rooms": 1, "occupancy_rate": occupancy}
+
+    months = []
+    for index in range(24):
+        year, month = divmod(2024 * 12 + 7 + index, 12)
+        months.append({
+            "period": f"{year:04d}-{month + 1:02d}",
+            "source_url": f"https://example.invalid/{index}.xlsx",
+            "national": record(1000 + index, 100, 50.0),
+            "prefectures": {code: record(100 + index, 10 if code != "15" else None, 40.5) for code in PREFECTURE_BY_CODE},
+        })
+    source = {
+        "source_name": "観光庁「宿泊旅行統計調査」",
+        "statistics_code": "00601020",
+        "release_type": "第2次速報",
+        "published_date": "2026-09-30",
+        "source_url": "https://example.invalid/",
+        "retrieved_at": "2026-10-16",
+    }
+    dataset = build_monthly_lodging(months, source)
+    validate_monthly_lodging(dataset)
+
+    assert dataset["periods"][0] == "2024-08" and dataset["periods"][-1] == "2026-07"
+    assert dataset["basis"].count("before") == 17 and dataset["basis"].count("after") == 7
+    assert dataset["basis"][dataset["periods"].index("2026-01")] == "after"
+    assert dataset["national"]["total_guest_nights"][3] == 1003
+    assert dataset["national"]["domestic_guest_nights"][3] == 903
+    tokyo = dataset["prefectures"]["13"]
+    assert tokyo["prefecture_slug"] == "tokyo" and tokyo["occupancy_rate"][0] == 40.5
+    # 外国人が欠けている月は差し引きを作らない
+    assert set(dataset["prefectures"]["15"]["domestic_guest_nights"]) == {None}
+    assert dataset["metadata"]["basis_change_period"] == "2026-01"

@@ -231,7 +231,94 @@ def load_lodging_stats(session: requests.Session) -> tuple[dict[str, Any], dict[
         "source_url": LODGING_SOURCE_PAGE,
         "latest_excel_url": months[-1]["source_url"],
     }
+    data["monthly"] = months
     return data, metadata
+
+
+BASIS_CHANGE_PERIOD = "2026-01"
+BASIS_LABELS = {
+    "before": "2025年12月までの集計・層化基準",
+    "after": "2026年1月からの集計・層化基準",
+}
+
+
+def domestic_guest_nights(total: int | None, foreign: int | None) -> int | None:
+    if total is None or foreign is None or foreign > total:
+        return None
+    return total - foreign
+
+
+def monthly_series(months: list[dict[str, Any]], pick: Any) -> dict[str, list[Any]]:
+    records = [pick(item) for item in months]
+    return {
+        "total_guest_nights": [record["total_guest_nights"] for record in records],
+        "foreign_guest_nights": [record["foreign_guest_nights"] for record in records],
+        "domestic_guest_nights": [
+            domestic_guest_nights(record["total_guest_nights"], record["foreign_guest_nights"])
+            for record in records
+        ],
+        "occupancy_rate": [record["occupancy_rate"] for record in records],
+    }
+
+
+def build_monthly_lodging(months: list[dict[str, Any]], lodging_source: dict[str, Any]) -> dict[str, Any]:
+    """年合計にする前の月別値（第2表・第8表）を、そのまま月の並びで公開用に残す。"""
+    periods = [item["period"] for item in months]
+    basis = ["after" if period >= BASIS_CHANGE_PERIOD else "before" for period in periods]
+    metadata = {
+        "source_name": lodging_source["source_name"],
+        "table_name": "第2表（延べ宿泊者数・うち外国人延べ宿泊者数）・第8表（客室稼働率）",
+        "statistics_code": lodging_source["statistics_code"],
+        "release_type": lodging_source["release_type"],
+        "reference_period": f"{periods[0]}〜{periods[-1]}",
+        "published_date": lodging_source["published_date"],
+        "source_url": lodging_source["source_url"],
+        "retrieved_at": lodging_source.get("retrieved_at"),
+        "unit": {"guest_nights": "人泊", "occupancy_rate": "%"},
+        "domestic_guest_nights_definition": "延べ宿泊者数から外国人延べ宿泊者数（日本国内に住所を有しない人）を差し引いた値。日本に住む外国人を含みます。",
+        "basis_change_period": BASIS_CHANGE_PERIOD,
+        "basis_labels": BASIS_LABELS,
+        "methodology_note": "宿泊旅行統計調査は2026年1月から集計・層化基準が変更されています。月どうしの比較は同じ基準の月の中で行ってください。",
+        "excel_urls": [item["source_url"] for item in months],
+    }
+    return {
+        "metadata": metadata,
+        "periods": periods,
+        "basis": basis,
+        "national": monthly_series(months, lambda item: item["national"]),
+        "prefectures": {
+            code: {
+                "prefecture_code": code,
+                "prefecture_slug": identity["slug"],
+                "prefecture_name": identity["name"],
+                **monthly_series(months, lambda item, code=code: item["prefectures"][code]),
+            }
+            for code, identity in PREFECTURE_BY_CODE.items()
+        },
+    }
+
+
+def validate_monthly_lodging(dataset: dict[str, Any]) -> None:
+    periods = dataset["periods"]
+    month_numbers = [int(period[:4]) * 12 + int(period[5:7]) for period in periods]
+    if len(periods) != 24 or any(current - previous != 1 for previous, current in zip(month_numbers, month_numbers[1:])):
+        raise ValueError("lodging-monthly.json: 24か月が連続していません。")
+    if len(dataset["basis"]) != len(periods):
+        raise ValueError("lodging-monthly.json: 基準の区分が月数と一致しません。")
+    records = dataset["prefectures"]
+    if set(records) != set(PREFECTURE_BY_CODE):
+        raise ValueError("lodging-monthly.json: 47都道府県が揃っていません。")
+    for code, item in [("national", dataset["national"]), *records.items()]:
+        for key in ("total_guest_nights", "foreign_guest_nights", "domestic_guest_nights", "occupancy_rate"):
+            values = item[key]
+            if len(values) != len(periods):
+                raise ValueError(f"lodging-monthly.json: {code}.{key}の月数が不正です。")
+            for value in values:
+                if value is None:
+                    continue
+                if value < 0 or (key == "occupancy_rate" and value > 100):
+                    raise ValueError(f"lodging-monthly.json: {code}.{key}が不正です。")
+    ensure_finite(dataset)
 
 
 def aggregate_prefecture(code: str, current_period: list[dict[str, Any]], previous_period: list[dict[str, Any]]) -> dict[str, Any]:
@@ -552,6 +639,7 @@ def build_datasets(session: requests.Session, previous_common: dict[str, Any] | 
         "indicator_note": "公的統計をもとに宿泊DXラボが独自に算出した参考指標です。",
     }
     return {
+        "lodging-monthly.json": build_monthly_lodging(lodging["monthly"], lodging_source),
         "prefecture-statistics.json": common,
         "dx-necessity.json": {"metadata": {**metadata, "formula": "需要伸び率20%＋客室稼働率25%＋宿泊運営負荷30%＋生産年齢人口減少25%（各percentile rank）"}, "national": national, "prefectures": dx_records},
         "supply-demand-gap.json": {"metadata": {**metadata, "formula": "客室稼働率40%＋需要伸び率35%＋事業所あたり宿泊需要25%（各percentile rank）", "quadrant_basis": "全国の需要伸び率と客室稼働率", "scoring": {"display_name": "追加調査優先度", "basis": "prefecture_percentile", "weights": {"occupancy": .40, "demand_growth": .35, "demand_per_establishment": .25}, "is_supply_shortage_measure": False}}, "national": national, "prefectures": supply_records},
@@ -573,6 +661,9 @@ def ensure_finite(value: Any, path: str = "root") -> None:
 def validate_datasets(datasets: dict[str, dict[str, Any]]) -> None:
     expected = set(PREFECTURE_BY_CODE)
     for filename, dataset in datasets.items():
+        if filename == "lodging-monthly.json":
+            validate_monthly_lodging(dataset)
+            continue
         records = dataset.get("prefectures", {})
         if set(records) != expected or len(records) != 47:
             raise ValueError(f"{filename}: 47都道府県が揃っていません。")

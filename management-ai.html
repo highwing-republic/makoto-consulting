@@ -42,7 +42,7 @@ tool_related:
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&amp;display=swap">
-  <link rel="stylesheet" href="css/useful.css?v=20261016management3">
+  <link rel="stylesheet" href="css/useful.css?v=20261016monthly">
   <link rel="stylesheet" href="css/tool-standard.css?v=20261015guide">
   <script type="application/ld+json">
   {"@context":"https://schema.org","@graph":[{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"ホーム","item":"https://lab.ugatta-llc.com/"},{"@type":"ListItem","position":2,"name":"分析・ツール","item":"https://lab.ugatta-llc.com/#analysis-tools"},{"@type":"ListItem","position":3,"name":"宿泊経営の課題整理（β）","item":"https://lab.ugatta-llc.com/management-ai.html"}]},{"@type":"WebApplication","name":"宿泊経営の課題整理（β）","alternateName":"宿泊経営AI","url":"https://lab.ugatta-llc.com/management-ai.html","applicationCategory":"BusinessApplication","operatingSystem":"Web","isAccessibleForFree":true,"inLanguage":"ja-JP","description":"公的統計分析と施設情報を並べ、宿泊経営で次に確認したいことを整理するルールベース型ツール。","provider":{"@type":"Organization","@id":"https://lab.ugatta-llc.com/#organization","name":"宿泊DXラボ","url":"https://lab.ugatta-llc.com/","logo":"https://lab.ugatta-llc.com/images/lab-logo.png"}}]}
@@ -158,6 +158,7 @@ tool_related:
         <section class="management-answer-block management-details" aria-labelledby="answer-details-heading">
           <h3 class="management-section-label" id="answer-details-heading">詳しいデータ・地域との参考比較</h3>
           <div class="management-monthly" id="answer-monthly" hidden><h4 id="answer-monthly-title">月別の外国人延べ宿泊者数</h4><div class="management-table-wrap"><table class="management-monthly-table"><thead><tr><th scope="col">月</th><th scope="col">外国人延べ宿泊者数</th><th scope="col">集計対象</th></tr></thead><tbody id="answer-monthly-body"></tbody></table></div><p class="management-table-note" id="answer-monthly-note"></p></div>
+          <div class="management-monthly management-lodging" id="answer-lodging" hidden><h4 id="answer-lodging-title">月別の宿泊者数と客室稼働率</h4><div class="management-table-wrap"><table class="management-monthly-table management-lodging-table"><thead><tr id="answer-lodging-head"></tr></thead><tbody id="answer-lodging-body"></tbody></table></div><p class="management-table-note" id="answer-lodging-note"></p></div>
           <div class="management-comparison" id="facility-comparison-section" hidden><div class="management-answer-heading"><h4>自施設と地域の参考比較</h4><span>比較地域：<b id="comparison-region-name"></b></span></div><div class="management-comparisons" id="facility-comparisons"></div><p class="management-comparison-note">地域統計とは集計対象・期間等が異なる場合があります。参考比較としてご覧ください。</p></div>
           <p class="management-more-guide" id="more-input-guide" hidden></p>
           <div class="management-related"><h4>関連分析</h4><ul id="answer-related"></ul></div>
@@ -186,7 +187,7 @@ tool_related:
 
   {% include site-footer.html %}
   <script src="js/site.js?v=20260909c" defer></script>
-  <script src="js/management-ai-rules.js?v=20261016issues" defer></script>
-  <script src="js/management-ai.js?v=20261016issues" defer></script>
+  <script src="js/management-ai-rules.js?v=20261016monthly" defer></script>
+  <script src="js/management-ai.js?v=20261016monthly" defer></script>
 </body>
 </html>

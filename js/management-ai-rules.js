@@ -3,7 +3,9 @@
 
   // 1.1.0: 外国人宿泊比率は「延べ宿泊者数（人泊）」で数えた場合だけ地域値との差を判定する。
   //        インバウンドに「季節の差」「上位3つの国・地域への集中」を全国と比べるルールを追加。
-  const RULE_VERSION = '1.1.0';
+  // 1.2.0: 宿泊旅行統計調査の月別値（lodging-monthly.json）から、インバウンドの「国内客が減る月の外国人の比重」と
+  //        売上・稼働の「客室稼働率の季節差（閑散月）」を判定するルールを追加。
+  const RULE_VERSION = '1.2.0';
 
   // 外国人宿泊比率の数え方。地域値（延べ宿泊者数に占める外国人の割合）と同じ数え方のときだけ差を出す。
   const FOREIGN_SHARE_BASES = {
@@ -74,6 +76,8 @@
     ? `${signed && value >= 0 ? '+' : ''}${formatNumber(value * 100, digits)}%`
     : 'データなし';
   const formatRate = (value, digits = 1) => isNumber(value) ? `${formatNumber(value, digits)}%` : 'データなし';
+  // 月別の客室稼働率は小数第1位までそろえて表示する（59% と 54.6% が並ばないように）。
+  const formatRate1 = (value) => isNumber(value) ? `${value.toFixed(1)}%` : 'データなし';
 
   function classifyQuestion(text = '', selectedTopic = '') {
     if (TOPICS[selectedTopic]) return selectedTopic;
@@ -199,6 +203,94 @@
   }
 
   const timesText = (value) => `約${formatNumber(value, 1)}倍`;
+  const round1 = (value) => Math.round(value * 10) / 10;
+
+  // 月別値（lodging-monthly.json）のうち、集計・層化基準が同じ月が12か月続く最新の期間。
+  // 2026年1月の基準変更をまたいで月どうしを比べないため。
+  function lodgingWindow(monthly) {
+    const periods = monthly?.periods || [];
+    const basis = monthly?.basis || [];
+    if (basis.length !== periods.length) return null;
+    for (let end = periods.length - 1; end >= 11; end -= 1) {
+      const start = end - 11;
+      if (basis.slice(start, end + 1).every((value) => value === basis[end])) return { start, end, basis: basis[end] };
+    }
+    return null;
+  }
+
+  function lodgingMonths(record, periods, start) {
+    return periods.map((period, index) => {
+      const at = start + index;
+      const total = record.total_guest_nights?.[at];
+      const foreign = record.foreign_guest_nights?.[at];
+      return {
+        period,
+        year: Number(period.slice(0, 4)),
+        month: Number(period.slice(5, 7)),
+        total,
+        foreign,
+        domestic: record.domestic_guest_nights?.[at],
+        occupancy: record.occupancy_rate?.[at],
+        share: isNumber(foreign) && isNumber(total) && total > 0 ? foreign / total : null
+      };
+    });
+  }
+
+  // 客室稼働率の最も高い月・低い月と、その差（ポイント）を全国と比べる。
+  function occupancySeason(region, national) {
+    if (!region.every((row) => isNumber(row.occupancy)) || !national.every((row) => isNumber(row.occupancy))) return null;
+    const highest = (rows) => rows.reduce((best, row) => row.occupancy > best.occupancy ? row : best);
+    const lowest = (rows) => rows.reduce((best, row) => row.occupancy < best.occupancy ? row : best);
+    const peak = highest(region);
+    const low = lowest(region);
+    return {
+      peak,
+      low,
+      gap: round1(peak.occupancy - low.occupancy),
+      nationalGap: round1(highest(national).occupancy - lowest(national).occupancy),
+      nationalAtLow: national[region.indexOf(low)].occupancy
+    };
+  }
+
+  // 外国人の割合が最も高い月に、国内客（延べ宿泊者数−外国人）が年平均と比べてどうだったか。
+  function domesticComplement(region) {
+    if (!region.every((row) => isNumber(row.domestic) && isNumber(row.foreign) && isNumber(row.total) && row.total > 0)) return null;
+    const sum = (key) => region.reduce((total, row) => total + row[key], 0);
+    const domesticMean = sum('domestic') / region.length;
+    const foreignMean = sum('foreign') / region.length;
+    if (!(domesticMean > 0) || !(foreignMean > 0)) return null;
+    const month = region.reduce((best, row) => row.share > best.share ? row : best);
+    const domesticLow = region.reduce((best, row) => row.domestic < best.domestic ? row : best);
+    return {
+      month,
+      share: month.share,
+      annualShare: sum('foreign') / sum('total'),
+      domesticIndex: month.domestic / domesticMean,
+      foreignIndex: month.foreign / foreignMean,
+      domesticLow
+    };
+  }
+
+  function monthlyProfile(datasets, code) {
+    const monthly = datasets.monthly;
+    const record = monthly?.prefectures?.[code];
+    const window = lodgingWindow(monthly);
+    if (!record || !monthly?.national || !window) return null;
+    const periods = monthly.periods.slice(window.start, window.end + 1);
+    const region = lodgingMonths(record, periods, window.start);
+    const national = lodgingMonths(monthly.national, periods, window.start);
+    const label = (row) => `${row.year}年${row.month}月`;
+    const first = region[0];
+    const last = region[region.length - 1];
+    return {
+      period: `${label(first)}〜${label(last)}`,
+      yearLabel: first.month === 1 && last.month === 12 && first.year === last.year ? `${first.year}年の1年間` : `${label(first)}〜${label(last)}の1年間`,
+      basisLabel: monthly.metadata?.basis_labels?.[window.basis] || '',
+      months: region.map((row, index) => ({ ...row, nationalOccupancy: national[index].occupancy })),
+      occupancy: occupancySeason(region, national),
+      complement: domesticComplement(region)
+    };
+  }
 
   function getRegionContext(datasets, requestedSlug) {
     const slug = resolvePrefectureSlug(datasets.statistics?.prefectures, requestedSlug);
@@ -229,7 +321,8 @@
       nationalForeignShare: isNumber(national.foreign_guest_nights) && isNumber(national.total_guest_nights) && national.total_guest_nights > 0
         ? national.foreign_guest_nights / national.total_guest_nights : null,
       specializedMarket: specialization(datasets.inbound, statistics.prefecture_name),
-      inboundProfile: inboundProfile(datasets, statistics.prefecture_name)
+      inboundProfile: inboundProfile(datasets, statistics.prefecture_name),
+      monthlyProfile: monthlyProfile(datasets, statistics.prefecture_code)
     };
   }
 
@@ -342,6 +435,29 @@
       }
     },
     {
+      id: 'inbound-domestic-complement', category: 'inbound', priority: 90,
+      condition: ({ context }) => {
+        const complement = context.monthlyProfile?.complement;
+        return Boolean(complement) && complement.share >= complement.annualShare * 1.5
+          && complement.share - complement.annualShare >= 0.05 && complement.domesticIndex < 1;
+      },
+      message: ({ context }) => {
+        const complement = context.monthlyProfile.complement;
+        return `${complement.month.month}月は国内客が年平均より${formatPercent(1 - complement.domesticIndex, 0)}少ない一方、外国人は年平均の${timesText(complement.foreignIndex)}で、宿泊者に占める外国人の割合が${formatPercent(complement.share)}（${context.monthlyProfile.yearLabel}では${formatPercent(complement.annualShare)}）に上がります。国内客が少ない時期に、外国人の宿泊の比重が高まる地域です。`;
+      }
+    },
+    {
+      id: 'sales-seasonal-gap', category: 'sales', priority: 85,
+      condition: ({ context }) => {
+        const occupancy = context.monthlyProfile?.occupancy;
+        return Boolean(occupancy) && occupancy.gap >= occupancy.nationalGap * 1.5;
+      },
+      message: ({ context }) => {
+        const occupancy = context.monthlyProfile.occupancy;
+        return `客室稼働率は最も高い${occupancy.peak.month}月が${formatRate1(occupancy.peak.occupancy)}、最も低い${occupancy.low.month}月が${formatRate1(occupancy.low.occupancy)}で、差は${formatNumber(occupancy.gap, 1)}ポイントです（全国は${formatNumber(occupancy.nationalGap, 1)}ポイント）。閑散月の販売方法や、休館日・人員配置の組み方を確認する余地があります。`;
+      }
+    },
+    {
       id: 'tourism-context', category: 'market', priority: 60,
       condition: ({ context }) => context.tourism.pressure_score >= 60 || context.tourism.dependency_score >= 60,
       message: () => '地域人口に対する宿泊需要や宿泊業の比重が相対的に高いため、需要変動が採用や運営へ与える影響も合わせて確認するとよい可能性があります。'
@@ -373,6 +489,12 @@
       add('→', `宿泊市場タイプは「${context.supply.market_type}」です`, '宿泊市場の成長・稼働ポジションでの類型（当サイトの参考分類）');
     } else if (topic === 'sales') {
       add(trendSymbol(s.occupancy_rate, n.occupancy_rate, 'rate'), `地域の客室稼働率は${formatRate(s.occupancy_rate)}で${compareText(s.occupancy_rate, n.occupancy_rate, 'rate')}です`, `${lodgingPeriod}・全国は${formatRate(n.occupancy_rate)}`);
+      const season = context.monthlyProfile?.occupancy;
+      if (season) {
+        const difference = round1(season.low.occupancy - season.nationalAtLow);
+        const relation = Math.abs(difference) < 1 ? 'と同程度' : `より${formatNumber(Math.abs(difference), 1)}ポイント${difference < 0 ? '低い水準' : '高い水準'}`;
+        add(difference <= -1 ? '↓' : '→', `客室稼働率が最も低いのは${season.low.month}月（${formatRate1(season.low.occupancy)}）で、全国の同じ月（${formatRate1(season.nationalAtLow)}）${relation}です`, `${context.monthlyProfile.period}の月別値（第8表）・最も高いのは${season.peak.month}月（${formatRate1(season.peak.occupancy)}）`);
+      }
       add(trendSymbol(s.demand_growth_rate, n.demand_growth_rate), `宿泊需要の伸びは${formatPercent(s.demand_growth_rate, 1, true)}で${compareText(s.demand_growth_rate, n.demand_growth_rate)}です`, `延べ宿泊者数・${growthPeriod}`);
       add('→', `宿泊市場タイプは「${context.supply.market_type}」です`, '宿泊市場の成長・稼働ポジションでの類型（当サイトの参考分類）');
       const occupancy = comparisons.find((row) => row.key === 'occupancy');
@@ -388,7 +510,7 @@
       add('→', '「売上・稼働」では地域稼働率と自施設を参考比較できます');
       add('→', '「地域市場」では需給と観光の地域特性を確認できます');
     }
-    return facts.slice(0, 4);
+    return facts.slice(0, 5);
   }
 
   function checklistFor(topic, question = '') {
@@ -511,12 +633,24 @@
     })) : [];
     const season = context.inboundProfile?.seasonality;
     if (season) seasonLines.push({ label: `季節の差（${season.period}）`, value: `最多月は最少月の${timesText(season.ratio)}\n全国は${timesText(season.nationalRatio)}` });
+    const complement = context.monthlyProfile?.complement;
+    if (complement) seasonLines.push({
+      label: `外国人の割合が最も高い月（${context.monthlyProfile.period}）`,
+      value: `${complement.month.month}月 ${formatPercent(complement.share)}（1年間では ${formatPercent(complement.annualShare)}）\nこの月の国内客は年平均の${formatPercent(complement.domesticIndex, 0)}`
+    });
+    const seasonNote = seasons
+      ? (seasons.scopeChanged
+        ? `宿泊旅行統計調査は${seasons.segments[1].months[0].year}年${seasons.segments[1].months[0].month}月から集計・層化基準が変わり、集計対象が「${seasons.segments[0].scope}」から「${seasons.segments[1].scope}」になりました。対象が異なる期間どうしでは多い・少ないを比べず、期間ごとに分けて表示しています。単位は人泊。`
+        : `${seasons.period}・${seasons.segments[0].scope}・単位は人泊。`)
+      : '';
+    const complementNote = complement
+      ? '「外国人の割合が最も高い月」は延べ宿泊者数（第2表）の月別値です。国籍別の集計表より対象施設が広いため、上の月別の値とは一致しません。国内客は延べ宿泊者数から外国人を除いた値で、日本に住む外国人を含みます。'
+      : '';
     const seasonData = seasonLines.length ? {
       lines: seasonLines,
-      note: seasons.scopeChanged
-        ? `宿泊旅行統計調査は${seasons.segments[1].months[0].year}年${seasons.segments[1].months[0].month}月から集計・層化基準が変わり、集計対象が「${seasons.segments[0].scope}」から「${seasons.segments[1].scope}」になりました。対象が異なる期間どうしでは多い・少ないを比べず、期間ごとに分けて表示しています。単位は人泊。`
-        : `${seasons.period}・${seasons.segments[0].scope}・単位は人泊。`
+      note: [seasonNote, complementNote].filter(Boolean).join('')
     } : null;
+    const complementMatched = complement && RULES.find((rule) => rule.id === 'inbound-domestic-complement').condition({ context });
     const topNames = markets ? markets.top.map((row) => row.name).join('・') : '';
     return [
       {
@@ -542,7 +676,9 @@
         checks: [
           '自施設の月別の外国人宿泊実績を、地域で多い月・少ない月と比べる',
           '地域で外国人宿泊が多い時期に、販売できる客室や料金の設定が整っているか',
-          '外国人宿泊が少ない時期に向けて、宿泊プランや販売開始の時期を見直す余地がないか'
+          complementMatched
+            ? `国内客が少ない${complement.month.month}月前後に、外国人向けの販売（OTA掲載・宿泊プラン・案内の言語）を強められているか`
+            : '外国人宿泊が少ない時期に向けて、宿泊プランや販売開始の時期を見直す余地がないか'
         ]
       },
       {
@@ -577,6 +713,16 @@
         const row = comparisons.find((item) => item.key === 'foreignShare');
         return { title: '地域と比べて、自施設の外国人宿泊が少ない理由はどこにあるか', note: `入力された外国人宿泊比率（${row.facility}）は、地域値（${row.region}）より10ポイント以上低くなっています。地域で宿泊の多い国・地域に向けた案内や予約経路から確認しましょう。集計対象が異なるため、差は参考としてご覧ください。`, ruleId, evidence };
       }
+      if (ruleId === 'inbound-domestic-complement') {
+        const complement = context.monthlyProfile.complement;
+        const month = complement.month.month;
+        return {
+          title: '国内客が減る時期に、外国人の宿泊を取り込めているか',
+          note: `${context.name}では${month}月、国内客が年平均を${formatPercent(1 - complement.domesticIndex, 0)}下回る一方、外国人は年平均の${timesText(complement.foreignIndex)}になり、宿泊者に占める外国人の割合は${formatPercent(complement.share)}（${context.monthlyProfile.yearLabel}では${formatPercent(complement.annualShare)}）に上がります。自施設でも${month}月前後に外国人の予約が入っているか、その時期の販売や受け入れの準備が整っているかを確認しましょう。`,
+          ruleId,
+          evidence: [`延べ宿泊者数（第2表）${context.monthlyProfile.period}の月別値・${month}月の外国人の割合 ${formatPercent(complement.share)}、国内客は年平均の${formatPercent(complement.domesticIndex, 0)}`, '国内客は延べ宿泊者数から外国人を除いた値（日本に住む外国人を含む）']
+        };
+      }
       if (ruleId === 'inbound-seasonality') {
         const season = context.inboundProfile.seasonality;
         return {
@@ -607,6 +753,28 @@
         evidence
       };
     }
+    if (topic === 'sales' && ruleId === 'sales-seasonal-gap') {
+      const occupancy = context.monthlyProfile.occupancy;
+      return {
+        title: '稼働が落ちる月に向けて、販売と運営の手当てができているか',
+        note: `${context.name}の客室稼働率は、最も高い${occupancy.peak.month}月が${formatRate1(occupancy.peak.occupancy)}、最も低い${occupancy.low.month}月が${formatRate1(occupancy.low.occupancy)}で、差は${formatNumber(occupancy.gap, 1)}ポイントです。全国（${formatNumber(occupancy.nationalGap, 1)}ポイント）より季節による差が大きい地域です。自施設の月別の稼働率を並べ、${occupancy.low.month}月前後の販売（平日・連泊・法人・団体向けなど）や、休館日・人員配置の組み方を確認しましょう。`,
+        ruleId,
+        evidence: [`客室稼働率（第8表）${context.monthlyProfile.period}の月別値・${occupancy.peak.month}月 ${formatRate1(occupancy.peak.occupancy)}、${occupancy.low.month}月 ${formatRate1(occupancy.low.occupancy)}`]
+      };
+    }
+    if (topic === 'sales' && !ruleId && context.monthlyProfile?.occupancy) {
+      const occupancy = context.monthlyProfile.occupancy;
+      const difference = round1(occupancy.low.occupancy - occupancy.nationalAtLow);
+      const relation = Math.abs(difference) < 1 ? 'と同程度' : `より${formatNumber(Math.abs(difference), 1)}ポイント${difference < 0 ? '低い水準' : '高い水準'}`;
+      return {
+        title: '稼働率が下がる月に、自施設の稼働と販売がどうなっているか',
+        note: `${context.name}の客室稼働率が最も低いのは${occupancy.low.month}月（${formatRate1(occupancy.low.occupancy)}）で、全国の同じ月（${formatRate1(occupancy.nationalAtLow)}）${relation}です。最も高い${occupancy.peak.month}月（${formatRate1(occupancy.peak.occupancy)}）との差は${formatNumber(occupancy.gap, 1)}ポイント（全国は${formatNumber(occupancy.nationalGap, 1)}ポイント）です。自施設の月別の稼働率を並べ、${occupancy.low.month}月前後の販売や運営の組み方を確認しましょう。`,
+        ruleId,
+        evidence: [`客室稼働率（第8表）${context.monthlyProfile.period}の月別値・${occupancy.low.month}月 ${formatRate1(occupancy.low.occupancy)}（全国 ${formatRate1(occupancy.nationalAtLow)}）`],
+        // 冒頭はテーマの基本案内（hypotheses[0]）を使っていないため、傾向の欄にそのまま残す。
+        keepFirstHypothesis: true
+      };
+    }
     const titles = {
       dx: '負荷の大きい業務がどこにあるか',
       sales: ruleId === 'facility-occupancy-gap' ? '地域と比べて、自施設の稼働が低い時期や客室はどこか' : '地域の稼働や需要の動きと、自施設の販売状況に違いがないか',
@@ -630,6 +798,28 @@
       return { reflected: false, suggestedTopic: suggested, text: `補足メモの内容は「${TOPICS[suggested].label}」のテーマに近い可能性があります。テーマを切り替えると、その観点で整理できます。` };
     }
     return { reflected: false, text: '補足メモの内容は、今回の整理には反映していません。このツールは文章の意味を読み取って回答するものではなく、「人手不足・DX」「インバウンド」「売上・稼働」「地域市場」の4テーマについて、地域統計と確認項目を整理します。' };
+  }
+
+  // 「詳しいデータ」に出す月別の表。インバウンドは国内客と外国人、売上・稼働は客室稼働率を全国と並べる。
+  function lodgingTable(context, topic) {
+    const profile = context.monthlyProfile;
+    if (!profile || (topic !== 'inbound' && topic !== 'sales')) return null;
+    const marks = new Map();
+    const mark = (row, text) => { if (row) marks.set(row.period, [...(marks.get(row.period) || []), text]); };
+    if (topic === 'sales' && profile.occupancy) {
+      mark(profile.occupancy.peak, '稼働率が最も高い月');
+      mark(profile.occupancy.low, '稼働率が最も低い月');
+    }
+    if (topic === 'inbound' && profile.complement) {
+      mark(profile.complement.month, '外国人の割合が最も高い月');
+      mark(profile.complement.domesticLow, '国内客が最も少ない月');
+    }
+    return {
+      topic,
+      period: profile.period,
+      basisLabel: profile.basisLabel,
+      rows: profile.months.map((row) => ({ ...row, marks: marks.get(row.period) || [] }))
+    };
   }
 
   function regionScopeNote(context) {
@@ -664,6 +854,7 @@
     if (!isNumber(context.statistics.occupancy_rate)) missing.push('客室稼働率');
     if (!isNumber(context.statistics.foreign_guest_nights)) missing.push('外国人延べ宿泊者数');
     if (!isNumber(context.statistics.lodging_employees)) missing.push('宿泊業従業者数');
+    if ((topic === 'inbound' || topic === 'sales') && !context.monthlyProfile) missing.push('月別の宿泊統計');
 
     const lead = leadFor(context, topic, matched, hypotheses, comparisons);
 
@@ -672,9 +863,10 @@
       topicLabel: TOPICS[topic].label,
       lead,
       // 冒頭の論点（hypotheses[0]）以外の判定文を「地域データから見える傾向」に出す。
-      trendNotes: hypotheses.slice(1, 3),
+      trendNotes: lead.keepFirstHypothesis ? hypotheses.slice(0, 2) : hypotheses.slice(1, 3),
       perspectives: topic === 'inbound' ? inboundPerspectives(context, facility) : null,
       seasons: topic === 'inbound' ? inboundSeasons(context) : null,
+      lodgingTable: lodgingTable(context, topic),
       regionNote: regionScopeNote(context),
       questionGuide: questionGuide(question, topic),
       facilityType: facility.type || null,
@@ -714,6 +906,7 @@
     generateInsights,
     formatNumber,
     formatPercent,
-    formatRate
+    formatRate,
+    formatRate1
   };
 })();
