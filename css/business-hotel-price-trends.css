@@ -114,7 +114,7 @@
 .bht-market{margin-top:56px}
 .bht-market__head h2{margin:0;font-size:clamp(24px,2.8vw,34px);font-weight:700}
 .bht-market__head p{margin:8px 0 0;color:var(--ink-soft);font-size:12px}
-.bht-kpis{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;margin-top:20px}
+.bht-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-top:20px}
 .bht-kpi{display:flex;min-height:150px;padding:20px;border:1px solid var(--line);border-radius:12px;background:#fff;box-shadow:0 8px 24px rgba(23,50,77,.05);flex-direction:column}
 .bht-kpi span{color:var(--lab-ink-soft);font-size:12px;font-weight:500}
 .bht-kpi strong{margin-top:auto;color:var(--accent);font-size:clamp(22px,2.2vw,30px);font-weight:700;line-height:1.25;overflow-wrap:anywhere}
@@ -201,7 +201,7 @@
 
 /* 全国サマリとランキング */
 .bht-summary .bht-market__head{margin-bottom:0}
-.bht-kpis--four{grid-template-columns:repeat(4,minmax(0,1fr))}
+
 .bht-ranking{margin-top:20px}
 .bht-tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:18px;border-bottom:1px solid var(--line)}
 .bht-tabs button{margin-bottom:-1px;padding:10px 14px;border:0;border-bottom:3px solid transparent;background:none;color:var(--lab-ink-soft);font:500 13px/1.4 var(--sans);cursor:pointer}
@@ -217,11 +217,49 @@
 .bht-rank__bar{height:10px;border-radius:99px;background:var(--lab-surface-soft);overflow:hidden}
 .bht-rank__bar i{display:block;height:100%;border-radius:0 4px 4px 0;background:var(--bht-series)}
 .bht-rank__value{font-size:15px;font-weight:700;text-align:right;font-variant-numeric:tabular-nums}
-@media(max-width:1080px){.bht-kpis--four{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
 @media(max-width:620px){
   .bht-rank{grid-template-columns:28px minmax(0,1fr) auto;gap:4px 10px}
   .bht-rank__bar{grid-column:2/4;grid-row:2}
   .bht-tabs{flex-wrap:nowrap;overflow-x:auto}
   .bht-tabs button{flex:0 0 auto;padding:10px 10px}
 }
-@media(max-width:760px){.bht-kpis--four .bht-kpi:last-child{grid-column:1/-1}}
+
+
+/* 今週のポイント・売り切れ・祝日 */
+.bht-points{margin:18px 0 0;padding:20px 24px;border:1px solid var(--line);border-left:4px solid var(--bht-accent);border-radius:12px;background:#fff}
+.bht-points[hidden]{display:none}
+.bht-points h3{margin:0 0 10px;font-size:15px;font-weight:700}
+.bht-points ul{margin:0;padding:0;list-style:none}
+.bht-point{border-bottom:1px solid var(--line)}
+.bht-point:last-child{border-bottom:0}
+.bht-point>span,.bht-point>button{display:flex;gap:10px;justify-content:space-between;width:100%;padding:10px 0;border:0;background:none;color:var(--ink);font:500 14px/1.7 var(--sans);text-align:left}
+.bht-point>button{cursor:pointer}
+.bht-point>button span{color:var(--accent);font-weight:700}
+.bht-point>button:hover{color:var(--accent)}
+.bht-point>button:focus-visible{outline:2px solid var(--lab-focus);outline-offset:2px}
+.bht-points>p{margin:10px 0 0;color:var(--ink-soft);font-size:11px}
+.bht-busy-mark rect{fill:var(--ink)}
+.bht-busy-mark text{fill:#fff;font:700 10px var(--sans)}
+.bht-key-busy{display:inline-grid!important;width:16px;height:16px;border-radius:3px;background:var(--ink);color:#fff;font-size:10px;font-style:normal;font-weight:700;place-items:center}
+.bht-cal__tags{position:absolute;top:6px;right:6px;display:flex;flex-direction:column;align-items:flex-end;gap:3px}
+.bht-tag{padding:0 5px;border-radius:4px;background:#fff;color:var(--ink);font-size:10px;font-style:normal;font-weight:700;line-height:1.6}
+.bht-tag--busy{background:var(--ink);color:#fff}
+.bht-tag--ref{color:var(--ink-soft);font-weight:500}
+.bht-cal--busy{box-shadow:inset 0 0 0 2px var(--ink)}
+.bht-cal__holiday{display:inline-block;margin-left:4px;padding:0 4px;border-radius:3px;background:#f6e3df;color:#8a2f1f;font-size:9px;font-weight:700;line-height:1.5;vertical-align:1px}
+.bht-cal__holiday--eve{background:#efe7d6;color:#6b4f12}
+.bht-key-text{display:inline-flex;gap:6px;align-items:center}
+.bht-key-text b{margin-left:0}
+@media(max-width:620px){
+  .bht-cal__tags{position:static;align-items:flex-start;margin-top:2px}
+  .bht-tag{padding:0 3px;font-size:9px}
+  .bht-cal__holiday{margin-left:2px;padding:0 2px;font-size:8px}
+  .bht-points{padding:16px}
+  .bht-point>span,.bht-point>button{font-size:13px}
+}
+@media(max-width:760px){.bht-kpis .bht-kpi:last-child:nth-child(even){grid-column:1/-1}}
+.bht-cal .bht-cal__tags .bht-tag{position:static;top:auto;right:auto;padding:0 5px;white-space:nowrap}
+.bht-cal .bht-tag--busy,.bht-calendar-legend .bht-tag--busy{background:var(--ink);color:#fff}
+@media(max-width:620px){.bht-cal .bht-cal__tags .bht-tag{padding:0 3px}}
+@media(max-width:620px){.bht-cal__diff{font-size:10px;letter-spacing:-.03em}.bht-cal__na{display:none}}

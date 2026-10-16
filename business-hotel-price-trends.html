@@ -8,7 +8,7 @@ tool_scope:
   - label: データ
     text: 楽天トラベル空室検索APIから、大人1名・1室・1泊で販売中の最安プラン（食事条件は問わない）の料金とその食事区分を、当日から60泊分、毎朝取得します。
   - label: 条件
-    text: 宿泊日ごとの値はCORE施設の中央値で、5施設中4施設以上で表示、3施設は参考値、2施設以下は表示しません。急騰日は代表料金の1.5倍以上の日です。7日変化はちょうど7日前の取得と、同じ宿泊日の料金を施設ごとに比べます。
+    text: 宿泊日ごとの値はCORE施設の中央値で、5施設中4施設以上で表示、3施設は参考値、2施設以下は表示しません。急騰日は代表料金の1.5倍以上の日、売り切れが目立つ日はCOREの2施設以上が楽天で売り切れの日です。祝日・祝前日も区別します。7日変化はちょうど7日前の取得と、同じ宿泊日の料金を施設ごとに比べます。
 tool_updated_label: 取得日
 tool_updated: データ読み込み後に表示
 tool_sources:
@@ -44,7 +44,7 @@ tool_related:
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&amp;display=swap">
   <link rel="stylesheet" href="css/useful.css?v=20261012shell">
   <link rel="stylesheet" href="css/tool-standard.css?v=20261015guide">
-  <link rel="stylesheet" href="css/business-hotel-price-trends.css?v=20261016bht2">
+  <link rel="stylesheet" href="css/business-hotel-price-trends.css?v=20261016bht3">
   <meta property="og:type" content="website"><meta property="og:locale" content="ja_JP"><meta property="og:site_name" content="宿泊DXラボ">
   <meta property="og:title" content="ビジネスホテル料金トレンド｜宿泊DXラボ"><meta property="og:description" content="出張の宿は、いくらで、どれだけ動くか。全国10都市・50施設のビジネスホテル料金を毎朝観測します。">
   <meta property="og:url" content="https://lab.ugatta-llc.com/business-hotel-price-trends.html"><meta property="og:image" content="https://lab.ugatta-llc.com/images/og-lab.jpg">
@@ -82,7 +82,8 @@ tool_related:
       <div class="bht-dashboard" id="bht-dashboard" hidden>
         <section class="bht-summary" aria-labelledby="bht-summary-title">
           <div class="bht-market__head"><h2 id="bht-summary-title">全国10都市のいま</h2><p id="bht-summary-meta"></p></div>
-          <div class="bht-kpis bht-kpis--four" id="bht-summary-tiles"></div>
+          <div class="bht-points" id="bht-highlights" hidden><h3>今週のポイント</h3><ul id="bht-highlight-list"></ul><p>集計値をそのまま文にしています。売り切れは楽天トラベルでの状況で、施設全体の満室とは限りません。</p></div>
+          <div class="bht-kpis" id="bht-summary-tiles"></div>
           <div class="bht-panel bht-ranking">
             <div class="bht-heading"><div><h2 id="bht-ranking-title">ランキング Top5</h2></div><p>行を選ぶと、その都市の詳しい料金に切り替わります。</p></div>
             <div class="bht-tabs" id="bht-rank-tabs" role="tablist" aria-labelledby="bht-ranking-title"></div>
@@ -128,7 +129,7 @@ tool_related:
 
         <section class="bht-panel" aria-labelledby="bht-calendar-title">
           <div class="bht-heading"><div><h2 id="bht-calendar-title">料金カレンダー</h2></div><p>代表料金に対する宿泊日ごとの位置</p></div>
-          <div class="bht-calendar-legend"><span class="bht-key bht-key--low">10%以上安い</span><span class="bht-key bht-key--mid">代表料金付近</span><span class="bht-key bht-key--high">10%以上高い</span><span class="bht-key bht-key--spike">急騰（1.5倍以上）</span><span class="bht-key bht-key--none">比較データ不足</span></div>
+          <div class="bht-calendar-legend"><span class="bht-key bht-key--low">10%以上安い</span><span class="bht-key bht-key--mid">代表料金付近</span><span class="bht-key bht-key--high">10%以上高い</span><span class="bht-key bht-key--spike">急騰（1.5倍以上）</span><span class="bht-key bht-key--none">比較データ不足</span><span class="bht-key-text"><b class="bht-tag bht-tag--busy">売切2</b>売り切れ施設数（2施設以上）</span><span class="bht-key-text"><b class="bht-cal__holiday">祝</b>祝日　<b class="bht-cal__holiday bht-cal__holiday--eve">祝前</b>祝前日</span></div>
           <div class="bht-calendar" id="bht-calendar"></div>
         </section>
 
@@ -139,7 +140,8 @@ tool_related:
 
         <section class="bht-method" aria-labelledby="bht-method-title"><div><h2 id="bht-method-title">データの見方</h2></div><div>
           <p>料金は楽天トラベル空室検索APIで、大人1名・1室・1泊の条件で販売中のプランのうち最も安いプランの1泊目の料金です。食事条件は問わず、そのプランの食事区分をあわせて記録しています。客室タイプやプラン内容は施設や日によって異なります。</p>
-          <p>宿泊日ごとの値は、市場ごとに固定したCORE施設5施設の中央値です。4施設以上で料金を確認できた日を集計に使い、3施設の日は参考値、2施設以下の日は表示しません。代表料金は、集計に使った宿泊日の中央値のさらに中央値です。値動きの大きさは、宿泊日ごとの中央値（施設の場合はその施設の料金）を並べ、上位1割と下位1割の日を除いたうえで「高い日は安い日の何倍か」を出したものです。安い部屋が売り切れて高い部屋だけが残った1日の極端な値に引っぱられないよう、この方法にしています。10泊以上ある場合だけ表示します。週末の差は、金・土曜泊の中央値と日〜木曜泊の中央値の差です。</p>
+          <p>宿泊日ごとの値は、市場ごとに固定したCORE施設5施設の中央値です。4施設以上で料金を確認できた日を集計に使い、3施設の日は参考値、2施設以下の日は表示しません。代表料金は、集計に使った宿泊日の中央値のさらに中央値です。値動きの大きさは、宿泊日ごとの中央値（施設の場合はその施設の料金）を並べ、上位1割と下位1割の日を除いたうえで「高い日は安い日の何倍か」を出したものです。安い部屋が売り切れて高い部屋だけが残った1日の極端な値に引っぱられないよう、この方法にしています。10泊以上ある場合だけ表示します。休前日の差は、金・土曜と祝日の前日の泊（休前日）の中央値と、それ以外の平日の泊の中央値の差です。曜日別の料金は、祝日と祝前日の泊を除いて集計しています。</p>
+          <p>売り切れが目立つ日は、CORE 5施設のうち2施設以上で、楽天トラベルに大人1名・1泊で予約できるプランが無かった日です。楽天での売り切れであり、施設全体の満室とは限りません。急騰日は宿泊日ごとの中央値が代表料金の1.5倍以上の日で、売り切れで料金を確認できたのが3施設だけの日（参考値）も含めます。</p>
           <p>7日変化は、ちょうど7日前の取得と今日の取得で同じ宿泊日（今日以降）の料金を施設ごとに比べ、共通の宿泊日が10泊以上ある施設の変化率の中央値を出し、さらに4施設以上の中央値を市場の値とします。±3%以上を上昇・低下とします。比較施設群が入れ替わった場合は比べません。</p>
           <p>販売プランが見つからない状態だけを理由に満室とは判定しません。表示内容は料金判断の参考情報であり、需要・稼働率・売上や因果関係を保証するものではありません。</p>
           <!-- Rakuten Web Services Attribution Snippet FROM HERE -->
@@ -157,7 +159,7 @@ tool_related:
 
   {% include site-footer.html %}
   <script src="js/site.js?v=20260912a" defer></script>
-  <script src="js/business-hotel-price-trends-model.js?v=20261016bht2" defer></script>
-  <script src="js/business-hotel-price-trends.js?v=20261016bht2" defer></script>
+  <script src="js/business-hotel-price-trends-model.js?v=20261016bht3" defer></script>
+  <script src="js/business-hotel-price-trends.js?v=20261016bht3" defer></script>
 </body>
 </html>
