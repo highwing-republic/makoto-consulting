@@ -42,7 +42,7 @@ tool_related:
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&amp;display=swap">
-  <link rel="stylesheet" href="css/useful.css?v=20261016management2">
+  <link rel="stylesheet" href="css/useful.css?v=20261016management3">
   <link rel="stylesheet" href="css/tool-standard.css?v=20261015guide">
   <script type="application/ld+json">
   {"@context":"https://schema.org","@graph":[{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"ホーム","item":"https://lab.ugatta-llc.com/"},{"@type":"ListItem","position":2,"name":"分析・ツール","item":"https://lab.ugatta-llc.com/#analysis-tools"},{"@type":"ListItem","position":3,"name":"宿泊経営の課題整理（β）","item":"https://lab.ugatta-llc.com/management-ai.html"}]},{"@type":"WebApplication","name":"宿泊経営の課題整理（β）","alternateName":"宿泊経営AI","url":"https://lab.ugatta-llc.com/management-ai.html","applicationCategory":"BusinessApplication","operatingSystem":"Web","isAccessibleForFree":true,"inLanguage":"ja-JP","description":"公的統計分析と施設情報を並べ、宿泊経営で次に確認したいことを整理するルールベース型ツール。","provider":{"@type":"Organization","@id":"https://lab.ugatta-llc.com/#organization","name":"宿泊DXラボ","url":"https://lab.ugatta-llc.com/","logo":"https://lab.ugatta-llc.com/images/lab-logo.png"}}]}
@@ -92,56 +92,90 @@ tool_related:
                 <p class="management-pref-note">都道府県だけでも結果を確認できます。</p>
               </section>
             </div>
-            <details class="management-optional"><summary><span>任意</span><b>施設情報を追加する</b><small>自施設と地域の参考比較を表示できます</small></summary>
+            <details class="management-optional"><summary><span>任意</span><b>施設情報を追加する</b><small id="management-optional-hint">自施設と地域の参考比較を表示できます</small></summary>
+              <p class="management-optional-lead" id="management-optional-lead">選んだ相談テーマで使う項目だけを表示しています。</p>
               <div class="management-input-grid">
-                <label>施設タイプ<select id="facility-type" name="facility_type"><option value="">選択しない</option><option value="旅館">旅館</option><option value="ホテル">ホテル</option><option value="簡易宿所">簡易宿所</option><option value="その他">その他</option></select></label>
-                <label>客室数<span class="input-suffix"><input id="facility-rooms" name="rooms" type="number" min="1" max="10000" step="1" inputmode="numeric" placeholder="例：30"><span>室</span></span></label>
-                <label>従業員数<span class="input-suffix"><input id="facility-employees" name="employees" type="number" min="1" max="10000" step="1" inputmode="numeric" placeholder="例：12"><span>人</span></span></label>
-                <label>自施設の稼働率<span class="input-suffix"><input id="facility-occupancy" name="occupancy" type="number" min="0" max="100" step="0.1" inputmode="decimal" placeholder="例：62"><span>%</span></span></label>
-                <label>外国人宿泊比率<span class="input-suffix"><input id="facility-foreign-share" name="foreign_share" type="number" min="0" max="100" step="0.1" inputmode="decimal" placeholder="例：15"><span>%</span></span></label>
+                <label data-facility-field="type">施設タイプ<select id="facility-type" name="facility_type"><option value="">選択しない</option><option value="旅館">旅館</option><option value="ホテル">ホテル</option><option value="簡易宿所">簡易宿所</option><option value="その他">その他</option></select></label>
+                <label data-facility-field="rooms">客室数<span class="input-suffix"><input id="facility-rooms" name="rooms" type="number" min="1" max="10000" step="1" inputmode="numeric" placeholder="例：30"><span>室</span></span></label>
+                <label data-facility-field="employees">従業員数<span class="input-suffix"><input id="facility-employees" name="employees" type="number" min="1" max="10000" step="1" inputmode="numeric" placeholder="例：12"><span>人</span></span></label>
+                <label data-facility-field="occupancyRate">自施設の稼働率<span class="input-suffix"><input id="facility-occupancy" name="occupancy" type="number" min="0" max="100" step="0.1" inputmode="decimal" placeholder="例：62"><span>%</span></span></label>
+                <div class="management-foreign-share" data-facility-field="foreignShare">
+                  <label for="facility-foreign-share">外国人宿泊比率<span class="input-suffix"><input id="facility-foreign-share" name="foreign_share" type="number" min="0" max="100" step="0.1" inputmode="decimal" placeholder="例：15" aria-describedby="foreign-share-help"><span>%</span></span></label>
+                  <label for="facility-foreign-basis">比率の数え方<select id="facility-foreign-basis" name="foreign_share_basis" aria-describedby="foreign-share-help"><option value="">選択してください</option><option value="guest_nights">延べ宿泊者数（人泊）で計算</option><option value="guests">宿泊者の人数で計算</option><option value="bookings">予約件数で計算</option><option value="unknown">わからない</option></select></label>
+                  <p class="management-field-help" id="foreign-share-help">直近12か月の延べ宿泊者数（人泊）のうち、外国人が占める割合です。例：全体2,000人泊のうち外国人300人泊なら15%（1人が2泊すると2人泊）。地域の公的統計と同じ「延べ宿泊者数」で数えた場合だけ、地域値との差を表示します。予約件数や人数で数えた比率は並べて表示するだけで、差は比べません。</p>
+                </div>
               </div>
-              <p class="management-form-note">任意の施設値はこのページ内で計算し、URLや解析イベントには含めません。地域統計とは対象期間・施設範囲・分母が異なるため厳密な比較ではありません。氏名、施設名、電話番号、メールアドレスなどの個人情報は入力しないでください。</p>
+              <p class="management-form-note">任意の施設値はこのページ内で計算し、URLや解析イベントには含めません。相談テーマを切り替えて表示されなくなった項目は、判定に使いません。地域統計とは対象期間・施設範囲・分母が異なるため厳密な比較ではありません。氏名、施設名、電話番号、メールアドレスなどの個人情報は入力しないでください。</p>
             </details>
           </section>
 
           <section class="management-step management-step--question">
-            <div class="management-step__heading"><div><p><span>任意</span> 03</p><h2>困りごとを補足する</h2></div><p>未入力でも利用できます。選択した相談テーマを優先して整理します。</p></div>
-            <div class="management-examples" aria-label="質問例">
-              <button type="button" data-question-example data-topic="dx">人手不足対策はどこから始めればいい？</button>
-              <button type="button" data-question-example data-topic="inbound">インバウンドを強化する余地はある？</button>
-              <button type="button" data-question-example data-topic="sales">地域と比べてうちの稼働率は低い？</button>
-              <button type="button" data-question-example data-topic="market">この地域の宿泊市場は伸びている？</button>
-              <button type="button" data-question-example data-topic="dx">DXで優先する業務はどこ？</button>
-            </div>
-            <label class="management-question-label" for="management-question">質問・困っていること<textarea id="management-question" name="question" rows="3" maxlength="240" placeholder="例：フロント業務を効率化したい"></textarea></label>
-            <div class="management-submit"><button class="button button--large" type="submit">地域データと一緒に考える <span aria-hidden="true">→</span></button><p>外部の生成AI APIは使用せず、入力内容をサーバーへ保存しません。</p></div>
+            <div class="management-step__heading"><div><p><span>任意</span> 03</p><h2>補足メモを書く</h2></div><p>未入力でも利用できます。質問例は、選んだ相談テーマに合わせて切り替わります。</p></div>
+            <div class="management-examples" id="management-examples" aria-label="質問例"></div>
+            <label class="management-question-label" for="management-question">補足メモ（質問・困っていること）<textarea id="management-question" name="question" rows="3" maxlength="240" placeholder="例：フロント業務を効率化したい" aria-describedby="management-question-help"></textarea></label>
+            <p class="management-question-help" id="management-question-help">このツールは文章の意味を読み取って回答するものではありません。質問例は結果のどこで確認できるかを案内し、一部の語句（フロント・電話・予約など）は確認項目の表現に反映します。選んだテーマと異なる内容の場合は、近いテーマをご案内します。</p>
+            <div class="management-submit"><button class="button button--large" type="submit">地域データと一緒に考える <span aria-hidden="true">→</span></button><div><p class="management-selection" id="management-selection" aria-live="polite"></p><p>外部の生成AI APIは使用せず、入力内容をサーバーへ保存しません。</p></div></div>
           </section>
         </fieldset>
       </form>
 
-      <section class="management-result" id="management-result" aria-live="polite" tabindex="-1" hidden inert>
-        <div class="management-answer-header"><div><h2><span id="answer-prefecture"></span> × <span id="answer-topic"></span></h2></div><div class="management-rule-badge">公的統計＋固定ルールによる参考分析</div></div>
-        <section class="management-answer-block management-answer-block--status"><p class="management-answer-label">要点</p><p class="management-status" id="answer-status"></p></section>
-
-        <div class="management-answer-columns">
-          <section class="management-answer-block"><p class="management-answer-label">まず確認したいこと</p><ol class="management-checklist" id="answer-checklist"></ol></section>
-          <section class="management-answer-block"><p class="management-answer-label">次に確認する項目</p><div class="management-hypotheses" id="answer-hypotheses"></div></section>
+      <section class="management-result" id="management-result" aria-labelledby="answer-title" tabindex="-1" hidden inert>
+        <p class="management-stale" id="management-stale" role="status" hidden>条件が変更されています。「地域データと一緒に考える」を押すと、結果を更新します。</p>
+        <div class="management-answer-header">
+          <div><p class="management-answer-kicker">分析対象</p><h2 id="answer-title"><span id="answer-prefecture"></span> × <span id="answer-topic"></span></h2><p class="management-answer-scope" id="answer-scope"></p></div>
+          <div class="management-rule-badge">公的統計＋固定ルールによる参考分析</div>
         </div>
-        <p class="management-more-guide" id="more-input-guide">より具体的に見るには、客室数・稼働率・従業員数などを入力すると比較できます。</p>
+        <p class="management-question-guide" id="answer-question-guide" hidden></p>
 
-        <section class="management-answer-block"><p class="management-answer-label">実際の公的数値</p><ul class="management-facts" id="answer-facts"></ul><p class="management-missing" id="missing-data-note" hidden></p></section>
+        <section class="management-lead" aria-labelledby="answer-lead-heading">
+          <h3 class="management-section-label" id="answer-lead-heading">最初に確認したいこと</h3>
+          <p class="management-lead__title" id="answer-lead-title"></p>
+          <p class="management-lead__note" id="answer-lead-note"></p>
+          <p class="management-lead__basis"><span>判定の根拠</span><span id="answer-lead-basis"></span></p>
+        </section>
 
-        <section class="management-answer-block" id="facility-comparison-section" hidden><div class="management-answer-heading"><p class="management-answer-label">自施設と地域の参考比較</p><span>比較地域：<b id="comparison-region-name"></b></span></div><div class="management-comparisons" id="facility-comparisons"></div><p class="management-comparison-note">地域統計とは集計対象・期間等が異なる場合があります。参考比較としてご覧ください。</p></section>
+        <section class="management-answer-block" aria-labelledby="answer-checks-heading">
+          <h3 class="management-section-label" id="answer-checks-heading">自施設で確認する具体的な項目</h3>
+          <div class="management-perspectives" id="answer-perspectives" hidden></div>
+          <ol class="management-checklist" id="answer-checklist"></ol>
+        </section>
 
-        <section class="management-answer-block management-periods"><p class="management-answer-label">出典・時点</p><dl id="answer-data-periods"></dl><div class="management-periods__sources"><h3>元データ</h3><ul id="answer-sources"></ul></div><p>異なる時点・集計範囲の公的統計を組み合わせています。</p></section>
+        <section class="management-answer-block" aria-labelledby="answer-trends-heading">
+          <h3 class="management-section-label" id="answer-trends-heading">地域データから見える傾向</h3>
+          <p class="management-status" id="answer-status"></p>
+          <ul class="management-facts" id="answer-facts"></ul>
+          <div class="management-hypotheses" id="answer-hypotheses"></div>
+          <p class="management-missing" id="missing-data-note" hidden></p>
+          <p class="management-region-note" id="answer-region-note"></p>
+        </section>
 
-        <section class="management-answer-block management-related"><p class="management-answer-label">関連分析</p><ul id="answer-related"></ul></section>
+        <section class="management-next" id="answer-next" aria-labelledby="answer-next-heading" hidden>
+          <h3 id="answer-next-heading">地域の外国人宿泊需要を詳しく見る</h3>
+          <p>国・地域別の構成や月別の宿泊動向は、インバウンド宿泊者分析で確認できます。</p>
+          <a class="management-next__link" id="answer-next-link" href="inbound-analysis.html">インバウンド宿泊者分析を見る →</a>
+        </section>
 
-        <details class="management-grounds" open><summary>制約と判定根拠</summary><div class="management-grounds-grid">
-          <section><h3>参照した分析</h3><ul id="answer-references"></ul></section>
-          <section><h3>使用した主要指標</h3><ul id="answer-metrics"></ul></section>
-          <section><h3>判定したルール</h3><p>ルール版：<strong id="answer-rule-version"></strong></p><ul id="answer-rules"></ul></section>
-        </div><p>回答は公開データと入力値に対する固定ルールから生成しています。表示する順位・スコア・類型は、出典の公的統計を当サイトの固定ルールで加工した参考値であり、公的機関が公表したランキングではありません。外部の生成AIによる文章生成や推測は行っていません。</p></details>
+        <section class="management-answer-block management-details" aria-labelledby="answer-details-heading">
+          <h3 class="management-section-label" id="answer-details-heading">詳しいデータ・地域との参考比較</h3>
+          <div class="management-monthly" id="answer-monthly" hidden><h4 id="answer-monthly-title">月別の外国人延べ宿泊者数</h4><div class="management-table-wrap"><table class="management-monthly-table"><thead><tr><th scope="col">月</th><th scope="col">外国人延べ宿泊者数</th><th scope="col">集計対象</th></tr></thead><tbody id="answer-monthly-body"></tbody></table></div><p class="management-table-note" id="answer-monthly-note"></p></div>
+          <div class="management-comparison" id="facility-comparison-section" hidden><div class="management-answer-heading"><h4>自施設と地域の参考比較</h4><span>比較地域：<b id="comparison-region-name"></b></span></div><div class="management-comparisons" id="facility-comparisons"></div><p class="management-comparison-note">地域統計とは集計対象・期間等が異なる場合があります。参考比較としてご覧ください。</p></div>
+          <p class="management-more-guide" id="more-input-guide" hidden></p>
+          <div class="management-related"><h4>関連分析</h4><ul id="answer-related"></ul></div>
+        </section>
+
+        <section class="management-answer-block management-periods" aria-labelledby="answer-sources-heading">
+          <h3 class="management-section-label" id="answer-sources-heading">出典・データ時点・判定ルール</h3>
+          <dl id="answer-data-periods"></dl>
+          <div class="management-periods__sources"><h4>元データ</h4><ul id="answer-sources"></ul></div>
+          <p>異なる時点・集計範囲の公的統計を組み合わせています。<span id="answer-methodology-note"></span></p>
+          <p class="management-rule-version">判定ルール：ルール版 <strong id="answer-rule-version"></strong>。公開データと入力値に対する固定ルールで整理しており、生成AIによる推論や予測は行っていません。</p>
+          <details class="management-grounds"><summary>判定の詳しい根拠を見る</summary><div class="management-grounds-grid">
+            <section><h4>参照した分析</h4><ul id="answer-references"></ul></section>
+            <section><h4>使用した主要指標</h4><ul id="answer-metrics"></ul></section>
+            <section><h4>判定したルール</h4><ul id="answer-rules"></ul></section>
+          </div></details>
+          <p class="management-grounds-note">表示する順位・スコア・類型は、出典の公的統計を当サイトの固定ルールで加工した参考値であり、公的機関が公表したランキングではありません。地域全体の需要は、自施設の集客余地や売上機会を示すものではありません。</p>
+        </section>
       </section>
 
       <section class="management-disclaimer" aria-label="免責事項"><p>宿泊経営の課題整理（β）は、公的統計と入力情報をもとに確認候補を提示するルールベース型ツールです。個別施設の経営成果を保証するものではなく、投資・採用・価格設定等の最終判断は利用者自身で行ってください。</p></section>
@@ -152,7 +186,7 @@ tool_related:
 
   {% include site-footer.html %}
   <script src="js/site.js?v=20260909c" defer></script>
-  <script src="js/management-ai-rules.js?v=20261015seo" defer></script>
-  <script src="js/management-ai.js?v=20261012tool" defer></script>
+  <script src="js/management-ai-rules.js?v=20261016issues" defer></script>
+  <script src="js/management-ai.js?v=20261016issues" defer></script>
 </body>
 </html>

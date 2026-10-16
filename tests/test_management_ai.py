@@ -70,17 +70,40 @@ def test_page_has_required_inputs_and_fixed_answer_structure():
 def test_answer_sections_follow_the_agreed_information_order():
     soup = BeautifulSoup(PAGE.read_text(encoding="utf-8"), "html.parser")
     result = soup.find(id="management-result")
-    text = result.get_text(" ", strip=True)
-    labels = [
-        "要点",
-        "まず確認したいこと",
-        "次に確認する項目",
-        "実際の公的数値",
-        "出典・時点",
-        "制約と判定根拠",
+    headings = [node.get_text(strip=True) for node in result.select("h3.management-section-label, #answer-next-heading")]
+    assert headings == [
+        "最初に確認したいこと",
+        "自施設で確認する具体的な項目",
+        "地域データから見える傾向",
+        "地域の外国人宿泊需要を詳しく見る",
+        "詳しいデータ・地域との参考比較",
+        "出典・データ時点・判定ルール",
     ]
-    assert [text.index(label) for label in labels] == sorted(text.index(label) for label in labels)
+    # 分析対象は冒頭の見出し。最初に確認したいことはその直後に置く。
+    assert result.find("h2", id="answer-title") and "分析対象" in result.select_one(".management-answer-header").get_text()
+    text = result.get_text(" ", strip=True)
     assert "公的機関が公表したランキングではありません" in text
+    # 判定根拠の詳細は折りたためるが、ルール版と注意書きは折りたたみの外に出す。
+    grounds = result.select_one("details.management-grounds")
+    assert grounds and not grounds.has_attr("open")
+    assert not grounds.find(id="answer-rule-version")
+    assert not grounds.select_one(".management-grounds-note")
+    link = result.find(id="answer-next-link")
+    assert link.get_text(strip=True) == "インバウンド宿泊者分析を見る →" and link["href"] == "inbound-analysis.html"
+
+
+def test_facility_fields_follow_topic_table_and_foreign_share_is_defined():
+    soup = BeautifulSoup(PAGE.read_text(encoding="utf-8"), "html.parser")
+    fields = {node["data-facility-field"] for node in soup.select("[data-facility-field]")}
+    assert fields == {"type", "rooms", "employees", "occupancyRate", "foreignShare"}
+    basis = soup.find(id="facility-foreign-basis")
+    assert [option["value"] for option in basis.find_all("option")] == ["", "guest_nights", "guests", "bookings", "unknown"]
+    help_text = soup.find(id="foreign-share-help").get_text()
+    assert "延べ宿泊者数（人泊）" in help_text and "予約件数" in help_text and "差は比べません" in help_text
+    assert soup.find(id="facility-foreign-share")["aria-describedby"] == "foreign-share-help"
+    assert "文章の意味を読み取って回答するものではありません" in soup.find(id="management-question-help").get_text()
+    assert soup.find(id="management-selection") is not None
+    assert soup.find(id="management-stale").has_attr("hidden")
 
 
 def test_number_inputs_allow_blank_but_reject_out_of_range_in_markup():
@@ -174,3 +197,215 @@ def test_responsive_styles_and_home_tool_regression():
     assert "AIに相談する" in home and "/management-ai.html" in home
     for existing in ("dx-diagnosis.html", "inbound-analysis.html", "dx-necessity-analysis.html", "supply-demand-gap-analysis.html", "tourism-pressure-analysis.html"):
         assert (ROOT / existing).exists()
+
+
+def run_node(script):
+    completed = subprocess.run(
+        ["node", "-e", script], cwd=ROOT, check=True, capture_output=True,
+        text=True, encoding="utf-8"
+    )
+    return json.loads(completed.stdout)
+
+
+LOAD_DATASETS = r"""
+const fs=require('fs');
+require('./js/management-ai-rules.js');
+const J=(path)=>JSON.parse(fs.readFileSync(path,'utf8'));
+const datasets={
+  statistics:J('data/analysis/prefecture-statistics.json'),
+  dx:J('data/analysis/dx-necessity.json'),
+  supply:J('data/analysis/supply-demand-gap.json'),
+  tourism:J('data/analysis/tourism-pressure.json'),
+  inbound:J('data/inbound/latest.json')
+};
+const R=globalThis.ManagementAIRules;
+"""
+
+# 具体的な数値を確かめるテストは、2026年7月分（第2次速報）で固定したデータを使う。
+# 公開データ（data/）は週次の自動更新で変わり、更新処理は pytest が通った場合だけコミットするため、
+# 公開データに数値を固定すると次の月のデータ更新が止まってしまう。
+LOAD_FIXTURES = LOAD_DATASETS.replace(
+    "data/analysis/prefecture-statistics.json", "tests/fixtures/management-ai/prefecture-statistics.json"
+).replace(
+    "data/analysis/dx-necessity.json", "tests/fixtures/cross-analysis/dx-necessity.json"
+).replace(
+    "data/analysis/supply-demand-gap.json", "tests/fixtures/cross-analysis/supply-demand-gap.json"
+).replace(
+    "data/analysis/tourism-pressure.json", "tests/fixtures/cross-analysis/tourism-pressure.json"
+).replace(
+    "data/inbound/latest.json", "tests/fixtures/inbound/latest.json"
+)
+
+
+def test_fixture_datasets_are_one_consistent_snapshot():
+    data = run_node(LOAD_FIXTURES + r"""
+console.log(JSON.stringify({lodging:datasets.statistics.metadata.sources.lodging.reference_period,
+  dx:datasets.dx.metadata.sources.lodging.reference_period,inbound:[datasets.inbound.metadata.year,datasets.inbound.metadata.month]}));
+""")
+    assert data == {"lodging": "2025-08〜2026-07", "dx": "2025-08〜2026-07", "inbound": [2026, 7]}
+
+
+def test_all_47_prefectures_and_topics_produce_complete_answers():
+    data = run_node(LOAD_DATASETS + r"""
+const rows=[];
+for (const row of Object.values(datasets.statistics.prefectures)) {
+  for (const topic of Object.keys(R.TOPICS)) {
+    const context=R.getRegionContext(datasets,row.prefecture_slug);
+    const answer=R.generateInsights(context,topic,{},'');
+    rows.push({slug:row.prefecture_slug,name:context.name,topic,text:JSON.stringify(answer),lead:answer.lead,
+      perspectives:(answer.perspectives||[]).map((item)=>({id:item.id,status:item.status,checks:item.checks.length,lines:item.data?item.data.lines.length:0})),
+      checklist:answer.checklist.length,trendNotes:answer.trendNotes.length,regionNote:answer.regionNote,
+      monthly:answer.seasons?answer.seasons.rows.length:null});
+  }
+}
+console.log(JSON.stringify(rows));
+""")
+    assert len(data) == 47 * 5
+    for row in data:
+        assert "undefined" not in row["text"] and "NaN" not in row["text"], (row["slug"], row["topic"])
+        assert row["lead"]["title"] and row["lead"]["note"], (row["slug"], row["topic"])
+        assert row["regionNote"].startswith(f"表示している地域データは{row['name']}全体の集計値です")
+        if row["topic"] == "inbound":
+            assert [item["id"] for item in row["perspectives"]] == ["markets", "seasons", "reception"]
+            assert [item["status"] for item in row["perspectives"]] == ["data", "data", "self-check"], row["slug"]
+            assert all(item["checks"] == 3 for item in row["perspectives"])
+            assert row["perspectives"][0]["lines"] >= 3 and row["perspectives"][2]["lines"] == 0
+            assert row["monthly"] == 12
+        else:
+            assert row["perspectives"] == [] and row["checklist"] == 3
+
+
+def test_inbound_perspectives_use_inbound_tool_figures_and_split_survey_scopes():
+    data = run_node(LOAD_FIXTURES + r"""
+const M=require('./js/inbound-analysis-model.js');
+const mismatches=[];
+for (const row of Object.values(datasets.statistics.prefectures)) {
+  const context=R.getRegionContext(datasets,row.prefecture_slug);
+  const markets=R.inboundMarkets(context);
+  const expected=M.marketRows(datasets.inbound.prefectures[context.name],datasets.inbound.national);
+  const top=expected.slice(0,3).map((item)=>[item.name,item.value,item.localShare]);
+  if (JSON.stringify(top)!==JSON.stringify(markets.top.map((item)=>[item.name,item.value,item.localShare]))) mismatches.push(context.name);
+}
+const niigata=R.getRegionContext(datasets,'niigata');
+const seasons=R.inboundSeasons(niigata);
+const answer=R.generateInsights(niigata,'inbound',{type:'旅館'},'');
+console.log(JSON.stringify({mismatches,segments:seasons.segments.map((s)=>({scope:s.scope,months:s.months.length,peak:s.peak&&s.peak.month,low:s.low&&s.low.month})),
+  markets:answer.perspectives[0].data,seasonData:answer.perspectives[1].data,reception:answer.perspectives[2],lead:answer.lead,facts:answer.facts}));
+""")
+    assert data["mismatches"] == []
+    # 集計対象が変わる 2026年1月で区切り、区切りの中でだけ多い月・少ない月を選ぶ。
+    assert data["segments"] == [
+        {"scope": "従業者数10人以上の施設", "months": 5, "peak": 12, "low": 9},
+        {"scope": "客室数20室以上の施設", "months": 7, "peak": 2, "low": 5},
+    ]
+    assert "集計・層化基準が変わり" in data["seasonData"]["note"]
+    assert data["markets"]["lines"][0] == {"label": "1位 台湾", "value": "5,450人泊（構成比20.1%）"}
+    assert "2026年7月（第2次速報）の1か月分・客室数20室以上の施設" in data["markets"]["note"]
+    # ③は統計で判定しない。
+    assert data["reception"]["status"] == "self-check" and data["reception"]["data"] is None
+    assert "判定せず" in data["reception"]["selfCheck"]
+    assert "大浴場" in data["reception"]["checks"][0]
+    assert data["lead"]["title"] == "外国人宿泊が集中する時期に、自施設の販売と受け入れが合っているか"
+    assert "2月が5月の約6.1倍" in data["lead"]["note"] and "全国（約1.2倍）" in data["lead"]["note"]
+    assert "2026年1月〜2026年7月・客室数20室以上の施設" in data["lead"]["evidence"][0]
+    assert all(fact["note"] for fact in data["facts"])
+    assert "2025-08〜2026-07" in data["facts"][0]["note"] and "人泊" in data["facts"][0]["note"]
+
+
+def test_inbound_missing_data_shows_no_figures():
+    data = run_node(LOAD_DATASETS + r"""
+const broken=structuredClone(datasets);
+delete broken.inbound.prefectures['新潟県'];
+broken.statistics.prefectures['15'].foreign_guest_nights=null;
+const context=R.getRegionContext(broken,'niigata');
+const answer=R.generateInsights(context,'inbound',{},'');
+console.log(JSON.stringify({perspectives:answer.perspectives.map((item)=>({status:item.status,data:item.data,missing:item.missing})),seasons:answer.seasons,lead:answer.lead,missing:answer.missing}));
+""")
+    assert [item["status"] for item in data["perspectives"]] == ["missing", "missing", "self-check"]
+    assert data["perspectives"][0]["data"] is None and "取得できませんでした" in data["perspectives"][0]["missing"]
+    assert data["seasons"] is None
+    assert "取得できませんでした" in data["lead"]["note"]
+    assert "外国人延べ宿泊者数" in data["missing"]
+
+
+def test_foreign_share_gap_needs_guest_night_basis_and_rule_version_is_bumped():
+    data = run_node(LOAD_FIXTURES + r"""
+const context=R.getRegionContext(datasets,'tokyo');
+const run=(basis)=>{const a=R.generateInsights(context,'inbound',{foreignShare:2,foreignShareBasis:basis},'');return {rules:a.matchedRules,row:a.comparisons[0],lead:a.lead.title};};
+console.log(JSON.stringify({version:R.RULE_VERSION,nights:run('guest_nights'),bookings:run('bookings'),guests:run('guests'),unknown:run('unknown'),none:run(null)}));
+""")
+    assert data["version"] == "1.1.0"
+    assert data["nights"]["rules"][0] == "facility-foreign-gap" and data["nights"]["row"]["comparable"]
+    assert data["nights"]["row"]["difference"].endswith("pt")
+    assert data["nights"]["lead"] == "地域と比べて、自施設の外国人宿泊が少ない理由はどこにあるか"
+    for key in ("bookings", "guests", "unknown", "none"):
+        assert "facility-foreign-gap" not in data[key]["rules"], key
+        assert data[key]["row"]["rawDifference"] is None and data[key]["row"]["difference"] == "差は出していません"
+    assert "予約件数" in data["bookings"]["row"]["note"] and "未確認" in data["unknown"]["row"]["note"]
+
+
+def test_topic_fields_examples_and_question_guide():
+    data = run_node(LOAD_DATASETS + r"""
+const context=R.getRegionContext(datasets,'niigata');
+const guide=(topic,q)=>R.generateInsights(context,topic,{},q).questionGuide;
+console.log(JSON.stringify({fields:R.FACILITY_FIELDS,examples:Object.fromEntries(Object.entries(R.TOPIC_EXAMPLES).map(([k,v])=>[k,v.map((e)=>e.text)])),
+  example:guide('inbound','外国人宿泊需要が多い時期は？'),other:guide('inbound','採用が難しい'),unknown:guide('inbound','今日の天気は？'),
+  dx:guide('dx','フロントの電話対応が多い'),empty:guide('inbound','')}));
+""")
+    assert data["fields"] == {
+        "dx": ["type", "rooms", "employees"],
+        "inbound": ["type", "foreignShare"],
+        "sales": ["type", "rooms", "occupancyRate"],
+        "market": ["type"],
+        "other": ["type"],
+    }
+    assert data["examples"]["inbound"] == [
+        "この地域ではどの国・地域からの宿泊が多い？",
+        "外国人宿泊需要が多い時期は？",
+        "自施設のインバウンド対応で何を確認すべき？",
+    ]
+    assert all(len(texts) >= 2 for texts in data["examples"].values())
+    assert data["example"]["reflected"] and "②" in data["example"]["text"]
+    assert data["other"]["suggestedTopic"] == "dx" and "人手不足・DX" in data["other"]["text"]
+    assert not data["unknown"]["reflected"] and "反映していません" in data["unknown"]["text"]
+    assert data["dx"]["reflected"]
+    assert data["empty"] is None
+
+
+def test_hidden_facility_fields_are_not_read_and_url_keeps_only_pref_and_topic():
+    source = UI.read_text(encoding="utf-8")
+    assert "Rules.FACILITY_FIELDS[topic]" in source
+    assert "$(id).disabled = !active" in source
+    update_url = source[source.index("function updateUrl"):source.index("function selectedTopic")]
+    assert update_url.count("searchParams.set") == 2
+    for forbidden in ("rooms", "employees", "occupancy", "foreign"):
+        assert forbidden not in update_url
+
+
+def test_regional_features_are_compared_with_national_within_one_survey_scope():
+    data = run_node(LOAD_FIXTURES + r"""
+const pick=(slug)=>{const c=R.getRegionContext(datasets,slug);const a=R.generateInsights(c,'inbound',{},'');return {profile:c.inboundProfile,rules:a.matchedRules,lead:a.lead,trend:a.trendNotes};};
+const leads={};
+for (const row of Object.values(datasets.statistics.prefectures)) {
+  const a=R.generateInsights(R.getRegionContext(datasets,row.prefecture_slug),'inbound',{},'');
+  leads[a.lead.ruleId||'none']=(leads[a.lead.ruleId||'none']||0)+1;
+}
+const others={};
+for (const topic of ['dx','sales','market','other']) others[topic]=R.generateInsights(R.getRegionContext(datasets,'niigata'),topic,{},'').matchedRules;
+console.log(JSON.stringify({niigata:pick('niigata'),kagawa:pick('kagawa'),tokyo:pick('tokyo'),leads,others}));
+""")
+    season = data["niigata"]["profile"]["seasonality"]
+    # 2026年1月以降（客室数20室以上の施設）の月だけで、地域と全国の最多月÷最少月を比べる。
+    assert season["period"] == "2026年1月〜2026年7月" and season["scope"] == "客室数20室以上の施設"
+    assert (season["peak"]["month"], season["low"]["month"]) == (2, 5)
+    assert round(season["ratio"], 1) == 6.1 and round(season["nationalRatio"], 1) == 1.2
+    assert data["niigata"]["rules"][0] == "inbound-seasonality"
+    assert "inbound-concentration" not in data["niigata"]["rules"]  # 上位3つは46.1%で全国（46.6%）並み
+    concentration = data["kagawa"]["profile"]["concentration"]
+    assert concentration["names"] == ["台湾", "韓国", "中国"] and round(concentration["share"] * 100) == 82
+    assert data["kagawa"]["lead"]["ruleId"] == "inbound-concentration" and "82%" in data["kagawa"]["lead"]["note"]
+    assert data["tokyo"]["lead"]["ruleId"] == "inbound-market-opportunity" and "56.3%" in data["tokyo"]["lead"]["note"]
+    # 冒頭の論点は地域ごとに分かれ、一律の案内だけにならない。
+    assert sum(data["leads"].values()) == 47 and data["leads"].get("none", 0) < 15
+    # 追加ルールはインバウンドだけに効く。
+    assert not any(rule.startswith("inbound-") for rules in data["others"].values() for rule in rules)

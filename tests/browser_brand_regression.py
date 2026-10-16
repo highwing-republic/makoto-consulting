@@ -136,19 +136,24 @@ def main(destination):
             assert page.locator('#dx-question-form').is_visible()
             assert page.locator('#dx-answered-count').inner_text() == '0'
 
-            visit('management-ai.html?pref=nagano')
-            page.locator('input[name=topic][value=sales]').locator('..').click()
+            visit('management-ai.html?pref=nagano&topic=sales')
             page.select_option('#management-prefecture', label='長野県')
             page.locator('.management-optional summary').click()
+            assert not page.locator('#facility-foreign-share').is_visible()
             page.locator('#facility-rooms').fill('30')
-            page.locator('#facility-employees').fill('12')
             page.locator('#facility-occupancy').fill('62')
-            page.locator('#management-question').fill('フロント業務を効率化したい')
+            page.locator('#management-question').fill('平日の稼働率が低い')
             page.locator('#management-ai-form button[type=submit]').click()
             assert page.locator('#management-result').is_visible()
-            assert page.locator('#answer-status').inner_text()
-            assert 'Noto Sans JP' in page.locator('.management-step__number').first.evaluate('(e)=>getComputedStyle(e).fontFamily')
-            assert page.locator('#answer-status').evaluate('(e)=>getComputedStyle(e).fontWeight') == '400'
+            assert page.locator('#answer-lead-title').inner_text()
+            assert page.locator('#facility-comparison-section').is_visible()
+            assert 'Noto Sans JP' in page.locator('.management-control-heading h3').first.evaluate('(e)=>getComputedStyle(e).fontFamily')
+            capture('management-answer-sales', width)
+            visit('management-ai.html?pref=niigata&topic=inbound')
+            assert page.locator('input[name=topic][value=inbound]').is_checked()
+            page.locator('#management-ai-form button[type=submit]').click()
+            assert page.locator('.management-perspective').count() == 3
+            assert page.locator('#answer-next-link').get_attribute('href') == 'inbound-analysis.html?pref=niigata'
             capture('management-answer', width)
 
         # Every shell consumer; forwarding pages left by the 2026-10 site split are skipped.
