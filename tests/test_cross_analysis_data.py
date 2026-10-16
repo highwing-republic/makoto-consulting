@@ -24,7 +24,6 @@ FILES = (
     "tourism-pressure.json",
 )
 PAGES = (
-    "dx-necessity-analysis.html",
     "supply-demand-gap-analysis.html",
     "tourism-pressure-analysis.html",
 )
@@ -149,7 +148,7 @@ def test_home_lists_tools_in_order():
     assert all(label in home for label in ("旅館・ホテル", "インバウンド宿泊者分析", "観光株シグナル"))
     assert 'id="analysis-tools"' in home
     tool_ids = [
-        "dx-diagnosis", "inbound", "dx-necessity", "supply-demand",
+        "dx-diagnosis", "inbound", "supply-demand",
         "tourism-pressure", "market-signal", "hotel-price-trends",
         "management-issue-organizer",
     ]
@@ -267,3 +266,23 @@ def test_monthly_lodging_keeps_each_month_and_marks_the_basis_change():
     # 外国人が欠けている月は差し引きを作らない
     assert set(dataset["prefectures"]["15"]["domestic_guest_nights"]) == {None}
     assert dataset["metadata"]["basis_change_period"] == "2026-01"
+
+
+def test_retired_dx_necessity_page_forwards_to_the_management_tool():
+    # 地域の省人化・DX検討指標は 2026-10 に公開を終了した。データ（dx-necessity.json）は
+    # 宿泊経営の課題整理が使うので残し、旧 URL は都道府県を引き継いで「人手不足・DX」へ送る。
+    source = (ROOT / "dx-necessity-analysis.html").read_text(encoding="utf-8")
+    page = BeautifulSoup(source, "html.parser")
+    assert page.find("meta", attrs={"name": "robots"})["content"] == "noindex,follow"
+    assert page.find("link", rel="canonical")["href"] == "https://lab.ugatta-llc.com/management-ai.html"
+    assert page.find("meta", attrs={"http-equiv": "refresh"})["content"] == "0; url=/management-ai.html?topic=dx"
+    assert 'get("pref")' in source and '"?topic=dx"' in source and "location.replace(\"/management-ai.html\"" in source
+    assert (DATA_DIR / "dx-necessity.json").exists()
+    for listing in ("sitemap.xml", "llms.txt", "_data/tools.yml", "index.html"):
+        assert "dx-necessity-analysis" not in (ROOT / listing).read_text(encoding="utf-8"), listing
+    linking = [path for path in ROOT.rglob("*.html") if path.name != "dx-necessity-analysis.html"
+               and not {".git", "tourism-market-signal"} & set(path.relative_to(ROOT).parts)
+               and "dx-necessity-analysis" in path.read_text(encoding="utf-8")]
+    assert linking == []
+    assert "dx-necessity-analysis" not in (ROOT / "js/dx-diagnosis.js").read_text(encoding="utf-8")
+    assert "dx-necessity-analysis" not in (ROOT / "js/management-ai-rules.js").read_text(encoding="utf-8")

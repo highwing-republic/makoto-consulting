@@ -194,7 +194,7 @@
     "予約・販売": { label: "予約エンジンデモで自社予約の流れを見る", href: "/demo/booking/" },
     "会計": { label: "宿泊経営の課題整理（β）で論点を整理する", href: "/management-ai.html" },
     "業務": { label: "簡易PMSデモで客室ステータスの共有を試す", href: "/demo/mini-pms/" },
-    "勤怠・シフト": { label: "地域の省人化・DX検討指標で人手不足を見る", href: "/dx-necessity-analysis.html" },
+    "勤怠・シフト": { label: "宿泊経営の課題整理（β）で地域の人手不足を見る", href: "/management-ai.html?topic=dx" },
     "システム": { label: "簡易PMSデモで予約から部屋割りまでを試す", href: "/demo/mini-pms/" },
     "集客": { label: "予約エンジンデモで自社予約の流れを見る", href: "/demo/booking/" },
     "データ活用": { label: "宿泊料金トレンドで地域の相場を見る", href: "/hotel-price-trends.html" }

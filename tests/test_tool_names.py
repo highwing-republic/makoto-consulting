@@ -65,7 +65,7 @@ def test_each_tool_page_names_itself_the_way_the_home_page_links_to_it():
 
 
 def test_shortened_titles_lead_with_the_tool_name_and_end_with_the_site_name():
-    for path in ("inbound-analysis.html", "dx-necessity-analysis.html", "supply-demand-gap-analysis.html"):
+    for path in ("inbound-analysis.html", "supply-demand-gap-analysis.html"):
         page = soup(path)
         title = page.title.get_text()
         name = page.select(".breadcrumb li")[-1].get_text(strip=True)

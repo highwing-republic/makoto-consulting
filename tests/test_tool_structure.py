@@ -45,7 +45,6 @@ def test_converted_pages_use_the_three_standard_blocks():
     assert [path.name for path in pages] == [
         "business-hotel-price-trends.html",
         "dx-diagnosis.html",
-        "dx-necessity-analysis.html",
         "hotel-price-trends.html",
         "inbound-analysis.html",
         "management-ai.html",
@@ -99,7 +98,6 @@ def test_converted_pages_use_the_three_standard_blocks():
 
 
 PAGE_SCRIPTS = {
-    "dx-necessity-analysis.html": ("cross-analysis", "CrossAnalysisModel"),
     "supply-demand-gap-analysis.html": ("cross-analysis", "CrossAnalysisModel"),
     "tourism-pressure-analysis.html": ("cross-analysis", "CrossAnalysisModel"),
     "inbound-analysis.html": ("inbound-analysis", "InboundAnalysisModel"),

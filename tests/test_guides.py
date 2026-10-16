@@ -11,7 +11,7 @@ from site_pages import ROOT, rendered
 LAB = "https://lab.ugatta-llc.com"
 LAB_ORG = LAB + "/#organization"
 TOOL_PAGES = [
-    "dx-diagnosis.html", "inbound-analysis.html", "dx-necessity-analysis.html",
+    "dx-diagnosis.html", "inbound-analysis.html",
     "supply-demand-gap-analysis.html", "tourism-pressure-analysis.html",
     "management-ai.html", "hotel-price-trends.html", "report.html",
 ]

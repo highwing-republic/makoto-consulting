@@ -65,7 +65,6 @@
   const RELATED_TOOLS = {
     diagnosis: { number: '01', label: 'DXかんたん診断を見る', href: 'dx-diagnosis.html', supportsPref: false },
     inbound: { number: '02', label: 'インバウンド分析を見る', href: 'inbound-analysis.html', supportsPref: true },
-    dx: { number: '04', label: '地域の省人化・DX検討指標を見る', href: 'dx-necessity-analysis.html', supportsPref: true },
     supply: { number: '05', label: '宿泊市場の成長・稼働ポジションを見る', href: 'supply-demand-gap-analysis.html', supportsPref: true },
     tourism: { number: '06', label: '宿泊集中度・宿泊業依存度を見る', href: 'tourism-pressure-analysis.html', supportsPref: true }
   };
@@ -524,7 +523,7 @@
     const inboundMeta = context.datasets?.inbound?.metadata;
     const inboundMonth = inboundMeta ? `${inboundMeta.year}年${inboundMeta.month}月（${inboundMeta.release_type}）・${inboundMeta.survey_scope}` : '';
     if (topic === 'dx') {
-      add('→', `宿泊DX必要度は${context.dx.score == null ? '算出不可' : `${context.dx.score} / 100・全国${context.dx.rank}位`}`, '当サイトが公的統計から算出した参考スコア（地域の省人化・DX検討指標）');
+      add('→', `省人化・DX参考スコアは${context.dx.score == null ? '算出不可' : `${context.dx.score} / 100・全国${context.dx.rank}位`}`, '当サイトが公的統計から算出した参考スコア（需要伸び率・客室稼働率・宿泊運営負荷・生産年齢人口減少の47都道府県内順位を合成）');
       add(trendSymbol(s.demand_growth_rate, n.demand_growth_rate), `宿泊需要の伸びは${compareText(s.demand_growth_rate, n.demand_growth_rate)}（${formatPercent(s.demand_growth_rate, 1, true)}）です`, `延べ宿泊者数・${growthPeriod}`);
       add(isNumber(context.ranks.operationLoad) && context.ranks.operationLoad <= 15 ? '↑' : '→', isNumber(s.lodging_demand_per_employee) && isNumber(context.ranks.operationLoad)
         ? `従業者あたり宿泊需要は${formatNumber(s.lodging_demand_per_employee)}人泊・全国${context.ranks.operationLoad}位です`
@@ -585,17 +584,17 @@
 
   function relatedFor(topic) {
     const map = {
-      dx: ['diagnosis', 'dx', 'supply'],
+      dx: ['diagnosis', 'supply'],
       inbound: ['inbound', 'supply', 'tourism'],
-      sales: ['supply', 'dx'],
+      sales: ['supply', 'diagnosis'],
       market: ['supply', 'tourism', 'inbound'],
-      other: ['dx', 'inbound', 'supply', 'tourism']
+      other: ['diagnosis', 'inbound', 'supply', 'tourism']
     };
     return map[topic].map((key) => RELATED_TOOLS[key]);
   }
 
   function statusFor(context, topic) {
-    if (topic === 'dx') return `${context.name}の宿泊DX必要度は、全国47都道府県中${context.dx.rank ?? '算出不可'}位です。`;
+    if (topic === 'dx') return `${context.name}の省人化・DX参考スコアは、全国47都道府県中${context.dx.rank ?? '算出不可'}位です。`;
     if (topic === 'inbound') return isNumber(context.statistics.foreign_guest_nights)
       ? `${context.name}では、年間${formatNumber(context.statistics.foreign_guest_nights)}人泊の外国人宿泊需要が記録されています。`
       : `${context.name}の外国人延べ宿泊者数は現在データを取得できません。`;
@@ -853,9 +852,9 @@
     if (ruleId === 'dx-high-workforce-decline') {
       return {
         title: '人を増やしにくい中で、どの業務から省力化するか',
-        note: `${context.name}の生産年齢人口は5年前と比べて${formatPercent(s.working_age_population_change_rate, 1, true)}で、宿泊DX必要度は${context.dx.score} / 100（全国${context.dx.rank}位）です。人を増やす前提を置かず、予約管理・問い合わせ対応・集計など、手作業の時間が長い業務から確認しましょう。`,
+        note: `${context.name}の生産年齢人口は5年前と比べて${formatPercent(s.working_age_population_change_rate, 1, true)}で、省人化・DX参考スコアは${context.dx.score} / 100（全国${context.dx.rank}位）です。人を増やす前提を置かず、予約管理・問い合わせ対応・集計など、手作業の時間が長い業務から確認しましょう。`,
         ruleId,
-        evidence: [`生産年齢人口 5年前比 ${formatPercent(s.working_age_population_change_rate, 1, true)}（人口推計）`, `宿泊DX必要度 ${context.dx.score} / 100（当サイトが公的統計から算出した参考スコア）`]
+        evidence: [`生産年齢人口 5年前比 ${formatPercent(s.working_age_population_change_rate, 1, true)}（人口推計）`, `省人化・DX参考スコア ${context.dx.score} / 100（当サイトが公的統計から算出した参考スコア）`]
       };
     }
     if (ruleId === 'dx-seasonal-workload') {
@@ -1044,9 +1043,9 @@
       comparisons,
       matchedRules: matched.map((rule) => rule.id),
       missing,
-      references: topic === 'dx' ? ['01 DXかんたん診断', '04 地域の省人化・DX検討指標', '05 宿泊市場の成長・稼働ポジション']
+      references: topic === 'dx' ? ['01 DXかんたん診断', '省人化・DX参考スコア（当サイトの集計）', '05 宿泊市場の成長・稼働ポジション']
         : topic === 'inbound' ? ['02 インバウンド宿泊者分析', '05 宿泊市場の成長・稼働ポジション', '06 宿泊集中度・宿泊業依存度']
-          : topic === 'sales' ? ['05 宿泊市場の成長・稼働ポジション', '04 地域の省人化・DX検討指標']
+          : topic === 'sales' ? ['05 宿泊市場の成長・稼働ポジション', '省人化・DX参考スコア（当サイトの集計）']
             : topic === 'market' ? ['05 宿泊市場の成長・稼働ポジション', '06 宿泊集中度・宿泊業依存度', '02 インバウンド宿泊者分析']
               : ['相談テーマ一覧'],
       usedMetrics: topicFacts(context, topic, comparisons).map((fact) => fact.text)

@@ -7,17 +7,17 @@ tool_scope:
   - label: 対象
     text: 47都道府県と、任意で入力した自施設の客室数・従業員数・稼働率・外国人宿泊比率。都道府県だけでも利用できます。
   - label: データ
-    text: 地域の省人化・DX検討指標、宿泊市場の成長・稼働ポジション、宿泊集中度・宿泊業依存度、インバウンドの各分析データ（観光庁 宿泊旅行統計調査、総務省 人口推計・経済センサス）。
+    text: 省人化・DX参考スコア、宿泊市場の成長・稼働ポジション、宿泊集中度・宿泊業依存度、インバウンドの各分析データ（観光庁 宿泊旅行統計調査、総務省 人口推計・経済センサス）。
   - label: 条件
     text: 固定ルールで判定し、外部の生成AI APIは使用しません。施設情報はこのページ内で計算し、サーバーへ保存せず、URLや解析イベントにも含めません。
 tool_updated: データ読み込み後に表示
 tool_notes:
   - 公的統計と入力情報をもとに確認候補を提示するルールベース型ツールです。個別施設の経営成果を保証するものではなく、投資・採用・価格設定等の最終判断は利用者自身で行ってください。
   - 地域統計と施設情報は対象期間・施設範囲・分母が異なるため、厳密な比較ではありません。
+  - 省人化・DX参考スコアは、需要伸び率20%＋客室稼働率25%＋宿泊運営負荷30%＋生産年齢人口減少25%を、各指標の47都道府県内の percentile rank で合成した当サイトの参考値です。地域全体の目安で、自施設のDX成熟度や導入優先度を示すものではありません。
   - 氏名、施設名、電話番号、メールアドレスなどの個人情報は入力しないでください。
 tool_related:
   - dx-diagnosis
-  - dx-necessity
   - supply-demand
   - inbound
 ---
@@ -187,7 +187,7 @@ tool_related:
 
   {% include site-footer.html %}
   <script src="js/site.js?v=20260909c" defer></script>
-  <script src="js/management-ai-rules.js?v=20261016dxmarket" defer></script>
-  <script src="js/management-ai.js?v=20261016dxmarket" defer></script>
+  <script src="js/management-ai-rules.js?v=20261016retiredx" defer></script>
+  <script src="js/management-ai.js?v=20261016retiredx" defer></script>
 </body>
 </html>

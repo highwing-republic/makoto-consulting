@@ -17,7 +17,7 @@ LAB_ORG = LAB + "#organization"
 UGATTA_ORG = "https://ugatta-llc.com/#organization"
 NOTE = "https://note.com/hotel_dx_lab"
 TOOL_PAGES = [
-    "dx-diagnosis.html", "inbound-analysis.html", "dx-necessity-analysis.html",
+    "dx-diagnosis.html", "inbound-analysis.html",
     "supply-demand-gap-analysis.html", "tourism-pressure-analysis.html",
     "management-ai.html", "hotel-price-trends.html", "report.html",
     "business-hotel-price-trends.html",
@@ -118,7 +118,6 @@ def test_dx_diagnosis_names_all_eight_categories_without_javascript():
 def test_area_headings_read_naturally_before_the_data_loads():
     for path, fallback in [
         ("inbound-analysis.html", "選択した地域"),
-        ("dx-necessity-analysis.html", "選択した都道府県"),
         ("supply-demand-gap-analysis.html", "選択した都道府県"),
         ("tourism-pressure-analysis.html", "選択した都道府県"),
     ]:
