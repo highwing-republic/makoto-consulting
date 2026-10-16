@@ -18,7 +18,7 @@ UGATTA_ORG = "https://ugatta-llc.com/#organization"
 NOTE = "https://note.com/hotel_dx_lab"
 TOOL_PAGES = [
     "dx-diagnosis.html", "inbound-analysis.html",
-    "supply-demand-gap-analysis.html", "tourism-pressure-analysis.html",
+    "supply-demand-gap-analysis.html",
     "management-ai.html", "hotel-price-trends.html", "report.html",
     "business-hotel-price-trends.html",
 ]
@@ -119,6 +119,5 @@ def test_area_headings_read_naturally_before_the_data_loads():
     for path, fallback in [
         ("inbound-analysis.html", "選択した地域"),
         ("supply-demand-gap-analysis.html", "選択した都道府県"),
-        ("tourism-pressure-analysis.html", "選択した都道府県"),
     ]:
         assert soup(path).find(id="selected-area-name").get_text() == fallback, path

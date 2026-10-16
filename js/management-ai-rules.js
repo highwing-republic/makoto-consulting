@@ -65,8 +65,7 @@
   const RELATED_TOOLS = {
     diagnosis: { number: '01', label: 'DXかんたん診断を見る', href: 'dx-diagnosis.html', supportsPref: false },
     inbound: { number: '02', label: 'インバウンド分析を見る', href: 'inbound-analysis.html', supportsPref: true },
-    supply: { number: '05', label: '宿泊市場の成長・稼働ポジションを見る', href: 'supply-demand-gap-analysis.html', supportsPref: true },
-    tourism: { number: '06', label: '宿泊集中度・宿泊業依存度を見る', href: 'tourism-pressure-analysis.html', supportsPref: true }
+    supply: { number: '05', label: '宿泊市場の成長・稼働ポジションを見る', href: 'supply-demand-gap-analysis.html', supportsPref: true }
   };
 
   const isNumber = (value) => typeof value === 'number' && Number.isFinite(value);
@@ -551,8 +550,8 @@
     } else if (topic === 'market') {
       add('→', `宿泊市場タイプは「${context.supply.market_type}」です`, '宿泊市場の成長・稼働ポジションでの類型（当サイトの参考分類）');
       add(trendSymbol(s.demand_growth_rate, n.demand_growth_rate), `宿泊需要の伸びは${formatPercent(s.demand_growth_rate, 1, true)}で${compareText(s.demand_growth_rate, n.demand_growth_rate)}です`, `延べ宿泊者数・${growthPeriod}`);
-      add('→', `観光負荷参考スコアは${context.tourism.pressure_score ?? '算出不可'}、観光依存度参考スコアは${context.tourism.dependency_score ?? '算出不可'}です`, '宿泊集中度・宿泊業依存度の参考スコア（47都道府県内の相対評価）');
-      add('→', `地域類型は「${context.tourism.region_type}」です`, '宿泊集中度・宿泊業依存度での類型（当サイトの参考分類）');
+      add('→', `観光負荷参考スコアは${context.tourism.pressure_score ?? '算出不可'}、観光依存度参考スコアは${context.tourism.dependency_score ?? '算出不可'}です`, '当サイトが公的統計から算出した参考スコア（観光負荷は人口あたり宿泊需要と宿泊施設の密度、観光依存度は宿泊業の従業者・事業所の比率と人口あたり宿泊需要を、47都道府県内の順位で合成）');
+      add('→', `地域類型は「${context.tourism.region_type}」です`, '当サイトの参考分類（観光負荷と観光依存度の参考スコアを、それぞれ50点を境に分けた類型）');
       const peak = context.monthlyProfile?.occupancy;
       if (peak) {
         const difference = round1(peak.peak.occupancy - peak.nationalAtPeak);
@@ -585,10 +584,10 @@
   function relatedFor(topic) {
     const map = {
       dx: ['diagnosis', 'supply'],
-      inbound: ['inbound', 'supply', 'tourism'],
+      inbound: ['inbound', 'supply'],
       sales: ['supply', 'diagnosis'],
-      market: ['supply', 'tourism', 'inbound'],
-      other: ['diagnosis', 'inbound', 'supply', 'tourism']
+      market: ['supply', 'inbound'],
+      other: ['diagnosis', 'inbound', 'supply']
     };
     return map[topic].map((key) => RELATED_TOOLS[key]);
   }
@@ -1044,9 +1043,9 @@
       matchedRules: matched.map((rule) => rule.id),
       missing,
       references: topic === 'dx' ? ['01 DXかんたん診断', '省人化・DX参考スコア（当サイトの集計）', '05 宿泊市場の成長・稼働ポジション']
-        : topic === 'inbound' ? ['02 インバウンド宿泊者分析', '05 宿泊市場の成長・稼働ポジション', '06 宿泊集中度・宿泊業依存度']
+        : topic === 'inbound' ? ['02 インバウンド宿泊者分析', '05 宿泊市場の成長・稼働ポジション', '観光負荷・観光依存度参考スコア（当サイトの集計）']
           : topic === 'sales' ? ['05 宿泊市場の成長・稼働ポジション', '省人化・DX参考スコア（当サイトの集計）']
-            : topic === 'market' ? ['05 宿泊市場の成長・稼働ポジション', '06 宿泊集中度・宿泊業依存度', '02 インバウンド宿泊者分析']
+            : topic === 'market' ? ['05 宿泊市場の成長・稼働ポジション', '観光負荷・観光依存度参考スコア（当サイトの集計）', '02 インバウンド宿泊者分析']
               : ['相談テーマ一覧'],
       usedMetrics: topicFacts(context, topic, comparisons).map((fact) => fact.text)
     };

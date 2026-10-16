@@ -20,7 +20,6 @@
 
 - [インバウンド宿泊者分析](https://lab.ugatta-llc.com/inbound-analysis.html): 外国人延べ宿泊者数、国籍別の構成比、全国平均との差を都道府県ごとに示します。
 - [宿泊市場の成長・稼働ポジション](https://lab.ugatta-llc.com/supply-demand-gap-analysis.html): 宿泊需要の伸びと客室稼働率を全国平均と比べ、需給のバランスを示します。
-- [宿泊集中度・宿泊業依存度](https://lab.ugatta-llc.com/tourism-pressure-analysis.html): 人口あたりの宿泊需要、施設の密度、宿泊業の従業者数と事業所数から、観光負荷と宿泊業への依存度を比べます。
 
 ## 市場の動きを知る
 

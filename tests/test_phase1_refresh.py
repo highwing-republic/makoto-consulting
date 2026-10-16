@@ -31,7 +31,7 @@ def test_lab_notes_link_is_kept_out_of_headers_and_small_at_page_bottom():
 def test_every_html_page_loads_the_canonical_site_shell():
     # Demo pages are standalone mock sites with their own header and footer.
     pages = [path for path in filter(is_published, ROOT.rglob("*.html")) if not {"demo", "tourism-market-signal"} & set(path.relative_to(ROOT).parts) and not is_redirect_stub(path)]
-    assert len(pages) == 20
+    assert len(pages) == 19
     for path in pages:
         page = BeautifulSoup(rendered(path), "html.parser")
         assert page.find("link", href="/css/site-shell.css?v=20261012shell"), path
@@ -69,7 +69,7 @@ def test_home_is_concise_and_groups_all_tools_by_purpose():
     ]
     for name in ("hotel-price-trends", "inbound-analysis", "dx-diagnosis", "mini-pms"):
         assert (ROOT / "images" / "thumbs" / f"{name}.svg").exists()
-    assert len(page.select("#analysis-tools .analysis-card")) == 12
+    assert len(page.select("#analysis-tools .analysis-card")) == 11
     assert len(page.select("#analysis-tools .tool-group")) == 4
     # Card wrappers are block elements: no heading, paragraph or div may sit inside a span.
     assert page.select("span h3, span p, span div") == []
@@ -91,7 +91,7 @@ def test_home_is_concise_and_groups_all_tools_by_purpose():
 def test_home_is_only_tool_directory_and_legacy_page_is_removed():
     assert not (ROOT / "useful.html").exists()
     home = soup("index.html")
-    assert len(home.select("#analysis-tools .analysis-card")) == 12
+    assert len(home.select("#analysis-tools .analysis-card")) == 11
     assert home.select_one('a[href="/report.html"]')
 
     report = soup("report.html")
@@ -219,7 +219,6 @@ def test_analysis_pages_hide_initial_error_and_offer_copy_print_and_rich_noscrip
     for name in (
         "inbound-analysis.html",
         "supply-demand-gap-analysis.html",
-        "tourism-pressure-analysis.html",
     ):
         page = soup(name)
         error = page.find(id="data-error")
@@ -255,7 +254,6 @@ def test_analytics_adapter_uses_allowlisted_non_free_text_fields():
 def test_recommended_regional_tool_names_are_visible_with_legacy_context():
     expected = {
         "supply-demand-gap-analysis.html": ("宿泊市場の成長・稼働ポジション", "供給不足率、将来需要、投資効果を示すものではありません"),
-        "tourism-pressure-analysis.html": ("宿泊集中度", "旧「観光負荷・観光依存度分析」"),
     }
     for name, (current, legacy) in expected.items():
         page = soup(name)
@@ -298,7 +296,7 @@ def test_lab_pages_get_the_shared_header_and_footer_at_build_time():
     # Every Lab page except the standalone demos and the synced signal report
     # is built by Jekyll from the shared includes.
     pages = [path for path in filter(is_published, ROOT.rglob("*.html")) if not {"demo", "tourism-market-signal"} & set(path.relative_to(ROOT).parts) and not is_redirect_stub(path)]
-    assert len(pages) == 20
+    assert len(pages) == 19
     for path in pages:
         source = path.read_text(encoding="utf-8")
         assert source.startswith("---\n"), path

@@ -158,12 +158,14 @@ def test_topic_classification_pref_fallback_and_five_representative_cases():
     assert diagnosis_link == "dx-diagnosis.html"
     assert regional_links and all("?pref=nagano" in link for link in regional_links)
     assert data["inbound"]["name"] == "京都府"
-    assert data["inbound"]["references"] == ["02 インバウンド宿泊者分析", "05 宿泊市場の成長・稼働ポジション", "06 宿泊集中度・宿泊業依存度"]
+    assert data["inbound"]["references"] == ["02 インバウンド宿泊者分析", "05 宿泊市場の成長・稼働ポジション", "観光負荷・観光依存度参考スコア（当サイトの集計）"]
     assert data["sales"]["name"] == "鹿児島県"
     assert any(row["key"] == "occupancy" for row in data["sales"]["comparisons"])
     assert len(data["sales"]["matchedRules"]) >= 1
     assert data["market"]["name"] == "沖縄県"
     assert "05 宿泊市場の成長・稼働ポジション" in data["market"]["references"]
+    assert "観光負荷・観光依存度参考スコア（当サイトの集計）" in data["market"]["references"]
+    assert all("tourism-pressure-analysis" not in tool["href"] for topic in ("inbound", "market", "other") for tool in data[topic]["relatedTools"])
     assert data["other"]["name"] == "東京都"
     assert data["other"]["references"] == ["相談テーマ一覧"]
     assert 2 <= len(data["multi"]["matchedRules"]) <= 3

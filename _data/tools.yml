@@ -26,13 +26,6 @@
   tag: 公的データ
   pref: true
   summary: 需要・稼働率・宿泊事業所数から、地域の需給状況を分析します。
-- id: tourism-pressure
-  title: 宿泊集中度・宿泊業依存度
-  url: /tourism-pressure-analysis.html
-  group: regional
-  tag: 公的データ
-  pref: true
-  summary: 宿泊者数・人口・宿泊業従業者数から、地域の観光依存度を分析します。
 - id: market-signal
   title: 観光株シグナル
   url: /report.html
