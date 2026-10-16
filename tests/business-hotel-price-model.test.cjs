@@ -182,3 +182,65 @@ test("ランキング: 値動き・跳ね上がる日・7日の値上がりを�
   assert.equal(ranks.risingMarkets[0].market, "岡山"); // 7,130円前後に+400円は札幌より上昇率が大きい
   assert.ok(ranks.risingHotels.length === 5 && ranks.risingHotels.every((row) => row.value > 0));
 });
+
+test("祝日と休前日: 祝前日の泊は休前日、祝日の泊は祝日として扱う", () => {
+  assert.equal(model.holidayName("2026-11-03"), "文化の日");
+  assert.equal(model.nightType("2026-11-02"), "eve"); // 月曜泊・翌日が祝日
+  assert.equal(model.nightType("2026-11-03"), "holiday"); // 祝日の火曜泊（翌日は平日）
+  assert.equal(model.nightType("2026-11-06"), "eve"); // 金曜泊
+  assert.equal(model.nightType("2026-11-08"), "weekday"); // 日曜泊・翌日は平日
+  assert.equal(model.nightType("2026-11-22"), "eve"); // 日曜泊・翌日が勤労感謝の日
+  assert.equal(model.nightType("2027-03-21"), "eve"); // 春分の日（日）・翌日は振替休日
+});
+
+// 11/1（日）〜14泊。11/2（月・祝前日）と11/3（祝）を含む。11/7（土）は2施設が売り切れで料金は3施設だけ・高騰
+function holidaySnapshot() {
+  const dates = Array.from({length: 14}, (_, i) => model.addDays("2026-11-01", i));
+  const price = (d, offset) => {
+    const type = model.nightType(d);
+    const base = d === "2026-11-07" ? 25000 : type === "eve" ? 11000 : 8000;
+    return base + offset * 100;
+  };
+  const soldOutOn = (i, d) => d === "2026-11-07" && i >= 3;
+  return {
+    snapshot_date: "2026-11-01",
+    cohort_version: "bh-v1",
+    stay_dates: dates,
+    markets: [{
+      code: "sapporo",
+      hotels: [1, 2, 3, 4, 5].map((no, i) => ({hotel_no: no, price: dates.map((d) => (soldOutOn(i, d) ? null : price(d, i))), meal: dates.map((d) => (soldOutOn(i, d) ? "-" : "R")).join("")})).concat([{hotel_no: 9, price: dates.map(() => 1), meal: "R".repeat(14)}]),
+    }],
+  };
+}
+
+test("売り切れが目立つ日と、参考値の日の急騰を拾う", () => {
+  const summary = model.marketSummary(model.marketView(cohort, holidaySnapshot(), "sapporo"));
+  const day = summary.days.find((d) => d.date === "2026-11-07");
+  assert.equal(day.status, "reference");
+  assert.equal(day.soldOut, 2);
+  assert.equal(day.busy, true);
+  assert.deepEqual(summary.busy.map((d) => d.date), ["2026-11-07"]);
+  const spike = summary.spikes.find((d) => d.date === "2026-11-07");
+  assert.ok(spike && spike.reference && spike.soldOut === 2);
+  assert.equal(model.calendarClass(day, summary.typical), "spike");
+});
+
+test("曜日別は祝日・祝前日の泊を除き、休前日の差は祝前日も休前日に数える", () => {
+  const summary = model.marketSummary(model.marketView(cohort, holidaySnapshot(), "sapporo"));
+  const monday = summary.weekdays.find((d) => d.label === "月");
+  assert.equal(monday.nights, 1); // 11/2（祝前日）は除き、11/9だけ
+  const tuesday = summary.weekdays.find((d) => d.label === "火");
+  assert.equal(tuesday.nights, 1); // 11/3（祝日）は除き、11/10だけ
+  assert.ok(summary.weekendPremium > 30); // 休前日 11,200円 前後 ÷ 平日 8,200円
+});
+
+test("今週のポイント: 直近の休前日、売り切れ、急騰を決まった文型で出す", () => {
+  const national = model.nationalSummary(cohort, holidaySnapshot(), null);
+  const items = model.highlights(national, {today: "2026-11-01"});
+  assert.equal(items[0].kind, "eve");
+  assert.match(items[0].text, /^直近の休前日 11\/2（月）は、1都市で代表料金の1\.3倍以上/);
+  const spike = items.find((item) => item.kind === "spike");
+  assert.match(spike.text, /札幌 11\/7（土）：中央値 .*2施設が売り切れ/);
+  const ranks = model.rankings(national);
+  assert.deepEqual(ranks.busyDays.map((d) => [d.market, d.date, d.soldOut]), [["札幌", "2026-11-07", 2]]);
+});

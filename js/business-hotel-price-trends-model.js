@@ -21,6 +21,21 @@
   const SPREAD_HIGH = 0.9; // 上位1割の日を除いた幅
   const SPREAD_MIN_NIGHTS = 10; // 10泊以上あるときだけ出す
   const RANK_SIZE = 5;
+  const SOLD_OUT_MIN = 2; // COREのうち2施設以上で楽天の販売プランなし → 売り切れが目立つ日
+
+  // 国民の祝日（振替休日・国民の休日を含む）。観測期間（当日から60泊）に必要な範囲を持つ。
+  const HOLIDAYS = {
+    "2026-01-01": "元日", "2026-01-12": "成人の日", "2026-02-11": "建国記念の日", "2026-02-23": "天皇誕生日",
+    "2026-03-20": "春分の日", "2026-04-29": "昭和の日", "2026-05-03": "憲法記念日", "2026-05-04": "みどりの日",
+    "2026-05-05": "こどもの日", "2026-05-06": "振替休日", "2026-07-20": "海の日", "2026-08-11": "山の日",
+    "2026-09-21": "敬老の日", "2026-09-22": "国民の休日", "2026-09-23": "秋分の日", "2026-10-12": "スポーツの日",
+    "2026-11-03": "文化の日", "2026-11-23": "勤労感謝の日",
+    "2027-01-01": "元日", "2027-01-11": "成人の日", "2027-02-11": "建国記念の日", "2027-02-23": "天皇誕生日",
+    "2027-03-21": "春分の日", "2027-03-22": "振替休日", "2027-04-29": "昭和の日", "2027-05-03": "憲法記念日",
+    "2027-05-04": "みどりの日", "2027-05-05": "こどもの日", "2027-07-19": "海の日", "2027-08-11": "山の日",
+    "2027-09-20": "敬老の日", "2027-09-23": "秋分の日", "2027-10-11": "スポーツの日", "2027-11-03": "文化の日",
+    "2027-11-23": "勤労感謝の日",
+  };
 
   const isPrice = (value) => typeof value === "number" && Number.isFinite(value) && value > 0;
   const parseDate = (value) => (/^\d{4}-\d{2}-\d{2}$/.test(value || "") ? value.split("-").map(Number) : null);
@@ -32,6 +47,15 @@
     const parts = parseDate(value);
     if (!parts) return null;
     return new Date(Date.UTC(parts[0], parts[1] - 1, parts[2] + days)).toISOString().slice(0, 10);
+  };
+  const holidayName = (value) => HOLIDAYS[value] || null;
+  // 宿泊日の種類: 休前日（金・土・祝前日の泊）／祝日の泊／平日の泊
+  const nightType = (value) => {
+    const next = addDays(value, 1);
+    const nextWeekday = weekdayIndex(next);
+    if (nextWeekday === 6 || nextWeekday === 0 || holidayName(next)) return "eve";
+    if (holidayName(value)) return "holiday";
+    return "weekday";
   };
   const formatDate = (value) => {
     const parts = parseDate(value);
@@ -106,9 +130,15 @@
       const prices = view.core.map((hotel) => hotel.prices[index]).filter(isPrice);
       const count = prices.length;
       const status = count >= MIN_CORE_FOR_MEDIAN ? "ok" : count === REFERENCE_CORE ? "reference" : "none";
+      const soldOut = view.core.filter((hotel) => hotel.meals[index] === "-").length;
       return {
         date,
         weekday: weekdayIndex(date),
+        nightType: nightType(date),
+        holiday: holidayName(date),
+        eveOf: holidayName(addDays(date, 1)),
+        soldOut,
+        busy: soldOut >= SOLD_OUT_MIN,
         count,
         total: view.core.length,
         status,
@@ -121,9 +151,11 @@
 
   // ---------------------------------------------------------------- 市場の指標
 
+  // 曜日別は祝日・祝前日の泊を除く（例: 祝日前の日曜泊を「日曜」に混ぜない）。金・土はそのまま
   function weekdayPattern(days, typical) {
+    const plain = (day) => !day.holiday && !(day.eveOf && day.weekday !== 5 && day.weekday !== 6);
     return WEEKDAYS.map((label, weekday) => {
-      const values = days.filter((day) => day.status === "ok" && day.weekday === weekday).map((day) => day.median);
+      const values = days.filter((day) => day.status === "ok" && day.weekday === weekday && plain(day)).map((day) => day.median);
       const value = median(values);
       return {weekday, label, nights: values.length, median: value, index: value && typical ? (value / typical - 1) * 100 : null};
     });
@@ -134,9 +166,11 @@
     const ok = days.filter((day) => day.status === "ok");
     const values = ok.map((day) => day.median);
     const typical = median(values);
-    const weekend = median(ok.filter((day) => day.weekday === 5 || day.weekday === 6).map((day) => day.median));
-    const weekdays = median(ok.filter((day) => day.weekday >= 0 && day.weekday <= 4).map((day) => day.median));
-    const spikes = typical ? ok.filter((day) => day.median >= typical * SPIKE_RATIO) : [];
+    const weekend = median(ok.filter((day) => day.nightType === "eve").map((day) => day.median));
+    const weekdays = median(ok.filter((day) => day.nightType === "weekday").map((day) => day.median));
+    // 急騰日は参考値（料金確認3施設）の日も含める。混む日ほど売り切れで参考値になりやすいため
+    const spikes = typical ? days.filter((day) => day.status !== "none" && day.median >= typical * SPIKE_RATIO) : [];
+    const busy = days.filter((day) => day.busy);
     const low = ok.length ? Math.min(...values) : null;
     const high = ok.length ? Math.max(...values) : null;
     return {
@@ -150,7 +184,8 @@
       low,
       high,
       weekendPremium: weekend && weekdays ? (weekend / weekdays - 1) * 100 : null,
-      spikes: spikes.map((day) => ({date: day.date, median: day.median, ratio: day.median / typical})),
+      spikes: spikes.map((day) => ({date: day.date, median: day.median, ratio: day.median / typical, reference: day.status === "reference", soldOut: day.soldOut})),
+      busy: busy.map((day) => ({date: day.date, soldOut: day.soldOut, total: day.total, median: day.median, ratio: day.median && typical ? day.median / typical : null, status: day.status})),
       days,
       weekdays: weekdayPattern(days, typical),
     };
@@ -250,6 +285,8 @@
       lowest: byTypical[byTypical.length - 1] || null,
       weekendPremium: medianOfNumbers(markets.map((item) => item.summary.weekendPremium)),
       spikeMarkets: markets.filter((item) => item.summary.spikes.length > 0).length,
+      busyMarkets: markets.filter((item) => item.summary.busy.length > 0).length,
+      busyNights: markets.reduce((sum, item) => sum + item.summary.busy.length, 0),
       weekly: {
         available: weekly.length,
         up: weekly.filter((item) => item.weekly.direction === "up").length,
@@ -259,16 +296,58 @@
     };
   }
 
+  // 今週のポイント: 集計値を決まった文型に当てはめた文（推測は入れない）
+  function highlights(national, {today} = {}) {
+    const items = [];
+    const start = today || national.markets[0]?.view.dates[0];
+    const week = new Set(Array.from({length: 7}, (_, i) => addDays(start, i)));
+    // 1) 直近の休前日
+    const eves = national.markets.flatMap((item) => item.summary.days.filter((day) => week.has(day.date) && day.nightType === "eve"));
+    const nextEve = eves.map((day) => day.date).sort()[0];
+    if (nextEve) {
+      const rows = national.markets.map((item) => {
+        const day = item.summary.days.find((d) => d.date === nextEve);
+        return {item, day, ratio: day && day.status !== "none" && item.summary.typical ? day.median / item.summary.typical : null};
+      });
+      const high = rows.filter((row) => row.ratio !== null && row.ratio >= 1.3).sort((a, b) => b.ratio - a.ratio);
+      const soldOut = rows.filter((row) => row.day && row.day.busy);
+      if (high.length) {
+        const names = high.slice(0, 3).map((row) => `${row.item.name}（代表料金の${row.ratio.toFixed(1)}倍）`).join("、");
+        items.push({kind: "eve", date: nextEve, code: high[0].item.code, text: `直近の休前日 ${formatDate(nextEve)}は、${high.length}都市で代表料金の1.3倍以上。高いのは${names}。`});
+      } else {
+        items.push({kind: "eve", date: nextEve, code: null, text: `直近の休前日 ${formatDate(nextEve)}は、代表料金の1.3倍を超える都市はありません。`});
+      }
+      if (soldOut.length >= 2) items.push({kind: "eve-busy", date: nextEve, code: soldOut[0].item.code, text: `${formatDate(nextEve)}は${soldOut.map((row) => row.item.name).join("・")}で売り切れが目立ちます。`});
+    }
+    // 2) 売り切れが目立つ都市が最も多い日（30泊以内、平日を優先して取り上げる）
+    const byDate = {};
+    for (const item of national.markets) for (const day of item.summary.busy) (byDate[day.date] ||= []).push(item.name);
+    const busiest = Object.entries(byDate).filter(([date]) => date !== nextEve).sort((a, b) => b[1].length - a[1].length || a[0].localeCompare(b[0]))[0];
+    if (busiest && busiest[1].length >= 3) {
+      const type = nightType(busiest[0]);
+      items.push({kind: "busy", date: busiest[0], code: null, text: `${formatDate(busiest[0])}${type === "weekday" ? "（平日）" : ""}は${busiest[1].length}都市で売り切れが目立ちます（${busiest[1].join("・")}）。`});
+    }
+    // 3) 最も跳ね上がる日
+    const spike = national.markets.flatMap((item) => item.summary.spikes.map((day) => ({item, day}))).sort((a, b) => b.day.ratio - a.day.ratio)[0];
+    if (spike) items.push({kind: "spike", date: spike.day.date, code: spike.item.code, text: `いちばん跳ね上がるのは${spike.item.name} ${formatDate(spike.day.date)}：中央値 ${formatYen(spike.day.median)}（代表料金の${spike.day.ratio.toFixed(1)}倍${spike.day.soldOut ? `・${spike.day.soldOut}施設が売り切れ` : ""}）。`});
+    // 4) 7日変化
+    if (national.weekly.available) items.push({kind: "weekly", code: null, text: `7日前と比べて、値上がり${national.weekly.up}都市・値下がり${national.weekly.down}都市・横ばい${national.weekly.flat}都市。`});
+    return items.slice(0, 4);
+  }
+
   function rankings(national) {
     const top = (list, key) => list.filter((item) => typeof item[key] === "number" && Number.isFinite(item[key])).sort((a, b) => b[key] - a[key]).slice(0, RANK_SIZE);
     const volatileMarkets = top(national.markets.map((item) => ({code: item.code, market: item.name, value: item.summary.volatility, low: item.summary.low, high: item.summary.high})), "value");
     const hotels = national.markets.flatMap((item) => item.view.core.map((hotel) => ({code: item.code, market: item.name, ...hotelSummary(hotel)})));
     const volatileHotels = top(hotels.map((hotel) => ({...hotel, value: hotel.volatility})), "value");
-    const spikeDays = top(national.markets.flatMap((item) => item.summary.spikes.map((day) => ({code: item.code, market: item.name, date: day.date, median: day.median, typical: item.summary.typical, value: day.ratio}))), "value");
+    const spikeDays = top(national.markets.flatMap((item) => item.summary.spikes.map((day) => ({code: item.code, market: item.name, date: day.date, median: day.median, typical: item.summary.typical, reference: day.reference, soldOut: day.soldOut, value: day.ratio}))), "value");
+    // 売り切れが目立つ日: 販売プランなしの施設数が多い順、同数なら料金が高い順
+    const busyDays = national.markets.flatMap((item) => item.summary.busy.map((day) => ({code: item.code, market: item.name, ...day, value: day.soldOut + (day.ratio || 0) / 100})))
+      .sort((a, b) => b.value - a.value).slice(0, RANK_SIZE);
     const weeklyHotels = national.markets.flatMap((item) => (item.weekly.hotels || []).map((hotel) => ({code: item.code, market: item.name, ...hotel, value: hotel.change})));
     const risingHotels = top(weeklyHotels.filter((hotel) => hotel.value > 0), "value");
     const risingMarkets = top(national.markets.filter((item) => item.weekly.status === "ok" && item.weekly.change > 0).map((item) => ({code: item.code, market: item.name, value: item.weekly.change, hotelCount: item.weekly.hotelCount})), "value");
-    return {volatileMarkets, volatileHotels, spikeDays, risingMarkets, risingHotels};
+    return {volatileMarkets, volatileHotels, spikeDays, busyDays, risingMarkets, risingHotels};
   }
 
   return {
@@ -284,6 +363,10 @@
     formatRatio,
     nationalSummary,
     rankings,
+    highlights,
+    holidayName,
+    nightType,
+    SOLD_OUT_MIN,
     weekdayIndex,
     addDays,
     formatDate,
