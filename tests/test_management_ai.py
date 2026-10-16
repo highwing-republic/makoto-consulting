@@ -221,6 +221,29 @@ const datasets={
 const R=globalThis.ManagementAIRules;
 """
 
+# 具体的な数値を確かめるテストは、2026年7月分（第2次速報）で固定したデータを使う。
+# 公開データ（data/）は週次の自動更新で変わり、更新処理は pytest が通った場合だけコミットするため、
+# 公開データに数値を固定すると次の月のデータ更新が止まってしまう。
+LOAD_FIXTURES = LOAD_DATASETS.replace(
+    "data/analysis/prefecture-statistics.json", "tests/fixtures/management-ai/prefecture-statistics.json"
+).replace(
+    "data/analysis/dx-necessity.json", "tests/fixtures/cross-analysis/dx-necessity.json"
+).replace(
+    "data/analysis/supply-demand-gap.json", "tests/fixtures/cross-analysis/supply-demand-gap.json"
+).replace(
+    "data/analysis/tourism-pressure.json", "tests/fixtures/cross-analysis/tourism-pressure.json"
+).replace(
+    "data/inbound/latest.json", "tests/fixtures/inbound/latest.json"
+)
+
+
+def test_fixture_datasets_are_one_consistent_snapshot():
+    data = run_node(LOAD_FIXTURES + r"""
+console.log(JSON.stringify({lodging:datasets.statistics.metadata.sources.lodging.reference_period,
+  dx:datasets.dx.metadata.sources.lodging.reference_period,inbound:[datasets.inbound.metadata.year,datasets.inbound.metadata.month]}));
+""")
+    assert data == {"lodging": "2025-08〜2026-07", "dx": "2025-08〜2026-07", "inbound": [2026, 7]}
+
 
 def test_all_47_prefectures_and_topics_produce_complete_answers():
     data = run_node(LOAD_DATASETS + r"""
@@ -253,7 +276,7 @@ console.log(JSON.stringify(rows));
 
 
 def test_inbound_perspectives_use_inbound_tool_figures_and_split_survey_scopes():
-    data = run_node(LOAD_DATASETS + r"""
+    data = run_node(LOAD_FIXTURES + r"""
 const M=require('./js/inbound-analysis-model.js');
 const mismatches=[];
 for (const row of Object.values(datasets.statistics.prefectures)) {
@@ -306,7 +329,7 @@ console.log(JSON.stringify({perspectives:answer.perspectives.map((item)=>({statu
 
 
 def test_foreign_share_gap_needs_guest_night_basis_and_rule_version_is_bumped():
-    data = run_node(LOAD_DATASETS + r"""
+    data = run_node(LOAD_FIXTURES + r"""
 const context=R.getRegionContext(datasets,'tokyo');
 const run=(basis)=>{const a=R.generateInsights(context,'inbound',{foreignShare:2,foreignShareBasis:basis},'');return {rules:a.matchedRules,row:a.comparisons[0],lead:a.lead.title};};
 console.log(JSON.stringify({version:R.RULE_VERSION,nights:run('guest_nights'),bookings:run('bookings'),guests:run('guests'),unknown:run('unknown'),none:run(null)}));
@@ -360,7 +383,7 @@ def test_hidden_facility_fields_are_not_read_and_url_keeps_only_pref_and_topic()
 
 
 def test_regional_features_are_compared_with_national_within_one_survey_scope():
-    data = run_node(LOAD_DATASETS + r"""
+    data = run_node(LOAD_FIXTURES + r"""
 const pick=(slug)=>{const c=R.getRegionContext(datasets,slug);const a=R.generateInsights(c,'inbound',{},'');return {profile:c.inboundProfile,rules:a.matchedRules,lead:a.lead,trend:a.trendNotes};};
 const leads={};
 for (const row of Object.values(datasets.statistics.prefectures)) {
