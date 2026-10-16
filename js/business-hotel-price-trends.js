@@ -4,7 +4,7 @@
   const M = globalThis.BusinessHotelPriceModel;
   const DATA = "data/business-hotel-price-trends/";
   const $ = (selector) => document.querySelector(selector);
-  const state = {cohort: null, manifest: null, latest: null, previous: null, market: null, nights: 30};
+  const state = {cohort: null, manifest: null, latest: null, previous: null, market: null, nights: 30, rankTab: "volatileMarkets"};
 
   const escapeHtml = (value) => String(value ?? "").replace(/[&<>"']/g, (c) => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"})[c]);
   const yen = M.formatYen;
@@ -97,10 +97,10 @@
     const updated = $("#source-updated");
     if (updated) updated.textContent = state.latest.snapshot_date;
 
-    const summaries = state.cohort.markets.map((market) => {
-      const view = M.marketView(state.cohort, state.latest, market.code, {nights: state.nights});
-      return {view, summary: view ? M.marketSummary(view) : null, weekly: M.weeklyChange(state.cohort, state.latest, state.previous, market.code)};
-    });
+    const national = M.nationalSummary(state.cohort, state.latest, state.previous, {nights: state.nights});
+    const summaries = national.markets;
+    renderSummary(national);
+    renderRankings(M.rankings(national), national);
     renderCompare(summaries);
     renderBrand();
     const current = summaries.find((item) => item.view && item.view.code === state.market);
@@ -111,6 +111,89 @@
     renderMeals(current.view);
     renderCalendar(current.summary);
     renderHotels(current.view);
+  }
+
+  // ---------------------------------------------------------------- 全国サマリ
+
+  function renderSummary(national) {
+    const w = national.weekly;
+    const tiles = [
+      {label: `${national.marketCount}都市の代表料金`, value: yen(national.typical), note: national.highest && national.lowest ? `最も高い ${national.highest.name} ${yen(national.highest.summary.typical)}／最も安い ${national.lowest.name} ${yen(national.lowest.summary.typical)}` : "", lead: true},
+      {label: "週末（金土）の差", value: pct(national.weekendPremium), note: "日〜木曜泊と比べた差の、都市の中央値"},
+      {label: "急騰日のある都市", value: `${national.spikeMarkets}都市`, note: `代表料金の${M.SPIKE_RATIO}倍以上の日がある都市（${national.marketCount}都市中）`},
+      w.available
+        ? {label: "7日前より値上がり", value: `${w.up}都市`, note: `値下がり ${w.down}都市・横ばい ${w.flat}都市（比較できた${w.available}都市中）`}
+        : {label: "7日前より値上がり", value: "蓄積中", note: "同じ比較施設群で7日前の取得がそろうと表示されます", status: true},
+    ];
+    $("#bht-summary-meta").textContent = `今日から${state.nights}泊・CORE施設で集計`;
+    $("#bht-summary-tiles").innerHTML = tiles.map((tile) => `<article class="bht-kpi${tile.lead ? " bht-kpi--lead" : ""}"><span>${escapeHtml(tile.label)}</span><strong class="${tile.status ? "bht-kpi__status" : ""}">${escapeHtml(tile.value)}</strong><small>${escapeHtml(tile.note)}</small></article>`).join("");
+  }
+
+  const RANK_TABS = [
+    {key: "volatileMarkets", label: "値動きが大きい都市"},
+    {key: "volatileHotels", label: "値動きが大きい施設"},
+    {key: "spikeDays", label: "料金が跳ね上がる日"},
+    {key: "rising", label: "7日で値上がり"},
+  ];
+
+  function rankRows(ranks, key) {
+    if (key === "volatileMarkets") return {unit: "ratio", rows: ranks.volatileMarkets.map((row) => ({code: row.code, title: row.market, sub: `宿泊日ごとの中央値 ${yen(row.low)}〜${yen(row.high)}`, value: row.value}))};
+    if (key === "volatileHotels") return {unit: "ratio", rows: ranks.volatileHotels.map((row) => ({code: row.code, title: row.name, sub: `${row.market}・${row.area}／最安 ${yen(row.min)}〜最高 ${yen(row.max)}`, value: row.value}))};
+    if (key === "spikeDays") return {unit: "ratio", rows: ranks.spikeDays.map((row) => ({code: row.code, title: `${row.market} ${M.formatDate(row.date)}`, sub: `中央値 ${yen(row.median)}（代表料金 ${yen(row.typical)}）`, value: row.value}))};
+    const markets = ranks.risingMarkets.map((row) => ({code: row.code, title: row.market, sub: `CORE ${row.hotelCount}施設の変化率の中央値`, value: row.value}));
+    const hotels = ranks.risingHotels.map((row) => ({code: row.code, title: row.name, sub: `${row.market}・共通の宿泊日 ${row.commonDates}泊`, value: row.value}));
+    return {unit: "percent", rows: markets.length ? markets : hotels, hotels};
+  }
+
+  function renderRankings(ranks, national) {
+    const tabs = $("#bht-rank-tabs");
+    tabs.innerHTML = RANK_TABS.map((tab) => `<button type="button" role="tab" id="bht-tab-${tab.key}" aria-controls="bht-rank-panel" aria-selected="${tab.key === state.rankTab}" tabindex="${tab.key === state.rankTab ? 0 : -1}" data-tab="${tab.key}">${escapeHtml(tab.label)}</button>`).join("");
+    tabs.querySelectorAll("button").forEach((button, index, all) => {
+      button.addEventListener("click", () => {
+        state.rankTab = button.dataset.tab;
+        renderRankings(ranks, national);
+        $(`#bht-tab-${state.rankTab}`).focus();
+      });
+      button.addEventListener("keydown", (event) => {
+        if (event.key !== "ArrowRight" && event.key !== "ArrowLeft") return;
+        event.preventDefault();
+        const next = all[(index + (event.key === "ArrowRight" ? 1 : all.length - 1)) % all.length];
+        next.click();
+      });
+    });
+    const panel = $("#bht-rank-panel");
+    panel.setAttribute("aria-labelledby", `bht-tab-${state.rankTab}`);
+    const {unit, rows, hotels} = rankRows(ranks, state.rankTab);
+    if (!rows.length) {
+      const message = state.rankTab === "rising"
+        ? (national.weekly.available ? "7日前より値上がりした都市・施設はありません。" : "7日前の取得がそろうと表示されます（同じ比較施設群で8日分のデータが必要です）。")
+        : state.rankTab === "spikeDays" ? "代表料金の1.5倍以上になる日はありません。" : "比較できるデータが足りません（10泊以上必要です）。";
+      panel.innerHTML = `<p class="bht-empty">${escapeHtml(message)}</p>`;
+      return;
+    }
+    const max = Math.max(...rows.map((row) => (unit === "ratio" ? row.value - 1 : row.value)));
+    const format = (value) => (unit === "ratio" ? M.formatRatio(value) : pct(value));
+    const list = rows.map((row, index) => {
+      const width = max > 0 ? Math.max(2, ((unit === "ratio" ? row.value - 1 : row.value) / max) * 100) : 0;
+      return `<li><button type="button" class="bht-rank" data-market="${escapeHtml(row.code)}">
+        <span class="bht-rank__no">${index + 1}</span>
+        <span class="bht-rank__name"><strong>${escapeHtml(row.title)}</strong><small>${escapeHtml(row.sub)}</small></span>
+        <span class="bht-rank__bar" aria-hidden="true"><i style="width:${width.toFixed(1)}%"></i></span>
+        <span class="bht-rank__value">${escapeHtml(format(row.value))}</span>
+      </button></li>`;
+    }).join("");
+    const extra = state.rankTab === "rising" && hotels && hotels.length && rows !== hotels
+      ? `<h3 class="bht-subhead">施設</h3><ol class="bht-rank-list">${hotels.map((row, index) => `<li><button type="button" class="bht-rank" data-market="${escapeHtml(row.code)}"><span class="bht-rank__no">${index + 1}</span><span class="bht-rank__name"><strong>${escapeHtml(row.title)}</strong><small>${escapeHtml(row.sub)}</small></span><span class="bht-rank__bar" aria-hidden="true"><i style="width:${Math.max(2, (row.value / hotels[0].value) * 100).toFixed(1)}%"></i></span><span class="bht-rank__value">${escapeHtml(pct(row.value))}</span></button></li>`).join("")}</ol>`
+      : "";
+    const heading = state.rankTab === "rising" ? `<h3 class="bht-subhead">都市</h3>` : "";
+    panel.innerHTML = `${heading}<ol class="bht-rank-list">${list}</ol>${extra}<p class="bht-note">${escapeHtml(rankNote(state.rankTab))}</p>`;
+    panel.querySelectorAll(".bht-rank").forEach((button) => button.addEventListener("click", () => selectMarket(button.dataset.market, {scroll: true})));
+  }
+
+  function rankNote(key) {
+    if (key === "spikeDays") return "宿泊日ごとの中央値（CORE施設）が、その都市の代表料金の何倍か。行を選ぶとその都市の料金カレンダーに移ります。";
+    if (key === "rising") return "ちょうど7日前の取得と比べた、同じ宿泊日の料金の変化率（中央値）。";
+    return "値動きの大きさ＝高い日は安い日の何倍か（上位1割と下位1割の日を除く）。行を選ぶとその都市に切り替わります。";
   }
 
   function trendText(weekly) {
@@ -128,7 +211,7 @@
       return `<tr class="${active ? "is-active" : ""}" data-market="${escapeHtml(view.code)}">
         <th scope="row"><button type="button" class="bht-market-button" data-market="${escapeHtml(view.code)}" aria-pressed="${active}">${escapeHtml(view.name)}</button></th>
         <td>${summary.typical ? yen(summary.typical) : "—"}</td>
-        <td>${summary.volatility === null ? "—" : pct(summary.volatility, {signed: false})}</td>
+        <td>${M.formatRatio(summary.volatility)}</td>
         <td>${pct(summary.weekendPremium)}</td>
         <td>${summary.validNights ? `${summary.spikes.length}日` : "—"}</td>
         <td class="bht-trend bht-trend--${trend.direction || "none"}"><span>${escapeHtml(trend.value)}</span></td>
@@ -188,7 +271,7 @@
     const spikes = summary.spikes.length ? summary.spikes.slice(0, 3).map((day) => M.formatDate(day.date)).join("、") + (summary.spikes.length > 3 ? " ほか" : "") : "なし";
     const kpis = [
       {label: "代表料金", value: summary.typical ? yen(summary.typical) : "—", note: summary.low && summary.high ? `宿泊日ごとの中央値は ${yen(summary.low)}〜${yen(summary.high)}` : "比較データ不足", lead: true},
-      {label: "値動きの大きさ", value: summary.volatility === null ? "—" : pct(summary.volatility, {signed: false}), note: summary.spread ? `最高の日は最安の日の${summary.spread.toFixed(2)}倍` : ""},
+      {label: "値動きの大きさ", value: M.formatRatio(summary.volatility), note: "高い日は安い日の何倍か（上位・下位1割の日を除く）"},
       {label: "週末（金土）の差", value: pct(summary.weekendPremium), note: "日〜木曜泊の中央値と比べて"},
       {label: "急騰日（1.5倍以上）", value: `${summary.spikes.length}日`, note: spikes},
       {label: "7日前からの変化", value: trend.value, note: trend.note, status: !trend.direction},
@@ -342,7 +425,7 @@
       const s = M.hotelSummary(hotel);
       const url = `https://travel.rakuten.co.jp/HOTEL/${encodeURIComponent(hotel.hotel_no)}/`;
       return `<tr><th scope="row"><a href="${url}" target="_blank" rel="noopener noreferrer">${escapeHtml(hotel.name)}</a><small>${escapeHtml(hotel.area)}・${escapeHtml(hotel.access)}・${hotel.rooms}室</small></th>
-        <td>${yen(s.median)}</td><td>${s.min ? `${yen(s.min)}〜${yen(s.max)}` : "—"}</td><td>${s.volatility === null ? "—" : pct(s.volatility, {signed: false})}</td>
+        <td>${yen(s.median)}</td><td>${s.min ? `${yen(s.min)}〜${yen(s.max)}` : "—"}</td><td>${M.formatRatio(s.volatility)}</td>
         <td>${s.leadingMeal ? `${escapeHtml(s.leadingMeal.label)}<small>${s.leadingMeal.share.toFixed(0)}%</small>` : "—"}</td><td>${s.noPlanNights}泊</td></tr>`;
     };
     const head = `<thead><tr><th scope="col">施設</th><th scope="col">中央値</th><th scope="col">最安〜最高</th><th scope="col">値動きの大きさ</th><th scope="col">最安プランの食事</th><th scope="col">販売プランなし</th></tr></thead>`;
