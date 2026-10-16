@@ -5,7 +5,9 @@
   //        インバウンドに「季節の差」「上位3つの国・地域への集中」を全国と比べるルールを追加。
   // 1.2.0: 宿泊旅行統計調査の月別値（lodging-monthly.json）から、インバウンドの「国内客が減る月の外国人の比重」と
   //        売上・稼働の「客室稼働率の季節差（閑散月）」を判定するルールを追加。
-  const RULE_VERSION = '1.2.0';
+  // 1.3.0: 月別値から、人手不足・DXの「繁閑の差」と地域市場の「繁忙月の客室の埋まり方」を判定するルールを追加し、
+  //        両テーマの冒頭の論点を判定結果に合わせて県ごとに示す。
+  const RULE_VERSION = '1.3.0';
 
   // 外国人宿泊比率の数え方。地域値（延べ宿泊者数に占める外国人の割合）と同じ数え方のときだけ差を出す。
   const FOREIGN_SHARE_BASES = {
@@ -248,7 +250,25 @@
       low,
       gap: round1(peak.occupancy - low.occupancy),
       nationalGap: round1(highest(national).occupancy - lowest(national).occupancy),
-      nationalAtLow: national[region.indexOf(low)].occupancy
+      nationalAtLow: national[region.indexOf(low)].occupancy,
+      nationalAtPeak: national[region.indexOf(peak)].occupancy
+    };
+  }
+
+  // 延べ宿泊者数の最も多い月・少ない月（繁閑の差）を全国と比べる。
+  function demandSeason(region, national) {
+    const valid = (rows) => rows.every((row) => isNumber(row.total) && row.total > 0);
+    if (!valid(region) || !valid(national)) return null;
+    const highest = (rows) => rows.reduce((best, row) => row.total > best.total ? row : best);
+    const lowest = (rows) => rows.reduce((best, row) => row.total < best.total ? row : best);
+    const peak = highest(region);
+    const low = lowest(region);
+    return {
+      peak,
+      low,
+      mean: region.reduce((total, row) => total + row.total, 0) / region.length,
+      ratio: peak.total / low.total,
+      nationalRatio: highest(national).total / lowest(national).total
     };
   }
 
@@ -288,6 +308,7 @@
       basisLabel: monthly.metadata?.basis_labels?.[window.basis] || '',
       months: region.map((row, index) => ({ ...row, nationalOccupancy: national[index].occupancy })),
       occupancy: occupancySeason(region, national),
+      demand: demandSeason(region, national),
       complement: domesticComplement(region)
     };
   }
@@ -458,6 +479,33 @@
       }
     },
     {
+      id: 'dx-seasonal-workload', category: 'dx', priority: 85,
+      condition: ({ context }) => {
+        const demand = context.monthlyProfile?.demand;
+        return Boolean(demand) && demand.ratio - 1 >= (demand.nationalRatio - 1) * 2;
+      },
+      message: ({ context }) => {
+        const demand = context.monthlyProfile.demand;
+        return `延べ宿泊者数は最も多い${demand.peak.month}月が最も少ない${demand.low.month}月の${timesText(demand.ratio)}で、全国（${timesText(demand.nationalRatio)}）より繁閑の差が大きい地域です。繁忙月に足りなくなる業務と、閑散月に人が余る業務を分けて見ると、省力化の対象を絞りやすくなります。`;
+      }
+    },
+    {
+      id: 'market-peak-full', category: 'market', priority: 80,
+      condition: ({ context }) => isNumber(context.monthlyProfile?.occupancy?.peak?.occupancy) && context.monthlyProfile.occupancy.peak.occupancy >= 75,
+      message: ({ context }) => {
+        const occupancy = context.monthlyProfile.occupancy;
+        return `客室稼働率は最も高い${occupancy.peak.month}月に${formatRate1(occupancy.peak.occupancy)}まで上がり、地域全体で客室が埋まりやすい時期があります。周辺が満室に近い時期の料金や販売開始の時期を確認する余地があります。`;
+      }
+    },
+    {
+      id: 'market-peak-slack', category: 'market', priority: 80,
+      condition: ({ context }) => isNumber(context.monthlyProfile?.occupancy?.peak?.occupancy) && context.monthlyProfile.occupancy.peak.occupancy < 60,
+      message: ({ context }) => {
+        const occupancy = context.monthlyProfile.occupancy;
+        return `客室稼働率は最も高い${occupancy.peak.month}月でも${formatRate1(occupancy.peak.occupancy)}で、地域全体では繁忙期にも客室に余裕があります。値下げで取り合う前に、自施設がどの客層・時期の需要を取れているかを確認する余地があります。`;
+      }
+    },
+    {
       id: 'tourism-context', category: 'market', priority: 60,
       condition: ({ context }) => context.tourism.pressure_score >= 60 || context.tourism.dependency_score >= 60,
       message: () => '地域人口に対する宿泊需要や宿泊業の比重が相対的に高いため、需要変動が採用や運営へ与える影響も合わせて確認するとよい可能性があります。'
@@ -482,6 +530,8 @@
         ? `従業者あたり宿泊需要は${formatNumber(s.lodging_demand_per_employee)}人泊・全国${context.ranks.operationLoad}位です`
         : '従業者あたり宿泊需要は現在データを取得できません', `延べ宿泊者数（${lodgingPeriod}）÷宿泊業従業者数（経済センサス ${sources.economic_census?.reference_period || ''}）`);
       add(s.working_age_population_change_rate < 0 ? '↓' : '→', `生産年齢人口は5年前比${formatPercent(s.working_age_population_change_rate, 1, true)}です`, `人口推計・${populationPeriod}`);
+      const demand = context.monthlyProfile?.demand;
+      if (demand) add(demand.ratio - 1 >= (demand.nationalRatio - 1) * 2 ? '↑' : '→', `延べ宿泊者数が最も多いのは${demand.peak.month}月で、最も少ない${demand.low.month}月の${timesText(demand.ratio)}です`, `${context.monthlyProfile.period}の月別値（第2表）・全国は${timesText(demand.nationalRatio)}`);
     } else if (topic === 'inbound') {
       add('→', `年間外国人延べ宿泊者数は${formatNumber(s.foreign_guest_nights)}人泊です`, `${lodgingPeriod}の合計・単位は人泊（1人が2泊すると2人泊）。国・地域別や月別の値とは集計表が異なるため、合計は一致しません`);
       add(trendSymbol(context.foreignShare, context.nationalForeignShare), `外国人宿泊比率は${formatPercent(context.foreignShare)}で${compareText(context.foreignShare, context.nationalForeignShare)}です`, `延べ宿泊者数に占める外国人の割合・${lodgingPeriod}・全国は${formatPercent(context.nationalForeignShare)}`);
@@ -504,6 +554,12 @@
       add(trendSymbol(s.demand_growth_rate, n.demand_growth_rate), `宿泊需要の伸びは${formatPercent(s.demand_growth_rate, 1, true)}で${compareText(s.demand_growth_rate, n.demand_growth_rate)}です`, `延べ宿泊者数・${growthPeriod}`);
       add('→', `観光負荷参考スコアは${context.tourism.pressure_score ?? '算出不可'}、観光依存度参考スコアは${context.tourism.dependency_score ?? '算出不可'}です`, '宿泊集中度・宿泊業依存度の参考スコア（47都道府県内の相対評価）');
       add('→', `地域類型は「${context.tourism.region_type}」です`, '宿泊集中度・宿泊業依存度での類型（当サイトの参考分類）');
+      const peak = context.monthlyProfile?.occupancy;
+      if (peak) {
+        const difference = round1(peak.peak.occupancy - peak.nationalAtPeak);
+        const relation = Math.abs(difference) < 1 ? 'と同程度' : `より${formatNumber(Math.abs(difference), 1)}ポイント${difference < 0 ? '低い水準' : '高い水準'}`;
+        add(peak.peak.occupancy >= 75 ? '↑' : peak.peak.occupancy < 60 ? '↓' : '→', `客室稼働率が最も高いのは${peak.peak.month}月（${formatRate1(peak.peak.occupancy)}）で、全国の同じ月（${formatRate1(peak.nationalAtPeak)}）${relation}です`, `${context.monthlyProfile.period}の月別値（第8表）`);
+      }
     } else {
       add('→', '「人手不足・DX」では業務負荷と人材環境を確認できます');
       add('→', '「インバウンド」では外国人宿泊需要と国・地域別構成を確認できます');
@@ -775,6 +831,8 @@
         keepFirstHypothesis: true
       };
     }
+    if (topic === 'dx') return dxLead(context, ruleId, hypotheses);
+    if (topic === 'market') return marketLead(context, ruleId, hypotheses);
     const titles = {
       dx: '負荷の大きい業務がどこにあるか',
       sales: ruleId === 'facility-occupancy-gap' ? '地域と比べて、自施設の稼働が低い時期や客室はどこか' : '地域の稼働や需要の動きと、自施設の販売状況に違いがないか',
@@ -782,6 +840,105 @@
       other: '相談したい内容に近いテーマを選ぶ'
     };
     return { title: titles[topic], note: hypotheses[0], ruleId, evidence: [] };
+  }
+
+  // 人手不足・DXの冒頭の論点。判定したルールごとに、根拠の数値を添えて示す。
+  function dxLead(context, ruleId, hypotheses) {
+    const s = context.statistics;
+    const profile = context.monthlyProfile;
+    const demand = profile?.demand;
+    const demandEvidence = demand
+      ? [`延べ宿泊者数（第2表）${profile.period}の月別値・${demand.peak.month}月 ${formatNumber(demand.peak.total)}人泊、${demand.low.month}月 ${formatNumber(demand.low.total)}人泊（全国の最多月÷最少月は${timesText(demand.nationalRatio)}）`]
+      : [];
+    if (ruleId === 'dx-high-workforce-decline') {
+      return {
+        title: '人を増やしにくい中で、どの業務から省力化するか',
+        note: `${context.name}の生産年齢人口は5年前と比べて${formatPercent(s.working_age_population_change_rate, 1, true)}で、宿泊DX必要度は${context.dx.score} / 100（全国${context.dx.rank}位）です。人を増やす前提を置かず、予約管理・問い合わせ対応・集計など、手作業の時間が長い業務から確認しましょう。`,
+        ruleId,
+        evidence: [`生産年齢人口 5年前比 ${formatPercent(s.working_age_population_change_rate, 1, true)}（人口推計）`, `宿泊DX必要度 ${context.dx.score} / 100（当サイトが公的統計から算出した参考スコア）`]
+      };
+    }
+    if (ruleId === 'dx-seasonal-workload') {
+      return {
+        title: '繁忙月と閑散月で、人員配置と業務量が合っているか',
+        note: `${context.name}の延べ宿泊者数は、最も多い${demand.peak.month}月が最も少ない${demand.low.month}月の${timesText(demand.ratio)}で、全国（${timesText(demand.nationalRatio)}）より繁閑の差が大きい地域です。予約対応・清掃・配膳など宿泊数に比例して増える業務のうち、繁忙月に人手が足りなくなるものと、閑散月に人が余るものを分けて確認しましょう。`,
+        ruleId,
+        evidence: demandEvidence
+      };
+    }
+    if (ruleId === 'dx-operation-load') {
+      return {
+        title: '従業者1人あたりの宿泊需要が多い中で、負荷の大きい業務はどこか',
+        note: `${context.name}の宿泊業の従業者1人あたり延べ宿泊者数は${formatNumber(s.lodging_demand_per_employee)}人泊で、全国${context.ranks.operationLoad}位です。現場ごとの作業時間や二重入力を測り、負荷の大きい業務から確認しましょう。`,
+        ruleId,
+        evidence: [`従業者あたり宿泊需要 ${formatNumber(s.lodging_demand_per_employee)}人泊・全国${context.ranks.operationLoad}位（延べ宿泊者数÷宿泊業従業者数）`]
+      };
+    }
+    if (demand) {
+      return {
+        title: '繁忙月に、どの業務で人手が足りなくなるか',
+        note: `${context.name}の延べ宿泊者数が最も多いのは${demand.peak.month}月で、最も少ない${demand.low.month}月の${timesText(demand.ratio)}です（全国は${timesText(demand.nationalRatio)}）。繁忙月にどの業務で人手が足りなくなっているかを確認すると、省力化の対象を絞りやすくなります。`,
+        ruleId,
+        evidence: demandEvidence,
+        keepFirstHypothesis: true
+      };
+    }
+    return { title: '負荷の大きい業務がどこにあるか', note: hypotheses[0], ruleId, evidence: [] };
+  }
+
+  // 地域市場の冒頭の論点。
+  function marketLead(context, ruleId, hypotheses) {
+    const s = context.statistics;
+    const n = context.national;
+    const profile = context.monthlyProfile;
+    const occupancy = profile?.occupancy;
+    const demand = profile?.demand;
+    const occupancyEvidence = occupancy
+      ? [`客室稼働率（第8表）${profile.period}の月別値・${occupancy.peak.month}月 ${formatRate1(occupancy.peak.occupancy)}（全国の同じ月 ${formatRate1(occupancy.nationalAtPeak)}）`]
+      : [];
+    if (ruleId === 'market-peak-full') {
+      return {
+        title: '地域の客室が埋まる時期を、自施設の料金や販売に生かせているか',
+        note: `${context.name}の客室稼働率は${occupancy.peak.month}月に${formatRate1(occupancy.peak.occupancy)}まで上がり（全国の同じ月は${formatRate1(occupancy.nationalAtPeak)}）、地域全体で客室が埋まりやすい時期があります。周辺が満室に近い時期の料金、販売開始の時期、連泊などの条件を確認しましょう。`,
+        ruleId,
+        evidence: occupancyEvidence
+      };
+    }
+    if (ruleId === 'market-peak-slack') {
+      return {
+        title: '繁忙月でも空室が多い地域で、どの需要を取りに行くか',
+        note: `${context.name}の客室稼働率は、最も高い${occupancy.peak.month}月でも${formatRate1(occupancy.peak.occupancy)}です（全国の同じ月は${formatRate1(occupancy.nationalAtPeak)}）。地域全体では繁忙期にも客室に余裕があるため、値下げで取り合う前に、自施設がどの客層・時期の需要を取れているかを確認しましょう。`,
+        ruleId,
+        evidence: occupancyEvidence
+      };
+    }
+    if (ruleId === 'market-growth') {
+      const comparison = context.datasets?.statistics?.metadata?.sources?.lodging?.comparison_period;
+      return {
+        title: '伸びている需要に、自施設の客層や時期が合っているか',
+        note: `${context.name}の宿泊需要の伸びは${formatPercent(s.demand_growth_rate, 1, true)}で、全国（${formatPercent(n.demand_growth_rate, 1, true)}）を上回っています。供給不足や新規出店の余地を示すものではないため、伸びているのがどの客層・曜日・時期かを、自施設の予約実績と照らして確認しましょう。2026年1月の調査方法の変更の影響を含む可能性があります。`,
+        ruleId,
+        evidence: [`延べ宿泊者数の伸び率 ${formatPercent(s.demand_growth_rate, 1, true)}（${s.data_period || ''}${comparison ? `と${comparison}の比較` : ''}）`]
+      };
+    }
+    if (ruleId === 'tourism-context') {
+      return {
+        title: '需要の変動が、採用や運営にどう響くかを見込めているか',
+        note: `${context.name}は、地域人口に対する宿泊需要や宿泊業の比重が相対的に高い地域です（観光負荷参考スコア${context.tourism.pressure_score ?? '算出不可'}・観光依存度参考スコア${context.tourism.dependency_score ?? '算出不可'}）。需要が増える時期・減る時期に、採用や人員配置、運営がどう影響を受けるかをあわせて確認しましょう。`,
+        ruleId,
+        evidence: [`観光負荷参考スコア ${context.tourism.pressure_score ?? '算出不可'}・観光依存度参考スコア ${context.tourism.dependency_score ?? '算出不可'}（47都道府県内の相対評価）`]
+      };
+    }
+    if (demand && occupancy) {
+      return {
+        title: '地域の宿泊が多い時期と、自施設の繁忙期は同じか',
+        note: `${context.name}の延べ宿泊者数は${demand.peak.month}月が最も多く、${demand.low.month}月が最も少なくなっています（${timesText(demand.ratio)}の差）。客室稼働率が最も高いのは${occupancy.peak.month}月（${formatRate1(occupancy.peak.occupancy)}）です。自施設の繁忙期・閑散期と比べ、ずれがあれば理由を確認しましょう。`,
+        ruleId,
+        evidence: [`延べ宿泊者数（第2表）・客室稼働率（第8表）${profile.period}の月別値`],
+        keepFirstHypothesis: true
+      };
+    }
+    return { title: '地域の需要の動きが、自施設の客層や時期に当てはまるか', note: hypotheses[0], ruleId, evidence: [] };
   }
 
   // 補足メモの扱い。文章の意味は解釈せず、既存のキーワードと一致したかどうかだけを伝える。
@@ -803,7 +960,7 @@
   // 「詳しいデータ」に出す月別の表。インバウンドは国内客と外国人、売上・稼働は客室稼働率を全国と並べる。
   function lodgingTable(context, topic) {
     const profile = context.monthlyProfile;
-    if (!profile || (topic !== 'inbound' && topic !== 'sales')) return null;
+    if (!profile || !['inbound', 'sales', 'dx', 'market'].includes(topic)) return null;
     const marks = new Map();
     const mark = (row, text) => { if (row) marks.set(row.period, [...(marks.get(row.period) || []), text]); };
     if (topic === 'sales' && profile.occupancy) {
@@ -814,8 +971,14 @@
       mark(profile.complement.month, '外国人の割合が最も高い月');
       mark(profile.complement.domesticLow, '国内客が最も少ない月');
     }
+    if ((topic === 'dx' || topic === 'market') && profile.demand) {
+      mark(profile.demand.peak, '宿泊者が最も多い月');
+      mark(profile.demand.low, '宿泊者が最も少ない月');
+    }
+    if (topic === 'market' && profile.occupancy) mark(profile.occupancy.peak, '稼働率が最も高い月');
     return {
       topic,
+      demandMean: profile.demand ? profile.demand.mean : null,
       period: profile.period,
       basisLabel: profile.basisLabel,
       rows: profile.months.map((row) => ({ ...row, marks: marks.get(row.period) || [] }))
@@ -854,7 +1017,7 @@
     if (!isNumber(context.statistics.occupancy_rate)) missing.push('客室稼働率');
     if (!isNumber(context.statistics.foreign_guest_nights)) missing.push('外国人延べ宿泊者数');
     if (!isNumber(context.statistics.lodging_employees)) missing.push('宿泊業従業者数');
-    if ((topic === 'inbound' || topic === 'sales') && !context.monthlyProfile) missing.push('月別の宿泊統計');
+    if (topic !== 'other' && !context.monthlyProfile) missing.push('月別の宿泊統計');
 
     const lead = leadFor(context, topic, matched, hypotheses, comparisons);
 
