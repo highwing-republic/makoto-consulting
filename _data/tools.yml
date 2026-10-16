@@ -6,6 +6,12 @@
   group: facility
   tag: 無料診断
   summary: 施設の現状から、DXで優先したいポイントを整理します。
+- id: kpi-calculator
+  title: 宿KPI電卓
+  url: /kpi-calculator.html
+  group: facility
+  tag: 計算ツール
+  summary: 1か月の実績から、客室稼働率・ADR・RevPARと損益分岐の稼働率を計算し、都道府県の稼働率と比べます。
 - id: ai-inn-sample
   title: AIに聞かれる宿 診断 サンプル
   url: /ai-inn-diagnosis/sample/

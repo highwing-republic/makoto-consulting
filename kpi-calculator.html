@@ -1,0 +1,156 @@
+---
+# Built by Jekyll: the shared header and footer come from _includes/.
+tool: kpi-calculator
+tool_purpose: 1か月分の客室数・販売客室数・客室売上から、客室稼働率・ADR（平均客室単価）・RevPARなど宿泊業の主要な数字をまとめて計算します。固定費を入れると損益分岐の稼働率が分かり、同じ月の都道府県の客室稼働率（宿泊旅行統計調査）とも比べられます。
+tool_scope:
+  - label: 対象
+    text: 旅館・ホテルの自施設。1か月単位の実績値で計算します。
+  - label: データ
+    text: 入力した実績値と、観光庁「宿泊旅行統計調査」の都道府県別・月別の客室稼働率（全施設タイプ）。計算はこのページ内で行い、入力値は送信しません。
+  - label: 条件
+    text: 客室売上は消費税・入湯税・宿泊税を除いた額で入力します。食事代を分けられない場合は「食事代を含む」として計算し、1人あたりの単価も表示します。
+tool_cta:
+  label: 計算を始める
+  href: "#tool"
+  tool_id: kpi-calculator-embed
+tool_sources:
+  - name: 客室稼働率
+    publisher: 観光庁「宿泊旅行統計調査」第8表（客室稼働率）
+    url: https://www.mlit.go.jp/kankocho/tokei_hakusyo/shukuhakutokei.html
+    note: 都道府県別・月別、第2次速報。全施設タイプ（旅館・ホテル・簡易宿所など）の値です。
+  - name: 計算方法
+    publisher: 宿泊DXラボ。各指標の計算式は結果の中に表示します。
+tool_notes:
+  - 計算結果は入力値から機械的に計算した目安です。経営判断の正解や特定の成果を示すものではありません。
+  - 宿泊旅行統計調査の客室稼働率はすべての施設タイプの平均です。旅館は全体より低い傾向があるため、比較は目安として見てください。
+  - 宿泊旅行統計調査は2026年1月から集計・層化基準が変わっています。2025年12月までの月と比べるときは注意してください。
+tool_related:
+  - dx-diagnosis
+  - management-issue-organizer
+  - hotel-price-trends
+---
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-QS9HSHCY33"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-QS9HSHCY33');gtag('config','GT-M3S9S5D7');</script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>宿KPI電卓｜稼働率・ADR・RevPARを無料で計算｜宿泊DXラボ</title>
+  <meta name="description" content="旅館・ホテルの1か月の実績から、客室稼働率・ADR（平均客室単価）・RevPAR・損益分岐の稼働率をまとめて計算できる無料ツール。都道府県の客室稼働率（宿泊旅行統計調査）とも比べられます。登録不要。">
+  <meta name="robots" content="index,follow,max-image-preview:large">
+  <link rel="canonical" href="https://lab.ugatta-llc.com/kpi-calculator.html">
+  <meta property="og:locale" content="ja_JP">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="宿泊DXラボ">
+  <meta property="og:title" content="宿KPI電卓｜稼働率・ADR・RevPARを無料で計算｜宿泊DXラボ">
+  <meta property="og:description" content="1か月の実績から、客室稼働率・ADR・RevPARと損益分岐の稼働率を計算し、都道府県の稼働率と比べられる無料ツールです。">
+  <meta property="og:url" content="https://lab.ugatta-llc.com/kpi-calculator.html">
+  <meta property="og:image" content="https://lab.ugatta-llc.com/images/og-lab.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="宿KPI電卓｜宿泊DXラボ">
+  <meta name="twitter:description" content="稼働率・ADR・RevPARと損益分岐の稼働率を、1か月の実績から計算できます。">
+  <meta name="twitter:image" content="https://lab.ugatta-llc.com/images/og-lab.jpg">
+  <meta name="theme-color" content="#17324d">
+  <link rel="icon" type="image/png" href="favicon.png?v=20261013">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&amp;display=swap">
+  <link rel="stylesheet" href="css/useful.css?v=20261012shell">
+  <link rel="stylesheet" href="css/tool-standard.css?v=20261015guide">
+  <link rel="stylesheet" href="css/kpi-calculator.css?v=20261017a">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {"@type": "ListItem", "position": 1, "name": "ホーム", "item": "https://lab.ugatta-llc.com/"},
+          {"@type": "ListItem", "position": 2, "name": "分析・ツール", "item": "https://lab.ugatta-llc.com/#analysis-tools"},
+          {"@type": "ListItem", "position": 3, "name": "宿KPI電卓", "item": "https://lab.ugatta-llc.com/kpi-calculator.html"}
+        ]
+      },
+      {
+        "@type": "WebApplication",
+        "name": "宿KPI電卓",
+        "url": "https://lab.ugatta-llc.com/kpi-calculator.html",
+        "applicationCategory": "BusinessApplication",
+        "operatingSystem": "Web",
+        "isAccessibleForFree": true,
+        "inLanguage": "ja-JP",
+        "description": "旅館・ホテルの1か月の実績から、客室稼働率・ADR・RevPAR・損益分岐の稼働率を計算し、都道府県の客室稼働率と比べられる無料ツール。",
+        "provider": {
+          "@type": "Organization",
+          "@id": "https://lab.ugatta-llc.com/#organization",
+          "name": "宿泊DXラボ",
+          "url": "https://lab.ugatta-llc.com/"
+        }
+      }
+    ]
+  }
+  </script>
+  <link rel="stylesheet" href="/css/site-shell.css?v=20261012shell">
+  <script src="/js/site-shell.js?v=20261012shell2" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">本文へ移動</a>
+  {% include site-header.html %}
+  <main id="main">
+    <nav class="breadcrumb container" aria-label="パンくずリスト"><ol><li><a href="/">ホーム</a></li><li><a href="/#analysis-tools">分析・ツール</a></li><li aria-current="page">宿KPI電卓</li></ol></nav>
+    <section class="page-hero tool-page-hero"><div class="container page-hero-grid"><div><span class="scope-badge scope-badge--facility">分析対象：自施設</span><h1>宿KPI電卓</h1></div><p>1か月分の実績を入れるだけで、客室稼働率・ADR・RevPARなどの主要な数字と、損益分岐の稼働率、どの打ち手が効くかを計算します。登録せずに無料で使えます。</p></div></section>
+    {% include tool-overview.html %}
+    <section class="section section--tint embedded-tool-section" id="tool"><div class="container"><h2 class="visually-hidden">宿KPI電卓</h2>
+      <div class="kpi-app" id="kpi-calculator-app">
+        <form class="kpi-panel" id="kpi-form" novalidate>
+          <div class="kpi-panel__heading"><h3>1か月分の実績を入れてください</h3><p>PMSや月報の数字をそのまま入れます。おおよその数字でも計算できます。</p></div>
+          <p class="kpi-privacy"><strong>送信しません</strong>入力した数字はこのページの中だけで計算し、どこにも送りません。</p>
+          <div class="kpi-grid">
+            <label class="kpi-field"><span>対象の月</span><input id="kpi-month" name="month" type="month" required aria-describedby="kpi-hint-month"><small id="kpi-hint-month">同じ月の宿泊旅行統計と比べます</small></label>
+            <label class="kpi-field"><span>都道府県</span><select id="kpi-pref" name="prefCode" aria-describedby="kpi-hint-pref"><option value="">選ばない（全国と比べる）</option><option value="01">北海道</option><option value="02">青森県</option><option value="03">岩手県</option><option value="04">宮城県</option><option value="05">秋田県</option><option value="06">山形県</option><option value="07">福島県</option><option value="08">茨城県</option><option value="09">栃木県</option><option value="10">群馬県</option><option value="11">埼玉県</option><option value="12">千葉県</option><option value="13">東京都</option><option value="14">神奈川県</option><option value="15">新潟県</option><option value="16">富山県</option><option value="17">石川県</option><option value="18">福井県</option><option value="19">山梨県</option><option value="20">長野県</option><option value="21">岐阜県</option><option value="22">静岡県</option><option value="23">愛知県</option><option value="24">三重県</option><option value="25">滋賀県</option><option value="26">京都府</option><option value="27">大阪府</option><option value="28">兵庫県</option><option value="29">奈良県</option><option value="30">和歌山県</option><option value="31">鳥取県</option><option value="32">島根県</option><option value="33">岡山県</option><option value="34">広島県</option><option value="35">山口県</option><option value="36">徳島県</option><option value="37">香川県</option><option value="38">愛媛県</option><option value="39">高知県</option><option value="40">福岡県</option><option value="41">佐賀県</option><option value="42">長崎県</option><option value="43">熊本県</option><option value="44">大分県</option><option value="45">宮崎県</option><option value="46">鹿児島県</option><option value="47">沖縄県</option></select><small id="kpi-hint-pref">客室稼働率を比べる地域です</small></label>
+            <label class="kpi-field"><span>客室数</span><span class="kpi-unit"><input id="kpi-rooms" name="rooms" type="text" inputmode="numeric" autocomplete="off" required aria-describedby="kpi-hint-rooms"><b>室</b></span><small id="kpi-hint-rooms">販売している客室の数</small></label>
+            <label class="kpi-field"><span>営業日数</span><span class="kpi-unit"><input id="kpi-days" name="days" type="text" inputmode="numeric" autocomplete="off" required aria-describedby="kpi-hint-days"><b>日</b></span><small id="kpi-hint-days">休館日を除いた日数。月を選ぶとその月の日数が入ります</small></label>
+            <label class="kpi-field"><span>販売客室数</span><span class="kpi-unit"><input id="kpi-sold" name="soldRooms" type="text" inputmode="numeric" autocomplete="off" required aria-describedby="kpi-hint-sold"><b>室</b></span><small id="kpi-hint-sold">1か月に売れた室数の合計（延べ室数）</small></label>
+            <label class="kpi-field"><span>客室売上</span><span class="kpi-unit"><input id="kpi-revenue" name="roomRevenue" type="text" inputmode="numeric" autocomplete="off" required aria-describedby="kpi-hint-revenue"><b>円</b></span><small id="kpi-hint-revenue">消費税・入湯税・宿泊税を除いた額</small></label>
+          </div>
+          <label class="kpi-check"><input id="kpi-meals" name="mealsIncluded" type="checkbox"><span>客室売上に食事代を含む（1泊2食などで分けられない場合）</span></label>
+          <details class="kpi-details" id="kpi-more">
+            <summary>人数・定員・総売上も入れる<small>任意</small></summary>
+            <div class="kpi-grid">
+              <label class="kpi-field"><span>宿泊人数</span><span class="kpi-unit"><input id="kpi-guests" name="guests" type="text" inputmode="numeric" autocomplete="off" aria-describedby="kpi-hint-guests"><b>人</b></span><small id="kpi-hint-guests">延べ人数。1室あたり人数・1人あたり単価に使います</small></label>
+              <label class="kpi-field"><span>定員（全客室の合計）</span><span class="kpi-unit"><input id="kpi-capacity" name="capacity" type="text" inputmode="numeric" autocomplete="off" aria-describedby="kpi-hint-capacity"><b>人</b></span><small id="kpi-hint-capacity">定員稼働率に使います</small></label>
+              <label class="kpi-field"><span>総売上</span><span class="kpi-unit"><input id="kpi-total" name="totalRevenue" type="text" inputmode="numeric" autocomplete="off" aria-describedby="kpi-hint-total"><b>円</b></span><small id="kpi-hint-total">料飲・売店などを含む売上。TRevPARに使います</small></label>
+              <label class="kpi-field"><span>使えなかった客室</span><span class="kpi-unit"><input id="kpi-closed" name="closedRoomNights" type="text" inputmode="numeric" autocomplete="off" aria-describedby="kpi-hint-closed"><b>室</b></span><small id="kpi-hint-closed">改装・故障・自社利用などで売らなかった延べ室数</small></label>
+            </div>
+          </details>
+          <details class="kpi-details" id="kpi-cost">
+            <summary>利益の目安も見る<small>任意</small></summary>
+            <div class="kpi-grid">
+              <label class="kpi-field"><span>月の固定費</span><span class="kpi-unit"><input id="kpi-fixed" name="fixedCost" type="text" inputmode="numeric" autocomplete="off" aria-describedby="kpi-hint-fixed"><b>円</b></span><small id="kpi-hint-fixed">人件費・家賃・リース・減価償却など、売れても売れなくてもかかる費用</small></label>
+              <label class="kpi-field"><span>1室売れるごとにかかる費用</span><span class="kpi-unit"><input id="kpi-variable" name="variableCostPerRoom" type="text" inputmode="numeric" autocomplete="off" aria-describedby="kpi-hint-variable"><b>円</b></span><small id="kpi-hint-variable">清掃・リネン・アメニティ・光熱費など。食事込みなら食材費も</small></label>
+            </div>
+          </details>
+          <p class="kpi-form-error" id="kpi-form-error" role="alert" hidden></p>
+          <div class="kpi-actions">
+            <button class="button" type="submit">計算する</button>
+            <button class="kpi-chip" type="button" data-kpi-sample>例の数字で試す</button>
+            <button class="kpi-chip kpi-chip--quiet" type="reset">入力を消す</button>
+          </div>
+        </form>
+        <section class="kpi-result" id="kpi-result" aria-labelledby="kpi-result-title" tabindex="-1" hidden>
+          <div class="kpi-result__head"><h3 id="kpi-result-title">計算結果</h3><p id="kpi-result-scope"></p></div>
+          <div id="kpi-result-body" aria-live="polite"></div>
+          <div class="kpi-result__tools"><button class="kpi-chip" type="button" data-print-result data-tool-id="kpi-calculator">結果を印刷する</button></div>
+        </section>
+      </div>
+      <noscript><p class="tool-disclaimer">計算にはJavaScriptを有効にしてください。客室稼働率は「販売客室数 ÷（客室数 × 営業日数）」、ADRは「客室売上 ÷ 販売客室数」、RevPARは「客室売上 ÷（客室数 × 営業日数）」で計算できます。</p></noscript>
+    </div></section>
+    {% include tool-sources.html %}
+    {% include tool-related.html %}
+  </main>
+  {% include site-footer.html %}
+<script defer src="js/kpi-calculator-model.js?v=20261017a"></script>
+<script defer src="js/kpi-calculator.js?v=20261017a"></script>
+<script defer src="js/site.js?v=20260909c"></script>
+</body>
+</html>

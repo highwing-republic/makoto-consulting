@@ -14,7 +14,7 @@ def test_news_section_sits_between_tools_and_about_and_starts_hidden():
     ]
     section = page.find(id="whats-new")
     assert section.has_attr("hidden")
-    assert section.get("data-news-url") == "data/news.json?v=20261016b"
+    assert section.get("data-news-url") == "data/news.json?v=20261017a"
     assert section.select_one("[data-news-scroll][role='region'][tabindex='-1']")
     assert section.select_one("[data-news-list][aria-live='polite']")
     assert section.select_one("[data-news-scroll-hint][hidden]")
@@ -25,7 +25,7 @@ def test_news_section_sits_between_tools_and_about_and_starts_hidden():
 
 def test_initial_news_records_are_valid_and_point_to_published_pages():
     records = json.loads((ROOT / "data" / "news.json").read_text(encoding="utf-8"))
-    assert len(records) == 6
+    assert len(records) == 7
     assert len({record["id"] for record in records}) == len(records)
     assert {record["category"] for record in records} <= {"new", "update", "note"}
     assert records == sorted(records, key=lambda record: record["date"], reverse=True)
