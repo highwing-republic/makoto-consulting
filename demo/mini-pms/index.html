@@ -262,6 +262,10 @@ footer.note{max-width:1100px;margin:14px auto 0;color:var(--muted);font-size:11p
         <button class="btn small" id="btnUnassign">割当解除</button>
         <button class="btn small" id="btnClearSel">選択解除</button>
       </div>
+      <div class="selbox" id="undoBox" hidden>
+        <span id="undoLabel"></span>
+        <button class="btn small" id="btnUndo">この割り当てを取り消す</button>
+      </div>
       <div class="selbox" id="blkSelBox" hidden>
         <span id="blkSelLabel"></span>
         <button class="btn small" id="btnBlockDel">ブロック解除</button>
@@ -350,6 +354,7 @@ const FLOOR_ORDER = ["5階","4階","3階","2階"];
 let state = null;
 let selectedId = null;      // 選択中の予約
 let selectedBlockId = null; // 選択中のブロック
+let lastAssign = null;      // 直前の割当（取り消し用）：{label, changes:[{id, prev}]}
 
 const seed = SuirenDemo.seed;
 const load = SuirenDemo.load;
@@ -392,13 +397,16 @@ function autoAssign(){
   const pend = state.reservations.filter(r => active(r) && !r.room && r.status === "booked")
     .sort((a,b) => a.inDate < b.inDate ? -1 : 1);
   let done = 0, fail = [];
+  const changes = [];
   pend.forEach(r => {
     const c = candidateRooms(r);
-    if(c.length){ r.room = c[0].no; done++; } else fail.push(r.name + "：" + whyNoRoom(r));
+    if(c.length){ changes.push({id: r.id, prev: r.room}); r.room = c[0].no; done++; } else fail.push(r.name + "：" + whyNoRoom(r));
   });
+  lastAssign = done ? { label: done + "件を自動割当しました。", changes } : null;
+  selectedId = null;
   save(); renderAll();
   document.getElementById("gridMsg").textContent =
-    done + "件を割当済み。" + (fail.length ? " 未割当 → " + fail.join(" ／ ") : "");
+    (done ? "" : "割り当てられる予約はありませんでした。") + (fail.length ? " 未割当 → " + fail.join(" ／ ") : "");
 }
 
 /* ---------- 予約タブ ---------- */
@@ -512,6 +520,9 @@ function renderGrid(){
       "選択中：" + sel.name + "（" + mdLabel(sel.inDate) + "→" + mdLabel(sel.outDate) + "・" + sel.pax + "名" + (sel.room ? "・現在 " + sel.room : "") + "）";
     document.getElementById("btnUnassign").hidden = !sel.room;
   } else selBox.hidden = true;
+  const undoBox = document.getElementById("undoBox");
+  undoBox.hidden = !lastAssign || !!(sel && sel.status === "booked");
+  document.getElementById("undoLabel").textContent = lastAssign ? lastAssign.label : "";
 
   const selBlock = selectedBlockId ? state.blocks.find(b => b.id === selectedBlockId) : null;
   const blkBox = document.getElementById("blkSelBox");
@@ -569,8 +580,12 @@ function renderGrid(){
           td.classList.add("cand");
           td.title = sel.name + " を " + rm.no + " に割当";
           td.addEventListener("click", () => {
+            const prev = sel.room;
             sel.room = rm.no; save();
-            document.getElementById("gridMsg").textContent = sel.name + " を " + rm.no + " に割り当てました。";
+            lastAssign = { label: prev ? sel.name + " の部屋を " + prev + " から " + rm.no + " に変更しました。"
+                                       : sel.name + " を " + rm.no + " に割り当てました。",
+                           changes: [{id: sel.id, prev}] };
+            document.getElementById("gridMsg").textContent = "";
             selectedId = null; renderAll();
             if(focusNo && sel.bookingNo === focusNo) document.getElementById("arrival").scrollIntoView({behavior:"smooth", block:"start"});
           });
@@ -584,9 +599,25 @@ function renderGrid(){
 }
 document.getElementById("btnAuto").addEventListener("click", autoAssign);
 document.getElementById("btnClearSel").addEventListener("click", () => { selectedId = null; renderGrid(); });
+/* 直前の割当を取り消す（チェックイン済みなど、もう「予約」状態でない予約には触れない） */
+document.getElementById("btnUndo").addEventListener("click", () => {
+  if(!lastAssign) return;
+  const undone = [];
+  lastAssign.changes.forEach(c => {
+    const r = state.reservations.find(x => x.id === c.id);
+    if(r && r.status === "booked"){ r.room = c.prev; undone.push(r); }
+  });
+  lastAssign = null;
+  // 1件だけなら、その予約を選び直せる状態に戻す
+  selectedId = undone.length === 1 ? undone[0].id : null; selectedBlockId = null;
+  save(); renderAll();
+  document.getElementById("gridMsg").textContent = undone.length
+    ? "割り当てを取り消しました。" + (undone.length === 1 ? "緑に光る部屋から選び直せます。" : "")
+    : "チェックイン済みなどのため、取り消せませんでした。";
+});
 document.getElementById("btnUnassign").addEventListener("click", () => {
   const sel = state.reservations.find(r => r.id === selectedId);
-  if(sel){ sel.room = null; save(); renderAll(); }
+  if(sel){ sel.room = null; lastAssign = null; save(); renderAll(); }
 });
 
 /* ---------- 客室状況表 ---------- */
@@ -708,6 +739,7 @@ function renderArrival(){
 
 /* ---------- タブ・初期化 ---------- */
 function switchTab(id){
+  if(id === "grid") lastAssign = null;
   document.querySelectorAll("nav.tabs button").forEach(b => b.setAttribute("aria-selected", String(b.dataset.tab === id)));
   ["res","grid","board","ledger"].forEach(t => { document.getElementById("tab-"+t).hidden = (t !== id); });
   renderAll();
@@ -719,7 +751,7 @@ function renderAll(){ renderArrival(); renderRes(); renderGrid(); renderBoard();
 document.getElementById("btnReset").addEventListener("click", () => {
   if(!confirm("入力した予約・ブロックをすべて消して、サンプルデータに戻しますか？")) return;
   try{ localStorage.removeItem(SuirenDemo.KEY); }catch(e){}
-  state = seed(); selectedId = null; selectedBlockId = null;
+  state = seed(); selectedId = null; selectedBlockId = null; lastAssign = null;
   document.getElementById("gridMsg").textContent = "";
   save(); renderAll();
 });
