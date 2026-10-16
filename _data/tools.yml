@@ -19,13 +19,6 @@
   tag: 公的データ
   pref: true
   summary: 外国人宿泊需要や国・地域別構成を、都道府県ごとに分析します。
-- id: supply-demand
-  title: 宿泊市場の成長・稼働ポジション
-  url: /supply-demand-gap-analysis.html
-  group: regional
-  tag: 公的データ
-  pref: true
-  summary: 需要・稼働率・宿泊事業所数から、地域の需給状況を分析します。
 - id: market-signal
   title: 観光株シグナル
   url: /report.html

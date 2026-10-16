@@ -92,18 +92,13 @@ def main(destination):
             assert page.locator('#hpt-region').input_value() == options[0]
             assert 'stay_date=' not in page.url
 
-            for name in ('inbound-analysis', 'supply-demand-gap-analysis'):
+            for name in ('inbound-analysis',):
                 visit(name + '.html?pref=nagano')
                 assert page.locator('#selected-area-name').inner_text() == '長野県'
                 assert page.locator('#analysis-dashboard').is_visible()
                 page.select_option('#prefecture-select', label='東京都')
                 assert page.locator('#selected-area-name').inner_text() == '東京都'
                 assert 'pref=tokyo' in page.url
-                if name == 'supply-demand-gap-analysis':
-                    point = page.locator('.scatter-point').first
-                    point.focus()
-                    point.press('Enter')
-                    assert page.locator('.scatter-point.is-selected').count() == 1
                 capture(name, width)
 
             visit('dx-diagnosis.html')

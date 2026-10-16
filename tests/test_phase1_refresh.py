@@ -31,7 +31,7 @@ def test_lab_notes_link_is_kept_out_of_headers_and_small_at_page_bottom():
 def test_every_html_page_loads_the_canonical_site_shell():
     # Demo pages are standalone mock sites with their own header and footer.
     pages = [path for path in filter(is_published, ROOT.rglob("*.html")) if not {"demo", "tourism-market-signal"} & set(path.relative_to(ROOT).parts) and not is_redirect_stub(path)]
-    assert len(pages) == 19
+    assert len(pages) == 18
     for path in pages:
         page = BeautifulSoup(rendered(path), "html.parser")
         assert page.find("link", href="/css/site-shell.css?v=20261012shell"), path
@@ -218,7 +218,6 @@ def test_diagnosis_is_native_and_does_not_contact_the_external_app():
 def test_analysis_pages_hide_initial_error_and_offer_copy_print_and_rich_noscript():
     for name in (
         "inbound-analysis.html",
-        "supply-demand-gap-analysis.html",
     ):
         page = soup(name)
         error = page.find(id="data-error")
@@ -251,32 +250,6 @@ def test_analytics_adapter_uses_allowlisted_non_free_text_fields():
         assert allowed in script
 
 
-def test_recommended_regional_tool_names_are_visible_with_legacy_context():
-    expected = {
-        "supply-demand-gap-analysis.html": ("宿泊市場の成長・稼働ポジション", "供給不足率、将来需要、投資効果を示すものではありません"),
-    }
-    for name, (current, legacy) in expected.items():
-        page = soup(name)
-        body = page.get_text(" ", strip=True)
-        assert current in body and legacy in body
-
-
-def test_supply_position_page_prioritizes_interpretation_over_composite_score():
-    page = soup("supply-demand-gap-analysis.html")
-    body = page.get_text(" ", strip=True)
-    assert "宿泊市場の成長・稼働ポジション" in page.title.string
-    assert page.find(id="growth-difference")
-    assert page.find(id="occupancy-difference")
-    assert page.find(id="scatter-summary")
-    assert page.find(id="scatter-table-body")
-    assert page.find(id="market-actions")
-    assert "追加調査優先度" in body
-    assert "供給不足の確率や程度ではありません" in body
-    assert "需給ひっ迫 参考スコア" not in body
-    assert page.find("script", src="js/cross-analysis-model.js?v=20261012model")
-    assert page.find("script", src="js/cross-analysis.js?v=20261012model")
-
-
 def test_supply_chart_has_four_named_quadrants_and_fixed_size_points():
     model = (ROOT / "js" / "cross-analysis-model.js").read_text(encoding="utf-8")
     view = (ROOT / "js" / "cross-analysis.js").read_text(encoding="utf-8")
@@ -296,7 +269,7 @@ def test_lab_pages_get_the_shared_header_and_footer_at_build_time():
     # Every Lab page except the standalone demos and the synced signal report
     # is built by Jekyll from the shared includes.
     pages = [path for path in filter(is_published, ROOT.rglob("*.html")) if not {"demo", "tourism-market-signal"} & set(path.relative_to(ROOT).parts) and not is_redirect_stub(path)]
-    assert len(pages) == 19
+    assert len(pages) == 18
     for path in pages:
         source = path.read_text(encoding="utf-8")
         assert source.startswith("---\n"), path

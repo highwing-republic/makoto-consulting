@@ -24,11 +24,6 @@ FILES = (
     "supply-demand-gap.json",
     "tourism-pressure.json",
 )
-PAGES = (
-    "supply-demand-gap-analysis.html",
-)
-
-
 def load(name):
     return json.loads((DATA_DIR / name).read_text(encoding="utf-8"))
 
@@ -131,31 +126,19 @@ def test_supply_score_is_explicitly_not_a_shortage_measure():
     assert sum(scoring["weights"].values()) == 1
 
 
-def test_pages_start_with_loading_only_and_keep_noscript():
-    for page in PAGES:
-        source = (ROOT / page).read_text(encoding="utf-8")
-        soup = BeautifulSoup(source, "html.parser")
-        assert soup.find(id="data-loading") and not soup.find(id="data-loading").has_attr("hidden")
-        assert soup.find(id="data-error").has_attr("hidden")
-        assert not soup.find(id="data-error").get_text(strip=True)
-        assert soup.find(id="analysis-dashboard").has_attr("hidden")
-        assert soup.find("noscript")
-        assert "サンプルデータ" not in source
-
-
 def test_home_lists_tools_in_order():
     home = (ROOT / "index.html").read_text(encoding="utf-8")
     assert all(label in home for label in ("旅館・ホテル", "インバウンド宿泊者分析", "観光株シグナル"))
     assert 'id="analysis-tools"' in home
-    tool_ids = [
-        "dx-diagnosis", "inbound", "supply-demand",
-        "market-signal", "hotel-price-trends",
-        "management-issue-organizer",
+    # 地域を知るの2枚目は、課題整理の「地域市場」への入口（公開を終えた地域ページの代わり）。
+    links = [
+        "/dx-diagnosis.html", "/inbound-analysis.html", "/management-ai.html?topic=market",
+        "/report.html", "/hotel-price-trends.html", "/management-ai.html",
     ]
     # The featured cards above the purpose groups repeat four of these tools,
     # so the order is checked inside the "目的から選ぶ" block.
     groups = home[home.index('class="tool-groups"'):]
-    positions = [groups.index(f'data-tool-id="{tool_id}"') for tool_id in tool_ids]
+    positions = [groups.index(f'href="{link}"') for link in links]
     assert positions == sorted(positions)
 
 
@@ -273,6 +256,7 @@ RETIRED_PAGES = {
     # データは課題整理が使うので残し、旧 URL は都道府県を引き継いでそのテーマへ送る。
     "dx-necessity-analysis.html": ("dx", "dx-necessity.json"),            # 2026-10 公開終了
     "tourism-pressure-analysis.html": ("market", "tourism-pressure.json"),  # 2026-10 公開終了
+    "supply-demand-gap-analysis.html": ("market", "supply-demand-gap.json"),  # 2026-10 公開終了
 }
 
 
