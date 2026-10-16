@@ -55,7 +55,8 @@ def test_display_faces_are_loaded_only_on_the_home_page_as_subsets() -> None:
 
     for path in public_files(".html", ".css", ".js"):
         text = path.read_text(encoding="utf-8")
-        assert "DotGothic16" not in text, path
+        if path not in DOT_NUMBER_PAGES and path not in DOT_NUMBER_CSS:
+            assert "DotGothic16" not in text, path
         if path != ROOT / "index.html" and path != ROOT / "css" / "home.css":
             for family in ("Zen+Kaku", "Zen Kaku", "Dela+Gothic", "Dela Gothic"):
                 assert family not in text, (path, family)
@@ -72,6 +73,27 @@ def test_display_faces_are_loaded_only_on_the_home_page_as_subsets() -> None:
             assert "wght" not in href, href
         subset = unquote(re.search(r"text=([^&]+)", href).group(1))
         assert set(shown) <= set(subset), (family, set(shown) - set(subset))
+
+
+# DotGothic16 is back for numbers only (2026-10-16): the home page's group
+# numbers 01〜04 and the DX diagnosis question numbers, answered count and score.
+DOT_NUMBER_PAGES = {ROOT / "index.html": "01234", ROOT / "dx-diagnosis.html": "Q0123456789"}
+DOT_NUMBER_CSS = {ROOT / "css" / "home.css", ROOT / "css" / "dx-diagnosis.css"}
+
+
+def test_dot_face_is_a_numbers_only_subset() -> None:
+    from urllib.parse import unquote
+
+    for path, glyphs in DOT_NUMBER_PAGES.items():
+        head = BeautifulSoup(path.read_text(encoding="utf-8"), "html.parser").head
+        hrefs = [link.get("href", "") for link in head.find_all("link", rel="stylesheet") if "DotGothic16" in link.get("href", "")]
+        assert len(hrefs) == 1, path
+        assert "display=swap" in hrefs[0], hrefs[0]
+        assert unquote(re.search(r"text=([^&]+)", hrefs[0]).group(1)) == glyphs, hrefs[0]
+    home = BeautifulSoup((ROOT / "index.html").read_text(encoding="utf-8"), "html.parser")
+    numbers = [node.get_text() for node in home.select(".tool-group__heading .tool-group__num[aria-hidden=true]")]
+    assert numbers == ["01", "02", "03", "04"]
+    assert set("".join(numbers)) <= set(DOT_NUMBER_PAGES[ROOT / "index.html"])
 
 
 NOTO_URL = "https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap"
@@ -92,8 +114,9 @@ def test_pages_link_web_fonts_in_head_instead_of_css_import() -> None:
         # Font CSS must be discoverable before any site stylesheet.
         assert stylesheets[: len(fonts)] == fonts, path
         assert fonts[0] == NOTO_URL, path
-        # Home adds its two subset display faces; classics notes add their mincho; tools load Noto only.
-        expected = 3 if path == ROOT / "index.html" else 2 if "classics-ai-management" in path.parts else 1
+        # Home adds its two subset display faces and the dot numbers; classics notes add their mincho;
+        # the DX diagnosis adds the dot numbers; other tools load Noto only.
+        expected = 4 if path == ROOT / "index.html" else 2 if "classics-ai-management" in path.parts or path in DOT_NUMBER_PAGES else 1
         assert len(fonts) == expected, path
 
 

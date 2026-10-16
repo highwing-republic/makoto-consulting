@@ -1,3 +1,4 @@
+/* Numbers (Q1〜Q16, answered count, total score) use DotGothic16; dx-diagnosis.html links a Q+digits subset. */
 #dx-diagnosis-app{--dx-blue:var(--lab-teal);--dx-blue-deep:var(--lab-navy);--dx-blue-soft:var(--lab-surface-soft);max-width:100%;color:var(--ink)}
 #dx-diagnosis-app button,#dx-diagnosis-app input{font:inherit}
 #dx-diagnosis-app button:focus-visible,#dx-diagnosis-app input:focus-visible,#dx-diagnosis-app summary:focus-visible,#dx-diagnosis-app a:focus-visible{outline:2px solid var(--lab-focus);outline-offset:3px}
@@ -37,7 +38,7 @@
 .dx-score-ring{display:grid;width:168px;height:168px;place-items:center;border-radius:50%;background:conic-gradient(var(--data-self) calc(var(--score)*1%),rgba(255,255,255,.15) 0)}
 .dx-score-ring:before{content:"";grid-area:1/1;width:130px;height:130px;border-radius:50%;background:var(--accent-deep)}
 .dx-score-ring>div{z-index:1;grid-area:1/1;text-align:center}
-.dx-score-ring strong{display:block;font-family:var(--sans);font-size:56px;font-weight:700;line-height:1;font-variant-numeric:tabular-nums}
+.dx-score-ring strong{display:block;font-family:"DotGothic16",var(--sans);font-size:60px;font-weight:400;font-synthesis:none;line-height:1;font-variant-numeric:tabular-nums}
 .dx-score-ring span{color:#c3d1d9;font-size:13px}
 .dx-summary-body h4{margin:0;color:#c8d7df;font-size:15px;font-weight:700}
 .dx-score-scale{position:relative;display:grid;grid-template-columns:repeat(3,1fr);margin:12px 0 20px;padding-top:12px;border-top:2px solid rgba(255,255,255,.28)}
@@ -99,7 +100,7 @@
 .dx-question-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px}
 .dx-category-count{margin:0 0 4px;color:var(--dx-blue);font-size:14px;font-weight:700}
 .dx-questions .dx-panel-heading h3{font-size:clamp(22px,2.4vw,28px)}
-.dx-answered{margin:0;color:var(--ink-soft);font-size:14px;white-space:nowrap}.dx-answered b{color:var(--dx-blue-deep);font-size:22px;font-variant-numeric:tabular-nums}
+.dx-answered{margin:0;color:var(--ink-soft);font-size:14px;white-space:nowrap}.dx-answered b{color:var(--dx-blue-deep);font-family:"DotGothic16",var(--sans);font-size:28px;font-weight:400;font-synthesis:none;font-variant-numeric:tabular-nums}
 .dx-segments{display:grid;grid-template-columns:repeat(16,1fr);gap:3px;margin:14px 0 18px}
 .dx-segments span{height:6px;border-radius:3px;background:#dde6eb}.dx-segments .is-current{background:#a9cbd3}.dx-segments .is-answered{background:var(--dx-blue)}
 .dx-question-lead{margin:0 0 22px;color:var(--ink-soft);font-size:15px;line-height:1.9}
@@ -107,7 +108,7 @@
 .dx-question{min-width:0;margin:0;padding:22px 24px;border:1px solid var(--line);border-radius:14px;background:#fbfcfc;scroll-margin-top:96px}
 .dx-question.is-missing{border-color:#a53b35;background:#fdf7f6}
 .dx-question legend{display:flex;align-items:flex-start;gap:12px;float:left;width:100%;margin-bottom:14px;padding:0;color:var(--ink);font-family:var(--sans);font-size:18px;font-weight:700;line-height:1.6}
-.dx-question legend span{flex:none;padding:1px 9px;border-radius:6px;background:var(--dx-blue-soft);color:var(--dx-blue);font:700 14px var(--latin);line-height:1.9}
+.dx-question legend span{flex:none;padding:2px 9px;border-radius:6px;background:var(--dx-blue-soft);color:var(--dx-blue);font:400 17px "DotGothic16",var(--latin);font-synthesis:none;line-height:1.6;letter-spacing:.04em}
 .dx-question .dx-field-error{clear:both;margin:0 0 10px;font-size:14px}
 .dx-options{clear:both;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
 .dx-options label{position:relative;min-width:0;cursor:pointer}

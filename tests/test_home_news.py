@@ -19,7 +19,7 @@ def test_news_section_sits_between_tools_and_about_and_starts_hidden():
     assert section.select_one("[data-news-list][aria-live='polite']")
     assert section.select_one("[data-news-scroll-hint][hidden]")
     assert page.find("script", src="js/news.js?v=20261016")
-    assert page.find("link", href="css/home.css?v=20261016news2")
+    assert page.find("link", href="css/home.css?v=20261016dot")
     assert not page.find("link", href=lambda value: value and "home-theme.css" in value)
 
 

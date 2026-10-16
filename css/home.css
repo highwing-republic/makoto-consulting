@@ -69,6 +69,9 @@
 .tool-group{margin-top:34px}
 .tool-group h3[id]{scroll-margin-top:110px}
 .tool-group__heading{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 16px;margin-bottom:14px}
+/* Group number: DotGothic16 (digits-only subset linked in index.html), the dot face the lab used for its numbers at launch. */
+.tool-group__num{align-self:center;padding-right:14px;border-right:1px solid var(--lab-border);color:var(--lab-teal);font-family:"DotGothic16",var(--lab-font-sans);font-size:30px;font-weight:400;font-synthesis:none;line-height:1;letter-spacing:.02em}
+@media(max-width:620px){.tool-group__num{font-size:26px}}
 .tool-group__heading h3{font-size:19px;font-weight:700;line-height:1.5;color:var(--lab-navy)}
 .tool-group__heading p{margin:0;color:var(--lab-ink-soft);font-size:13px;line-height:1.7}
 .analysis-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
