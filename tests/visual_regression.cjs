@@ -32,8 +32,6 @@ const PAGES = [
   '/inbound-analysis.html?pref=nagano',
   '/supply-demand-gap-analysis.html?pref=okinawa',
   '/supply-demand-gap-analysis.html?pref=tokyo',
-  '/tourism-pressure-analysis.html?pref=nagano',
-  '/tourism-pressure-analysis.html?pref=okinawa',
   '/management-ai.html?pref=nagano&topic=dx',
   '/report.html',
   '/hotel-price-trends.html',

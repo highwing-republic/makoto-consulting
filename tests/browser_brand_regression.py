@@ -92,7 +92,7 @@ def main(destination):
             assert page.locator('#hpt-region').input_value() == options[0]
             assert 'stay_date=' not in page.url
 
-            for name in ('inbound-analysis', 'supply-demand-gap-analysis', 'tourism-pressure-analysis'):
+            for name in ('inbound-analysis', 'supply-demand-gap-analysis'):
                 visit(name + '.html?pref=nagano')
                 assert page.locator('#selected-area-name').inner_text() == '長野県'
                 assert page.locator('#analysis-dashboard').is_visible()

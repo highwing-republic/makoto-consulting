@@ -3,6 +3,7 @@ import math
 import subprocess
 from pathlib import Path
 
+import pytest
 from bs4 import BeautifulSoup
 
 from scripts.update_cross_analysis_data import (
@@ -25,7 +26,6 @@ FILES = (
 )
 PAGES = (
     "supply-demand-gap-analysis.html",
-    "tourism-pressure-analysis.html",
 )
 
 
@@ -149,7 +149,7 @@ def test_home_lists_tools_in_order():
     assert 'id="analysis-tools"' in home
     tool_ids = [
         "dx-diagnosis", "inbound", "supply-demand",
-        "tourism-pressure", "market-signal", "hotel-price-trends",
+        "market-signal", "hotel-price-trends",
         "management-issue-organizer",
     ]
     # The featured cards above the purpose groups repeat four of these tools,
@@ -268,21 +268,31 @@ def test_monthly_lodging_keeps_each_month_and_marks_the_basis_change():
     assert dataset["metadata"]["basis_change_period"] == "2026-01"
 
 
-def test_retired_dx_necessity_page_forwards_to_the_management_tool():
-    # 地域の省人化・DX検討指標は 2026-10 に公開を終了した。データ（dx-necessity.json）は
-    # 宿泊経営の課題整理が使うので残し、旧 URL は都道府県を引き継いで「人手不足・DX」へ送る。
-    source = (ROOT / "dx-necessity-analysis.html").read_text(encoding="utf-8")
+RETIRED_PAGES = {
+    # 公開を終えた地域ページ → 課題整理（management-ai.html）で同じデータを見る相談テーマとデータファイル。
+    # データは課題整理が使うので残し、旧 URL は都道府県を引き継いでそのテーマへ送る。
+    "dx-necessity-analysis.html": ("dx", "dx-necessity.json"),            # 2026-10 公開終了
+    "tourism-pressure-analysis.html": ("market", "tourism-pressure.json"),  # 2026-10 公開終了
+}
+
+
+@pytest.mark.parametrize("filename", RETIRED_PAGES)
+def test_retired_regional_pages_forward_to_the_management_tool(filename):
+    topic, data_file = RETIRED_PAGES[filename]
+    stem = filename.removesuffix(".html")
+    source = (ROOT / filename).read_text(encoding="utf-8")
     page = BeautifulSoup(source, "html.parser")
     assert page.find("meta", attrs={"name": "robots"})["content"] == "noindex,follow"
     assert page.find("link", rel="canonical")["href"] == "https://lab.ugatta-llc.com/management-ai.html"
-    assert page.find("meta", attrs={"http-equiv": "refresh"})["content"] == "0; url=/management-ai.html?topic=dx"
-    assert 'get("pref")' in source and '"?topic=dx"' in source and "location.replace(\"/management-ai.html\"" in source
-    assert (DATA_DIR / "dx-necessity.json").exists()
+    assert page.find("meta", attrs={"http-equiv": "refresh"})["content"] == f"0; url=/management-ai.html?topic={topic}"
+    assert 'get("pref")' in source and f'"?topic={topic}"' in source and "location.replace(\"/management-ai.html\"" in source
+    assert page.find("a", href=f"/management-ai.html?topic={topic}")
+    assert (DATA_DIR / data_file).exists()
     for listing in ("sitemap.xml", "llms.txt", "_data/tools.yml", "index.html"):
-        assert "dx-necessity-analysis" not in (ROOT / listing).read_text(encoding="utf-8"), listing
-    linking = [path for path in ROOT.rglob("*.html") if path.name != "dx-necessity-analysis.html"
+        assert stem not in (ROOT / listing).read_text(encoding="utf-8"), listing
+    linking = [path for path in ROOT.rglob("*.html") if path.name != filename
                and not {".git", "tourism-market-signal"} & set(path.relative_to(ROOT).parts)
-               and "dx-necessity-analysis" in path.read_text(encoding="utf-8")]
+               and stem in path.read_text(encoding="utf-8")]
     assert linking == []
-    assert "dx-necessity-analysis" not in (ROOT / "js/dx-diagnosis.js").read_text(encoding="utf-8")
-    assert "dx-necessity-analysis" not in (ROOT / "js/management-ai-rules.js").read_text(encoding="utf-8")
+    for script in ("js/dx-diagnosis.js", "js/management-ai-rules.js"):
+        assert stem not in (ROOT / script).read_text(encoding="utf-8"), script

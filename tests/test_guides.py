@@ -12,7 +12,7 @@ LAB = "https://lab.ugatta-llc.com"
 LAB_ORG = LAB + "/#organization"
 TOOL_PAGES = [
     "dx-diagnosis.html", "inbound-analysis.html",
-    "supply-demand-gap-analysis.html", "tourism-pressure-analysis.html",
+    "supply-demand-gap-analysis.html",
     "management-ai.html", "hotel-price-trends.html", "report.html",
 ]
 
