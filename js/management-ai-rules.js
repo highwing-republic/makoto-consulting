@@ -12,11 +12,11 @@
   };
 
   const RELATED_TOOLS = {
-    diagnosis: { number: '01', label: 'DXかんたん診断を見る', href: 'dx-diagnosis.html' },
-    inbound: { number: '02', label: 'インバウンド分析を見る', href: 'inbound-analysis.html' },
-    dx: { number: '04', label: '地域の省人化・DX検討指標を見る', href: 'dx-necessity-analysis.html' },
-    supply: { number: '05', label: '宿泊市場の成長・稼働ポジションを見る', href: 'supply-demand-gap-analysis.html' },
-    tourism: { number: '06', label: '宿泊集中度・宿泊業依存度を見る', href: 'tourism-pressure-analysis.html' }
+    diagnosis: { number: '01', label: 'DXかんたん診断を見る', href: 'dx-diagnosis.html', supportsPref: false },
+    inbound: { number: '02', label: 'インバウンド分析を見る', href: 'inbound-analysis.html', supportsPref: true },
+    dx: { number: '04', label: '地域の省人化・DX検討指標を見る', href: 'dx-necessity-analysis.html', supportsPref: true },
+    supply: { number: '05', label: '宿泊市場の成長・稼働ポジションを見る', href: 'supply-demand-gap-analysis.html', supportsPref: true },
+    tourism: { number: '06', label: '宿泊集中度・宿泊業依存度を見る', href: 'tourism-pressure-analysis.html', supportsPref: true }
   };
 
   const isNumber = (value) => typeof value === 'number' && Number.isFinite(value);
@@ -309,7 +309,10 @@
       facts: topicFacts(context, topic, comparisons),
       hypotheses: hypotheses.slice(0, 3),
       checklist: checklistFor(topic, question),
-      relatedTools: relatedFor(topic).map((tool) => ({ ...tool, href: `${tool.href}?pref=${encodeURIComponent(context.slug)}` })),
+      relatedTools: relatedFor(topic).map((tool) => ({
+        ...tool,
+        href: tool.supportsPref ? `${tool.href}?pref=${encodeURIComponent(context.slug)}` : tool.href
+      })),
       comparisons,
       matchedRules: matched.map((rule) => rule.id),
       missing,

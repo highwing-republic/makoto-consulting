@@ -27,7 +27,7 @@ const R=globalThis.ManagementAIRules;
 const make=(slug,topic,facility={})=>{
   const context=R.getRegionContext(datasets,slug);
   const answer=R.generateInsights(context,topic,facility,'フロントと予約管理を効率化したい');
-  return {slug:context.slug,name:context.name,topic:answer.topic,references:answer.references,facts:answer.facts.length,hypotheses:answer.hypotheses.length,checklist:answer.checklist.length,comparisons:answer.comparisons,matchedRules:answer.matchedRules,status:answer.status};
+  return {slug:context.slug,name:context.name,topic:answer.topic,references:answer.references,facts:answer.facts.length,hypotheses:answer.hypotheses.length,checklist:answer.checklist.length,comparisons:answer.comparisons,matchedRules:answer.matchedRules,status:answer.status,relatedTools:answer.relatedTools};
 };
 const missingDatasets=structuredClone(datasets);
 missingDatasets.statistics.prefectures['13'].occupancy_rate=null;
@@ -67,6 +67,22 @@ def test_page_has_required_inputs_and_fixed_answer_structure():
     assert soup.find("noscript")
 
 
+def test_answer_sections_follow_the_agreed_information_order():
+    soup = BeautifulSoup(PAGE.read_text(encoding="utf-8"), "html.parser")
+    result = soup.find(id="management-result")
+    text = result.get_text(" ", strip=True)
+    labels = [
+        "要点",
+        "まず確認したいこと",
+        "次に確認する項目",
+        "実際の公的数値",
+        "出典・時点",
+        "制約と判定根拠",
+    ]
+    assert [text.index(label) for label in labels] == sorted(text.index(label) for label in labels)
+    assert "公的機関が公表したランキングではありません" in text
+
+
 def test_number_inputs_allow_blank_but_reject_out_of_range_in_markup():
     soup = BeautifulSoup(PAGE.read_text(encoding="utf-8"), "html.parser")
     occupancy = soup.find(id="facility-occupancy")
@@ -99,6 +115,10 @@ def test_topic_classification_pref_fallback_and_five_representative_cases():
 
     assert data["dx"]["name"] == "長野県"
     assert "04 地域の省人化・DX検討指標" in data["dx"]["references"]
+    diagnosis_link = next(tool["href"] for tool in data["dx"]["relatedTools"] if tool["number"] == "01")
+    regional_links = [tool["href"] for tool in data["dx"]["relatedTools"] if tool["number"] != "01"]
+    assert diagnosis_link == "dx-diagnosis.html"
+    assert regional_links and all("?pref=nagano" in link for link in regional_links)
     assert data["inbound"]["name"] == "京都府"
     assert data["inbound"]["references"] == ["02 インバウンド宿泊者分析", "05 宿泊市場の成長・稼働ポジション", "06 宿泊集中度・宿泊業依存度"]
     assert data["sales"]["name"] == "鹿児島県"
@@ -128,6 +148,7 @@ def test_ga4_events_exclude_free_text_and_rules_are_separated():
     assert 'src="js/management-ai.js' in PAGE.read_text(encoding="utf-8")
     assert "params.get('pref')" in source and "params.get('topic')" in source
     assert "url.searchParams.set('pref'" in source and "url.searchParams.set('topic'" in source
+    assert "result.focus({ preventScroll: true })" in source
 
 
 def test_responsive_styles_and_home_tool_regression():

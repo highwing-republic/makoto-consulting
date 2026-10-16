@@ -174,6 +174,7 @@
 
     result.hidden = false;
     result.inert = false;
+    result.focus({ preventScroll: true });
     result.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
   }
 

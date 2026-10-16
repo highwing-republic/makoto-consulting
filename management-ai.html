@@ -115,27 +115,28 @@ tool_related:
       </form>
 
       <section class="management-result" id="management-result" aria-live="polite" tabindex="-1" hidden inert>
-        <div class="management-answer-header"><div><h2><span id="answer-prefecture"></span> × <span id="answer-topic"></span></h2></div><div class="management-rule-badge">公的統計をもとにした参考分析</div></div>
+        <div class="management-answer-header"><div><h2><span id="answer-prefecture"></span> × <span id="answer-topic"></span></h2></div><div class="management-rule-badge">公的統計＋固定ルールによる参考分析</div></div>
         <section class="management-answer-block management-answer-block--status"><p class="management-answer-label">要点</p><p class="management-status" id="answer-status"></p></section>
-        <section class="management-answer-block"><p class="management-answer-label">確認できる数値</p><ul class="management-facts" id="answer-facts"></ul><p class="management-missing" id="missing-data-note" hidden></p></section>
-
-        <section class="management-answer-block" id="facility-comparison-section" hidden><div class="management-answer-heading"><p class="management-answer-label">自施設と地域の参考比較</p><span>比較地域：<b id="comparison-region-name"></b></span></div><div class="management-comparisons" id="facility-comparisons"></div><p class="management-comparison-note">地域統計とは集計対象・期間等が異なる場合があります。参考比較としてご覧ください。</p></section>
 
         <div class="management-answer-columns">
-          <section class="management-answer-block"><p class="management-answer-label">考えられる論点</p><div class="management-hypotheses" id="answer-hypotheses"></div></section>
-          <section class="management-answer-block"><p class="management-answer-label">最初に確認すること</p><ol class="management-checklist" id="answer-checklist"></ol></section>
+          <section class="management-answer-block"><p class="management-answer-label">まず確認したいこと</p><ol class="management-checklist" id="answer-checklist"></ol></section>
+          <section class="management-answer-block"><p class="management-answer-label">次に確認する項目</p><div class="management-hypotheses" id="answer-hypotheses"></div></section>
         </div>
         <p class="management-more-guide" id="more-input-guide">より具体的に見るには、客室数・稼働率・従業員数などを入力すると比較できます。</p>
 
-        <section class="management-answer-block management-related"><p class="management-answer-label">関連分析</p><ul id="answer-related"></ul></section>
-        <section class="management-answer-block management-periods"><p class="management-answer-label">使用データ時点</p><dl id="answer-data-periods"></dl><p>異なる時点・集計範囲の公的統計を組み合わせています。</p></section>
+        <section class="management-answer-block"><p class="management-answer-label">実際の公的数値</p><ul class="management-facts" id="answer-facts"></ul><p class="management-missing" id="missing-data-note" hidden></p></section>
 
-        <details class="management-grounds" open><summary>根拠・制約</summary><div class="management-grounds-grid">
+        <section class="management-answer-block" id="facility-comparison-section" hidden><div class="management-answer-heading"><p class="management-answer-label">自施設と地域の参考比較</p><span>比較地域：<b id="comparison-region-name"></b></span></div><div class="management-comparisons" id="facility-comparisons"></div><p class="management-comparison-note">地域統計とは集計対象・期間等が異なる場合があります。参考比較としてご覧ください。</p></section>
+
+        <section class="management-answer-block management-periods"><p class="management-answer-label">出典・時点</p><dl id="answer-data-periods"></dl><div class="management-periods__sources"><h3>元データ</h3><ul id="answer-sources"></ul></div><p>異なる時点・集計範囲の公的統計を組み合わせています。</p></section>
+
+        <section class="management-answer-block management-related"><p class="management-answer-label">関連分析</p><ul id="answer-related"></ul></section>
+
+        <details class="management-grounds" open><summary>制約と判定根拠</summary><div class="management-grounds-grid">
           <section><h3>参照した分析</h3><ul id="answer-references"></ul></section>
           <section><h3>使用した主要指標</h3><ul id="answer-metrics"></ul></section>
           <section><h3>判定したルール</h3><p>ルール版：<strong id="answer-rule-version"></strong></p><ul id="answer-rules"></ul></section>
-          <section><h3>元データ</h3><ul id="answer-sources"></ul></section>
-        </div><p>回答は公開データと入力値に対する固定ルールから生成しています。外部の生成AIによる文章生成や推測は行っていません。</p></details>
+        </div><p>回答は公開データと入力値に対する固定ルールから生成しています。表示する順位・スコア・類型は、出典の公的統計を当サイトの固定ルールで加工した参考値であり、公的機関が公表したランキングではありません。外部の生成AIによる文章生成や推測は行っていません。</p></details>
       </section>
 
       <section class="management-disclaimer" aria-label="免責事項"><p>宿泊経営の課題整理（β）は、公的統計と入力情報をもとに確認候補を提示するルールベース型ツールです。個別施設の経営成果を保証するものではなく、投資・採用・価格設定等の最終判断は利用者自身で行ってください。</p></section>
