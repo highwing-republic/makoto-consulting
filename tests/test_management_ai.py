@@ -21,7 +21,8 @@ const datasets={
   dx:J('data/analysis/dx-necessity.json'),
   supply:J('data/analysis/supply-demand-gap.json'),
   tourism:J('data/analysis/tourism-pressure.json'),
-  inbound:J('data/inbound/latest.json')
+  inbound:J('data/inbound/latest.json'),
+  monthly:J('data/analysis/lodging-monthly.json')
 };
 const R=globalThis.ManagementAIRules;
 const make=(slug,topic,facility={})=>{
@@ -171,7 +172,7 @@ def test_topic_classification_pref_fallback_and_five_representative_cases():
     for case in (data["dx"], data["inbound"], data["sales"], data["market"], data["other"]):
         assert 1 <= case["hypotheses"] <= 3
         assert case["checklist"] == 3
-        assert 2 <= case["facts"] <= 4
+        assert 2 <= case["facts"] <= 5
 
 
 def test_ga4_events_exclude_free_text_and_rules_are_separated():
@@ -216,7 +217,8 @@ const datasets={
   dx:J('data/analysis/dx-necessity.json'),
   supply:J('data/analysis/supply-demand-gap.json'),
   tourism:J('data/analysis/tourism-pressure.json'),
-  inbound:J('data/inbound/latest.json')
+  inbound:J('data/inbound/latest.json'),
+  monthly:J('data/analysis/lodging-monthly.json')
 };
 const R=globalThis.ManagementAIRules;
 """
@@ -234,15 +236,18 @@ LOAD_FIXTURES = LOAD_DATASETS.replace(
     "data/analysis/tourism-pressure.json", "tests/fixtures/cross-analysis/tourism-pressure.json"
 ).replace(
     "data/inbound/latest.json", "tests/fixtures/inbound/latest.json"
+).replace(
+    "data/analysis/lodging-monthly.json", "tests/fixtures/management-ai/lodging-monthly.json"
 )
 
 
 def test_fixture_datasets_are_one_consistent_snapshot():
     data = run_node(LOAD_FIXTURES + r"""
 console.log(JSON.stringify({lodging:datasets.statistics.metadata.sources.lodging.reference_period,
-  dx:datasets.dx.metadata.sources.lodging.reference_period,inbound:[datasets.inbound.metadata.year,datasets.inbound.metadata.month]}));
+  dx:datasets.dx.metadata.sources.lodging.reference_period,inbound:[datasets.inbound.metadata.year,datasets.inbound.metadata.month],
+  monthly:datasets.monthly.metadata.reference_period}));
 """)
-    assert data == {"lodging": "2025-08〜2026-07", "dx": "2025-08〜2026-07", "inbound": [2026, 7]}
+    assert data == {"lodging": "2025-08〜2026-07", "dx": "2025-08〜2026-07", "inbound": [2026, 7], "monthly": "2024-08〜2026-07"}
 
 
 def test_all_47_prefectures_and_topics_produce_complete_answers():
@@ -290,7 +295,7 @@ const niigata=R.getRegionContext(datasets,'niigata');
 const seasons=R.inboundSeasons(niigata);
 const answer=R.generateInsights(niigata,'inbound',{type:'旅館'},'');
 console.log(JSON.stringify({mismatches,segments:seasons.segments.map((s)=>({scope:s.scope,months:s.months.length,peak:s.peak&&s.peak.month,low:s.low&&s.low.month})),
-  markets:answer.perspectives[0].data,seasonData:answer.perspectives[1].data,reception:answer.perspectives[2],lead:answer.lead,facts:answer.facts}));
+  markets:answer.perspectives[0].data,seasonData:answer.perspectives[1].data,reception:answer.perspectives[2],lead:answer.lead,trend:answer.trendNotes,facts:answer.facts}));
 """)
     assert data["mismatches"] == []
     # 集計対象が変わる 2026年1月で区切り、区切りの中でだけ多い月・少ない月を選ぶ。
@@ -305,9 +310,11 @@ console.log(JSON.stringify({mismatches,segments:seasons.segments.map((s)=>({scop
     assert data["reception"]["status"] == "self-check" and data["reception"]["data"] is None
     assert "判定せず" in data["reception"]["selfCheck"]
     assert "大浴場" in data["reception"]["checks"][0]
-    assert data["lead"]["title"] == "外国人宿泊が集中する時期に、自施設の販売と受け入れが合っているか"
-    assert "2月が5月の約6.1倍" in data["lead"]["note"] and "全国（約1.2倍）" in data["lead"]["note"]
-    assert "2026年1月〜2026年7月・客室数20室以上の施設" in data["lead"]["evidence"][0]
+    # 冒頭は月別値（第2表）の「国内客が減る月の外国人の比重」。季節の差（国籍別の集計表）は傾向の欄に回る。
+    assert data["lead"]["title"] == "国内客が減る時期に、外国人の宿泊を取り込めているか"
+    assert "1月、国内客が年平均を10%下回る" in data["lead"]["note"] and "20.7%（2025年の1年間では8.1%）" in data["lead"]["note"]
+    assert "2025年1月〜2025年12月の月別値" in data["lead"]["evidence"][0]
+    assert any("2月が5月の約6.1倍" in text and "全国（約1.2倍）" in text for text in data["trend"])
     assert all(fact["note"] for fact in data["facts"])
     assert "2025-08〜2026-07" in data["facts"][0]["note"] and "人泊" in data["facts"][0]["note"]
 
@@ -316,16 +323,24 @@ def test_inbound_missing_data_shows_no_figures():
     data = run_node(LOAD_DATASETS + r"""
 const broken=structuredClone(datasets);
 delete broken.inbound.prefectures['新潟県'];
+delete broken.monthly.prefectures['15'];
 broken.statistics.prefectures['15'].foreign_guest_nights=null;
 const context=R.getRegionContext(broken,'niigata');
 const answer=R.generateInsights(context,'inbound',{},'');
-console.log(JSON.stringify({perspectives:answer.perspectives.map((item)=>({status:item.status,data:item.data,missing:item.missing})),seasons:answer.seasons,lead:answer.lead,missing:answer.missing}));
+const partial=structuredClone(datasets);
+delete partial.inbound.prefectures['新潟県'];
+const partialAnswer=R.generateInsights(R.getRegionContext(partial,'niigata'),'inbound',{},'');
+console.log(JSON.stringify({perspectives:answer.perspectives.map((item)=>({status:item.status,data:item.data,missing:item.missing})),seasons:answer.seasons,lead:answer.lead,missing:answer.missing,
+  table:answer.lodgingTable,partialSeason:partialAnswer.perspectives[1].data}));
 """)
     assert [item["status"] for item in data["perspectives"]] == ["missing", "missing", "self-check"]
     assert data["perspectives"][0]["data"] is None and "取得できませんでした" in data["perspectives"][0]["missing"]
     assert data["seasons"] is None
     assert "取得できませんでした" in data["lead"]["note"]
-    assert "外国人延べ宿泊者数" in data["missing"]
+    assert "外国人延べ宿泊者数" in data["missing"] and "月別の宿泊統計" in data["missing"]
+    assert data["table"] is None
+    # 国籍別の集計表だけが欠けた場合は、月別値（第2表）の行だけを出す。
+    assert [line["label"] for line in data["partialSeason"]["lines"]] == ["外国人の割合が最も高い月（2025年1月〜2025年12月）"]
 
 
 def test_foreign_share_gap_needs_guest_night_basis_and_rule_version_is_bumped():
@@ -334,7 +349,7 @@ const context=R.getRegionContext(datasets,'tokyo');
 const run=(basis)=>{const a=R.generateInsights(context,'inbound',{foreignShare:2,foreignShareBasis:basis},'');return {rules:a.matchedRules,row:a.comparisons[0],lead:a.lead.title};};
 console.log(JSON.stringify({version:R.RULE_VERSION,nights:run('guest_nights'),bookings:run('bookings'),guests:run('guests'),unknown:run('unknown'),none:run(null)}));
 """)
-    assert data["version"] == "1.1.0"
+    assert data["version"] == "1.2.0"
     assert data["nights"]["rules"][0] == "facility-foreign-gap" and data["nights"]["row"]["comparable"]
     assert data["nights"]["row"]["difference"].endswith("pt")
     assert data["nights"]["lead"] == "地域と比べて、自施設の外国人宿泊が少ない理由はどこにあるか"
@@ -399,7 +414,7 @@ console.log(JSON.stringify({niigata:pick('niigata'),kagawa:pick('kagawa'),tokyo:
     assert season["period"] == "2026年1月〜2026年7月" and season["scope"] == "客室数20室以上の施設"
     assert (season["peak"]["month"], season["low"]["month"]) == (2, 5)
     assert round(season["ratio"], 1) == 6.1 and round(season["nationalRatio"], 1) == 1.2
-    assert data["niigata"]["rules"][0] == "inbound-seasonality"
+    assert data["niigata"]["rules"][:2] == ["inbound-domestic-complement", "inbound-seasonality"]
     assert "inbound-concentration" not in data["niigata"]["rules"]  # 上位3つは46.1%で全国（46.6%）並み
     concentration = data["kagawa"]["profile"]["concentration"]
     assert concentration["names"] == ["台湾", "韓国", "中国"] and round(concentration["share"] * 100) == 82
@@ -409,3 +424,83 @@ console.log(JSON.stringify({niigata:pick('niigata'),kagawa:pick('kagawa'),tokyo:
     assert sum(data["leads"].values()) == 47 and data["leads"].get("none", 0) < 15
     # 追加ルールはインバウンドだけに効く。
     assert not any(rule.startswith("inbound-") for rules in data["others"].values() for rule in rules)
+
+
+def test_monthly_rules_compare_one_basis_year_and_name_the_month():
+    data = run_node(LOAD_FIXTURES + r"""
+const run=(slug,topic,facility={})=>{const c=R.getRegionContext(datasets,slug);const a=R.generateInsights(c,topic,facility,'');
+  return {profile:{period:c.monthlyProfile.period,yearLabel:c.monthlyProfile.yearLabel,basis:c.monthlyProfile.basisLabel},
+    rules:a.matchedRules,lead:a.lead,trend:a.trendNotes,facts:a.facts,table:a.lodgingTable,season:a.perspectives?a.perspectives[1]:null};};
+const lists={complement:[],gap:[]};
+for (const row of Object.values(datasets.statistics.prefectures)) {
+  const c=R.getRegionContext(datasets,row.prefecture_slug);
+  if (R.generateInsights(c,'inbound',{},'').matchedRules.includes('inbound-domestic-complement')) lists.complement.push(row.prefecture_name);
+  if (R.generateInsights(c,'sales',{},'').matchedRules.includes('sales-seasonal-gap')) lists.gap.push(row.prefecture_name);
+}
+const shifted=structuredClone(datasets);
+shifted.monthly.basis=shifted.monthly.basis.map(()=> 'after');
+const shiftedProfile=R.getRegionContext(shifted,'niigata').monthlyProfile;
+const mixed=structuredClone(datasets);
+mixed.monthly.basis=mixed.monthly.basis.map((value,index)=>index%2?'after':'before');
+console.log(JSON.stringify({niigata:run('niigata','inbound'),niigataSales:run('niigata','sales'),aomori:run('aomori','sales'),
+  aomoriLow:run('aomori','sales',{occupancyRate:20}),tokyo:run('tokyo','inbound'),lists,
+  shifted:{period:shiftedProfile.period,yearLabel:shiftedProfile.yearLabel},mixed:R.getRegionContext(mixed,'niigata').monthlyProfile,
+  others:['dx','market','other'].map((topic)=>R.generateInsights(R.getRegionContext(datasets,'aomori'),topic,{},'').lodgingTable)}));
+""")
+    # 2026年1月の基準変更をまたがず、同じ基準で12か月そろう最新の期間（2025年1〜12月）を使う。
+    assert data["niigata"]["profile"] == {"period": "2025年1月〜2025年12月", "yearLabel": "2025年の1年間", "basis": "2025年12月までの集計・層化基準"}
+    assert data["shifted"] == {"period": "2025年8月〜2026年7月", "yearLabel": "2025年8月〜2026年7月の1年間"}
+    assert data["mixed"] is None
+
+    niigata = data["niigata"]
+    assert niigata["rules"][0] == "inbound-domestic-complement"
+    season_line = niigata["season"]["data"]["lines"][-1]
+    assert season_line == {"label": "外国人の割合が最も高い月（2025年1月〜2025年12月）", "value": "1月 20.7%（1年間では 8.1%）\nこの月の国内客は年平均の90%"}
+    assert "第2表" in niigata["season"]["data"]["note"] and "一致しません" in niigata["season"]["data"]["note"]
+    assert niigata["season"]["checks"][2].startswith("国内客が少ない1月前後に")
+    marked = {row["month"]: row["marks"] for row in niigata["table"]["rows"] if row["marks"]}
+    assert marked == {1: ["外国人の割合が最も高い月"], 4: ["国内客が最も少ない月"]}
+    assert [row["period"] for row in niigata["table"]["rows"]][0] == "2025-01" and len(niigata["table"]["rows"]) == 12
+
+    # 売上・稼働：季節差が全国の1.5倍以上なら閑散月の論点、そうでなければ最も低い月を示す。
+    aomori = data["aomori"]
+    assert aomori["rules"][0] == "sales-seasonal-gap"
+    assert aomori["lead"]["title"] == "稼働が落ちる月に向けて、販売と運営の手当てができているか"
+    assert "最も高い10月が75.3%、最も低い1月が45.2%で、差は30.1ポイント" in aomori["lead"]["note"] and "全国（12.5ポイント）" in aomori["lead"]["note"]
+    assert data["aomoriLow"]["rules"][0] == "facility-occupancy-gap"  # 自施設の入力値による判定が先
+    sales = data["niigataSales"]
+    assert sales["rules"] == [] and sales["lead"]["ruleId"] is None
+    assert sales["lead"]["title"] == "稼働率が下がる月に、自施設の稼働と販売がどうなっているか"
+    assert "1月（40.9%）で、全国の同じ月（54.6%）より13.7ポイント低い水準" in sales["lead"]["note"]
+    assert sales["trend"][0].startswith("地域の稼働率や需要伸びは、自施設の売上を直接説明するものではありません")
+    assert any("最も低いのは1月（40.9%）" in fact["text"] and "第8表" in fact["note"] for fact in sales["facts"])
+    assert {row["month"]: row["marks"] for row in sales["table"]["rows"] if row["marks"]} == {1: ["稼働率が最も低い月"], 8: ["稼働率が最も高い月"]}
+
+    assert "inbound-domestic-complement" not in data["tokyo"]["rules"]
+    assert sorted(data["lists"]["complement"]) == sorted(["北海道", "岩手県", "山形県", "新潟県", "富山県", "長野県", "和歌山県", "広島県"])
+    assert len(data["lists"]["gap"]) == 21 and "青森県" in data["lists"]["gap"] and "東京都" not in data["lists"]["gap"]
+    assert data["others"] == [None, None, None]
+
+
+def test_monthly_data_is_optional_and_published_with_its_source():
+    ui = UI.read_text(encoding="utf-8")
+    assert "fetch('data/analysis/lodging-monthly.json', { cache: 'no-store' }).then((response) => response.ok ? response.json() : null).catch(() => null)" in ui
+    soup = BeautifulSoup(PAGE.read_text(encoding="utf-8"), "html.parser")
+    table = soup.select_one("#answer-lodging")
+    assert table is not None and table.has_attr("hidden")
+    assert table.find_parent("section")["aria-labelledby"] == "answer-details-heading"
+    data = run_node(LOAD_DATASETS + r"""
+const rows=[];
+for (const row of Object.values(datasets.statistics.prefectures)) for (const topic of ['inbound','sales']) {
+  const a=R.generateInsights(R.getRegionContext(datasets,row.prefecture_slug),topic,{},'');
+  rows.push({topic,rows:a.lodgingTable?a.lodgingTable.rows.length:0,missing:a.missing});
+}
+const none=structuredClone(datasets); delete none.monthly;
+const plain=R.generateInsights(R.getRegionContext(none,'niigata'),'sales',{},'');
+console.log(JSON.stringify({rows,plain:{rules:plain.matchedRules,table:plain.lodgingTable,missing:plain.missing,lead:plain.lead.title},
+  meta:datasets.monthly.metadata}));
+""")
+    assert all(row["rows"] == 12 and "月別の宿泊統計" not in row["missing"] for row in data["rows"])
+    assert data["plain"]["table"] is None and data["plain"]["missing"] == ["月別の宿泊統計"]
+    assert data["plain"]["lead"] == "地域の稼働や需要の動きと、自施設の販売状況に違いがないか"
+    assert data["meta"]["source_name"] == "観光庁「宿泊旅行統計調査」" and "第8表" in data["meta"]["table_name"]

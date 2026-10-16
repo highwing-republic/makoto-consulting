@@ -54,6 +54,8 @@
     'inbound-market-opportunity': '外国人宿泊比率が全国値を上回る',
     'inbound-seasonality': '外国人宿泊の季節差（最多月÷最少月）が2倍以上で、全国の1.5倍以上',
     'inbound-concentration': '上位3つの国・地域の構成比が全国より10ポイント以上高い',
+    'inbound-domestic-complement': '外国人の割合が最も高い月が、1年間の割合の1.5倍以上かつ5ポイント以上高く、その月の国内客が年平均を下回る',
+    'sales-seasonal-gap': '客室稼働率の最も高い月と低い月の差が、全国の差の1.5倍以上',
     'tourism-context': '観光負荷または観光依存度の参考スコアが比較的高い'
   };
 
@@ -186,6 +188,7 @@
     const rows = [
       ['宿泊旅行統計', `${sources.lodging.reference_period}（${sources.lodging.release_type}）`],
       ['国・地域別構成', `${inboundMeta.year}年${inboundMeta.month}月（${inboundMeta.release_type}・${inboundMeta.survey_scope}）`],
+      ...(context.monthlyProfile ? [['月別の宿泊統計', `${context.monthlyProfile.period}（${context.datasets.monthly.metadata.release_type}・${context.monthlyProfile.basisLabel}）`]] : []),
       ['人口推計', sources.population.reference_period],
       ['経済センサス', sources.economic_census.reference_period]
     ];
@@ -207,7 +210,7 @@
     setText('answer-methodology-note', context.datasets.statistics.metadata?.methodology_note || '');
 
     const sources = context.datasets.dx.metadata.sources;
-    const sourceRows = [sources.lodging, sources.population, sources.economic_census];
+    const sourceRows = [sources.lodging, ...(context.monthlyProfile ? [context.datasets.monthly.metadata] : []), sources.population, sources.economic_census];
     replaceList('answer-sources', sourceRows, (source) => {
       const item = element('li');
       const link = element('a', '', `${source.source_name}｜${source.table_name}`);
@@ -302,6 +305,44 @@
       : '単位は人泊（1人が2泊すると2人泊）です。');
   }
 
+  // 月別の宿泊者数・客室稼働率（宿泊旅行統計調査 第2表・第8表）。インバウンドと売上・稼働で列を変える。
+  function renderLodgingTable(answer) {
+    const wrapper = $('answer-lodging');
+    const table = answer.lodgingTable;
+    if (!table) {
+      wrapper.hidden = true;
+      return;
+    }
+    wrapper.hidden = false;
+    const inbound = table.topic === 'inbound';
+    setText('answer-lodging-title', inbound
+      ? `月別の国内客と外国人の延べ宿泊者数（${table.period}）`
+      : `月別の客室稼働率（${table.period}）`);
+    const headings = inbound ? ['月', '国内客', '外国人', '外国人の割合'] : ['月', '客室稼働率', '全国', '全国との差'];
+    $('answer-lodging-head').replaceChildren(...headings.map((text) => {
+      const cell = element('th', '', text);
+      cell.scope = 'col';
+      return cell;
+    }));
+    const signed = (value) => typeof value === 'number' ? `${value > 0 ? '+' : value < 0 ? '−' : '±'}${Rules.formatNumber(Math.abs(value), 1)}pt` : 'データなし';
+    $('answer-lodging-body').replaceChildren(...table.rows.map((row) => {
+      const tr = element('tr');
+      const label = element('th', '', `${row.month}月`);
+      label.scope = 'row';
+      row.marks.forEach((mark) => label.append(element('span', 'management-monthly-mark', mark)));
+      const values = inbound
+        ? [`${Rules.formatNumber(row.domestic)}`, `${Rules.formatNumber(row.foreign)}`, Rules.formatPercent(row.share)]
+        : [Rules.formatRate1(row.occupancy), Rules.formatRate1(row.nationalOccupancy),
+          signed(typeof row.occupancy === 'number' && typeof row.nationalOccupancy === 'number' ? Math.round((row.occupancy - row.nationalOccupancy) * 10) / 10 : null)];
+      tr.append(label, ...values.map((text) => element('td', '', text)));
+      if (row.marks.length) tr.classList.add('is-marked');
+      return tr;
+    }));
+    setText('answer-lodging-note', inbound
+      ? `単位は人泊。宿泊旅行統計調査 第2表の月別値（${table.basisLabel}で12か月そろう最新の期間）。国内客は延べ宿泊者数から外国人を除いた値で、日本に住む外国人を含みます。国籍別の集計表より対象施設が広いため、上の表の外国人の値とは一致しません。`
+      : `宿泊旅行統計調査 第8表の月別値（${table.basisLabel}で12か月そろう最新の期間）。2026年1月から集計・層化基準が変わったため、基準が異なる月どうしは比べていません。`);
+  }
+
   function renderAnswer(context, answer, facility) {
     setText('answer-prefecture', context.name);
     setText('answer-topic', answer.topicLabel);
@@ -342,6 +383,7 @@
     });
 
     renderMonthly(answer, context);
+    renderLodgingTable(answer);
     renderComparisons(answer.comparisons, context.name);
     renderDataPeriods(context);
     renderGrounds(answer, context);
@@ -394,7 +436,7 @@
     const list = $('source-list');
     const sources = datasets.dx.metadata.sources;
     if (list) {
-      list.replaceChildren(...[sources.lodging, sources.population, sources.economic_census].map((source) => {
+      list.replaceChildren(...[sources.lodging, ...(datasets.monthly ? [datasets.monthly.metadata] : []), sources.population, sources.economic_census].map((source) => {
         const row = element('div');
         const link = element('a', '', `${source.table_name} ↗`);
         link.href = source.source_url;
@@ -456,9 +498,11 @@
     fetch('data/analysis/dx-necessity.json', { cache: 'no-store' }).then((response) => response.ok ? response.json() : Promise.reject(new Error('dx'))),
     fetch('data/analysis/supply-demand-gap.json', { cache: 'no-store' }).then((response) => response.ok ? response.json() : Promise.reject(new Error('supply'))),
     fetch('data/analysis/tourism-pressure.json', { cache: 'no-store' }).then((response) => response.ok ? response.json() : Promise.reject(new Error('tourism'))),
-    fetch('data/inbound/latest.json', { cache: 'no-store' }).then((response) => response.ok ? response.json() : Promise.reject(new Error('inbound')))
-  ]).then(([statistics, dx, supply, tourism, inbound]) => {
-    datasets = { statistics, dx, supply, tourism, inbound };
+    fetch('data/inbound/latest.json', { cache: 'no-store' }).then((response) => response.ok ? response.json() : Promise.reject(new Error('inbound'))),
+    // 月別の値は補助的な材料のため、取得できなくても他の結果は表示する（該当する判定と表だけを出さない）。
+    fetch('data/analysis/lodging-monthly.json', { cache: 'no-store' }).then((response) => response.ok ? response.json() : null).catch(() => null)
+  ]).then(([statistics, dx, supply, tourism, inbound, monthly]) => {
+    datasets = { statistics, dx, supply, tourism, inbound, monthly };
     initialize();
   }).catch(() => showError('現在、地域統計を取得できません。時間をおいて再度お試しください。'));
 })();
