@@ -21,11 +21,16 @@ class FakeDocument {
     this.section = new FakeElement('section');
     this.section.dataset.newsUrl = 'data/news.json';
     this.list = new FakeElement('ol');
+    this.scrollArea = new FakeElement('div');
+    this.scrollHint = new FakeElement('p');
+    this.scrollHint.hidden = true;
   }
   createElement(tagName) { return new FakeElement(tagName); }
   querySelector(selector) {
     if (selector === '[data-news-section]') return this.section;
     if (selector === '[data-news-list]') return this.list;
+    if (selector === '[data-news-scroll]') return this.scrollArea;
+    if (selector === '[data-news-scroll-hint]') return this.scrollHint;
     return null;
   }
 }
@@ -73,14 +78,17 @@ test('renderer uses text content and secures external links', () => {
   assert.equal(internalLink.rel, undefined);
 });
 
-test('loader displays three and one record, and hides the section for zero records', async () => {
-  for (const count of [3, 1, 0]) {
+test('loader displays up to ten records, shows five before scrolling, and hides the section for zero records', async () => {
+  for (const count of [12, 5, 1, 0]) {
     const document = new FakeDocument();
-    const rows = Array.from({length: count}, (_, index) => record(`item-${index}`, `2026-10-0${index + 1}`));
+    const rows = Array.from({length: count}, (_, index) => record(`item-${index}`, `2026-10-${String(index + 1).padStart(2, '0')}`));
     const loaded = await news.loadNews(document, async () => ({ok: true, json: async () => rows}), new URL(BASE));
-    assert.equal(loaded.length, count);
-    assert.equal(document.list.children.length, count);
+    const expectedCount = Math.min(count, 10);
+    assert.equal(loaded.length, expectedCount);
+    assert.equal(document.list.children.length, expectedCount);
     assert.equal(document.section.hidden, count === 0);
+    assert.equal(document.scrollArea.tabIndex, count > 5 ? 0 : -1);
+    assert.equal(document.scrollHint.hidden, count <= 5);
   }
 });
 

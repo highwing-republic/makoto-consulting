@@ -22,7 +22,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@900&amp;text=%E7%8F%BE%E5%A0%B4%E3%81%AE%E3%83%92%E3%83%B3%E3%83%88%E3%81%8C%E8%A6%8B%E3%81%A4%E3%81%8B%E3%82%8B%E5%AE%9F%E8%B7%B5%E3%83%84%E3%83%BC%E3%83%AB&amp;display=swap">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&amp;text=%E5%AE%BF%E6%B3%8ADX%E3%83%A9%E3%83%9C&amp;display=swap">
   <link rel="stylesheet" href="css/useful.css?v=20261012shell">
-  <link rel="stylesheet" href="css/home.css?v=20261015seo">
+  <link rel="stylesheet" href="css/home.css?v=20261016news">
   <meta property="og:type" content="website"><meta property="og:locale" content="ja_JP"><meta property="og:site_name" content="宿泊DXラボ">
   <meta property="og:title" content="宿泊DXラボ｜旅館・ホテルのDXと経営に役立つ実践ツール"><meta property="og:description" content="旅館・ホテルの経営と業務改善に役立つ実践ツールを無料で公開。DX診断、インバウンド分析、宿泊料金トレンドなど。">
   <meta property="og:url" content="https://lab.ugatta-llc.com/"><meta property="og:image" content="https://lab.ugatta-llc.com/images/og-lab.jpg">
@@ -126,15 +126,17 @@
     </div></section>
 
     <section class="home-section home-news" id="whats-new" aria-labelledby="whats-new-title" data-news-section data-news-url="data/news.json" hidden><div class="container home-news__grid">
-      <h2 id="whats-new-title">お知らせ</h2>
-      <ol class="news-list" data-news-list aria-live="polite"></ol>
+      <div class="home-news__heading"><h2 id="whats-new-title">お知らせ</h2><p id="news-scroll-hint" class="home-news__hint" data-news-scroll-hint hidden></p></div>
+      <div class="news-list-scroll" data-news-scroll role="region" aria-label="お知らせ一覧" tabindex="-1">
+        <ol class="news-list" data-news-list aria-live="polite"></ol>
+      </div>
     </div></section>
 
     <section class="home-section about-lab" id="about-lab"><div class="container about-lab__grid"><div><h2>宿泊DXラボ<br>とは</h2></div><div class="about-lab__body"><p>宿泊DXとは、予約・客室・清掃・会計・勤怠といった日々の業務と経営の判断を、データとデジタルの道具で見直していくことです。宿泊DXラボは、旅館・ホテルがその一歩目を自分で確かめられるよう、診断と分析のツールを無料で公開しています。運営は<a href="https://ugatta-llc.com/">合同会社UGATTA</a>です。</p><p>解説：<a href="/guide/shukuhaku-dx/">宿泊DXとは？ 何から始めるか</a></p><p>料金、市場動向、インバウンド、DXなどを、できるだけ分かりやすく見える化し、<span class="about-lab__questions">「今、何が起きているのか」<br>「自施設はどこにいるのか」<br>「次に何を考えるべきか」</span>を判断するための材料を提供します。</p><p>答えを決めつけるのではなく、宿泊経営を考えるための新しい視点をつくる。</p><p class="about-lab__closing">それが、宿泊DXラボです。</p></div></div></section>
   </main>
 
   {% include site-footer.html %}
-  <script src="js/news.js?v=20261010" defer></script>
+  <script src="js/news.js?v=20261016" defer></script>
   <script src="js/site.js?v=20260912a" defer></script>
 </body>
 </html>

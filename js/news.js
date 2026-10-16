@@ -4,6 +4,8 @@
   const CATEGORIES = new Set(['new', 'update', 'note']);
   const CATEGORY_LABELS = { new: 'NEW', update: 'UPDATE', note: 'NOTE' };
   const DATE_PATTERN = /^(\d{4})-(\d{2})-(\d{2})$/;
+  const NEWS_LIMIT = 10;
+  const VISIBLE_NEWS_COUNT = 5;
 
   function isValidDate(value) {
     const match = typeof value === 'string' && value.match(DATE_PATTERN);
@@ -95,16 +97,31 @@
   async function loadNews(documentRef, fetchFn, locationRef) {
     const section = documentRef.querySelector('[data-news-section]');
     const list = documentRef.querySelector('[data-news-list]');
+    const scrollArea = documentRef.querySelector('[data-news-scroll]');
+    const scrollHint = documentRef.querySelector('[data-news-scroll-hint]');
     if (!section || !list || typeof fetchFn !== 'function') return [];
 
     section.hidden = true;
     list.replaceChildren();
+    if (scrollHint) scrollHint.hidden = true;
+    if (scrollArea) {
+      scrollArea.tabIndex = -1;
+      scrollArea.setAttribute('aria-label', 'お知らせ一覧');
+    }
     try {
       const response = await fetchFn(section.dataset.newsUrl);
       if (!response.ok) return [];
-      const records = latestRecords(await response.json(), locationRef.href, 3);
+      const records = latestRecords(await response.json(), locationRef.href, NEWS_LIMIT);
       if (!records.length) return [];
       renderNews(documentRef, list, records, locationRef.origin);
+      if (scrollArea) {
+        scrollArea.setAttribute('aria-label', 'お知らせ一覧（全' + records.length + '件）');
+        scrollArea.tabIndex = records.length > VISIBLE_NEWS_COUNT ? 0 : -1;
+      }
+      if (scrollHint && records.length > VISIBLE_NEWS_COUNT) {
+        scrollHint.textContent = '全' + records.length + '件・6件目以降はスクロール';
+        scrollHint.hidden = false;
+      }
       section.hidden = false;
       return records;
     } catch (_error) {

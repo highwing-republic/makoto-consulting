@@ -1,5 +1,19 @@
 [
   {
+    "id": "management-issue-organizer-update-2026-10-16",
+    "date": "2026-10-16",
+    "category": "update",
+    "title": "宿泊経営の課題整理（β）を改善しました",
+    "url": "/management-ai.html"
+  },
+  {
+    "id": "business-hotel-price-trends-2026-10-16",
+    "date": "2026-10-16",
+    "category": "new",
+    "title": "ビジネスホテル料金トレンドを公開しました",
+    "url": "/business-hotel-price-trends.html"
+  },
+  {
     "id": "ai-inn-diagnosis-sample-2026-10-15",
     "date": "2026-10-15",
     "category": "new",
@@ -7,11 +21,39 @@
     "url": "/ai-inn-diagnosis/sample/"
   },
   {
+    "id": "dx-diagnosis-update-2026-10-15",
+    "date": "2026-10-15",
+    "category": "update",
+    "title": "旅館・ホテル DXかんたん診断の入力・結果画面を改善しました",
+    "url": "/dx-diagnosis.html"
+  },
+  {
+    "id": "explainer-guides-2026-10-15",
+    "date": "2026-10-15",
+    "category": "new",
+    "title": "宿泊DX・業務改善・市場データの解説ガイドを公開しました",
+    "url": "/guide/shukuhaku-dx/"
+  },
+  {
     "id": "mini-pms-demo-2026-10-10",
     "date": "2026-10-10",
     "category": "new",
     "title": "簡易PMSデモ（予約・部屋割り）を公開しました",
     "url": "/demo/mini-pms/"
+  },
+  {
+    "id": "booking-engine-demo-2026-10-10",
+    "date": "2026-10-10",
+    "category": "new",
+    "title": "予約エンジンデモ（公式予約サイト）を公開しました",
+    "url": "/demo/booking/"
+  },
+  {
+    "id": "multilingual-hotel-demo-2026-10-10",
+    "date": "2026-10-10",
+    "category": "new",
+    "title": "多言語旅館サイトデモ（日英中韓）を公開しました",
+    "url": "/demo/hotel/"
   },
   {
     "id": "inbound-analysis-update-2026-10-06",
