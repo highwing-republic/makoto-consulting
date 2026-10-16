@@ -198,3 +198,30 @@
   .bht-compare th,.bht-compare td{padding:10px 8px}
 }
 .bht-compare .visually-hidden{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
+
+/* 全国サマリとランキング */
+.bht-summary .bht-market__head{margin-bottom:0}
+.bht-kpis--four{grid-template-columns:repeat(4,minmax(0,1fr))}
+.bht-ranking{margin-top:20px}
+.bht-tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:18px;border-bottom:1px solid var(--line)}
+.bht-tabs button{margin-bottom:-1px;padding:10px 14px;border:0;border-bottom:3px solid transparent;background:none;color:var(--lab-ink-soft);font:500 13px/1.4 var(--sans);cursor:pointer}
+.bht-tabs button[aria-selected=true]{border-bottom-color:var(--bht-accent);color:var(--accent);font-weight:700}
+.bht-tabs button:hover{color:var(--accent)}
+.bht-tabs button:focus-visible,.bht-rank-panel:focus-visible,.bht-rank:focus-visible{outline:2px solid var(--lab-focus);outline-offset:2px}
+.bht-rank-list{margin:0;padding:0;list-style:none}
+.bht-rank{display:grid;grid-template-columns:32px minmax(0,1.6fr) minmax(80px,1fr) 88px;gap:14px;align-items:center;width:100%;padding:12px 6px;border:0;border-bottom:1px solid var(--line);background:none;color:var(--ink);font:inherit;text-align:left;cursor:pointer}
+.bht-rank:hover{background:var(--lab-surface)}
+.bht-rank__no{display:grid;width:26px;height:26px;border-radius:50%;background:var(--lab-surface-soft);color:var(--accent);font-size:12px;font-weight:700;place-items:center}
+.bht-rank__name strong{display:block;font-size:14px;font-weight:700;line-height:1.5}
+.bht-rank__name small{display:block;color:var(--ink-soft);font-size:11px;line-height:1.5}
+.bht-rank__bar{height:10px;border-radius:99px;background:var(--lab-surface-soft);overflow:hidden}
+.bht-rank__bar i{display:block;height:100%;border-radius:0 4px 4px 0;background:var(--bht-series)}
+.bht-rank__value{font-size:15px;font-weight:700;text-align:right;font-variant-numeric:tabular-nums}
+@media(max-width:1080px){.bht-kpis--four{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:620px){
+  .bht-rank{grid-template-columns:28px minmax(0,1fr) auto;gap:4px 10px}
+  .bht-rank__bar{grid-column:2/4;grid-row:2}
+  .bht-tabs{flex-wrap:nowrap;overflow-x:auto}
+  .bht-tabs button{flex:0 0 auto;padding:10px 10px}
+}
+@media(max-width:760px){.bht-kpis--four .bht-kpi:last-child{grid-column:1/-1}}

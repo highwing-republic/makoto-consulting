@@ -17,6 +17,10 @@
   const TREND_THRESHOLD = 3; // 7日変化の上昇・低下の境界（±3%）
   const TREND_MIN_DATES = 10; // 施設ごとに共通宿泊日が10泊以上
   const TREND_MIN_HOTELS = 4; // 市場の7日変化はCORE 4施設以上
+  const SPREAD_LOW = 0.1; // 値動きの大きさ: 下位1割の日と
+  const SPREAD_HIGH = 0.9; // 上位1割の日を除いた幅
+  const SPREAD_MIN_NIGHTS = 10; // 10泊以上あるときだけ出す
+  const RANK_SIZE = 5;
 
   const isPrice = (value) => typeof value === "number" && Number.isFinite(value) && value > 0;
   const parseDate = (value) => (/^\d{4}-\d{2}-\d{2}$/.test(value || "") ? value.split("-").map(Number) : null);
@@ -61,6 +65,16 @@
     const value = quantile(values, 0.5);
     return value === null ? null : Math.round(value);
   };
+  // 値動きの大きさ: 上位1割と下位1割の日を除いて「高い日は安い日の何倍か」。
+  // 安い部屋が売り切れた1日だけの極端な値に引っぱられないよう、変動係数ではなくこれを使う。
+  const spreadRatio = (values) => {
+    const list = values.filter(isPrice);
+    if (list.length < SPREAD_MIN_NIGHTS) return null;
+    const low = quantile(list, SPREAD_LOW);
+    const high = quantile(list, SPREAD_HIGH);
+    return low > 0 ? high / low : null;
+  };
+  const formatRatio = (value) => (typeof value === "number" && Number.isFinite(value) ? `${value.toFixed(2)}倍` : "—");
   const coefficientOfVariation = (values) => {
     const list = values.filter(isPrice);
     if (list.length < 2) return null;
@@ -131,7 +145,7 @@
       nights: view.dates.length,
       validNights: ok.length,
       typical,
-      volatility: ok.length >= 7 ? coefficientOfVariation(values) : null,
+      volatility: spreadRatio(values),
       spread: low && high ? high / low : null,
       low,
       high,
@@ -171,7 +185,7 @@
       median: median(prices),
       min: prices.length ? Math.min(...prices) : null,
       max: prices.length ? Math.max(...prices) : null,
-      volatility: prices.length >= 7 ? coefficientOfVariation(prices) : null,
+      volatility: spreadRatio(prices),
       leadingMeal: leadingMeal ? {code: leadingMeal[0], label: MEALS[leadingMeal[0]], share: (leadingMeal[1] / priced.length) * 100} : null,
     };
   }
@@ -217,6 +231,46 @@
     return {status: "ok", change, direction, hotels, hotelCount: valid.length};
   }
 
+  // ---------------------------------------------------------------- 全国サマリとランキング
+
+  function nationalSummary(cohort, latest, previous, {nights} = {}) {
+    const markets = cohort.markets.map((market) => {
+      const view = marketView(cohort, latest, market.code, {nights});
+      const summary = view ? marketSummary(view) : null;
+      return {code: market.code, name: market.name, view, summary, weekly: weeklyChange(cohort, latest, previous, market.code)};
+    }).filter((item) => item.view && item.summary);
+    const priced = markets.filter((item) => item.summary.typical);
+    const byTypical = priced.slice().sort((a, b) => b.summary.typical - a.summary.typical);
+    const weekly = markets.filter((item) => item.weekly.status === "ok");
+    return {
+      markets,
+      marketCount: markets.length,
+      typical: median(priced.map((item) => item.summary.typical)),
+      highest: byTypical[0] || null,
+      lowest: byTypical[byTypical.length - 1] || null,
+      weekendPremium: medianOfNumbers(markets.map((item) => item.summary.weekendPremium)),
+      spikeMarkets: markets.filter((item) => item.summary.spikes.length > 0).length,
+      weekly: {
+        available: weekly.length,
+        up: weekly.filter((item) => item.weekly.direction === "up").length,
+        down: weekly.filter((item) => item.weekly.direction === "down").length,
+        flat: weekly.filter((item) => item.weekly.direction === "flat").length,
+      },
+    };
+  }
+
+  function rankings(national) {
+    const top = (list, key) => list.filter((item) => typeof item[key] === "number" && Number.isFinite(item[key])).sort((a, b) => b[key] - a[key]).slice(0, RANK_SIZE);
+    const volatileMarkets = top(national.markets.map((item) => ({code: item.code, market: item.name, value: item.summary.volatility, low: item.summary.low, high: item.summary.high})), "value");
+    const hotels = national.markets.flatMap((item) => item.view.core.map((hotel) => ({code: item.code, market: item.name, ...hotelSummary(hotel)})));
+    const volatileHotels = top(hotels.map((hotel) => ({...hotel, value: hotel.volatility})), "value");
+    const spikeDays = top(national.markets.flatMap((item) => item.summary.spikes.map((day) => ({code: item.code, market: item.name, date: day.date, median: day.median, typical: item.summary.typical, value: day.ratio}))), "value");
+    const weeklyHotels = national.markets.flatMap((item) => (item.weekly.hotels || []).map((hotel) => ({code: item.code, market: item.name, ...hotel, value: hotel.change})));
+    const risingHotels = top(weeklyHotels.filter((hotel) => hotel.value > 0), "value");
+    const risingMarkets = top(national.markets.filter((item) => item.weekly.status === "ok" && item.weekly.change > 0).map((item) => ({code: item.code, market: item.name, value: item.weekly.change, hotelCount: item.weekly.hotelCount})), "value");
+    return {volatileMarkets, volatileHotels, spikeDays, risingMarkets, risingHotels};
+  }
+
   return {
     WEEKDAYS,
     MEALS,
@@ -226,6 +280,10 @@
     medianOfNumbers,
     quantile,
     coefficientOfVariation,
+    spreadRatio,
+    formatRatio,
+    nationalSummary,
+    rankings,
     weekdayIndex,
     addDays,
     formatDate,

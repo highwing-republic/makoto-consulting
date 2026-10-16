@@ -135,3 +135,50 @@ test("表示用の書式", () => {
   assert.equal(model.formatPercent(NaN), "—");
   assert.equal(model.formatDate("2026-10-24"), "10/24（土）");
 });
+
+test("値動きの大きさは上位・下位1割を除いた倍率で、1日だけの極端な値に引っぱられない", () => {
+  const steady = Array.from({length: 20}, (_, i) => 10000 + (i % 2) * 1000);
+  const withOutlier = [...steady.slice(0, 19), 120000];
+  assert.equal(model.spreadRatio(steady.slice(0, 9)), null); // 10泊未満は出さない
+  assert.equal(Math.round(model.spreadRatio(steady) * 100) / 100, 1.1);
+  assert.ok(model.spreadRatio(withOutlier) < 1.2);
+  assert.ok(model.coefficientOfVariation(withOutlier) > 100); // 変動係数だと1日で跳ね上がる
+  assert.equal(model.formatRatio(1.234), "1.23倍");
+  assert.equal(model.formatRatio(null), "—");
+});
+
+// 2市場: 札幌（10/24に急騰）と、料金がほぼ一定の市場
+const twoMarkets = {
+  ...cohort,
+  markets: [
+    cohort.markets[0],
+    {code: "okayama", name: "岡山", prefecture: "岡山県", properties: [11, 12, 13, 14, 15].map((no) => ({hotel_no: no, name: `O${no}`, brand: `b${no}`, role: "core"}))},
+  ],
+};
+function twoMarketSnapshot(date, shift = 0) {
+  const base = snapshot(date, {shift});
+  base.markets.push({code: "okayama", hotels: [11, 12, 13, 14, 15].map((no) => ({hotel_no: no, price: base.stay_dates.map(() => 7000 + no * 10 + shift), meal: "R".repeat(14)}))});
+  return base;
+}
+
+test("全国サマリ: 代表料金の中央値、最も高い・安い市場、急騰日のある市場の数", () => {
+  const national = model.nationalSummary(twoMarkets, twoMarketSnapshot("2026-10-16"), null);
+  assert.equal(national.marketCount, 2);
+  assert.equal(national.highest.name, "札幌");
+  assert.equal(national.lowest.name, "岡山");
+  assert.equal(national.typical, Math.round((8200 + 7130) / 2));
+  assert.equal(national.spikeMarkets, 1);
+  assert.equal(national.weekly.available, 0);
+});
+
+test("ランキング: 値動き・跳ね上がる日・7日の値上がりを大きい順に最大5件", () => {
+  const latest = twoMarketSnapshot("2026-10-16", 400);
+  const national = model.nationalSummary(twoMarkets, latest, twoMarketSnapshot("2026-10-09"));
+  const ranks = model.rankings(national);
+  assert.deepEqual(ranks.volatileMarkets.map((row) => row.market), ["札幌", "岡山"]);
+  assert.ok(ranks.volatileHotels.length === 5 && ranks.volatileHotels[0].market === "札幌");
+  assert.deepEqual(ranks.spikeDays.map((row) => [row.market, row.date]), [["札幌", "2026-10-24"]]);
+  assert.equal(national.weekly.available, 2);
+  assert.equal(ranks.risingMarkets[0].market, "岡山"); // 7,130円前後に+400円は札幌より上昇率が大きい
+  assert.ok(ranks.risingHotels.length === 5 && ranks.risingHotels.every((row) => row.value > 0));
+});

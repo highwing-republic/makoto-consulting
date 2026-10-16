@@ -1,7 +1,7 @@
 ---
 # Built by Jekyll: the shared header and footer come from _includes/.
 tool: business-hotel-price-trends
-tool_purpose: 全国10都市のビジネスホテルについて、同じ条件（大人1名・1室・1泊）の最安料金を毎朝観測します。都市ごとの代表料金、値動きの大きさ、週末と平日の差、料金が跳ね上がる日、直近7日間の変化を、宿泊日別のグラフとカレンダーで確認できます。
+tool_purpose: 全国10都市のビジネスホテルについて、同じ条件（大人1名・1室・1泊）の最安料金を毎朝観測します。冒頭の全国サマリとランキングTop5で、値動きが大きい都市・施設や料金が跳ね上がる日をひと目で確認できます。都市ごとの代表料金、値動きの大きさ、週末と平日の差、料金が跳ね上がる日、直近7日間の変化を、宿泊日別のグラフとカレンダーで確認できます。
 tool_scope:
   - label: 対象
     text: 札幌・仙台・名古屋・広島・福岡・金沢・那覇・鹿児島・熊本・岡山の10市場。主要駅・繁華街の中規模ビジネスホテルから、市場ごとに固定した比較施設群（CORE）5施設、計50施設で集計します。札幌以外の9市場のCOREにはダイワロイネットが入っていて、同じブランドで都市を比べられます。
@@ -44,7 +44,7 @@ tool_related:
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&amp;display=swap">
   <link rel="stylesheet" href="css/useful.css?v=20261012shell">
   <link rel="stylesheet" href="css/tool-standard.css?v=20261015guide">
-  <link rel="stylesheet" href="css/business-hotel-price-trends.css?v=20261016bht1">
+  <link rel="stylesheet" href="css/business-hotel-price-trends.css?v=20261016bht2">
   <meta property="og:type" content="website"><meta property="og:locale" content="ja_JP"><meta property="og:site_name" content="宿泊DXラボ">
   <meta property="og:title" content="ビジネスホテル料金トレンド｜宿泊DXラボ"><meta property="og:description" content="出張の宿は、いくらで、どれだけ動くか。全国10都市・50施設のビジネスホテル料金を毎朝観測します。">
   <meta property="og:url" content="https://lab.ugatta-llc.com/business-hotel-price-trends.html"><meta property="og:image" content="https://lab.ugatta-llc.com/images/og-lab.jpg">
@@ -80,10 +80,20 @@ tool_related:
       <div class="data-error" id="bht-error" hidden><strong id="bht-error-title">データを表示できませんでした</strong><p id="bht-error-message"></p><button class="button button--outline" id="bht-retry" type="button">もう一度読み込む</button></div>
 
       <div class="bht-dashboard" id="bht-dashboard" hidden>
+        <section class="bht-summary" aria-labelledby="bht-summary-title">
+          <div class="bht-market__head"><h2 id="bht-summary-title">全国10都市のいま</h2><p id="bht-summary-meta"></p></div>
+          <div class="bht-kpis bht-kpis--four" id="bht-summary-tiles"></div>
+          <div class="bht-panel bht-ranking">
+            <div class="bht-heading"><div><h2 id="bht-ranking-title">ランキング Top5</h2></div><p>行を選ぶと、その都市の詳しい料金に切り替わります。</p></div>
+            <div class="bht-tabs" id="bht-rank-tabs" role="tablist" aria-labelledby="bht-ranking-title"></div>
+            <div class="bht-rank-panel" id="bht-rank-panel" role="tabpanel" tabindex="0"></div>
+          </div>
+        </section>
+
         <section class="bht-panel" aria-labelledby="bht-compare-title">
           <div class="bht-heading"><div><h2 id="bht-compare-title">10都市の比較</h2></div><p>行を選ぶと、その市場の詳しい料金に切り替わります。</p></div>
           <div class="bht-table-wrap"><table class="bht-compare" id="bht-compare"></table></div>
-          <p class="bht-note">代表料金は宿泊日ごとの中央値（CORE施設）の中央値。値動きの大きさは、宿泊日ごとの中央値のばらつき（変動係数）です。</p><p class="bht-note" id="bht-compare-note"></p>
+          <p class="bht-note">代表料金は宿泊日ごとの中央値（CORE施設）の中央値。値動きの大きさは、宿泊日ごとの中央値で「高い日は安い日の何倍か」（上位1割と下位1割の日を除く）です。</p><p class="bht-note" id="bht-compare-note"></p>
         </section>
 
         <section class="bht-panel" aria-labelledby="bht-brand-title">
@@ -129,7 +139,7 @@ tool_related:
 
         <section class="bht-method" aria-labelledby="bht-method-title"><div><h2 id="bht-method-title">データの見方</h2></div><div>
           <p>料金は楽天トラベル空室検索APIで、大人1名・1室・1泊の条件で販売中のプランのうち最も安いプランの1泊目の料金です。食事条件は問わず、そのプランの食事区分をあわせて記録しています。客室タイプやプラン内容は施設や日によって異なります。</p>
-          <p>宿泊日ごとの値は、市場ごとに固定したCORE施設5施設の中央値です。4施設以上で料金を確認できた日を集計に使い、3施設の日は参考値、2施設以下の日は表示しません。代表料金は、集計に使った宿泊日の中央値のさらに中央値です。値動きの大きさは宿泊日ごとの中央値の変動係数（標準偏差÷平均）で、数字が大きいほど日によって料金が大きく動きます。週末の差は、金・土曜泊の中央値と日〜木曜泊の中央値の差です。</p>
+          <p>宿泊日ごとの値は、市場ごとに固定したCORE施設5施設の中央値です。4施設以上で料金を確認できた日を集計に使い、3施設の日は参考値、2施設以下の日は表示しません。代表料金は、集計に使った宿泊日の中央値のさらに中央値です。値動きの大きさは、宿泊日ごとの中央値（施設の場合はその施設の料金）を並べ、上位1割と下位1割の日を除いたうえで「高い日は安い日の何倍か」を出したものです。安い部屋が売り切れて高い部屋だけが残った1日の極端な値に引っぱられないよう、この方法にしています。10泊以上ある場合だけ表示します。週末の差は、金・土曜泊の中央値と日〜木曜泊の中央値の差です。</p>
           <p>7日変化は、ちょうど7日前の取得と今日の取得で同じ宿泊日（今日以降）の料金を施設ごとに比べ、共通の宿泊日が10泊以上ある施設の変化率の中央値を出し、さらに4施設以上の中央値を市場の値とします。±3%以上を上昇・低下とします。比較施設群が入れ替わった場合は比べません。</p>
           <p>販売プランが見つからない状態だけを理由に満室とは判定しません。表示内容は料金判断の参考情報であり、需要・稼働率・売上や因果関係を保証するものではありません。</p>
           <!-- Rakuten Web Services Attribution Snippet FROM HERE -->
@@ -147,7 +157,7 @@ tool_related:
 
   {% include site-footer.html %}
   <script src="js/site.js?v=20260912a" defer></script>
-  <script src="js/business-hotel-price-trends-model.js?v=20261016bht1" defer></script>
-  <script src="js/business-hotel-price-trends.js?v=20261016bht1" defer></script>
+  <script src="js/business-hotel-price-trends-model.js?v=20261016bht2" defer></script>
+  <script src="js/business-hotel-price-trends.js?v=20261016bht2" defer></script>
 </body>
 </html>
