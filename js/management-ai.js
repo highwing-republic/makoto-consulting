@@ -390,6 +390,7 @@
     if (!next.hidden) $('answer-next-link').href = inboundTool.href;
 
     const related = answer.topic === 'inbound' ? answer.relatedTools.filter((tool) => tool !== inboundTool) : answer.relatedTools;
+    $('answer-related').closest('.management-related').hidden = !related.length;
     replaceList('answer-related', related, (tool) => {
       const item = element('li');
       const link = element('a', '', `${tool.number} ${tool.label} →`);

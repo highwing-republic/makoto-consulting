@@ -64,9 +64,20 @@
 
   const RELATED_TOOLS = {
     diagnosis: { number: '01', label: 'DXかんたん診断を見る', href: 'dx-diagnosis.html', supportsPref: false },
-    inbound: { number: '02', label: 'インバウンド分析を見る', href: 'inbound-analysis.html', supportsPref: true },
-    supply: { number: '05', label: '宿泊市場の成長・稼働ポジションを見る', href: 'supply-demand-gap-analysis.html', supportsPref: true }
+    inbound: { number: '02', label: 'インバウンド分析を見る', href: 'inbound-analysis.html', supportsPref: true }
   };
+
+  // supply-demand-gap.json の market_type は判定時の名前のまま保存されている。
+  // 「需要成長」は全国より下げ幅が小さいだけでも付くため、画面では全国値との比較として示す（判定は変えない）。
+  const MARKET_POSITION_LABELS = {
+    '需要成長・高稼働型': '需要伸び全国超・稼働率全国超',
+    '需要成長・稼働余力型': '需要伸び全国超・稼働率全国以下',
+    '需要減速・高稼働型': '需要伸び全国以下・稼働率全国超',
+    '需要減速・稼働余力型': '需要伸び全国以下・稼働率全国以下'
+  };
+  const MARKET_POSITION_NOTE = '延べ宿泊者数の伸び率と客室稼働率を、それぞれ全国値と比べた位置（当サイトの集計）';
+  const MARKET_POSITION_REFERENCE = '需要伸び率・客室稼働率の全国比較（当サイトの集計）';
+  const marketPosition = (context) => MARKET_POSITION_LABELS[context.supply.market_type] || '判定不可';
 
   const isNumber = (value) => typeof value === 'number' && Number.isFinite(value);
   const formatNumber = (value, digits = 0) => isNumber(value)
@@ -534,7 +545,7 @@
       add('→', `年間外国人延べ宿泊者数は${formatNumber(s.foreign_guest_nights)}人泊です`, `${lodgingPeriod}の合計・単位は人泊（1人が2泊すると2人泊）。国・地域別や月別の値とは集計表が異なるため、合計は一致しません`);
       add(trendSymbol(context.foreignShare, context.nationalForeignShare), `外国人宿泊比率は${formatPercent(context.foreignShare)}で${compareText(context.foreignShare, context.nationalForeignShare)}です`, `延べ宿泊者数に占める外国人の割合・${lodgingPeriod}・全国は${formatPercent(context.nationalForeignShare)}`);
       if (context.specializedMarket) add('→', `最新月は「${context.specializedMarket.name}」の構成比が全国構成に対して相対的に高い傾向です`, `${inboundMonth}の国・地域別集計`);
-      add('→', `宿泊市場タイプは「${context.supply.market_type}」です`, '宿泊市場の成長・稼働ポジションでの類型（当サイトの参考分類）');
+      add('→', `全国と比べた位置は「${marketPosition(context)}」です`, MARKET_POSITION_NOTE);
     } else if (topic === 'sales') {
       add(trendSymbol(s.occupancy_rate, n.occupancy_rate, 'rate'), `地域の客室稼働率は${formatRate(s.occupancy_rate)}で${compareText(s.occupancy_rate, n.occupancy_rate, 'rate')}です`, `${lodgingPeriod}・全国は${formatRate(n.occupancy_rate)}`);
       const season = context.monthlyProfile?.occupancy;
@@ -544,11 +555,11 @@
         add(difference <= -1 ? '↓' : '→', `客室稼働率が最も低いのは${season.low.month}月（${formatRate1(season.low.occupancy)}）で、全国の同じ月（${formatRate1(season.nationalAtLow)}）${relation}です`, `${context.monthlyProfile.period}の月別値（第8表）・最も高いのは${season.peak.month}月（${formatRate1(season.peak.occupancy)}）`);
       }
       add(trendSymbol(s.demand_growth_rate, n.demand_growth_rate), `宿泊需要の伸びは${formatPercent(s.demand_growth_rate, 1, true)}で${compareText(s.demand_growth_rate, n.demand_growth_rate)}です`, `延べ宿泊者数・${growthPeriod}`);
-      add('→', `宿泊市場タイプは「${context.supply.market_type}」です`, '宿泊市場の成長・稼働ポジションでの類型（当サイトの参考分類）');
+      add('→', `全国と比べた位置は「${marketPosition(context)}」です`, MARKET_POSITION_NOTE);
       const occupancy = comparisons.find((row) => row.key === 'occupancy');
       if (occupancy) add(occupancy.rawDifference >= 0 ? '↑' : '↓', `自施設の稼働率は地域値との差が${occupancy.difference}です`, '入力値と地域統計の参考比較（集計期間・対象施設が異なります）');
     } else if (topic === 'market') {
-      add('→', `宿泊市場タイプは「${context.supply.market_type}」です`, '宿泊市場の成長・稼働ポジションでの類型（当サイトの参考分類）');
+      add('→', `全国と比べた位置は「${marketPosition(context)}」です`, MARKET_POSITION_NOTE);
       add(trendSymbol(s.demand_growth_rate, n.demand_growth_rate), `宿泊需要の伸びは${formatPercent(s.demand_growth_rate, 1, true)}で${compareText(s.demand_growth_rate, n.demand_growth_rate)}です`, `延べ宿泊者数・${growthPeriod}`);
       add('→', `観光負荷参考スコアは${context.tourism.pressure_score ?? '算出不可'}、観光依存度参考スコアは${context.tourism.dependency_score ?? '算出不可'}です`, '当サイトが公的統計から算出した参考スコア（観光負荷は人口あたり宿泊需要と宿泊施設の密度、観光依存度は宿泊業の従業者・事業所の比率と人口あたり宿泊需要を、47都道府県内の順位で合成）');
       add('→', `地域類型は「${context.tourism.region_type}」です`, '当サイトの参考分類（観光負荷と観光依存度の参考スコアを、それぞれ50点を境に分けた類型）');
@@ -583,11 +594,11 @@
 
   function relatedFor(topic) {
     const map = {
-      dx: ['diagnosis', 'supply'],
-      inbound: ['inbound', 'supply'],
-      sales: ['supply', 'diagnosis'],
-      market: ['supply', 'inbound'],
-      other: ['diagnosis', 'inbound', 'supply']
+      dx: ['diagnosis'],
+      inbound: ['inbound'],
+      sales: ['diagnosis'],
+      market: ['inbound'],
+      other: ['diagnosis', 'inbound']
     };
     return map[topic].map((key) => RELATED_TOOLS[key]);
   }
@@ -597,8 +608,8 @@
     if (topic === 'inbound') return isNumber(context.statistics.foreign_guest_nights)
       ? `${context.name}では、年間${formatNumber(context.statistics.foreign_guest_nights)}人泊の外国人宿泊需要が記録されています。`
       : `${context.name}の外国人延べ宿泊者数は現在データを取得できません。`;
-    if (topic === 'sales') return `${context.name}の客室稼働率は${formatRate(context.statistics.occupancy_rate)}、市場タイプは「${context.supply.market_type}」です。`;
-    if (topic === 'market') return `${context.name}は、宿泊市場では「${context.supply.market_type}」、観光の地域類型では「${context.tourism.region_type}」です。`;
+    if (topic === 'sales') return `${context.name}の客室稼働率は${formatRate(context.statistics.occupancy_rate)}で、全国と比べて「${marketPosition(context)}」です。`;
+    if (topic === 'market') return `${context.name}は、全国と比べて「${marketPosition(context)}」で、観光の地域類型は「${context.tourism.region_type}」です。`;
     return '相談内容に近いテーマを選ぶと、地域統計と自施設情報を組み合わせて確認できます。';
   }
 
@@ -1042,10 +1053,10 @@
       comparisons,
       matchedRules: matched.map((rule) => rule.id),
       missing,
-      references: topic === 'dx' ? ['01 DXかんたん診断', '省人化・DX参考スコア（当サイトの集計）', '05 宿泊市場の成長・稼働ポジション']
-        : topic === 'inbound' ? ['02 インバウンド宿泊者分析', '05 宿泊市場の成長・稼働ポジション', '観光負荷・観光依存度参考スコア（当サイトの集計）']
-          : topic === 'sales' ? ['05 宿泊市場の成長・稼働ポジション', '省人化・DX参考スコア（当サイトの集計）']
-            : topic === 'market' ? ['05 宿泊市場の成長・稼働ポジション', '観光負荷・観光依存度参考スコア（当サイトの集計）', '02 インバウンド宿泊者分析']
+      references: topic === 'dx' ? ['01 DXかんたん診断', '省人化・DX参考スコア（当サイトの集計）', MARKET_POSITION_REFERENCE]
+        : topic === 'inbound' ? ['02 インバウンド宿泊者分析', MARKET_POSITION_REFERENCE, '観光負荷・観光依存度参考スコア（当サイトの集計）']
+          : topic === 'sales' ? [MARKET_POSITION_REFERENCE, '省人化・DX参考スコア（当サイトの集計）']
+            : topic === 'market' ? [MARKET_POSITION_REFERENCE, '観光負荷・観光依存度参考スコア（当サイトの集計）', '02 インバウンド宿泊者分析']
               : ['相談テーマ一覧'],
       usedMetrics: topicFacts(context, topic, comparisons).map((fact) => fact.text)
     };
