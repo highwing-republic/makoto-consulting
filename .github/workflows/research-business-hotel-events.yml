@@ -1,0 +1,88 @@
+name: Research business hotel events
+
+# ビジネスホテル版料金トレンド: 急騰日・売り切れが目立つ日の背景になりそうな催しを
+# Claude（Anthropic API）の Web 検索で探し、events.json に保存する。
+# 料金の取得（update-business-hotel-prices.yml）が終わったあとに動く。ここが失敗しても料金データには影響しない。
+# 必要なリポジトリシークレット: ANTHROPIC_API_KEY（未登録なら何もせずに終わる）
+
+on:
+  workflow_run:
+    workflows: ["Update business hotel price trends"]
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      max_new:
+        description: "新しく調べる期間の上限（既定5）"
+        required: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-business-hotel-prices
+  cancel-in-progress: false
+
+jobs:
+  research:
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    outputs:
+      changed: ${{ steps.commit.outputs.changed }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt
+
+      - name: Research events with Claude
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          MAX_NEW: ${{ github.event.inputs.max_new }}
+        run: python scripts/research_business_hotel_events.py --max-new "${MAX_NEW:-5}"
+
+      - name: Run tests
+        run: python -m pytest -q tests/test_business_hotel_events.py
+
+      - name: Commit and push the results
+        id: commit
+        shell: bash
+        run: |
+          if [ -z "$(git status --porcelain -- data/business-hotel-price-trends/events.json)" ]; then
+            echo "No changes"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/business-hotel-price-trends/events.json
+          git commit -m "data: research business hotel events $(TZ=Asia/Tokyo date +%F)"
+          for attempt in 1 2 3; do
+            if git pull --rebase origin main && git push; then
+              echo "changed=true" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            sleep 10
+          done
+          exit 1
+
+  publish:
+    needs: research
+    if: needs.research.outputs.changed == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      pages: write
+    steps:
+      - name: Publish the updated data
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh api --method POST "repos/$GITHUB_REPOSITORY/pages/builds"

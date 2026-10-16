@@ -296,6 +296,36 @@
     };
   }
 
+  // ---------------------------------------------------------------- 催しの候補（AI調べ・参考）
+
+  // events.json の調査結果のうち、いま表示している期間の急騰日・売り切れが目立つ日に重なるもの。
+  // 料金の集計とは別の参考情報で、ここでは並べ替えと絞り込みだけを行う。
+  function eventCandidates(events, national) {
+    const items = Array.isArray(events?.items) ? events.items : [];
+    const notable = new Map();
+    for (const market of national.markets) {
+      const dates = new Set([...market.summary.spikes.map((day) => day.date), ...market.summary.busy.map((day) => day.date)]);
+      notable.set(market.code, {name: market.name, dates});
+    }
+    const shown = [];
+    let notFound = 0;
+    for (const item of items) {
+      const market = notable.get(item.market);
+      if (!market || !Array.isArray(item.dates)) continue;
+      const dates = item.dates.filter((date) => market.dates.has(date));
+      if (!dates.length) continue;
+      const candidates = (item.candidates || []).filter((candidate) => candidate && candidate.name && Array.isArray(candidate.sources) && candidate.sources.some((source) => /^https?:\/\//.test(source.url || "")));
+      if (item.status === "found" && candidates.length) shown.push({...item, name: market.name, dates, candidates});
+      else notFound += 1;
+    }
+    shown.sort((a, b) => (a.start < b.start ? -1 : a.start > b.start ? 1 : a.market < b.market ? -1 : 1));
+    const byDay = new Map();
+    for (const item of shown) for (const date of item.dates) byDay.set(`${item.market}|${date}`, item);
+    return {items: shown, notFound, byDay, researched: shown.length + notFound};
+  }
+
+  const formatPeriod = (start, end) => (end && end !== start ? `${formatDate(start)}〜${formatDate(end)}` : formatDate(start));
+
   // 今週のポイント: 集計値を決まった文型に当てはめた文（推測は入れない）
   function highlights(national, {today} = {}) {
     const items = [];
@@ -379,5 +409,7 @@
     hotelSummary,
     crossCityBrand,
     weeklyChange,
+    eventCandidates,
+    formatPeriod,
   };
 });

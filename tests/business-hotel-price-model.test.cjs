@@ -244,3 +244,29 @@ test("今週のポイント: 直近の休前日、売り切れ、急騰を決ま
   const ranks = model.rankings(national);
   assert.deepEqual(ranks.busyDays.map((d) => [d.market, d.date, d.soldOut]), [["札幌", "2026-11-07", 2]]);
 });
+
+test("催しの候補: 急騰日・売り切れが目立つ日に重なる調査結果だけを出す", () => {
+  const national = model.nationalSummary(cohort, snapshot("2026-10-16"), null);
+  const candidate = (name, url = "https://example.jp/a") => ({name, start: "2026-10-24", end: "2026-10-25", venue: "会場", note: null, sources: [{url, title: "t"}]});
+  const events = {items: [
+    {market: "sapporo", start: "2026-10-23", end: "2026-10-24", dates: ["2026-10-23", "2026-10-24"], kinds: ["spike"], status: "found", researched_on: "2026-10-16", candidates: [candidate("ドーム公演"), candidate("出典なし", "javascript:alert(1)")]},
+    {market: "sapporo", start: "2026-10-20", end: "2026-10-20", dates: ["2026-10-20"], status: "found", candidates: [candidate("ふつうの日")]},
+    {market: "sapporo", start: "2026-10-17", end: "2026-10-17", dates: ["2026-10-17"], status: "found", candidates: [candidate("出典が不正", "ftp://x")]},
+    {market: "naha", start: "2026-10-24", end: "2026-10-24", dates: ["2026-10-24"], status: "found", candidates: [candidate("別の市場")]},
+  ]};
+  // 10/17（土）は急騰日ではないので、出典が不正な結果も数えない
+  const view = model.eventCandidates(events, national);
+  assert.equal(view.items.length, 1);
+  assert.deepEqual(view.items[0].dates, ["2026-10-24"]);
+  assert.deepEqual(view.items[0].candidates.map((c) => c.name), ["ドーム公演"]);
+  assert.equal(view.items[0].name, "札幌");
+  assert.ok(view.byDay.has("sapporo|2026-10-24"));
+  assert.ok(!view.byDay.has("sapporo|2026-10-23"));
+  assert.equal(view.notFound, 0);
+
+  const notFound = model.eventCandidates({items: [{market: "sapporo", start: "2026-10-24", end: "2026-10-24", dates: ["2026-10-24"], status: "not_found", candidates: []}]}, national);
+  assert.deepEqual([notFound.items.length, notFound.notFound, notFound.researched], [0, 1, 1]);
+  assert.equal(model.eventCandidates(null, national).researched, 0);
+  assert.equal(model.formatPeriod("2026-10-24", "2026-10-25"), "10/24（土）〜10/25（日）");
+  assert.equal(model.formatPeriod("2026-10-24", "2026-10-24"), "10/24（土）");
+});
