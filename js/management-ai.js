@@ -13,7 +13,36 @@
   const loading = $('management-loading');
   const error = $('management-error');
   const result = $('management-result');
+  const stale = $('management-stale');
   let datasets = null;
+
+  // 入力欄の id と、ルールに渡す施設値の名前。
+  const FACILITY_INPUTS = {
+    type: ['facility-type'],
+    rooms: ['facility-rooms'],
+    employees: ['facility-employees'],
+    occupancyRate: ['facility-occupancy'],
+    foreignShare: ['facility-foreign-share', 'facility-foreign-basis']
+  };
+  const OPTIONAL_HINTS = {
+    dx: '客室数と従業員数から参考値を表示できます',
+    inbound: '外国人宿泊比率を地域値と参考比較できます',
+    sales: '自施設の稼働率を地域値と参考比較できます',
+    market: '施設タイプを結果に表示できます（判定には使いません）',
+    other: '施設タイプを結果に表示できます（判定には使いません）'
+  };
+  const MORE_INPUT_GUIDES = {
+    dx: '客室数と従業員数を入力すると、1従業員あたり客室数の参考値を表示します。',
+    inbound: '外国人宿泊比率（延べ宿泊者数で数えた割合）を入力すると、地域値と並べて参考比較できます。',
+    sales: '自施設の稼働率を入力すると、地域の客室稼働率と並べて参考比較できます。'
+  };
+  const PLACEHOLDERS = {
+    dx: '例：フロント業務を効率化したい',
+    inbound: '例：外国人のお客様が多い時期を知りたい',
+    sales: '例：平日の稼働率が低い',
+    market: '例：この地域の宿泊需要の特徴を知りたい',
+    other: '例：何から考えればよいか分からない'
+  };
 
   const RULE_LABELS = {
     'facility-occupancy-gap': '自施設の稼働率が地域値を10ポイント以上下回る',
@@ -48,14 +77,65 @@
     return Number.isFinite(value) ? value : null;
   }
 
-  function facilityValues() {
-    return {
-      type: $('facility-type').value || null,
-      rooms: numericValue('facility-rooms'),
-      employees: numericValue('facility-employees'),
-      occupancyRate: numericValue('facility-occupancy'),
-      foreignShare: numericValue('facility-foreign-share')
-    };
+  // 選んだテーマで表示している項目だけを読む。非表示の項目に残った値は判定に使わない。
+  function facilityValues(topic = selectedTopic()) {
+    const fields = Rules.FACILITY_FIELDS[topic] || [];
+    const values = {};
+    if (fields.includes('type')) values.type = $('facility-type').value || null;
+    if (fields.includes('rooms')) values.rooms = numericValue('facility-rooms');
+    if (fields.includes('employees')) values.employees = numericValue('facility-employees');
+    if (fields.includes('occupancyRate')) values.occupancyRate = numericValue('facility-occupancy');
+    if (fields.includes('foreignShare')) {
+      values.foreignShare = numericValue('facility-foreign-share');
+      values.foreignShareBasis = $('facility-foreign-basis').value || null;
+    }
+    return values;
+  }
+
+  function renderExamples(topic) {
+    const container = $('management-examples');
+    container.replaceChildren(...(Rules.TOPIC_EXAMPLES[topic] || []).map((example) => {
+      const button = element('button', '', example.text);
+      button.type = 'button';
+      button.dataset.questionExample = '';
+      button.dataset.topic = topic;
+      button.addEventListener('click', () => {
+        question.value = example.text;
+        markStale();
+        question.focus();
+      });
+      return button;
+    }));
+  }
+
+  function selectedPrefectureName() {
+    return prefectureSelect.selectedOptions[0]?.textContent || '';
+  }
+
+  function renderSelection(topic) {
+    const node = $('management-selection');
+    const pref = element('b', '', selectedPrefectureName());
+    const label = element('b', '', Rules.TOPICS[topic].label);
+    node.replaceChildren('選択中の条件：', pref, ' × ', label);
+  }
+
+  // 相談テーマに合わせて、任意項目・質問例・入力例・選択中の条件を切り替える。
+  function applyTopic(topic) {
+    const fields = Rules.FACILITY_FIELDS[topic] || [];
+    document.querySelectorAll('[data-facility-field]').forEach((wrapper) => {
+      const active = fields.includes(wrapper.dataset.facilityField);
+      wrapper.hidden = !active;
+      (FACILITY_INPUTS[wrapper.dataset.facilityField] || []).forEach((id) => { $(id).disabled = !active; });
+    });
+    setText('management-optional-hint', OPTIONAL_HINTS[topic]);
+    question.placeholder = PLACEHOLDERS[topic];
+    renderExamples(topic);
+    renderSelection(topic);
+  }
+
+  // 結果を表示したあとに条件が変わったら、古い結果であることを示す。
+  function markStale() {
+    if (!result.hidden) stale.hidden = false;
   }
 
   function element(tag, className, text) {
@@ -88,6 +168,7 @@
         grid.append(wrapper);
       });
       card.append(grid);
+      if (row.note) card.append(element('p', 'management-comparison-card__note', row.note));
       return card;
     });
   }
@@ -102,7 +183,7 @@
     const inboundMeta = context.datasets.inbound.metadata;
     const rows = [
       ['宿泊旅行統計', `${sources.lodging.reference_period}（${sources.lodging.release_type}）`],
-      ['国・地域別構成', `${inboundMeta.year}年${inboundMeta.month}月（${inboundMeta.release_type}）`],
+      ['国・地域別構成', `${inboundMeta.year}年${inboundMeta.month}月（${inboundMeta.release_type}・${inboundMeta.survey_scope}）`],
       ['人口推計', sources.population.reference_period],
       ['経済センサス', sources.economic_census.reference_period]
     ];
@@ -118,9 +199,10 @@
     replaceList('answer-metrics', answer.usedMetrics, (text) => element('li', '', text));
     const rules = answer.matchedRules.length
       ? answer.matchedRules.map((id) => `${id}：${RULE_LABELS[id] || '条件一致'}`)
-      : ['選択テーマに対応する基本案内を表示'];
+      : ['該当する条件なし：選択テーマの基本案内を表示'];
     replaceList('answer-rules', rules, (text) => element('li', '', text));
     setText('answer-rule-version', Rules.RULE_VERSION);
+    setText('answer-methodology-note', context.datasets.statistics.metadata?.methodology_note || '');
 
     const sources = context.datasets.dx.metadata.sources;
     const sourceRows = [sources.lodging, sources.population, sources.economic_census];
@@ -135,19 +217,119 @@
     });
   }
 
+  function renderLead(answer) {
+    setText('answer-lead-title', answer.lead.title);
+    setText('answer-lead-note', answer.lead.note);
+    const basis = [answer.lead.ruleId ? (RULE_LABELS[answer.lead.ruleId] || '条件一致') : '該当する個別ルールなし（テーマの基本案内）', ...answer.lead.evidence];
+    setText('answer-lead-basis', basis.join('／'));
+  }
+
+  function renderPerspectives(answer) {
+    const container = $('answer-perspectives');
+    const checklist = $('answer-checklist');
+    if (!answer.perspectives) {
+      container.hidden = true;
+      container.replaceChildren();
+      checklist.hidden = false;
+      replaceList('answer-checklist', answer.checklist, (text) => element('li', '', text));
+      return;
+    }
+    checklist.hidden = true;
+    checklist.replaceChildren();
+    container.hidden = false;
+    replaceList('answer-perspectives', answer.perspectives, (item) => {
+      const article = element('article', `management-perspective management-perspective--${item.status}`);
+      const heading = element('h4');
+      heading.append(element('span', 'management-perspective__number', item.number), element('span', '', item.title));
+      article.append(heading);
+      const region = element('div', 'management-perspective__region');
+      region.append(element('p', 'management-perspective__label', item.status === 'self-check' ? '公的統計' : '地域データ'));
+      if (item.status === 'data') {
+        const list = element('dl', 'management-perspective__data');
+        item.data.lines.forEach((line) => {
+          const row = element('div');
+          row.append(element('dt', '', line.label), element('dd', '', line.value));
+          list.append(row);
+        });
+        region.append(list, element('p', 'management-perspective__note', item.data.note));
+      } else if (item.status === 'missing') {
+        region.append(element('p', 'management-perspective__empty', `データなし：${item.missing}`));
+      } else {
+        region.append(element('p', 'management-perspective__empty', item.selfCheck));
+      }
+      const checks = element('div', 'management-perspective__checks');
+      checks.append(element('p', 'management-perspective__label', '自施設で確認すること'));
+      const list = element('ul');
+      item.checks.forEach((text) => list.append(element('li', '', text)));
+      checks.append(list);
+      article.append(region, checks);
+      return article;
+    });
+  }
+
+  function renderMonthly(answer, context) {
+    const wrapper = $('answer-monthly');
+    const seasons = answer.seasons;
+    if (!seasons || !seasons.rows.length) {
+      wrapper.hidden = true;
+      return;
+    }
+    wrapper.hidden = false;
+    setText('answer-monthly-title', `月別の外国人延べ宿泊者数（${context.name}・${seasons.period}）`);
+    const peaks = new Map();
+    seasons.segments.forEach((segment) => {
+      if (segment.peak) peaks.set(`${segment.peak.year}-${segment.peak.month}`, '多い月');
+      if (segment.low) peaks.set(`${segment.low.year}-${segment.low.month}`, '少ない月');
+    });
+    const rows = [];
+    seasons.segments.forEach((segment) => {
+      segment.months.forEach((month) => {
+        const row = element('tr');
+        const mark = peaks.get(`${month.year}-${month.month}`);
+        const label = element('th', '', `${month.year}年${month.month}月`);
+        label.scope = 'row';
+        const value = element('td', '', Rules.formatNumber(month.foreign_guest_nights) + (typeof month.foreign_guest_nights === 'number' ? '人泊' : ''));
+        if (mark) value.append(element('span', 'management-monthly-mark', mark));
+        row.append(label, value, element('td', '', month.survey_scope || '—'));
+        rows.push(row);
+      });
+    });
+    $('answer-monthly-body').replaceChildren(...rows);
+    setText('answer-monthly-note', seasons.scopeChanged
+      ? '多い月・少ない月は、集計対象が同じ期間の中で比べています。2026年1月から宿泊旅行統計調査の集計・層化基準が変わったため、前後の期間の値をそのまま比べないでください。'
+      : '単位は人泊（1人が2泊すると2人泊）です。');
+  }
+
   function renderAnswer(context, answer, facility) {
     setText('answer-prefecture', context.name);
     setText('answer-topic', answer.topicLabel);
-    setText('answer-status', answer.status);
+    setText('answer-scope', `${context.name}全体の公的統計${answer.facilityType ? `／施設タイプ：${answer.facilityType}（入力値）` : ''}`);
+    const guide = $('answer-question-guide');
+    guide.hidden = !answer.questionGuide;
+    guide.textContent = answer.questionGuide ? answer.questionGuide.text : '';
 
+    renderLead(answer);
+    renderPerspectives(answer);
+
+    setText('answer-status', answer.status);
     replaceList('answer-facts', answer.facts, (fact) => {
       const item = element('li');
-      item.append(element('span', 'management-fact-symbol', fact.symbol), element('span', '', fact.text));
+      const body = element('span', 'management-fact-body');
+      body.append(element('span', '', fact.text));
+      if (fact.note) body.append(element('small', 'management-fact-note', fact.note));
+      item.append(element('span', 'management-fact-symbol', fact.symbol), body);
       return item;
     });
-    replaceList('answer-hypotheses', answer.hypotheses, (text) => element('p', '', text));
-    replaceList('answer-checklist', answer.checklist, (text) => element('li', '', text));
-    replaceList('answer-related', answer.relatedTools, (tool) => {
+    replaceList('answer-hypotheses', answer.trendNotes, (text) => element('p', '', text));
+    setText('answer-region-note', answer.regionNote);
+
+    const next = $('answer-next');
+    const inboundTool = answer.relatedTools.find((tool) => tool.href.startsWith('inbound-analysis.html'));
+    next.hidden = answer.topic !== 'inbound' || !inboundTool;
+    if (!next.hidden) $('answer-next-link').href = inboundTool.href;
+
+    const related = answer.topic === 'inbound' ? answer.relatedTools.filter((tool) => tool !== inboundTool) : answer.relatedTools;
+    replaceList('answer-related', related, (tool) => {
       const item = element('li');
       const link = element('a', '', `${tool.number} ${tool.label} →`);
       link.href = tool.href;
@@ -157,12 +339,15 @@
       return item;
     });
 
+    renderMonthly(answer, context);
     renderComparisons(answer.comparisons, context.name);
     renderDataPeriods(context);
     renderGrounds(answer, context);
 
-    const hasOptionalData = Object.values(facility).some((value) => value != null && value !== '');
-    $('more-input-guide').hidden = hasOptionalData;
+    const guideText = MORE_INPUT_GUIDES[answer.topic];
+    const hasOptionalData = Object.entries(facility).some(([key, value]) => key !== 'foreignShareBasis' && value != null && value !== '');
+    $('more-input-guide').hidden = !guideText || hasOptionalData;
+    setText('more-input-guide', guideText || '');
     const missingNote = $('missing-data-note');
     if (answer.missing.length) {
       missingNote.textContent = `${answer.missing.join('、')}は現在データを取得できないため、今回の分析には使用していません。`;
@@ -172,6 +357,7 @@
       missingNote.textContent = '';
     }
 
+    stale.hidden = true;
     result.hidden = false;
     result.inert = false;
     result.focus({ preventScroll: true });
@@ -183,7 +369,7 @@
     const context = Rules.getRegionContext(datasets, prefectureSelect.value);
     if (!context) return showError('選択した地域の統計を確認できません。時間をおいて再度お試しください。');
     const topic = selectedTopic();
-    const facility = facilityValues();
+    const facility = facilityValues(topic);
     const answer = Rules.generateInsights(context, topic, facility, question.value.trim());
     updateUrl(context.slug, topic);
     renderAnswer(context, answer, facility);
@@ -196,6 +382,9 @@
     error.textContent = message;
     error.hidden = false;
     fields.disabled = true;
+    result.hidden = true;
+    result.inert = true;
+    root.setAttribute('aria-busy', 'false');
   }
 
   // 共通の出典ブロック（_includes/tool-sources.html）を地域統計の出典で埋める。
@@ -235,6 +424,7 @@
     const topicRadio = form.querySelector(`input[name="topic"][value="${topic}"]`);
     if (topicRadio) topicRadio.checked = true;
     updateUrl(slug, topic);
+    applyTopic(topic);
 
     loading.hidden = true;
     fields.disabled = false;
@@ -246,20 +436,18 @@
     event.preventDefault();
     analyze();
   });
-  prefectureSelect.addEventListener('change', () => updateUrl(prefectureSelect.value, selectedTopic()));
+  prefectureSelect.addEventListener('change', () => {
+    updateUrl(prefectureSelect.value, selectedTopic());
+    renderSelection(selectedTopic());
+    markStale();
+  });
   form.querySelectorAll('input[name="topic"]').forEach((radio) => radio.addEventListener('change', () => {
     updateUrl(prefectureSelect.value, radio.value);
+    applyTopic(radio.value);
+    markStale();
   }));
-  document.querySelectorAll('[data-question-example]').forEach((button) => button.addEventListener('click', () => {
-    question.value = button.textContent.trim();
-    const topic = button.dataset.topic;
-    const radio = form.querySelector(`input[name="topic"][value="${topic}"]`);
-    if (radio) {
-      radio.checked = true;
-      radio.dispatchEvent(new Event('change', { bubbles: true }));
-    }
-    question.focus();
-  }));
+  form.querySelector('.management-optional').addEventListener('input', markStale);
+  question.addEventListener('input', markStale);
 
   Promise.all([
     fetch('data/analysis/prefecture-statistics.json', { cache: 'no-store' }).then((response) => response.ok ? response.json() : Promise.reject(new Error('statistics'))),
