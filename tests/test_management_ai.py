@@ -349,7 +349,7 @@ const context=R.getRegionContext(datasets,'tokyo');
 const run=(basis)=>{const a=R.generateInsights(context,'inbound',{foreignShare:2,foreignShareBasis:basis},'');return {rules:a.matchedRules,row:a.comparisons[0],lead:a.lead.title};};
 console.log(JSON.stringify({version:R.RULE_VERSION,nights:run('guest_nights'),bookings:run('bookings'),guests:run('guests'),unknown:run('unknown'),none:run(null)}));
 """)
-    assert data["version"] == "1.2.0"
+    assert data["version"] == "1.3.0"
     assert data["nights"]["rules"][0] == "facility-foreign-gap" and data["nights"]["row"]["comparable"]
     assert data["nights"]["row"]["difference"].endswith("pt")
     assert data["nights"]["lead"] == "地域と比べて、自施設の外国人宿泊が少ない理由はどこにあるか"
@@ -445,7 +445,7 @@ mixed.monthly.basis=mixed.monthly.basis.map((value,index)=>index%2?'after':'befo
 console.log(JSON.stringify({niigata:run('niigata','inbound'),niigataSales:run('niigata','sales'),aomori:run('aomori','sales'),
   aomoriLow:run('aomori','sales',{occupancyRate:20}),tokyo:run('tokyo','inbound'),lists,
   shifted:{period:shiftedProfile.period,yearLabel:shiftedProfile.yearLabel},mixed:R.getRegionContext(mixed,'niigata').monthlyProfile,
-  others:['dx','market','other'].map((topic)=>R.generateInsights(R.getRegionContext(datasets,'aomori'),topic,{},'').lodgingTable)}));
+  others:['other'].map((topic)=>R.generateInsights(R.getRegionContext(datasets,'aomori'),topic,{},'').lodgingTable)}));
 """)
     # 2026年1月の基準変更をまたがず、同じ基準で12か月そろう最新の期間（2025年1〜12月）を使う。
     assert data["niigata"]["profile"] == {"period": "2025年1月〜2025年12月", "yearLabel": "2025年の1年間", "basis": "2025年12月までの集計・層化基準"}
@@ -479,7 +479,7 @@ console.log(JSON.stringify({niigata:run('niigata','inbound'),niigataSales:run('n
     assert "inbound-domestic-complement" not in data["tokyo"]["rules"]
     assert sorted(data["lists"]["complement"]) == sorted(["北海道", "岩手県", "山形県", "新潟県", "富山県", "長野県", "和歌山県", "広島県"])
     assert len(data["lists"]["gap"]) == 21 and "青森県" in data["lists"]["gap"] and "東京都" not in data["lists"]["gap"]
-    assert data["others"] == [None, None, None]
+    assert data["others"] == [None]
 
 
 def test_monthly_data_is_optional_and_published_with_its_source():
@@ -491,7 +491,7 @@ def test_monthly_data_is_optional_and_published_with_its_source():
     assert table.find_parent("section")["aria-labelledby"] == "answer-details-heading"
     data = run_node(LOAD_DATASETS + r"""
 const rows=[];
-for (const row of Object.values(datasets.statistics.prefectures)) for (const topic of ['inbound','sales']) {
+for (const row of Object.values(datasets.statistics.prefectures)) for (const topic of ['inbound','sales','dx','market']) {
   const a=R.generateInsights(R.getRegionContext(datasets,row.prefecture_slug),topic,{},'');
   rows.push({topic,rows:a.lodgingTable?a.lodgingTable.rows.length:0,missing:a.missing});
 }
@@ -504,3 +504,64 @@ console.log(JSON.stringify({rows,plain:{rules:plain.matchedRules,table:plain.lod
     assert data["plain"]["table"] is None and data["plain"]["missing"] == ["月別の宿泊統計"]
     assert data["plain"]["lead"] == "地域の稼働や需要の動きと、自施設の販売状況に違いがないか"
     assert data["meta"]["source_name"] == "観光庁「宿泊旅行統計調査」" and "第8表" in data["meta"]["table_name"]
+
+
+def test_dx_and_market_leads_name_each_prefectures_months():
+    data = run_node(LOAD_FIXTURES + r"""
+const run=(slug,topic)=>{const c=R.getRegionContext(datasets,slug);const a=R.generateInsights(c,topic,{},'');
+  return {rules:a.matchedRules,lead:a.lead,trend:a.trendNotes,facts:a.facts,marks:a.lodgingTable?Object.fromEntries(a.lodgingTable.rows.filter((r)=>r.marks.length).map((r)=>[r.month,r.marks])):null};};
+const leads={dx:{},market:{}};
+const titles={dx:new Set(),market:new Set()};
+for (const row of Object.values(datasets.statistics.prefectures)) for (const topic of ['dx','market']) {
+  const a=R.generateInsights(R.getRegionContext(datasets,row.prefecture_slug),topic,{},'');
+  (leads[topic][a.lead.ruleId||'none']=leads[topic][a.lead.ruleId||'none']||[]).push(row.prefecture_name);
+  titles[topic].add(a.lead.title);
+  if (!a.lead.note.includes(R.getRegionContext(datasets,row.prefecture_slug).name)) titles[topic].add('NO-NAME:'+row.prefecture_name);
+}
+const none=structuredClone(datasets); delete none.monthly;
+const plain=['dx','market'].map((topic)=>R.generateInsights(R.getRegionContext(none,'niigata'),topic,{},''));
+console.log(JSON.stringify({yamanashi:run('yamanashi','dx'),niigata:run('niigata','dx'),aomori:run('aomori','dx'),
+  tokyo:run('tokyo','market'),niigataMarket:run('niigata','market'),gifu:run('gifu','market'),
+  counts:{dx:Object.fromEntries(Object.entries(leads.dx).map(([k,v])=>[k,v.length])),market:Object.fromEntries(Object.entries(leads.market).map(([k,v])=>[k,v.length]))},
+  seasonal:leads.dx['dx-seasonal-workload'].sort(),titles:{dx:[...titles.dx],market:[...titles.market]},
+  plain:plain.map((a)=>({title:a.lead.title,missing:a.missing,table:a.lodgingTable,rules:a.matchedRules}))}));
+""")
+    # 人手不足・DX：最多月÷最少月の上回る幅が全国（約1.4倍）の2倍以上なら、繁閑の差を冒頭の論点にする。
+    yamanashi = data["yamanashi"]
+    assert yamanashi["rules"][0] == "dx-seasonal-workload"
+    assert yamanashi["lead"]["title"] == "繁忙月と閑散月で、人員配置と業務量が合っているか"
+    assert "最も多い8月が最も少ない2月の約2.6倍で、全国（約1.4倍）" in yamanashi["lead"]["note"]
+    assert yamanashi["marks"] == {"2": ["宿泊者が最も少ない月"], "8": ["宿泊者が最も多い月"]}
+    # 既存ルールが先に当たる県は、そのルールの数値を冒頭に出し、繁閑の差は傾向の欄に回る。
+    aomori = data["aomori"]
+    assert aomori["rules"][:2] == ["dx-high-workforce-decline", "dx-seasonal-workload"]
+    assert aomori["lead"]["title"] == "人を増やしにくい中で、どの業務から省力化するか" and "全国1位" in aomori["lead"]["note"]
+    assert any("繁閑の差が大きい" in text for text in aomori["trend"])
+    # どのルールにも当たらない県も、月別の値で県ごとの論点を出し、基本案内は傾向の欄に残す。
+    niigata = data["niigata"]
+    assert niigata["rules"] == [] and niigata["lead"]["title"] == "繁忙月に、どの業務で人手が足りなくなるか"
+    assert "最も多いのは8月で、最も少ない4月の約1.6倍" in niigata["lead"]["note"]
+    assert niigata["trend"][0].startswith("地域の参考スコアだけで優先業務は決まりません")
+    assert any("最も少ない4月の約1.6倍" in fact["text"] and "第2表" in fact["note"] for fact in niigata["facts"])
+    assert data["seasonal"] == sorted(["福井県", "山梨県", "長野県", "滋賀県", "奈良県", "和歌山県", "鳥取県", "島根県", "秋田県", "栃木県"])
+
+    # 地域市場：繁忙月の客室稼働率で、埋まる地域（75%以上）と余裕がある地域（60%未満）を分ける。
+    tokyo = data["tokyo"]
+    assert tokyo["rules"][0] == "market-peak-full"
+    assert "10月に81.2%まで上がり（全国の同じ月は67.1%）" in tokyo["lead"]["note"]
+    niigata_market = data["niigataMarket"]
+    assert niigata_market["rules"][0] == "market-peak-slack"
+    assert "最も高い8月でも52.8%です（全国の同じ月は65.9%）" in niigata_market["lead"]["note"]
+    assert data["gifu"]["rules"] == [] and data["gifu"]["lead"]["title"] == "地域の宿泊が多い時期と、自施設の繁忙期は同じか"
+
+    assert data["counts"]["dx"] == {"none": 19, "dx-operation-load": 10, "dx-high-workforce-decline": 8, "dx-seasonal-workload": 10}
+    assert data["counts"]["market"] == {"market-peak-slack": 13, "market-growth": 19, "market-peak-full": 5, "tourism-context": 6, "none": 4}
+    # 冒頭の文に県名と数値が入り、全県共通の一文だけにはならない。
+    assert not any(title.startswith("NO-NAME") for titles in data["titles"].values() for title in titles)
+    assert "負荷の大きい業務がどこにあるか" not in data["titles"]["dx"]
+    assert "地域の需要の動きが、自施設の客層や時期に当てはまるか" not in data["titles"]["market"]
+
+    # 月別データがない場合は、既存ルールの論点か従来の基本案内になり、欠けたデータを明示する。
+    assert [item["title"] for item in data["plain"]] == ["負荷の大きい業務がどこにあるか", "伸びている需要に、自施設の客層や時期が合っているか"]
+    assert data["plain"][1]["rules"][0] == "market-growth"
+    assert all(item["missing"] == ["月別の宿泊統計"] and item["table"] is None for item in data["plain"])

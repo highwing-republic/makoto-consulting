@@ -56,6 +56,9 @@
     'inbound-concentration': '上位3つの国・地域の構成比が全国より10ポイント以上高い',
     'inbound-domestic-complement': '外国人の割合が最も高い月が、1年間の割合の1.5倍以上かつ5ポイント以上高く、その月の国内客が年平均を下回る',
     'sales-seasonal-gap': '客室稼働率の最も高い月と低い月の差が、全国の差の1.5倍以上',
+    'dx-seasonal-workload': '延べ宿泊者数の最多月が最少月を上回る幅が、全国の2倍以上',
+    'market-peak-full': '客室稼働率が最も高い月で75%以上',
+    'market-peak-slack': '客室稼働率が最も高い月でも60%未満',
     'tourism-context': '観光負荷または観光依存度の参考スコアが比較的高い'
   };
 
@@ -314,11 +317,19 @@
       return;
     }
     wrapper.hidden = false;
-    const inbound = table.topic === 'inbound';
-    setText('answer-lodging-title', inbound
-      ? `月別の国内客と外国人の延べ宿泊者数（${table.period}）`
-      : `月別の客室稼働率（${table.period}）`);
-    const headings = inbound ? ['月', '国内客', '外国人', '外国人の割合'] : ['月', '客室稼働率', '全国', '全国との差'];
+    const titles = {
+      inbound: `月別の国内客と外国人の延べ宿泊者数（${table.period}）`,
+      sales: `月別の客室稼働率（${table.period}）`,
+      dx: `月別の延べ宿泊者数（${table.period}）`,
+      market: `月別の延べ宿泊者数と客室稼働率（${table.period}）`
+    };
+    setText('answer-lodging-title', titles[table.topic]);
+    const headings = {
+      inbound: ['月', '国内客', '外国人', '外国人の割合'],
+      sales: ['月', '客室稼働率', '全国', '全国との差'],
+      dx: ['月', '延べ宿泊者数', '年平均との比'],
+      market: ['月', '延べ宿泊者数', '客室稼働率', '全国の稼働率']
+    }[table.topic];
     $('answer-lodging-head').replaceChildren(...headings.map((text) => {
       const cell = element('th', '', text);
       cell.scope = 'col';
@@ -330,17 +341,24 @@
       const label = element('th', '', `${row.month}月`);
       label.scope = 'row';
       row.marks.forEach((mark) => label.append(element('span', 'management-monthly-mark', mark)));
-      const values = inbound
-        ? [`${Rules.formatNumber(row.domestic)}`, `${Rules.formatNumber(row.foreign)}`, Rules.formatPercent(row.share)]
-        : [Rules.formatRate1(row.occupancy), Rules.formatRate1(row.nationalOccupancy),
-          signed(typeof row.occupancy === 'number' && typeof row.nationalOccupancy === 'number' ? Math.round((row.occupancy - row.nationalOccupancy) * 10) / 10 : null)];
+      const values = {
+        inbound: () => [`${Rules.formatNumber(row.domestic)}`, `${Rules.formatNumber(row.foreign)}`, Rules.formatPercent(row.share)],
+        sales: () => [Rules.formatRate1(row.occupancy), Rules.formatRate1(row.nationalOccupancy),
+          signed(typeof row.occupancy === 'number' && typeof row.nationalOccupancy === 'number' ? Math.round((row.occupancy - row.nationalOccupancy) * 10) / 10 : null)],
+        dx: () => [Rules.formatNumber(row.total), typeof row.total === 'number' && table.demandMean ? Rules.formatPercent(row.total / table.demandMean, 0) : 'データなし'],
+        market: () => [Rules.formatNumber(row.total), Rules.formatRate1(row.occupancy), Rules.formatRate1(row.nationalOccupancy)]
+      }[table.topic]();
       tr.append(label, ...values.map((text) => element('td', '', text)));
       if (row.marks.length) tr.classList.add('is-marked');
       return tr;
     }));
-    setText('answer-lodging-note', inbound
-      ? `単位は人泊。宿泊旅行統計調査 第2表の月別値（${table.basisLabel}で12か月そろう最新の期間）。国内客は延べ宿泊者数から外国人を除いた値で、日本に住む外国人を含みます。国籍別の集計表より対象施設が広いため、上の表の外国人の値とは一致しません。`
-      : `宿泊旅行統計調査 第8表の月別値（${table.basisLabel}で12か月そろう最新の期間）。2026年1月から集計・層化基準が変わったため、基準が異なる月どうしは比べていません。`);
+    const basis = `${table.basisLabel}で12か月そろう最新の期間`;
+    setText('answer-lodging-note', {
+      inbound: `単位は人泊。宿泊旅行統計調査 第2表の月別値（${basis}）。国内客は延べ宿泊者数から外国人を除いた値で、日本に住む外国人を含みます。国籍別の集計表より対象施設が広いため、上の表の外国人の値とは一致しません。`,
+      sales: `宿泊旅行統計調査 第8表の月別値（${basis}）。2026年1月から集計・層化基準が変わったため、基準が異なる月どうしは比べていません。`,
+      dx: `単位は人泊。宿泊旅行統計調査 第2表の月別値（${basis}）。年平均との比は、12か月の平均を100%とした値です。`,
+      market: `延べ宿泊者数（単位は人泊）は第2表、客室稼働率は第8表の月別値（${basis}）。2026年1月から集計・層化基準が変わったため、基準が異なる月どうしは比べていません。`
+    }[table.topic]);
   }
 
   function renderAnswer(context, answer, facility) {
