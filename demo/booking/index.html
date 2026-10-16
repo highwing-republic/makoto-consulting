@@ -295,6 +295,7 @@ errFull:["申し訳ありません。確定直前に満室になりました。�
 errSave:["このブラウザでは保存できないため、予約デモを完了できませんでした（プライベートモード等）。","This browser blocks storage (private mode?), so the demo booking could not be completed."],
 errNoInput:["予約番号を入力してください。","Please enter a booking number."],
 perNight:["／泊・室"," / night / room"],
+forPax:[n=>"（"+n+"名でのご利用）", n=>" for "+n+" guest"+(n>1?"s":"")],
 capOver:["定員超え","Over capacity"], full:["満室","Sold out"],
 leftN:[n=>"残り"+n+"室", n=>n+" left"],
 nights:[n=>n+"泊", n=>n+" night"+(n>1?"s":"")],
@@ -353,10 +354,11 @@ const addRooms=(f,nos,type,cap)=>nos.forEach(no=>ROOMS.push({no,floor:f,type,cap
   addRooms(f+"階",[f+"03",f+"04"],"シングル",1);
   addRooms(f+"階",[f+"05"],"和室",4);
 });
+// 1室1泊の料金（税・サービス料込み）。泊まる人数で変わる。公式サイト（scripts/build_demo_hotel.py）と同じ値
 const TYPES = [
-  {type:"シングル", cap:1, rate:8000},
-  {type:"ツイン",   cap:2, rate:16000},
-  {type:"和室",     cap:4, rate:24000}
+  {type:"シングル", cap:1, rates:{1:8000}},
+  {type:"ツイン",   cap:2, rates:{1:12000, 2:16000}},
+  {type:"和室",     cap:4, rates:{1:16000, 2:20000, 3:22000, 4:24000}}
 ];
 const BF = 1500;
 const typeName = ty => L ? ROOM_I18N[ty].en : ty;
@@ -432,6 +434,7 @@ function renderTypes(){
   list.textContent = "";
   TYPES.forEach(tp => {
     const capNG = tp.cap < q.pax;
+    const rate = capNG ? 0 : tp.rates[q.pax];
     const left = capNG ? 0 : freeCount(state, tp.type, q.inD, q.outD);
     const el = document.createElement("label");
     el.className = "typecard" + (left ? "" : " soldout");
@@ -439,11 +442,11 @@ function renderTypes(){
       '<input type="radio" name="rt" value="' + tp.type + '"' + (left ? "" : " disabled") + '>' +
       '<span class="nm">' + typeName(tp.type) + '</span><span class="desc">' +
         (L ? ROOM_I18N[tp.type].descEn : ROOM_I18N[tp.type].descJa) + " · " + T.cap[L](tp.cap) + "</span>" +
-      '<span class="price">' + yen(tp.rate) + "<small>" + t("perNight") + '</small></span>' +
+      (capNG ? "" : '<span class="price">' + yen(rate) + "<small>" + t("perNight") + T.forPax[L](q.pax) + '</small></span>') +
       '<span class="left' + (left && left <= 2 ? " few" : "") + '">' +
         (capNG ? t("capOver") : left ? T.leftN[L](left) : t("full")) + "</span>";
-    el.querySelector("input").addEventListener("change", () => { q.type = tp.type; q.rate = tp.rate; renderSum(); });
-    if(q.type === tp.type && left){ el.querySelector("input").checked = true; }
+    el.querySelector("input").addEventListener("change", () => { q.type = tp.type; q.rate = rate; renderSum(); });
+    if(q.type === tp.type && left){ el.querySelector("input").checked = true; q.rate = rate; }
     list.appendChild(el);
   });
   if(q.type) renderSum(); else {
