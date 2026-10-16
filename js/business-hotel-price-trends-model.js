@@ -298,30 +298,43 @@
 
   // ---------------------------------------------------------------- 催しの候補（AI調べ・参考）
 
-  // events.json の調査結果のうち、いま表示している期間の急騰日・売り切れが目立つ日に重なるもの。
-  // 料金の集計とは別の参考情報で、ここでは並べ替えと絞り込みだけを行う。
-  function eventCandidates(events, national) {
-    const items = Array.isArray(events?.items) ? events.items : [];
-    const notable = new Map();
-    for (const market of national.markets) {
-      const dates = new Set([...market.summary.spikes.map((day) => day.date), ...market.summary.busy.map((day) => day.date)]);
-      notable.set(market.code, {name: market.name, dates});
-    }
-    const shown = [];
-    let notFound = 0;
-    for (const item of items) {
-      const market = notable.get(item.market);
-      if (!market || !Array.isArray(item.dates)) continue;
-      const dates = item.dates.filter((date) => market.dates.has(date));
-      if (!dates.length) continue;
-      const candidates = (item.candidates || []).filter((candidate) => candidate && candidate.name && Array.isArray(candidate.sources) && candidate.sources.some((source) => /^https?:\/\//.test(source.url || "")));
-      if (item.status === "found" && candidates.length) shown.push({...item, name: market.name, dates, candidates});
-      else notFound += 1;
-    }
-    shown.sort((a, b) => (a.start < b.start ? -1 : a.start > b.start ? 1 : a.market < b.market ? -1 : 1));
+  // events.json（月1回調べる催しカレンダー）と、いま表示している期間の急騰日・売り切れが目立つ日を突き合わせる。
+  // 催しの前日の泊（前泊）から最終日の泊までを「催しに重なる泊」とする。料金の集計には使わない。
+  function eventCandidates(calendar, national) {
+    const events = (Array.isArray(calendar?.events) ? calendar.events : []).filter((event) => event && event.name && parseDate(event.start) && parseDate(event.end) && event.start <= event.end
+      && Array.isArray(event.sources) && event.sources.some((source) => /^https?:\/\//.test(source?.url || "")));
+    const markets = new Map(national.markets.map((market) => {
+      const nights = new Map(market.summary.days.map((day) => [day.date, day]));
+      const spikes = new Set(market.summary.spikes.map((day) => day.date));
+      return [market.code, {name: market.name, nights, spikes}];
+    }));
+    const items = [];
     const byDay = new Map();
-    for (const item of shown) for (const date of item.dates) byDay.set(`${item.market}|${date}`, item);
-    return {items: shown, notFound, byDay, researched: shown.length + notFound};
+    const byMarket = new Map();
+    for (const event of events) {
+      const market = markets.get(event.market);
+      if (!market) continue;
+      const nights = [];
+      for (let date = addDays(event.start, -1); date <= event.end; date = addDays(date, 1)) {
+        const day = market.nights.get(date);
+        if (!day) continue;
+        const spike = market.spikes.has(date);
+        if (spike || day.busy) nights.push({date, spike, busy: day.busy, soldOut: day.soldOut});
+      }
+      const item = {...event, marketName: market.name, nights, sources: event.sources.filter((source) => /^https?:\/\//.test(source?.url || ""))};
+      if (!byMarket.has(event.market)) byMarket.set(event.market, []);
+      byMarket.get(event.market).push(item);
+      if (!nights.length) continue;
+      items.push(item);
+      for (const night of nights) {
+        const key = `${event.market}|${night.date}`;
+        if (!byDay.has(key)) byDay.set(key, []);
+        byDay.get(key).push(item);
+      }
+    }
+    const first = (item) => item.nights[0].date;
+    items.sort((a, b) => (first(a) < first(b) ? -1 : first(a) > first(b) ? 1 : a.market < b.market ? -1 : 1));
+    return {available: Boolean(calendar && Array.isArray(calendar.events)), total: events.length, items, byDay, byMarket, researchedOn: calendar?.researched_on || null, coverage: calendar?.coverage || null};
   }
 
   const formatPeriod = (start, end) => (end && end !== start ? `${formatDate(start)}〜${formatDate(end)}` : formatDate(start));

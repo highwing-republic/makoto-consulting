@@ -245,28 +245,25 @@ test("今週のポイント: 直近の休前日、売り切れ、急騰を決ま
   assert.deepEqual(ranks.busyDays.map((d) => [d.market, d.date, d.soldOut]), [["札幌", "2026-11-07", 2]]);
 });
 
-test("催しの候補: 急騰日・売り切れが目立つ日に重なる調査結果だけを出す", () => {
+test("催し: 前泊から最終日の泊までに急騰日・売り切れが目立つ日があれば重なるとする", () => {
   const national = model.nationalSummary(cohort, snapshot("2026-10-16"), null);
-  const candidate = (name, url = "https://example.jp/a") => ({name, start: "2026-10-24", end: "2026-10-25", venue: "会場", note: null, sources: [{url, title: "t"}]});
-  const events = {items: [
-    {market: "sapporo", start: "2026-10-23", end: "2026-10-24", dates: ["2026-10-23", "2026-10-24"], kinds: ["spike"], status: "found", researched_on: "2026-10-16", candidates: [candidate("ドーム公演"), candidate("出典なし", "javascript:alert(1)")]},
-    {market: "sapporo", start: "2026-10-20", end: "2026-10-20", dates: ["2026-10-20"], status: "found", candidates: [candidate("ふつうの日")]},
-    {market: "sapporo", start: "2026-10-17", end: "2026-10-17", dates: ["2026-10-17"], status: "found", candidates: [candidate("出典が不正", "ftp://x")]},
-    {market: "naha", start: "2026-10-24", end: "2026-10-24", dates: ["2026-10-24"], status: "found", candidates: [candidate("別の市場")]},
+  const event = (name, start, end, extra = {}) => ({market: "sapporo", name, start, end, venue: "会場", category: "concert", note: null, sources: [{url: "https://example.jp/a", title: "t"}], ...extra});
+  const calendar = {researched_on: "2026-10-16", coverage: {start: "2026-10-16", end: "2026-12-15"}, events: [
+    event("翌日のマラソン", "2026-10-25", "2026-10-25"),          // 10/24（土）は急騰日 → 前泊として重なる
+    event("当日の公演", "2026-10-24", "2026-10-24"),
+    event("ふつうの日", "2026-10-20", "2026-10-21"),              // 重ならないが都市の一覧には出す
+    event("出典が不正", "2026-10-24", "2026-10-24", {sources: [{url: "javascript:alert(1)", title: "x"}]}),
+    event("別の市場", "2026-10-24", "2026-10-24", {market: "naha"}),
   ]};
-  // 10/17（土）は急騰日ではないので、出典が不正な結果も数えない
-  const view = model.eventCandidates(events, national);
-  assert.equal(view.items.length, 1);
-  assert.deepEqual(view.items[0].dates, ["2026-10-24"]);
-  assert.deepEqual(view.items[0].candidates.map((c) => c.name), ["ドーム公演"]);
-  assert.equal(view.items[0].name, "札幌");
-  assert.ok(view.byDay.has("sapporo|2026-10-24"));
-  assert.ok(!view.byDay.has("sapporo|2026-10-23"));
-  assert.equal(view.notFound, 0);
-
-  const notFound = model.eventCandidates({items: [{market: "sapporo", start: "2026-10-24", end: "2026-10-24", dates: ["2026-10-24"], status: "not_found", candidates: []}]}, national);
-  assert.deepEqual([notFound.items.length, notFound.notFound, notFound.researched], [0, 1, 1]);
-  assert.equal(model.eventCandidates(null, national).researched, 0);
+  const view = model.eventCandidates(calendar, national);
+  assert.equal(view.available, true);
+  assert.equal(view.total, 4);
+  assert.deepEqual(view.items.map((item) => item.name).sort(), ["当日の公演", "翌日のマラソン"]);
+  assert.deepEqual(view.items[0].nights.map((night) => [night.date, night.spike]), [["2026-10-24", true]]);
+  assert.equal(view.byDay.get("sapporo|2026-10-24").length, 2);
+  assert.deepEqual(view.byMarket.get("sapporo").map((item) => item.name), ["翌日のマラソン", "当日の公演", "ふつうの日"]);
+  assert.equal(view.researchedOn, "2026-10-16");
+  assert.equal(model.eventCandidates(null, national).available, false);
   assert.equal(model.formatPeriod("2026-10-24", "2026-10-25"), "10/24（土）〜10/25（日）");
   assert.equal(model.formatPeriod("2026-10-24", "2026-10-24"), "10/24（土）");
 });
