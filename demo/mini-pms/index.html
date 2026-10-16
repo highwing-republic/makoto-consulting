@@ -124,6 +124,8 @@ table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}
 .asgrid td.night.cand{cursor:pointer;background:var(--accent-soft);box-shadow:inset 0 0 0 1px var(--accent)}
 .asgrid td.night .bar{position:absolute;inset:3px 1px;background:var(--stay-soft);border-left:3px solid var(--stay);border-radius:3px;display:flex;align-items:center;padding:0 5px;overflow:hidden;white-space:nowrap;font-size:11px;cursor:pointer}
 .asgrid td.night .bar.booked{background:var(--panel);border:1px dashed var(--stay);border-left:3px solid var(--stay)}
+.asgrid td.night .bar.in{background:var(--stay);color:var(--panel);font-weight:600}
+.asgrid td.night .bar.out{background:var(--block-soft);border-left-color:var(--block);color:var(--muted)}
 .asgrid td.night .bar.blk{background:repeating-linear-gradient(45deg,var(--block-soft),var(--block-soft) 5px,var(--bg) 5px,var(--bg) 10px);border-left:3px solid var(--block);color:var(--muted)}
 .asgrid td.night .bar.sel{outline:2px solid var(--accent)}
 .toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:10px}
@@ -154,6 +156,12 @@ table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}
 .empty{color:var(--muted);font-size:12px;padding:4px 2px}
 footer.note{max-width:1100px;margin:14px auto 0;color:var(--muted);font-size:11px}
 .msg{font-size:12px;color:var(--warn);min-height:1.2em}
+/* チェックイン・アウトなどの操作結果（どのタブにいても見える） */
+.toast{position:fixed;left:16px;right:16px;bottom:20px;margin-inline:auto;width:fit-content;max-width:560px;background:var(--fg);color:var(--bg);border-radius:8px;padding:10px 16px;font-size:13px;font-weight:600;box-shadow:0 4px 16px rgba(0,0,0,.25);z-index:20}
+.grid-legend{margin:0 0 8px}
+.grid-legend i.booked{background:var(--panel);border:1px dashed var(--stay);border-left:3px solid var(--stay)}
+.grid-legend i.in{background:var(--stay);border-color:var(--stay)}
+.grid-legend i.out{background:var(--block-soft);border-color:var(--block)}
 /* 上段：一言＋4ステップ / 下段：詳しい説明（カード） */
 .intro{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;padding:10px 14px}
 .intro .lead{font-size:13px;margin:0;flex:1 1 320px}
@@ -281,6 +289,11 @@ footer.note{max-width:1100px;margin:14px auto 0;color:var(--muted);font-size:11p
       <label>理由<input id="bReason" placeholder="例：空調故障" style="width:130px"></label>
       <button class="btn small" id="btnBlockAdd" type="button">ブロック追加</button>
     </div>
+    <div class="legend grid-legend">
+      <span><i class="booked"></i>予約（未チェックイン）</span>
+      <span><i class="in"></i>在室（チェックイン済）</span>
+      <span><i class="out"></i>チェックアウト済</span>
+    </div>
     <div class="msg" id="gridMsg"></div>
     <div class="scroll"><table class="asgrid" id="asgrid"></table></div>
   </section>
@@ -331,6 +344,8 @@ footer.note{max-width:1100px;margin:14px auto 0;color:var(--muted);font-size:11p
 
 <footer class="note">架空ホテル（2〜5階・各階5室＝ツイン2／シングル2／和室1、全20室）のデモです。表示順は 5階→4階→3階→2階。料金・精算・OTA連携は含みません。</footer>
 
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
 <script src="/js/suiren-demo-data.js?v=20261016"></script>
 <script>
 "use strict";
@@ -360,6 +375,24 @@ const seed = SuirenDemo.seed;
 const load = SuirenDemo.load;
 function save(){ try{ localStorage.setItem(SuirenDemo.KEY, JSON.stringify(state)); }catch(e){} }
 const active = r => r.status !== "cancelled";
+
+/* 予約の状態を変える（チェックイン・アウト・キャンセル）。どのタブにいても結果が分かるよう下に知らせる */
+let toastTimer = null;
+function toast(text){
+  const el = document.getElementById("toast");
+  el.textContent = text; el.hidden = false;
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => { el.hidden = true; }, 4000);
+}
+function setStatus(r, status){
+  r.status = status;
+  if(status === "cancelled"){ r.room = null; if(selectedId === r.id) selectedId = null; }
+  lastAssign = null; // 状態が変わったら、直前の割当はもう取り消せない
+  save(); renderAll();
+  const room = r.room ? "（" + r.room + "号室）" : "";
+  toast(status === "in" ? r.name + " をチェックインしました" + room + "。部屋割り表の帯が濃い青（在室）に変わります。"
+      : status === "out" ? r.name + " をチェックアウトしました" + room + "。"
+      : r.name + " の予約をキャンセルしました。");
+}
 
 /* ---------- 空き判定 ---------- */
 function nightTaken(roomNo, d, exceptResId, exceptBlockId){
@@ -441,10 +474,10 @@ function renderRes(){
     };
     if(r.status === "booked"){
       mkBtn(r.room ? "部屋変更" : "割当", () => { selectedId = r.id; selectedBlockId = null; switchTab("grid"); });
-      if(r.room) mkBtn("チェックイン", () => { r.status = "in"; save(); renderAll(); });
-      mkBtn("キャンセル", () => { r.status = "cancelled"; r.room = null; if(selectedId === r.id) selectedId = null; save(); renderAll(); });
+      if(r.room) mkBtn("チェックイン", () => setStatus(r, "in"));
+      mkBtn("キャンセル", () => setStatus(r, "cancelled"));
     } else if(r.status === "in"){
-      mkBtn("チェックアウト", () => { r.status = "out"; save(); renderAll(); });
+      mkBtn("チェックアウト", () => setStatus(r, "out"));
     } else if(r.status === "cancelled"){
       mkBtn("削除", () => { state.reservations = state.reservations.filter(x => x.id !== r.id); save(); renderAll(); });
     }
@@ -564,7 +597,7 @@ function renderGrid(){
         const blk = occ ? null : state.blocks.find(b => b.room === rm.no && b.fromDate <= d && d < b.toDate);
         if(occ){
           const bar = document.createElement("div");
-          bar.className = "bar " + (occ.status === "booked" ? "booked" : "") + (occ.id === selectedId ? " sel" : "");
+          bar.className = "bar " + occ.status + (occ.id === selectedId ? " sel" : "");
           bar.textContent = (occ.inDate === d || d === dates[0]) ? occ.name : "";
           bar.title = occ.name + " " + mdLabel(occ.inDate) + "→" + mdLabel(occ.outDate) + "（" + ST_LABEL[occ.status] + "）";
           bar.addEventListener("click", () => { selectedId = occ.id; selectedBlockId = null; renderGrid(); });
@@ -729,7 +762,7 @@ function renderArrival(){
       document.getElementById("tab-grid").scrollIntoView({behavior:"smooth", block:"start"}); }, true);
     note("部屋割り表で、入れる部屋が緑に光ります。");
   } else if(r.status === "booked"){
-    mk("チェックインする", () => { r.status = "in"; save(); renderAll(); }, true);
+    mk("チェックインする", () => setStatus(r, "in"), true);
     note(r.inDate > T0 ? "到着日は " + mdLabel(r.inDate) + " ですが、デモでは今すぐ試せます。" : "到着したお客様をチェックインします。");
   } else {
     const a = document.createElement("a"); a.href = "/demo/booking/"; a.textContent = "もう一度、公式サイトから予約する →"; acts.appendChild(a);
