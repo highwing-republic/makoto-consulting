@@ -320,13 +320,14 @@ footer.note{max-width:1100px;margin:14px auto 0;color:var(--muted);font-size:11p
   </div>
 
   <div class="cards">
-    <div class="card wide"><h3>データについて</h3><p>サンプルの予約は最初に開いた日を基準に作られます。日付がずれたときや最初からやり直したいときは、ここで戻せます。デモのため、実在のお客様の名前や連絡先は入力しないでください。</p>
+    <div class="card wide"><h3>データについて</h3><p>サンプルの予約は、開いた日を基準に毎日作り直されます（自分で登録した予約・ブロックはそのまま残ります）。最初からやり直したいときは、ここで戻せます。デモのため、実在のお客様の名前や連絡先は入力しないでください。</p>
       <div class="resetrow"><button class="btn small" type="button" id="btnReset">サンプルデータに戻す</button><span class="note">入力した予約・ブロックはすべて消え、今日の日付でサンプルを作り直します。</span></div></div>
   </div>
 </section>
 
 <footer class="note">架空ホテル（2〜5階・各階5室＝ツイン2／シングル2／和室1、全20室）のデモです。表示順は 5階→4階→3階→2階。料金・精算・OTA連携は含みません。</footer>
 
+<script src="/js/suiren-demo-data.js?v=20261016"></script>
 <script>
 "use strict";
 /* ---------- 基礎 ---------- */
@@ -341,14 +342,8 @@ const mdLabel = isoStr => { const d = new Date(isoStr+"T00:00:00"); const w="日
 const ST_LABEL = { booked:"予約", in:"チェックイン済", out:"チェックアウト済", cancelled:"キャンセル" };
 const ST_PILL  = { booked:"ok", in:"in", out:"out", cancelled:"cxl" };
 
-/* ---------- 部屋マスタ（架空ホテル：2〜5階、各階10室） ---------- */
-const ROOMS = [];
-const addRooms = (floor, nos, type, cap) => nos.forEach(no => ROOMS.push({no, floor, type, cap}));
-["5","4","3","2"].forEach(f => {
-  addRooms(f+"階", [f+"01",f+"02"], "ツイン", 2);
-  addRooms(f+"階", [f+"03",f+"04"], "シングル", 1);
-  addRooms(f+"階", [f+"05"], "和室", 4);
-});
+/* ---------- 部屋マスタ・サンプル・保存（/js/suiren-demo-data.js を予約エンジンデモと共用） ---------- */
+const ROOMS = SuirenDemo.ROOMS;
 const FLOOR_ORDER = ["5階","4階","3階","2階"];
 
 /* ---------- 状態 ---------- */
@@ -356,30 +351,9 @@ let state = null;
 let selectedId = null;      // 選択中の予約
 let selectedBlockId = null; // 選択中のブロック
 
-function seed(){
-  return { nextId: 9, nextBlockId: 2,
-    reservations: [
-      { id:1, name:"田中物産 佐藤様", pax:1, inDate:addDays(T0,-3), outDate:addDays(T0,25), typePref:"シングル", memo:"長期法人。請求書は月末まとめ（サンプル）", room:"303", status:"in" },
-      { id:2, name:"高橋様", pax:2, inDate:addDays(T0,-1), outDate:addDays(T0,1), typePref:"ツイン", memo:"レンタカー21時返却予定（サンプル）", room:"501", status:"in" },
-      { id:3, name:"Smith様", pax:1, inDate:T0, outDate:addDays(T0,1), typePref:"シングル", memo:"英語対応（サンプル）", room:"204", status:"booked" },
-      { id:4, name:"山田様", pax:2, inDate:T0, outDate:addDays(T0,2), typePref:"ツイン", memo:"記念日。眺望良い部屋希望（サンプル）", room:null, status:"booked" },
-      { id:5, name:"鈴木様ご家族", pax:4, inDate:addDays(T0,1), outDate:addDays(T0,3), typePref:"和室", memo:"お子様2名添い寝（サンプル）", room:null, status:"booked" },
-      { id:6, name:"南海電装 中村様", pax:1, inDate:addDays(T0,2), outDate:addDays(T0,12), typePref:"", memo:"工事関係・長期（サンプル）", room:null, status:"booked" },
-      { id:7, name:"伊藤様", pax:1, inDate:addDays(T0,3), outDate:addDays(T0,4), typePref:"", memo:"（サンプル）", room:null, status:"booked" },
-      { id:8, name:"渡辺様", pax:2, inDate:addDays(T0,1), outDate:addDays(T0,2), typePref:"ツイン", memo:"電話にて取消連絡あり（サンプル）", room:null, status:"cancelled" }
-    ],
-    blocks: [
-      { id:1, room:"405", fromDate:T0, toDate:addDays(T0,5), reason:"空調故障" }
-    ]};
-}
-function load(){
-  try{
-    const raw = localStorage.getItem("mini-pms-v3");
-    if(raw){ const s = JSON.parse(raw); if(s && Array.isArray(s.reservations) && Array.isArray(s.blocks)) return s; }
-  }catch(e){}
-  return seed();
-}
-function save(){ try{ localStorage.setItem("mini-pms-v3", JSON.stringify(state)); }catch(e){} }
+const seed = SuirenDemo.seed;
+const load = SuirenDemo.load;
+function save(){ try{ localStorage.setItem(SuirenDemo.KEY, JSON.stringify(state)); }catch(e){} }
 const active = r => r.status !== "cancelled";
 
 /* ---------- 空き判定 ---------- */
@@ -744,7 +718,7 @@ function renderAll(){ renderArrival(); renderRes(); renderGrid(); renderBoard();
 
 document.getElementById("btnReset").addEventListener("click", () => {
   if(!confirm("入力した予約・ブロックをすべて消して、サンプルデータに戻しますか？")) return;
-  try{ localStorage.removeItem("mini-pms-v3"); }catch(e){}
+  try{ localStorage.removeItem(SuirenDemo.KEY); }catch(e){}
   state = seed(); selectedId = null; selectedBlockId = null;
   document.getElementById("gridMsg").textContent = "";
   save(); renderAll();
