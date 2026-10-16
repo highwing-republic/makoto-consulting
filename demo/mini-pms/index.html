@@ -41,6 +41,8 @@
   --block-soft:#e3e6ea;
   --cxl:#8a2f3c;
   --cxl-soft:#f3dfe2;
+  --web:#7a5a17;         /* 公式サイト（予約エンジンデモ）経由の予約 */
+  --web-soft:#f6ecd5;
   --font-body:"Noto Sans JP","Hiragino Kaku Gothic ProN",Meiryo,system-ui,sans-serif;
 }
 @media (prefers-color-scheme: dark){
@@ -48,16 +50,17 @@
     --bg:#141a20; --panel:#1c242c; --fg:#e4e9ed; --muted:#93a1ae; --line:#36414c;
     --accent:#4fb8b0; --accent-soft:#17403d; --warn:#e0984f; --warn-soft:#45310f;
     --stay:#7aa9d4; --stay-soft:#223a51; --block:#9aa4af; --block-soft:#2a333c;
-    --cxl:#d98a96; --cxl-soft:#44252b; color-scheme:dark;
+    --cxl:#d98a96; --cxl-soft:#44252b; --web:#e2c27a; --web-soft:#3d3218; color-scheme:dark;
   }
 }
 :root[data-theme="dark"]{
   --bg:#141a20; --panel:#1c242c; --fg:#e4e9ed; --muted:#93a1ae; --line:#36414c;
   --accent:#4fb8b0; --accent-soft:#17403d; --warn:#e0984f; --warn-soft:#45310f;
   --stay:#7aa9d4; --stay-soft:#223a51; --block:#9aa4af; --block-soft:#2a333c;
-  --cxl:#d98a96; --cxl-soft:#44252b; color-scheme:dark;
+  --cxl:#d98a96; --cxl-soft:#44252b; --web:#e2c27a; --web-soft:#3d3218; color-scheme:dark;
 }
 *{box-sizing:border-box}
+[hidden]{display:none!important} /* .selbox などの display 指定より hidden を優先 */
 body{background:var(--bg);color:var(--fg);font-family:var(--font-body);margin:0;padding-block:0 32px;padding-inline:16px;font-size:14px;line-height:1.6}
 header.app{max-width:1100px;margin:0 auto;padding-block:18px 10px;display:flex;flex-wrap:wrap;gap:8px 16px;align-items:baseline}
 header.app h1{font-size:19px;margin:0;letter-spacing:.02em}
@@ -91,6 +94,25 @@ table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}
 .pill.out{background:var(--block-soft);color:var(--muted)}
 .pill.cxl{background:var(--cxl-soft);color:var(--cxl)}
 .pill.blk{background:var(--block-soft);color:var(--block)}
+.pill.web{background:var(--web-soft);color:var(--web)}
+.res-table tr.focus td{background:var(--web-soft)}
+.res-table tr.focus td:first-child{box-shadow:inset 4px 0 0 var(--web)}
+/* 予約エンジンデモから ?booking=予約番号 で来たときの案内 */
+.arrival{border:2px solid var(--web);background:var(--web-soft);border-radius:8px;padding:14px 16px;display:flex;flex-direction:column;gap:8px}
+.arrival h2{margin:0;font-size:16px;color:var(--web)}
+.arrival .detail{margin:0;font-size:13px}
+.arrival ol{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:6px 4px;font-size:12px}
+.arrival ol li{display:inline-flex;align-items:center;gap:5px;color:var(--muted)}
+.arrival ol li+li::before{content:"→";margin-right:4px}
+.arrival ol li i{display:inline-grid;place-items:center;width:18px;height:18px;border-radius:50%;border:1px solid var(--line);background:var(--panel);font-style:normal;font-size:11px}
+.arrival ol li.done{color:var(--fg);font-weight:600}
+.arrival ol li.done i{background:var(--accent);border-color:var(--accent);color:#fff}
+.arrival ol li.next{color:var(--fg);font-weight:700}
+.arrival ol li.next i{border:2px solid var(--accent);color:var(--accent)}
+.arrival .acts{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.arrival .acts .note{font-size:12px;color:var(--muted)}
+.arrival .acts a{color:var(--accent);font-size:13px}
+@media (max-width:640px){ .arrival .acts .btn.primary{flex:1 1 100%} }
 .scroll{overflow-x:auto;border:1px solid var(--line);border-radius:8px}
 .asgrid{min-width:760px}
 .asgrid th,.asgrid td{border:1px solid var(--line);padding:0;font-size:12px}
@@ -174,6 +196,8 @@ footer.note{max-width:1100px;margin:14px auto 0;color:var(--muted);font-size:11p
 </header>
 
 <main>
+  <section class="arrival" id="arrival" aria-live="polite" hidden></section>
+
   <section class="panel intro" aria-label="このデモについて">
     <p class="lead">架空ホテル（全20室）で、予約から部屋割り・チェックイン・チェックアウトまでを試せます。サンプルの予約が入っているので、そのまま触ってみてください。<a href="#howto">詳しい説明は下へ ↓</a></p>
     <ol class="steps">
@@ -416,10 +440,11 @@ function renderRes(){
   list.forEach(r => {
     const tr = document.createElement("tr");
     if(r.status === "cancelled") tr.className = "cxl";
+    if(focusNo && r.bookingNo === focusNo) { tr.classList.add("focus"); tr.id = "focusRow"; }
     const roomCell = r.status === "cancelled" ? "—"
       : (r.room ? '<span class="pill ok">' + r.room + "</span>" : '<span class="pill todo">未割当</span>');
     tr.innerHTML =
-      "<td>" + esc(r.name) + (r.memo ? '<div style="font-size:11px;color:var(--muted)">' + esc(r.memo) + "</div>" : "") + "</td>" +
+      "<td>" + (r.source === "web" ? '<span class="pill web">公式サイト予約</span><br>' : "") + esc(r.name) + (r.memo ? '<div style="font-size:11px;color:var(--muted)">' + esc(r.memo) + "</div>" : "") + "</td>" +
       "<td>" + mdLabel(r.inDate) + " →<br>" + mdLabel(r.outDate) + "</td>" +
       '<td class="hide-sm">' + nights(r) + "</td>" +
       '<td class="hide-sm">' + r.pax + "名</td>" +
@@ -573,6 +598,7 @@ function renderGrid(){
             sel.room = rm.no; save();
             document.getElementById("gridMsg").textContent = sel.name + " を " + rm.no + " に割り当てました。";
             selectedId = null; renderAll();
+            if(focusNo && sel.bookingNo === focusNo) document.getElementById("arrival").scrollIntoView({behavior:"smooth", block:"start"});
           });
         }
         tr.appendChild(td);
@@ -661,6 +687,51 @@ function renderLedger(){
 }
 document.getElementById("ledgerDate").addEventListener("change", renderLedger);
 
+/* ---------- 予約エンジンデモからの引き継ぎ（?booking=予約番号） ---------- */
+let focusNo = "";
+try{ focusNo = (new URLSearchParams(location.search).get("booking") || "").trim().toUpperCase().slice(0, 12); }catch(e){}
+function renderArrival(){
+  const box = document.getElementById("arrival");
+  if(!focusNo){ box.hidden = true; return; }
+  box.hidden = false;
+  const r = state.reservations.find(x => x.bookingNo === focusNo);
+  if(!r){
+    box.innerHTML = "<h2>予約番号 " + esc(focusNo) + " はこのブラウザに見つかりません</h2>" +
+      '<p class="detail">予約エンジンデモと簡易PMSデモは、同じブラウザの中でだけ連動します。「サンプルデータに戻す」を押した場合も消えます。</p>' +
+      '<div class="acts"><a href="/demo/booking/">予約エンジンデモで予約する →</a></div>';
+    return;
+  }
+  const steps = [["公式サイトで予約", true], ["フロントで受信", true],
+    ["部屋割り", !!r.room && r.status !== "cancelled"], ["チェックイン", r.status === "in" || r.status === "out"]];
+  const nextIdx = steps.findIndex(s => !s[1]);
+  const head = r.status === "cancelled" ? "この公式サイト予約はキャンセルされています"
+    : nextIdx === -1 ? "公式サイトの予約から、チェックインまで完了しました"
+    : r.room ? "部屋割りが完了しました（" + esc(r.room) + "号室）"
+    : "公式サイトから予約が届きました";
+  box.innerHTML = "<h2>" + head + "</h2>" +
+    '<p class="detail">予約番号 <b>' + esc(focusNo) + "</b> ・ " + esc(r.name) + " ・ " + mdLabel(r.inDate) + "→" + mdLabel(r.outDate) +
+      "（" + nights(r) + "泊）・ " + r.pax + "名" + (r.typePref ? " ・ " + esc(r.typePref) + "希望" : "") + "</p>" +
+    "<ol>" + steps.map((s, i) => '<li class="' + (s[1] ? "done" : i === nextIdx && r.status !== "cancelled" ? "next" : "") + '"><i>' +
+      (s[1] ? "✓" : i + 1) + "</i>" + s[0] + "</li>").join("") + "</ol>" +
+    '<div class="acts"></div>';
+  const acts = box.querySelector(".acts");
+  const mk = (label, fn, primary) => { const b = document.createElement("button");
+    b.className = "btn" + (primary ? " primary" : ""); b.type = "button"; b.textContent = label;
+    b.addEventListener("click", fn); acts.appendChild(b); };
+  const note = text => { const n = document.createElement("span"); n.className = "note"; n.textContent = text; acts.appendChild(n); };
+  if(r.status === "booked" && !r.room){
+    mk("この予約に部屋を割り当てる", () => { selectedId = r.id; selectedBlockId = null; switchTab("grid");
+      document.getElementById("tab-grid").scrollIntoView({behavior:"smooth", block:"start"}); }, true);
+    note("部屋割り表で、入れる部屋が緑に光ります。");
+  } else if(r.status === "booked"){
+    mk("チェックインする", () => { r.status = "in"; save(); renderAll(); }, true);
+    note(r.inDate > T0 ? "到着日は " + mdLabel(r.inDate) + " ですが、デモでは今すぐ試せます。" : "到着したお客様をチェックインします。");
+  } else {
+    const a = document.createElement("a"); a.href = "/demo/booking/"; a.textContent = "もう一度、公式サイトから予約する →"; acts.appendChild(a);
+    if(r.status !== "cancelled") note("客室状況表と当日台帳にも反映されています。");
+  }
+}
+
 /* ---------- タブ・初期化 ---------- */
 function switchTab(id){
   document.querySelectorAll("nav.tabs button").forEach(b => b.setAttribute("aria-selected", String(b.dataset.tab === id)));
@@ -669,7 +740,7 @@ function switchTab(id){
 }
 document.querySelectorAll("nav.tabs button").forEach(b =>
   b.addEventListener("click", () => switchTab(b.dataset.tab)));
-function renderAll(){ renderRes(); renderGrid(); renderBoard(); renderLedger(); }
+function renderAll(){ renderArrival(); renderRes(); renderGrid(); renderBoard(); renderLedger(); }
 
 document.getElementById("btnReset").addEventListener("click", () => {
   if(!confirm("入力した予約・ブロックをすべて消して、サンプルデータに戻しますか？")) return;

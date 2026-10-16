@@ -46,18 +46,29 @@
   --font-body:"Noto Sans JP","Hiragino Kaku Gothic ProN",Meiryo,system-ui,sans-serif;
 }
 *{box-sizing:border-box}
-body{background:var(--bg);color:var(--fg);font-family:var(--font-body);margin:0;padding:0 16px 40px;font-size:14px;line-height:1.7}
-.demo-band{background:#f3ece2;color:#8a6a3c;font-size:11.5px;text-align:center;padding:6px 10px;margin:0 -16px;letter-spacing:.06em}
-header.site{max-width:860px;margin:0 auto;padding:26px 0 8px;display:flex;flex-wrap:wrap;gap:6px 16px;align-items:baseline}
-header.site h1{font-family:var(--font-serif);font-size:26px;margin:0;letter-spacing:.08em}
-header.site .tag{color:var(--muted);font-size:12px}
-header.site .back{margin-left:auto;font-size:12px;display:flex;gap:12px;align-items:baseline;flex-wrap:wrap}
-header.site .back a{color:var(--gold)}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-body);margin:0;padding:0 16px 40px;font-size:15px;line-height:1.7}
+/* 公式サイト（/demo/hotel/）と同じ写真・宿名で、公式サイトから続く予約ページに見せる */
+header.site{margin:0 -16px;min-height:150px;display:flex;align-items:flex-end;color:#fff;
+  background:linear-gradient(180deg,rgba(18,22,28,.15),rgba(18,22,28,.72)),url("/demo/hotel/img/hero-800.webp") center 58%/cover #2a2f33}
+header.site .in{max-width:860px;width:100%;margin:0 auto;padding:22px 16px 16px;display:flex;flex-wrap:wrap;gap:8px 16px;align-items:flex-end}
+header.site .area{display:block;font-size:12px;letter-spacing:.3em;opacity:.9}
+header.site h1{font-family:var(--font-serif);font-size:28px;margin:0;letter-spacing:.12em;line-height:1.3}
+header.site h1 a{color:inherit;text-decoration:none}
+header.site .back{margin-left:auto;font-size:12px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+header.site .back a{color:#fff}
 .lnsw{display:flex;gap:4px}
-.lnsw button{appearance:none;border:1px solid var(--line);background:var(--panel);color:var(--muted);font:inherit;font-size:11px;border-radius:999px;padding:2px 10px;cursor:pointer}
-.lnsw button.on{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}
+.lnsw button{appearance:none;border:1px solid rgba(255,255,255,.6);background:transparent;color:#fff;font:inherit;font-size:11px;border-radius:999px;padding:2px 10px;cursor:pointer}
+.lnsw button.on{background:#fff;border-color:#fff;color:var(--accent);font-weight:600}
 main{max-width:860px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
-.steps{display:flex;gap:4px;flex-wrap:wrap;font-size:11px;color:var(--muted);letter-spacing:.05em}
+/* 公式サイト → 予約 → PMS の連動デモ全体の中で、いまどこにいるか */
+.flow{list-style:none;margin:16px 0 0;padding:10px 12px;display:flex;flex-wrap:wrap;gap:6px 4px;align-items:center;background:var(--field);border:1px solid var(--line);border-radius:4px;font-size:12px;color:var(--muted)}
+.flow li{display:flex;align-items:center;gap:4px}
+.flow li+li::before{content:"→";color:var(--line);margin:0 4px 0 0}
+.flow li b{display:inline-grid;place-items:center;width:18px;height:18px;border-radius:50%;background:var(--line);color:var(--fg);font-size:10px}
+.flow li.now{color:var(--fg);font-weight:700}
+.flow li.now b{background:var(--accent);color:#fff}
+.flow a{color:inherit}
+.steps{display:flex;gap:4px;flex-wrap:wrap;font-size:12px;color:var(--muted);letter-spacing:.05em}
 .steps span{padding:3px 12px;border-radius:999px;background:var(--field);border:1px solid var(--line);letter-spacing:.1em}
 .steps span.on{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}
 section.card{background:var(--panel);border:1px solid var(--line);border-radius:4px;padding:22px 20px}
@@ -65,57 +76,88 @@ h2{font-family:var(--font-serif);font-size:17px;margin:0 0 12px;letter-spacing:.
 h2 small{font-family:var(--font-body);font-size:11px;color:var(--muted);font-weight:400;margin-left:8px;letter-spacing:0}
 .row{display:flex;flex-wrap:wrap;gap:12px;align-items:end}
 label.f{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--muted);min-width:0}
-input,select,textarea{font:inherit;color:var(--fg);background:var(--field);border:1px solid var(--line);border-radius:3px;padding:8px 10px;min-width:0}
+input,select,textarea{font:inherit;color:var(--fg);background:var(--field);border:1px solid var(--line);border-radius:3px;padding:10px 12px;min-width:0}
 textarea{resize:vertical}
-.btn{appearance:none;font:inherit;font-weight:600;letter-spacing:.08em;border-radius:3px;border:1px solid var(--line);background:var(--panel);color:var(--fg);padding:9px 20px;cursor:pointer}
+.btn{appearance:none;font:inherit;font-weight:600;letter-spacing:.08em;border-radius:3px;border:1px solid var(--line);background:var(--panel);color:var(--fg);padding:11px 22px;cursor:pointer}
 .btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
 .btn.small{padding:4px 12px;font-size:12px;font-weight:500}
 .btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .msg{font-size:12px;color:var(--warn);min-height:1.2em;margin-top:6px}
 .typegrid{display:flex;flex-direction:column;gap:10px;margin-top:12px}
-.typecard{border:1px solid var(--line);border-radius:4px;padding:14px 16px;display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center}
-.typecard.soldout{opacity:.55}
+.typecard{border:1px solid var(--line);border-radius:4px;padding:16px 18px;display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;cursor:pointer;transition:background .15s,border-color .15s}
+.typecard input{accent-color:var(--accent)}
+.typecard:has(input:checked){border-color:var(--accent);background:var(--accent-soft);box-shadow:inset 0 0 0 1px var(--accent)}
+.typecard:has(input:checked) .nm::after{content:"選択中";margin-left:8px;font-family:var(--font-body);font-size:11px;font-weight:600;color:#fff;background:var(--accent);border-radius:999px;padding:1px 8px;vertical-align:2px}
+html[lang="en"] .typecard:has(input:checked) .nm::after{content:"Selected"}
+.typecard.soldout{opacity:.55;cursor:default}
 .typecard .nm{font-family:var(--font-serif);font-size:15px;font-weight:700;min-width:7em}
-.typecard .desc{font-size:12px;color:var(--muted);flex:1 1 200px}
+.typecard .desc{font-size:13px;color:var(--muted);flex:1 1 200px}
 .typecard .price{font-variant-numeric:tabular-nums;font-weight:700;white-space:nowrap}
 .typecard .price small{font-weight:400;color:var(--muted)}
 .typecard .left{font-size:11px;color:var(--ok);font-weight:600;white-space:nowrap}
 .typecard .left.few{color:var(--warn)}
 .plans{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 4px}
-.plans label{display:flex;gap:6px;align-items:center;border:1px solid var(--line);border-radius:999px;padding:6px 14px;font-size:13px;cursor:pointer}
+.plans label{display:flex;gap:6px;align-items:center;border:1px solid var(--line);border-radius:999px;padding:8px 16px;font-size:14px;cursor:pointer}
 .plans label:has(input:checked){border-color:var(--accent);background:var(--accent-soft);font-weight:600}
 table.sum{border-collapse:collapse;width:100%;max-width:460px;font-variant-numeric:tabular-nums;margin:10px 0}
 table.sum td{padding:5px 8px;border-bottom:1px solid var(--line);font-size:13px}
 table.sum td:last-child{text-align:right;white-space:nowrap}
 table.sum tr.total td{font-weight:700;font-size:15px;border-bottom:none}
 .done{background:var(--ok-soft);border:1px solid var(--ok);border-radius:4px;padding:14px 16px}
+/* 合計と「進む」は画面下に固定（長い部屋一覧でも押しやすく） */
+.sumbar{position:sticky;bottom:0;z-index:2;margin:12px -20px -22px;padding:12px 20px;background:var(--panel);border-top:1px solid var(--line);box-shadow:0 -6px 14px rgba(0,0,0,.05);display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center}
+.sumbar .total{flex:1 1 220px;font-size:13px;color:var(--muted)}
+.sumbar .total b{display:block;color:var(--fg);font-size:18px;font-variant-numeric:tabular-nums}
+.sumbar .acts{display:flex;gap:10px;flex-wrap:wrap}
+.handoff{margin-top:16px;border:2px solid var(--accent);border-radius:6px;padding:18px 20px;background:var(--accent-soft)}
+.handoff h3{font-family:var(--font-serif);font-size:18px;margin:0 0 6px}
+.handoff p{margin:0 0 12px;font-size:14px}
+.handoff .btn{display:inline-block;text-decoration:none}
+details.card summary{cursor:pointer;font-family:var(--font-serif);font-size:15px;font-weight:700;letter-spacing:.04em}
+details.card[open] summary{margin-bottom:12px}
+details.card{padding:16px 20px}
 .done .no{font-family:var(--font-serif);font-size:22px;font-weight:700;letter-spacing:.1em;color:var(--ok)}
-.pmslink{margin-top:12px;font-size:13px}
-.pmslink a{color:var(--gold);font-weight:600}
 .pill{display:inline-block;font-size:11px;font-weight:600;border-radius:999px;padding:1px 9px}
 .pill.ok{background:var(--ok-soft);color:var(--ok)}
 .pill.cxl{background:var(--warn-soft);color:var(--warn)}
 footer.note{max-width:860px;margin:20px auto 0;color:var(--muted);font-size:11px}
 footer.note a{color:var(--gold)}
 .notice{font-size:11px;color:var(--muted);margin-top:8px}
-@media (max-width:480px){ header.site .back{margin-left:0} }
+@media (max-width:520px){
+  header.site{min-height:124px}
+  header.site h1{font-size:24px}
+  header.site .back{margin-left:0}
+  .row > .btn.primary,.handoff .btn{flex:1 1 100%;width:100%;text-align:center}
+  .sumbar{padding:10px 16px;margin:12px -20px -22px}
+  .sumbar .total{flex-basis:100%}
+  .sumbar .total{font-size:12px}
+  .sumbar .total b{font-size:16px}
+  .sumbar .acts{flex:1 1 100%;flex-wrap:nowrap}
+  .sumbar .acts .btn{padding:10px 14px}
+  .sumbar .acts .btn.primary{flex:1 1 auto}
+  .flow{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;font-size:10.5px;line-height:1.4;padding:10px 8px}
+  .flow li{flex-direction:column;text-align:center;gap:3px}
+  .flow li+li::before{display:none}
+}
 </style>
 </head>
 <body style="--lab-demo-bar-bleed:16px">
 {% include demo-bar.html %}
-<div class="demo-band" data-t="band">これは宿泊DXラボの体験デモです。実際の予約はできません／ホテル・料金はすべて架空です</div>
-<header class="site">
-  <h1 data-t="hotel">ホテル翠蓮</h1>
-  <span class="tag" data-t="tag">SUIREN — 架空のホテル（2〜5階・全20室）</span>
+<header class="site"><div class="in">
+  <div><span class="area" data-t="area">蓮池温泉</span><h1><a href="/demo/hotel/" class="hotelLink" data-t="hotel">ホテル翠蓮</a></h1></div>
   <span class="back">
     <span class="lnsw"><button data-lang="ja" class="on">日本語</button><button data-lang="en">EN</button></span>
-    <a href="/demo/hotel/" data-t="lnHotel">旅館サイトデモ</a>
-    <a href="/demo/mini-pms/" data-t="lnPms">フロント業務画面 →</a>
-    <a href="/">宿泊DXラボ</a>
+    <a href="/demo/hotel/" class="hotelLink" data-t="lnHotel">公式サイトに戻る</a>
   </span>
-</header>
+</div></header>
 
 <main>
+  <ol class="flow" aria-label="予約からフロントまでの連動デモ" data-t-aria="flowAria">
+    <li><b>1</b><a href="/demo/hotel/" class="hotelLink" data-t="fl1">公式サイト</a></li>
+    <li class="now" aria-current="step"><b>2</b><span data-t="fl2">予約する（この画面）</span></li>
+    <li><b>3</b><span data-t="fl3">フロント（PMS）で受け取る</span></li>
+    <li><b>4</b><span data-t="fl4">部屋割り・チェックイン</span></li>
+  </ol>
   <div class="steps" id="steps">
     <span data-s="1" class="on" data-t="st1">1 空室検索</span><span data-s="2" data-t="st2">2 部屋・プラン</span><span data-s="3" data-t="st3">3 お客様情報</span><span data-s="4" data-t="st4">4 確認</span><span data-s="5" data-t="st5">5 完了</span>
   </div>
@@ -141,15 +183,19 @@ footer.note a{color:var(--gold)}
       <label><input type="radio" name="plan" value="bf"><span data-t="plBf">朝食付き（+1,500円/人・泊）</span></label>
     </div>
     <table class="sum" id="sumTable" hidden></table>
-    <div class="row">
-      <button class="btn" id="btnBack1" data-t="bBackSearch">検索に戻る</button>
-      <button class="btn primary" id="btnToForm" disabled data-t="bNext">この内容で進む</button>
+    <div class="sumbar">
+      <div class="total" id="sumLine" data-t="sumNone">部屋タイプを選んでください</div>
+      <div class="acts">
+        <button class="btn" id="btnBack1" data-t="bBackSearch">検索に戻る</button>
+        <button class="btn primary" id="btnToForm" disabled data-t="bNext">この内容で進む</button>
+      </div>
     </div>
   </section>
 
   <!-- STEP 3 情報入力 -->
   <section class="card" id="s3" hidden>
     <h2 data-t="h3">お客様情報</h2>
+    <p class="notice" style="margin:0 0 12px"><button class="btn small" type="button" id="btnDemoFill" data-t="bDemoFill">デモ用の情報を入力</button> <span data-t="ntDemoFill">実在の氏名・連絡先を入れずに試せます。</span></p>
     <div class="row">
       <label class="f"><span data-t="fName">お名前（必須）</span><input id="gName" data-ph="phName" placeholder="例：宿泊 太郎"></label>
       <label class="f"><span data-t="fTel">電話番号（必須）</span><input id="gTel" inputmode="tel" placeholder="090-0000-0000"></label>
@@ -184,20 +230,24 @@ footer.note a{color:var(--gold)}
       <div class="no" id="doneNo"></div>
       <div id="doneSummary" style="font-size:13px;margin-top:6px"></div>
     </div>
-    <div class="pmslink"><span data-t="pmsLead">この予約はフロント業務画面に届いています：</span><a href="/demo/mini-pms/" data-t="pmsLink">簡易PMSデモで見る →</a><br>
-    <span class="notice" data-t="pmsNote">PMS側の「予約」タブに未割当で入り、部屋割り→チェックインまで体験できます（同じブラウザ内でのみ連動します）。</span></div>
+    <div class="handoff">
+      <h3 data-t="pmsLead">予約がフロント画面に届きました</h3>
+      <p data-t="pmsNote">ここからはホテル側の立場です。簡易PMS（フロント業務画面）で、この予約に部屋を割り当て、チェックインしてみましょう。</p>
+      <a class="btn primary" id="pmsLink" href="/demo/mini-pms/" data-t="pmsLink">PMSでこの予約を見る →</a>
+      <p class="notice" style="margin:10px 0 0" data-t="pmsSame">同じブラウザ内でのみ連動します。</p>
+    </div>
     <div class="row" style="margin-top:12px"><button class="btn" id="btnAgain" data-t="bAgain">続けて予約する</button></div>
   </section>
 
   <!-- 予約照会 -->
-  <section class="card">
-    <h2 data-t="h6">予約の照会・キャンセル</h2>
+  <details class="card" id="lookup">
+    <summary data-t="h6">予約の照会・キャンセル</summary>
     <div class="row">
       <label class="f"><span data-t="fNo">予約番号</span><input id="lkNo" data-ph="phNo" placeholder="例：W3K9ZQ" style="text-transform:uppercase"></label>
       <button class="btn" id="btnLookup" data-t="bLookup">照会する</button>
     </div>
     <div id="lkResult" style="margin-top:10px"></div>
-  </section>
+  </details>
 </main>
 
 <footer class="note" id="ftNote">
@@ -208,10 +258,12 @@ footer.note a{color:var(--gold)}
 "use strict";
 /* ---------- i18n (ja/en) ---------- */
 const T = {
-band:["これは宿泊DXラボの体験デモです。実際の予約はできません／ホテル・料金はすべて架空です","This is a hands-on demo by HOTEL DX Lab. No real reservations — the hotel and rates are fictional."],
-hotel:["ホテル翠蓮","Hotel Suiren"],
-tag:["SUIREN — 架空のホテル（2〜5階・全20室）","SUIREN — a fictional hotel (floors 2–5, 20 rooms)"],
-lnHotel:["旅館サイトデモ","Hotel site demo"], lnPms:["フロント業務画面 →","Front desk (PMS demo, JP) →"],
+hotel:["ホテル翠蓮","Hotel Suiren"], area:["蓮池温泉","HASUIKE ONSEN"],
+lnHotel:["公式サイトに戻る","Back to hotel website"],
+flowAria:["予約からフロントまでの連動デモ","Linked demo from booking to front desk"],
+fl1:["公式サイト","Hotel website"], fl2:["予約する（この画面）","Book (this page)"], fl3:["フロント（PMS）で受け取る","Front desk (PMS) receives it"], fl4:["部屋割り・チェックイン","Room assignment & check-in"],
+sumNone:["部屋タイプを選んでください","Choose a room type"],
+bDemoFill:["デモ用の情報を入力","Fill in demo details"], ntDemoFill:["実在の氏名・連絡先を入れずに試せます。","Try it without entering real names or contacts."],
 st1:["1 空室検索","1 Search"], st2:["2 部屋・プラン","2 Room & plan"], st3:["3 お客様情報","3 Guest info"], st4:["4 確認","4 Review"], st5:["5 完了","5 Done"],
 h1:["空室検索","Check availability"], fIn:["チェックイン","Check-in"], fOut:["チェックアウト","Check-out"], fPax:["人数","Guests"], bSearch:["空室を探す","Search"],
 h2:["部屋タイプを選ぶ","Choose a room type"],
@@ -226,9 +278,10 @@ ntPay:["お支払い：現地精算（デモのためオンライン決済はあ
 bBack2:["戻る","Back"], bBook:["予約を確定する","Confirm booking"],
 h5:["ご予約ありがとうございます","Thank you — booking confirmed"],
 doneLabel:["予約番号（照会・キャンセルに使います）","Booking number (for lookup & cancellation)"],
-pmsLead:["この予約はフロント業務画面に届いています：","Your booking has arrived at the front desk screen: "],
-pmsLink:["簡易PMSデモで見る →","Open the mini PMS demo (Japanese) →"],
-pmsNote:["PMS側の「予約」タブに未割当で入り、部屋割り→チェックインまで体験できます（同じブラウザ内でのみ連動します）。","It appears unassigned in the PMS reservations tab; you can assign a room and check it in (linked within this browser only)."],
+pmsLead:["予約がフロント画面に届きました","Your booking has reached the front desk"],
+pmsLink:["PMSでこの予約を見る →","See this booking in the PMS (Japanese) →"],
+pmsNote:["ここからはホテル側の立場です。簡易PMS（フロント業務画面）で、この予約に部屋を割り当て、チェックインしてみましょう。","Now switch to the hotel's side: in the mini PMS (front desk screen), assign a room to this booking and check the guest in."],
+pmsSame:["同じブラウザ内でのみ連動します。","Linked within this browser only."],
 bAgain:["続けて予約する","Make another booking"],
 h6:["予約の照会・キャンセル","Find or cancel a booking"], fNo:["予約番号","Booking number"], phNo:["例：W3K9ZQ","e.g. W3K9ZQ"], bLookup:["照会する","Look up"],
 ftNote:["本ページは宿泊DXラボの体験デモです。空室は簡易PMSデモと同じ部屋データ（全20室：ツイン8・シングル8・和室4）から判定し、確定した予約はPMSデモの予約一覧に連動します（お使いのブラウザ内のみ）。残室数は「割当済みの部屋・販売止め・未割当の同タイプ希望予約」を差し引いた概算です。料金・ホテル名は架空です。",
@@ -250,6 +303,7 @@ cap:[n=>"定員"+n+"名", n=>"sleeps "+n],
 sumRoom:[(t,r,n)=>t+"（"+r+"×"+n+"泊）",(t,r,n)=>t+" ("+r+" × "+n+" nights)"],
 sumBf:[(r,p,n)=>"朝食（"+r+"×"+p+"名×"+n+"泊）",(r,p,n)=>"Breakfast ("+r+" × "+p+" × "+n+")"],
 sumTotal:["合計（税込・デモ）","Total (tax incl., demo)"],
+demoName:["宿泊 花子","Hanako Shukuhaku"],
 cfDate:["宿泊日","Stay"], cfRoom:["部屋・人数","Room / guests"], cfPlan:["プラン","Plan"], cfName:["お名前","Name"], cfTel:["電話番号","Phone"],
 lkNo_:["予約番号","Booking no."], lkName:["お名前","Name"], lkStay:["宿泊日","Stay"], lkStatus:["状態","Status"],
 stBooked:["予約確定","Confirmed"], stIn:["チェックイン済","Checked in"], stOut:["チェックアウト済","Checked out"], stCxl:["キャンセル済","Cancelled"],
@@ -270,6 +324,8 @@ function applyLang(lang){
   document.documentElement.lang = L ? "en" : "ja";
   document.querySelectorAll("[data-t]").forEach(el => { el.textContent = T[el.dataset.t][L]; });
   document.querySelectorAll("[data-ph]").forEach(el => { el.placeholder = T[el.dataset.ph][L]; });
+  document.querySelectorAll("[data-t-aria]").forEach(el => { el.setAttribute("aria-label", T[el.dataset.tAria][L]); });
+  document.querySelectorAll(".hotelLink").forEach(a => { a.href = L ? "/demo/hotel/en/" : "/demo/hotel/"; });
   document.getElementById("ftNote").textContent = t("ftNote");
   document.querySelectorAll(".lnsw button").forEach(b => b.classList.toggle("on", (b.dataset.lang === "en") === !!L));
   try{ localStorage.setItem("suiren-lang", L ? "en" : "ja"); }catch(e){}
@@ -390,7 +446,10 @@ function renderTypes(){
     if(q.type === tp.type && left){ el.querySelector("input").checked = true; }
     list.appendChild(el);
   });
-  if(q.type) renderSum(); else { document.getElementById("sumTable").hidden = true; document.getElementById("btnToForm").disabled = true; }
+  if(q.type) renderSum(); else {
+    document.getElementById("sumTable").hidden = true; document.getElementById("btnToForm").disabled = true;
+    document.getElementById("sumLine").textContent = t("sumNone");
+  }
 }
 document.querySelectorAll('input[name="plan"]').forEach(r =>
   r.addEventListener("change", () => { q.plan = r.value; if(q.type) renderSum(); }));
@@ -407,10 +466,18 @@ function renderSum(){
     "<tr><td>" + T.sumRoom[L](typeName(q.type), yen(q.rate), q.nights) + "</td><td>" + yen(c.roomTotal) + "</td></tr>" +
     (c.bfTotal ? "<tr><td>" + T.sumBf[L](yen(BF), q.pax, q.nights) + "</td><td>" + yen(c.bfTotal) + "</td></tr>" : "") +
     '<tr class="total"><td>' + t("sumTotal") + "</td><td>" + yen(c.total) + "</td></tr>";
+  document.getElementById("sumLine").innerHTML = escapeHtml(typeName(q.type) + " · " + (q.plan === "bf" ? t("plBf") : t("plRoom")).replace(/（.*|\s\(.*/, "") +
+    " · " + T.nights[L](q.nights) + " · " + T.guests[L](q.pax)) + "<b>" + t("sumTotal") + " " + yen(c.total) + "</b>";
   document.getElementById("btnToForm").disabled = false;
 }
 document.getElementById("btnBack1").addEventListener("click", () => setStep(1));
 document.getElementById("btnToForm").addEventListener("click", () => setStep(3));
+document.getElementById("btnDemoFill").addEventListener("click", () => {
+  document.getElementById("gName").value = t("demoName");
+  document.getElementById("gTel").value = "090-0000-0000";
+  document.getElementById("gMail").value = "demo@example.com";
+  document.getElementById("gMsg").textContent = "";
+});
 document.getElementById("btnBack2").addEventListener("click", () => setStep(2));
 document.getElementById("btnToConfirm").addEventListener("click", () => {
   const msg = document.getElementById("gMsg");
@@ -452,6 +519,7 @@ document.getElementById("btnBook").addEventListener("click", () => {
   });
   if(!save(state)){ msg.textContent = t("errSave"); return; }
   document.getElementById("doneNo").textContent = no;
+  document.getElementById("pmsLink").href = "/demo/mini-pms/?booking=" + encodeURIComponent(no);
   document.getElementById("doneSummary").textContent =
     name + " / " + mdLabel(q.inD) + " → " + mdLabel(q.outD) + " · " + T.nights[L](q.nights) + " · " + typeName(q.type) + " · " + T.guests[L](q.pax) + " / " + yen(c.total);
   setStep(5);
