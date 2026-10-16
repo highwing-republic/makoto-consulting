@@ -263,3 +263,27 @@
 .bht-cal .bht-tag--busy,.bht-calendar-legend .bht-tag--busy{background:var(--ink);color:#fff}
 @media(max-width:620px){.bht-cal .bht-cal__tags .bht-tag{padding:0 3px}}
 @media(max-width:620px){.bht-cal__diff{font-size:10px;letter-spacing:-.03em}.bht-cal__na{display:none}}
+/* 催しの候補（AI調べ・参考） */
+.bht-events[hidden],.bht-market-events[hidden]{display:none}
+.bht-ai-badge{display:inline-block;margin-top:6px;padding:1px 8px;border:1px solid var(--line);border-radius:999px;color:var(--ink-soft);font-size:11px;font-weight:600;line-height:1.7;vertical-align:middle}
+.bht-event-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
+.bht-event{display:flex;flex-direction:column;padding:16px 18px;border:1px solid var(--line);border-radius:12px;background:var(--lab-surface-soft,#f7f9fa)}
+.bht-event header{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;margin-bottom:8px}
+.bht-event__market{padding:0;border:0;background:none;color:var(--accent);font:700 15px var(--sans);cursor:pointer}
+.bht-event__market span{margin-left:4px}
+.bht-event__market:focus-visible{outline:2px solid var(--lab-focus);outline-offset:2px}
+.bht-event__dates{font-size:13px;font-weight:700;font-variant-numeric:tabular-nums}
+.bht-event__kind{color:var(--ink-soft);font-size:11px;font-style:normal}
+.bht-event ul{margin:0;padding:0;list-style:none}
+.bht-event li{display:grid;gap:2px;padding:8px 0;border-top:1px dashed var(--line)}
+.bht-event li:first-child{border-top:0;padding-top:0}
+.bht-event li strong{font-size:14px;line-height:1.5}
+.bht-event li span,.bht-event li small{color:var(--ink-soft);font-size:12px;line-height:1.6}
+.bht-event__src a{color:var(--accent);word-break:break-all}
+.bht-event__by{margin:auto 0 0;padding-top:8px;color:var(--ink-soft);font-size:10px}
+.bht-tag--event{border:1px solid var(--bht-series);background:#fff;color:var(--bht-series)}
+.bht-rank__name strong .bht-tag--event{margin-left:8px;vertical-align:1px}
+.bht-cal .bht-cal__tags .bht-tag--event{border-width:1px}
+.bht-market-events{margin-top:22px}
+.bht-market-events h3{margin:0 0 12px;font-size:15px;font-weight:700}
+@media(max-width:620px){.bht-event-list{grid-template-columns:1fr}.bht-event{padding:14px}}
