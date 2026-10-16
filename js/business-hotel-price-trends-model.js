@@ -21,7 +21,9 @@
   const SPREAD_HIGH = 0.9; // 上位1割の日を除いた幅
   const SPREAD_MIN_NIGHTS = 10; // 10泊以上あるときだけ出す
   const RANK_SIZE = 5;
-  const SOLD_OUT_MIN = 2; // COREのうち2施設以上で楽天の販売プランなし → 売り切れが目立つ日
+  const SOLD_OUT_MIN = 2;
+  const EVENT_SOLD_OUT_WEIGHT = 0.5; // 催しの並び順: 売り切れ1施設 = 料金の倍率0.5倍分
+  const EVENT_TOP = 6; // 全国の欄に開いて見せる件数 // COREのうち2施設以上で楽天の販売プランなし → 売り切れが目立つ日
 
   // 国民の祝日（振替休日・国民の休日を含む）。観測期間（当日から60泊）に必要な範囲を持つ。
   const HOLIDAYS = {
@@ -306,7 +308,7 @@
     const markets = new Map(national.markets.map((market) => {
       const nights = new Map(market.summary.days.map((day) => [day.date, day]));
       const spikes = new Set(market.summary.spikes.map((day) => day.date));
-      return [market.code, {name: market.name, nights, spikes}];
+      return [market.code, {name: market.name, nights, spikes, typical: market.summary.typical}];
     }));
     const items = [];
     const byDay = new Map();
@@ -319,9 +321,12 @@
         const day = market.nights.get(date);
         if (!day) continue;
         const spike = market.spikes.has(date);
-        if (spike || day.busy) nights.push({date, spike, busy: day.busy, soldOut: day.soldOut});
+        const ratio = day.median && market.typical ? day.median / market.typical : null;
+        if (spike || day.busy) nights.push({date, spike, busy: day.busy, soldOut: day.soldOut, ratio});
       }
-      const item = {...event, marketName: market.name, nights, sources: event.sources.filter((source) => /^https?:\/\//.test(source?.url || ""))};
+      // 目立ち方: 売り切れ施設数を重く見て、料金の倍率を足す（全国の欄はこの順に並べる）
+      const score = nights.reduce((best, night) => Math.max(best, night.soldOut * EVENT_SOLD_OUT_WEIGHT + (night.ratio || 0)), 0);
+      const item = {...event, marketName: market.name, nights, score, sources: event.sources.filter((source) => /^https?:\/\//.test(source?.url || ""))};
       if (!byMarket.has(event.market)) byMarket.set(event.market, []);
       byMarket.get(event.market).push(item);
       if (!nights.length) continue;
@@ -333,7 +338,7 @@
       }
     }
     const first = (item) => item.nights[0].date;
-    items.sort((a, b) => (first(a) < first(b) ? -1 : first(a) > first(b) ? 1 : a.market < b.market ? -1 : 1));
+    items.sort((a, b) => b.score - a.score || (first(a) < first(b) ? -1 : first(a) > first(b) ? 1 : 0));
     return {available: Boolean(calendar && Array.isArray(calendar.events)), total: events.length, items, byDay, byMarket, researchedOn: calendar?.researched_on || null, coverage: calendar?.coverage || null};
   }
 
@@ -423,6 +428,7 @@
     crossCityBrand,
     weeklyChange,
     eventCandidates,
+    EVENT_TOP,
     formatPeriod,
   };
 });

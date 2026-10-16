@@ -296,3 +296,8 @@
 .bht-event-rows .bht-tag--event{margin:2px 0}
 .bht-market-events .bht-note{margin:0 0 8px}
 @media(max-width:620px){.bht-event-rows li{grid-template-columns:1fr;gap:4px}}
+.bht-event-more{margin-top:14px}
+.bht-event-more summary{display:inline-block;padding:6px 14px;border:1px solid var(--line);border-radius:999px;color:var(--accent);font-size:13px;font-weight:700;cursor:pointer;list-style:none}
+.bht-event-more summary::-webkit-details-marker{display:none}
+.bht-event-more summary:focus-visible{outline:2px solid var(--lab-focus);outline-offset:2px}
+.bht-event-more[open] summary{margin-bottom:14px}

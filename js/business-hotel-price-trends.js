@@ -502,10 +502,12 @@
       return;
     }
     box.hidden = false;
+    const top = view.items.slice(0, M.EVENT_TOP);
+    const rest = view.items.slice(M.EVENT_TOP);
     $("#bht-events-list").innerHTML = view.items.length
-      ? view.items.map(eventCard).join("")
+      ? `<div class="bht-event-list">${top.map(eventCard).join("")}</div>${rest.length ? `<details class="bht-event-more"><summary>ほかの${rest.length}件を見る</summary><div class="bht-event-list">${rest.map(eventCard).join("")}</div></details>` : ""}`
       : `<p class="bht-empty">表示中の期間では、急騰日・売り切れが目立つ日に重なる催しは見つかっていません。</p>`;
-    $("#bht-events-meta").textContent = `10都市の向こう2か月の催し${view.total}件のうち、表示中の期間の急騰日・売り切れが目立つ日に重なる${view.items.length}件。${researchedText(view)}`;
+    $("#bht-events-meta").textContent = `10都市の向こう2か月の催し${view.total}件のうち、表示中の期間の急騰日・売り切れが目立つ日に重なる${view.items.length}件。売り切れと料金の跳ね上がりが大きい順。${researchedText(view)}`;
     box.querySelectorAll("button[data-market]").forEach((button) => button.addEventListener("click", () => selectMarket(button.dataset.market, {scroll: true})));
   }
 

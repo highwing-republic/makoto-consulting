@@ -69,6 +69,7 @@ python scripts/update_business_hotel_prices.py --dry-run             # 全件取
 - 更新: Claude の予約タスクが毎月1日に調べ、`scripts/business_hotel_events.py merge` でまとめて検証し、PR を作ってマージする。
   APIキーや追加の費用はかからない（Claude の契約の範囲で動く）。
 - ページ: 催しの前日の泊（前泊）から最終日の泊までに急騰日・売り切れが目立つ日があれば「重なる催し」として表示し、
-  ランキングに「催し候補あり」、カレンダーの開催日に「催し」を付ける。都市ごとに向こう2か月の催しの一覧も出す。
+  ランキングに「催し候補あり」、カレンダーの開催日に「催し」を付ける。全国の欄は売り切れ施設数と料金の倍率が大きい順に6件を開いて見せ、
+  残りは折りたたむ。都市ごとに向こう2か月の催しの一覧も出す。
 - 検証（`python scripts/business_hotel_events.py check`、テスト `tests/test_business_hotel_events.py`）:
   市場コード、日付、調査期間との重なり、出典URL（http/https）、文に料金・満室・予約などの推測がないこと、重複。
