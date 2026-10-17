@@ -128,5 +128,31 @@
     return { total: scoreResult.total, scores: scoreResult.scores, findings: findings, matchedSolutions: matchedSolutions, monthlyHours: monthlyHours, annualHours: annualHours, annualValue: annualValue, revpar: referenceRevpar, comment: comment };
   }
 
-  return { categories: categories, questions: questions, solutions: solutions, initialFacility: initialFacility, findingCopy: findingCopy, defaultAnswers: defaultAnswers, calculateScores: calculateScores, deriveFindings: deriveFindings, buildResult: buildResult, revpar: revpar, validateFacility: validateFacility };
+  // 診断のあとに数字で確かめるツール。優先課題（findings）に関係するものを先に並べ、同じなら一覧の順。
+  const nextTools = [
+    { id: "ota-fee-simulator", name: "OTA手数料シミュレーター", href: "/ota-fee-simulator.html", categories: ["予約・販売", "集客"],
+      text: "予約経路ごとの手数料を年間でまとめ、自社サイトの割合を上げたときに手元に残る額を出します。", carries: "OTA比率（ADRと客室稼働率を入れた場合は、年間売上の目安も）" },
+    { id: "kpi-calculator", name: "宿KPI電卓", href: "/kpi-calculator.html", categories: ["経営", "データ活用"],
+      text: "1か月の実績から稼働率・ADR・RevPARと損益分岐の稼働率を出し、都道府県の稼働率と比べます。", carries: "客室数" },
+    { id: "ai-time-estimate", name: "生成AI時短みつもり", href: "/ai-time-estimate.html", categories: [],
+      text: "口コミ返信や外国語のお問い合わせなど、生成AIに下書きを任せて浮く時間を業務ごとに見積もります。", carries: "人件費の目安（入れた場合）" },
+    { id: "security-check", name: "宿のセキュリティ10問チェック", href: "/security-check.html", categories: [],
+      text: "OTA管理画面の乗っ取りなど、宿で実際に起きた被害から作った10問で、今週やること3つが分かります。", carries: "" }
+  ];
+
+  function rankNextTools(findings) {
+    const wanted = findings.map(function (finding) { return finding.category; });
+    return nextTools.map(function (tool, order) {
+      const related = tool.categories.filter(function (category) { return wanted.includes(category); });
+      return Object.assign({ related: related, order: order }, tool);
+    }).sort(function (a, b) { return (b.related.length > 0) - (a.related.length > 0) || a.order - b.order; });
+  }
+
+  // ほかのツールへ渡す値。任意項目は利用者が入れたものだけ渡し、標準値のままなら null にする。
+  function handoff(facility, touched) {
+    const own = function (field) { return touched && touched[field] ? Number(facility[field]) : null; };
+    return { rooms: Number(facility.rooms), otaRatio: Number(facility.otaRatio), adr: own("adr"), occupancy: own("occupancy"), hourlyCost: own("hourlyCost") };
+  }
+
+  return { categories: categories, questions: questions, solutions: solutions, initialFacility: initialFacility, findingCopy: findingCopy, defaultAnswers: defaultAnswers, calculateScores: calculateScores, deriveFindings: deriveFindings, buildResult: buildResult, revpar: revpar, validateFacility: validateFacility, nextTools: nextTools, rankNextTools: rankNextTools, handoff: handoff };
 });

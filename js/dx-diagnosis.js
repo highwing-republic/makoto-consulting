@@ -57,7 +57,7 @@
     const optionalOpen = errors.adr || errors.occupancy || errors.hourlyCost;
     app.innerHTML = stepper() + '<section class="dx-panel dx-facility" aria-labelledby="dx-step-heading">' +
       '<div class="dx-panel-heading"><h3 id="dx-step-heading" tabindex="-1">あと少しです。施設の規模を教えてください</h3><p>作業時間の目安とOTA比率の確認に使います。おおよその数字で大丈夫です。</p></div>' +
-      '<p class="dx-privacy-note"><strong>このページ内で完結します</strong>入力内容はこのブラウザの中だけで計算し、送信・保存しません。</p>' +
+      '<p class="dx-privacy-note"><strong>このページ内で完結します</strong>入力内容はこのブラウザの中だけで計算し、送信しません。客室数などは、結果から開くツールに引き継ぐため、このタブを閉じるまでブラウザに残ります。</p>' +
       '<form id="dx-facility-form" novalidate><div class="dx-form-grid">' +
       '<label class="dx-field"><span>客室数</span><span class="dx-input-unit"><input name="rooms" type="number" inputmode="numeric" min="1" max="1000" step="1" required value="' + facility.rooms + '"' + invalidAttr("rooms") + ' aria-describedby="' + fieldDescribedBy("rooms", "hint-rooms") + '"><b>室</b></span><small id="hint-rooms">販売している客室のおおよその数</small>' + errorText("rooms") + '</label>' +
       '<label class="dx-field"><span>従業員数</span><span class="dx-input-unit"><input name="employees" type="number" inputmode="numeric" min="1" max="5000" step="1" required value="' + facility.employees + '"' + invalidAttr("employees") + ' aria-describedby="' + fieldDescribedBy("employees", "hint-employees") + '"><b>人</b></span><small id="hint-employees">正社員・パートを合わせた目安</small>' + errorText("employees") + '</label>' +
@@ -190,14 +190,14 @@
 
   // 優先課題カードから試せるラボ内のツール。カテゴリごとに1つ。
   const relatedTools = {
-    "経営": { label: "宿泊経営の課題整理（β）で論点を整理する", href: "/management-ai.html" },
-    "予約・販売": { label: "予約エンジンデモで自社予約の流れを見る", href: "/demo/booking/" },
+    "経営": { label: "宿KPI電卓で毎月見る数字を出す", href: "/kpi-calculator.html" },
+    "予約・販売": { label: "OTA手数料シミュレーターで手数料を見える化する", href: "/ota-fee-simulator.html" },
     "会計": { label: "宿泊経営の課題整理（β）で論点を整理する", href: "/management-ai.html" },
     "業務": { label: "簡易PMSデモで客室ステータスの共有を試す", href: "/demo/mini-pms/" },
     "勤怠・シフト": { label: "宿泊経営の課題整理（β）で地域の人手不足を見る", href: "/management-ai.html?topic=dx" },
     "システム": { label: "簡易PMSデモで予約から部屋割りまでを試す", href: "/demo/mini-pms/" },
-    "集客": { label: "予約エンジンデモで自社予約の流れを見る", href: "/demo/booking/" },
-    "データ活用": { label: "宿泊料金トレンドで地域の相場を見る", href: "/hotel-price-trends.html" }
+    "集客": { label: "OTA手数料シミュレーターで予約経路ごとの手数料を並べる", href: "/ota-fee-simulator.html" },
+    "データ活用": { label: "宿KPI電卓で稼働率・ADR・RevPARを出す", href: "/kpi-calculator.html" }
   };
 
   function revparNote() {
@@ -247,6 +247,23 @@
       '<p class="dx-inputs">計算に使った数値：客室 ' + formatNumber(facility.rooms) + ' 室、従業員 ' + formatNumber(facility.employees) + ' 人、OTA比率 ' + facility.otaRatio + '%、ADR ¥' + formatNumber(facility.adr) + defaultMark("adr") + '、客室稼働率 ' + facility.occupancy + '%' + defaultMark("occupancy") + '、参考RevPAR ¥' + formatNumber(result.revpar) + '、人件費の目安 ¥' + formatNumber(facility.hourlyCost) + '/時間' + defaultMark("hourlyCost") + '</p></section>';
   }
 
+  // 次の一歩として数字で確かめるツール。引き継ぐ値はこのタブの sessionStorage に置くだけで、URL には載せない（GA4 に残さないため）。
+  function nextToolsPanel() {
+    return '<section class="dx-result-section" aria-labelledby="dx-tools-heading"><h4 id="dx-tools-heading" class="dx-result-title">次の一歩：数字で確かめる</h4><p class="dx-result-lead">入力した客室数などを引き継いで開きます。引き継ぐ数字はこのブラウザの中だけに置き、送信しません。</p><div class="dx-next-tools">' +
+      model.rankNextTools(result.findings).map(function (tool) {
+        return '<a class="dx-next-tool" href="' + tool.href + '" data-tool-id="' + tool.id + '">' +
+          (tool.related.length ? '<span class="dx-next-tool__tag">優先課題「' + escapeHtml(tool.related.join("」「")) + '」</span>' : "") +
+          '<strong>' + escapeHtml(tool.name) + ' <span aria-hidden="true">→</span></strong><span>' + escapeHtml(tool.text) + '</span>' +
+          (tool.carries ? '<small>引き継ぐ数字：' + escapeHtml(tool.carries) + '</small>' : "") + '</a>';
+      }).join("") + '</div></section>';
+  }
+
+  function remember() {
+    try {
+      sessionStorage.setItem("hoteldxlab:dx-diagnosis", JSON.stringify(model.handoff(facility, touched)));
+    } catch (error) { /* 保存できない環境では引き継がないだけ */ }
+  }
+
   function solutionsPanel() {
     return '<section class="dx-result-section" aria-labelledby="dx-solutions-heading"><h4 id="dx-solutions-heading" class="dx-result-title">関連するDX施策</h4><div class="dx-solutions">' + result.matchedSolutions.map(function (solution) {
       return '<details><summary><span>' + solution.category + '</span><strong>' + escapeHtml(solution.name) + '</strong></summary><div><p>' + escapeHtml(solution.summary) + '</p><dl><div><dt>向いている施設</dt><dd>' + escapeHtml(solution.fit) + '</dd></div><div><dt>比較ポイント</dt><dd>' + escapeHtml(solution.comparePoints) + '</dd></div></dl></div></details>';
@@ -259,10 +276,11 @@
       '<div class="dx-panel-heading"><h3 id="dx-step-heading" tabindex="-1">' + title + '</h3><p>点数そのものより、優先して見直す場所を決めるために活用してください。</p></div>' +
       summaryPanel() +
       '<div class="dx-result-tools"><button class="dx-chip" type="button" data-review>回答を見直す</button><button class="dx-chip" type="button" data-reset>最初からやり直す</button></div>' +
-      findingsPanel() + scoreBars() + timePanel() + solutionsPanel() +
+      findingsPanel() + scoreBars() + timePanel() + nextToolsPanel() + solutionsPanel() +
       '<section class="dx-next-steps" aria-labelledby="dx-next-heading"><h4 id="dx-next-heading" class="dx-result-title">診断後に確認すること</h4><ul><li>二重入力が起きている業務と所要時間を記録する</li><li>清掃状況や引継ぎ情報の共有方法を整理する</li><li>改善対象を決めてから、必要な仕組みを比較する</li></ul></section>' +
       '<section class="dx-consultation"><div><h4>この結果をもとに、進め方を一緒に整理しませんか？</h4><p>診断結果をもとに、施設の状況に合った進め方を合同会社UGATTAが一緒に整理します。ご相談は無料です。</p></div><a class="button" href="' + CONTACT_URL + '" target="_blank" rel="noopener noreferrer" data-analytics-event="consultation_click" data-tool-id="dx-diagnosis-result">診断結果について相談する <span aria-hidden="true">↗</span></a></section>' +
       '</section>';
+    remember();
     bindResultEvents();
   }
 
@@ -271,6 +289,11 @@
     app.querySelector("[data-review]").addEventListener("click", function () { page = 0; goToStep(1); });
     app.querySelector('[data-analytics-event="consultation_click"]').addEventListener("click", function () {
       track("consultation_click");
+    });
+    app.querySelectorAll(".dx-next-tool").forEach(function (link) {
+      link.addEventListener("click", function () {
+        if (window.LabAnalytics) window.LabAnalytics.track("tool_open", { tool_id: link.dataset.toolId });
+      });
     });
   }
 

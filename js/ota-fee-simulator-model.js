@@ -137,8 +137,34 @@
     return round1(invoiceRate / (taxOnFee ? TAX : 1));
   }
 
+  // DXかんたん診断のOTA比率を表に入れる。OTAの行どうし・それ以外の行どうしの比は保ち、端数は各グループの最大の行で吸収する。
+  function applyOtaRatio(channels, otaRatio) {
+    const isOta = function (channel) { return channel.kind === "ota"; };
+    const groups = [[channels.filter(isOta), otaRatio], [channels.filter(function (c) { return !isOta(c); }), 100 - otaRatio]];
+    if (!groups[0][0].length || (!groups[1][0].length && otaRatio < 100)) return null;
+    const shares = new Map();
+    groups.forEach(function (group) {
+      const rows = group[0];
+      const target = group[1];
+      if (!rows.length) return;
+      const current = rows.reduce(function (sum, c) { return sum + (present(c.share) ? c.share : 0); }, 0);
+      rows.forEach(function (c) { shares.set(c, round1(current > 0 ? (present(c.share) ? c.share : 0) / current * target : target / rows.length)); });
+      const largest = rows.reduce(function (best, c) { return shares.get(c) > shares.get(best) ? c : best; }, rows[0]);
+      const diff = round1(target - rows.reduce(function (sum, c) { return sum + shares.get(c); }, 0));
+      shares.set(largest, round1(shares.get(largest) + diff));
+    });
+    return channels.map(function (c) { return Object.assign({}, c, { share: shares.get(c) }); });
+  }
+
+  // DXかんたん診断の客室数・ADR・客室稼働率から年間の客室売上の目安（1万円単位）。どれかが無ければ null。
+  function revenueFromDiagnosis(facility) {
+    if (!facility || !(facility.rooms > 0) || !(facility.adr > 0) || !(facility.occupancy > 0)) return null;
+    return Math.round(facility.rooms * 365 * facility.occupancy / 100 * facility.adr / 10000) * 10000;
+  }
+
   return {
     MAX_CHANNELS: MAX_CHANNELS, kinds: kinds, sample: sample,
+    applyOtaRatio: applyOtaRatio, revenueFromDiagnosis: revenueFromDiagnosis,
     parseNumber: parseNumber, variableRate: variableRate, validate: validate, errorCount: errorCount,
     shareTotal: shareTotal, summarize: summarize, scenario: scenario,
     rateFromInvoice: rateFromInvoice, feeRateForRow: feeRateForRow

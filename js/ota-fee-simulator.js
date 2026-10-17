@@ -18,6 +18,7 @@
   const labels = { share: '売上の割合', feeRate: '手数料率', extraRate: 'ポイント・決済など', monthlyFixed: '月額の固定費' };
   const units = { share: '%', feeRate: '%', extraRate: '%', monthlyFixed: '円' };
   const KPI_KEY = 'hoteldxlab:kpi-calculator';
+  const DX_KEY = 'hoteldxlab:dx-diagnosis';
   let rows = [];
   let attempted = false;
   let calculated = false;
@@ -290,25 +291,59 @@
     if (run()) result.focus({ preventScroll: false });
   });
 
-  // 宿KPI電卓で計算した月の客室売上があれば、12倍した値を入れられるようにする（数字は URL に載せない）
-  function offerKpiRevenue() {
-    let saved = null;
-    try { saved = JSON.parse(sessionStorage.getItem(KPI_KEY) || 'null'); } catch (error) { saved = null; }
-    if (!saved || !(saved.roomRevenue > 0) || !/^\d{4}-\d{2}$/.test(saved.month || '')) return;
-    const annual = saved.roomRevenue * 12;
+  // ほかのツールの数字を入れられるようにする（数字は URL に載せず、このタブの sessionStorage から読むだけ）。
+  // 宿KPI電卓の月の客室売上 ×12 を、DXかんたん診断の推計より優先する。診断のOTA比率は表の割合に入れられる。
+  function readSaved(key) {
+    try { return JSON.parse(sessionStorage.getItem(key) || 'null'); } catch (error) { return null; }
+  }
+
+  function offerHandoffs() {
+    const offers = [];
+    const kpi = readSaved(KPI_KEY);
+    const dx = readSaved(DX_KEY);
+    if (kpi && kpi.roomRevenue > 0 && /^\d{4}-\d{2}$/.test(kpi.month || '')) {
+      const annual = kpi.roomRevenue * 12;
+      offers.push({
+        text: '宿KPI電卓の客室売上（' + monthLabel(kpi.month) + '・' + man(kpi.roomRevenue).slice(1) + '）を12倍すると ' + man(annual).slice(1) + ' です。1か月×12の目安なので、年間の実績があればそちらを入れてください。',
+        label: 'この額を入れる', apply: () => { revenueInput.value = num(annual); return revenueInput; }
+      });
+    } else if (dx && model.revenueFromDiagnosis(dx)) {
+      const annual = model.revenueFromDiagnosis(dx);
+      offers.push({
+        text: 'DXかんたん診断の客室' + num(dx.rooms) + '室・ADR ' + num(dx.adr) + '円・客室稼働率 ' + num(dx.occupancy) + '%から、年間の客室売上は ' + man(annual).slice(1) + ' の見込みです。実績があればそちらを入れてください。',
+        label: 'この額を入れる', apply: () => { revenueInput.value = num(annual); return revenueInput; }
+      });
+    }
+    if (dx && dx.otaRatio >= 0 && dx.otaRatio <= 100) {
+      offers.push({
+        text: 'DXかんたん診断のOTA比率は ' + num(dx.otaRatio) + '% です。表のOTAの割合の合計をこれに合わせ、それぞれの比は今のまま保ちます。',
+        label: '表の割合に入れる',
+        apply: () => {
+          const next = model.applyOtaRatio(readInput().channels, dx.otaRatio);
+          if (!next) return null;
+          rows.forEach((row, index) => { row.share = num(next[index].share); });
+          renderRows();
+          return list.querySelector('input');
+        }
+      });
+    }
+    if (!offers.length) return;
     const note = document.getElementById('ota-handoff');
-    note.innerHTML = '<span>宿KPI電卓の客室売上（' + monthLabel(saved.month) + '・' + man(saved.roomRevenue).slice(1) + '）を12倍すると ' + man(annual).slice(1) + ' です。1か月×12の目安なので、年間の実績があればそちらを入れてください。</span><button class="ota-chip" type="button">この額を入れる</button>';
+    note.innerHTML = offers.map((offer) => '<span class="ota-handoff__item"><span>' + escapeHtml(offer.text) + '</span><button class="ota-chip" type="button">' + offer.label + '</button></span>').join('');
     note.hidden = false;
-    note.querySelector('button').addEventListener('click', () => {
-      revenueInput.value = num(annual);
-      note.hidden = true;
-      run();
-      revenueInput.focus();
+    note.querySelectorAll('button').forEach((button, index) => {
+      button.addEventListener('click', () => {
+        const focus = offers[index].apply();
+        button.closest('.ota-handoff__item').remove();
+        if (!note.querySelector('.ota-handoff__item')) note.hidden = true;
+        run();
+        if (focus) focus.focus();
+      });
     });
   }
 
   rows = toRows(model.sample.channels);
   renderRows();
   updateLive(readInput());
-  offerKpiRevenue();
+  offerHandoffs();
 })();

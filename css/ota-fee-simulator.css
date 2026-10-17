@@ -59,6 +59,8 @@
 .ota-chip:hover{border-color:var(--lab-teal)}
 .ota-chip--quiet{border-color:transparent;background:transparent;color:var(--ink-soft);font-weight:500}
 .ota-handoff .ota-chip{min-height:36px;padding:0 14px;font-size:13px}
+.ota-handoff__item{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;width:100%}
+.ota-handoff__item+.ota-handoff__item{padding-top:10px;border-top:1px solid var(--line)}
 
 .ota-result{margin-top:48px;scroll-margin-top:96px}
 .ota-result:focus{outline:0}

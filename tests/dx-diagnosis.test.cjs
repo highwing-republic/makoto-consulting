@@ -57,3 +57,19 @@ test("missing answers use the documented category fallback", () => {
   assert.equal(result.scores["経営"], 50);
   assert.equal(result.scores["予約・販売"], 50);
 });
+
+test("next tools put the ones tied to the top findings first", () => {
+  const ids = (findings) => model.rankNextTools(findings.map((category) => ({ category }))).map((tool) => tool.id);
+  assert.deepEqual(ids(["会計", "業務", "システム"]), ["ota-fee-simulator", "kpi-calculator", "ai-time-estimate", "security-check"]);
+  assert.deepEqual(ids(["データ活用", "会計", "業務"]), ["kpi-calculator", "ota-fee-simulator", "ai-time-estimate", "security-check"]);
+  const ranked = model.rankNextTools([{ category: "集客" }, { category: "予約・販売" }, { category: "経営" }]);
+  assert.deepEqual(ranked[0].related, ["予約・販売", "集客"]);
+  assert.deepEqual(ranked[1].related, ["経営"]);
+  assert.ok(model.nextTools.every((tool) => tool.href.startsWith("/") && !tool.href.includes("?")));
+});
+
+test("the handoff carries only values the user entered for optional fields", () => {
+  assert.deepEqual(model.handoff({ ...model.initialFacility }, {}), { rooms: 30, otaRatio: 60, adr: null, occupancy: null, hourlyCost: null });
+  assert.deepEqual(model.handoff({ ...model.initialFacility, adr: 22000, hourlyCost: 1600 }, { adr: true, hourlyCost: true }),
+    { rooms: 30, otaRatio: 60, adr: 22000, occupancy: null, hourlyCost: 1600 });
+});
