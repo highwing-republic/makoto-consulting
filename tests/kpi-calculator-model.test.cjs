@@ -6,9 +6,9 @@ const model = require("../js/kpi-calculator-model.js");
 const dataset = {
   periods: ["2025-07", "2025-08", "2026-07"],
   basis: ["before", "before", "after"],
-  national: { occupancy_rate: [62.1, 66.0, 61.0] },
+  national: { occupancy_rate: [62.1, 66.0, 61.0], occupancy_rate_by_type: { ryokan: [null, null, 40.2], city_hotel: [null, null, 71.9] } },
   prefectures: {
-    "20": { prefecture_name: "長野県", occupancy_rate: [44.0, 52.3, 43.3] },
+    "20": { prefecture_name: "長野県", occupancy_rate: [44.0, 52.3, 43.3], occupancy_rate_by_type: { ryokan: [null, null, 34.0], city_hotel: [null, null, null] } },
     "47": { prefecture_name: "沖縄県", occupancy_rate: [70.2, null, 68.8] }
   }
 };
@@ -65,17 +65,35 @@ test("reverse calculation from a monthly target", () => {
 });
 
 test("benchmark uses the same month, or the latest same calendar month when not yet published", () => {
-  assert.deepEqual(model.benchmark(dataset, "2026-07", "20"), { period: "2026-07", exact: true, basis: "after", prefectureName: "長野県", prefecture: 43.3, national: 61.0 });
+  assert.deepEqual(model.benchmark(dataset, "2026-07", "20"), {
+    period: "2026-07", exact: true, basis: "after", prefectureName: "長野県", prefecture: 43.3, national: 61.0,
+    facilityType: null, facilityLabel: null, prefectureType: null, nationalType: null
+  });
   const later = model.benchmark(dataset, "2027-08", "20");
   assert.equal(later.period, "2025-08");
   assert.equal(later.exact, false);
   assert.equal(later.basis, "before");
   assert.equal(model.benchmark(dataset, "2026-09", "20"), null);
-  assert.deepEqual(model.compare(65.1, model.benchmark(dataset, "2026-07", "20")), { reference: 43.3, label: "長野県", gap: 21.8 });
+  assert.deepEqual(model.compare(65.1, model.benchmark(dataset, "2026-07", "20")), { reference: 43.3, label: "長野県", byType: false, gap: 21.8 });
   // 都道府県を選ばない、または県の値が欠けているときは全国と比べる
-  assert.deepEqual(model.compare(65.1, model.benchmark(dataset, "2026-07", "")), { reference: 61.0, label: "全国", gap: 4.1 });
-  assert.deepEqual(model.compare(60, model.benchmark(dataset, "2025-08", "47")), { reference: 66.0, label: "全国", gap: -6 });
+  assert.deepEqual(model.compare(65.1, model.benchmark(dataset, "2026-07", "")), { reference: 61.0, label: "全国", byType: false, gap: 4.1 });
+  assert.deepEqual(model.compare(60, model.benchmark(dataset, "2025-08", "47")), { reference: 66.0, label: "全国", byType: false, gap: -6 });
   assert.equal(model.benchmark(null, "2026-07", "20"), null);
+});
+
+test("a facility type compares with the same type in the prefecture, then nationwide, then all types", () => {
+  const ryokan = model.benchmark(dataset, "2026-07", "20", "ryokan");
+  assert.equal(ryokan.facilityLabel, "旅館");
+  assert.equal(ryokan.prefectureType, 34.0);
+  assert.equal(ryokan.nationalType, 40.2);
+  assert.deepEqual(model.compare(65.1, ryokan), { reference: 34.0, label: "長野県の旅館", byType: true, gap: 31.1 });
+  // 県のそのタイプが「-」のときは全国のそのタイプ
+  assert.deepEqual(model.compare(65.1, model.benchmark(dataset, "2026-07", "20", "city_hotel")), { reference: 71.9, label: "全国のシティホテル", byType: true, gap: -6.8 });
+  assert.deepEqual(model.compare(65.1, model.benchmark(dataset, "2026-07", "", "ryokan")), { reference: 40.2, label: "全国の旅館", byType: true, gap: 24.9 });
+  // タイプ別の値がまだない月・データは全施設の値で比べる
+  assert.deepEqual(model.compare(50, model.benchmark(dataset, "2025-08", "20", "ryokan")), { reference: 52.3, label: "長野県", byType: false, gap: -2.3 });
+  assert.equal(model.benchmark(dataset, "2026-07", "20", "unknown").facilityType, null);
+  assert.equal(model.sample.facilityType, "ryokan");
 });
 
 test("numbers typed with commas, full-width digits or units are read", () => {

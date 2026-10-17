@@ -127,6 +127,28 @@ def extract_prefecture_rows(sheet: Any, value_columns: tuple[int, ...]) -> tuple
     return national, prefectures
 
 
+# 第8表の右側にある宿泊施設タイプ別の客室稼働率（会社・団体の宿泊所は宿の比較に使わないので除く）
+FACILITY_TYPES = {
+    "ryokan": "旅館",
+    "resort_hotel": "リゾートホテル",
+    "business_hotel": "ビジネスホテル",
+    "city_hotel": "シティホテル",
+    "simple_lodging": "簡易宿所",
+}
+
+
+def find_facility_type_columns(sheet: Any) -> dict[str, int] | None:
+    """5つのタイプ名がそろう見出し行から列を取る。見つからない月の表は None（値は欠損扱い）。"""
+    for row in range(3, min(sheet.max_row, 12) + 1):
+        labels = {
+            normalize_text(sheet.cell(row, column).value).replace(" ", ""): column
+            for column in range(2, sheet.max_column + 1)
+        }
+        if all(label in labels for label in FACILITY_TYPES.values()):
+            return {key: labels[label] for key, label in FACILITY_TYPES.items()}
+    return None
+
+
 def load_lodging_month(session: requests.Session, release: Any) -> dict[str, Any]:
     workbook = load_workbook(BytesIO(fetch_bytes(session, release.url)), read_only=True, data_only=True)
     try:
@@ -140,24 +162,30 @@ def load_lodging_month(session: requests.Session, release: Any) -> dict[str, Any
         national_guest, prefecture_guest = extract_prefecture_rows(guest_sheet, (total_guest_column, foreign_guest_column))
         national_rooms, prefecture_rooms = extract_prefecture_rows(rooms_sheet, (used_rooms_column,))
         national_occupancy, prefecture_occupancy = extract_prefecture_rows(occupancy_sheet, (occupancy_column,))
+        type_columns = find_facility_type_columns(occupancy_sheet)
+        if type_columns:
+            national_types, prefecture_types = extract_prefecture_rows(occupancy_sheet, tuple(type_columns.values()))
+        else:
+            national_types, prefecture_types = [None] * len(FACILITY_TYPES), {code: [None] * len(FACILITY_TYPES) for code in PREFECTURE_BY_CODE}
     finally:
         workbook.close()
 
-    def combine(guest: list[float | None], rooms: list[float | None], occupancy: list[float | None]) -> dict[str, Any]:
+    def combine(guest: list[float | None], rooms: list[float | None], occupancy: list[float | None], types: list[float | None]) -> dict[str, Any]:
         return {
             "total_guest_nights": int(guest[0]) if guest[0] is not None else None,
             "foreign_guest_nights": int(guest[1]) if guest[1] is not None else None,
             "used_rooms": int(rooms[0]) if rooms[0] is not None else None,
             "occupancy_rate": occupancy[0],
+            "occupancy_rate_by_type": dict(zip(FACILITY_TYPES, types)),
         }
 
     return {
         "period": f"{release.year:04d}-{release.month:02d}",
         "release_type": "第2次速報",
         "source_url": release.url,
-        "national": combine(national_guest, national_rooms, national_occupancy),
+        "national": combine(national_guest, national_rooms, national_occupancy, national_types),
         "prefectures": {
-            code: combine(prefecture_guest[code], prefecture_rooms[code], prefecture_occupancy[code])
+            code: combine(prefecture_guest[code], prefecture_rooms[code], prefecture_occupancy[code], prefecture_types[code])
             for code in PREFECTURE_BY_CODE
         },
     }
@@ -258,11 +286,15 @@ def monthly_series(months: list[dict[str, Any]], pick: Any) -> dict[str, list[An
             for record in records
         ],
         "occupancy_rate": [record["occupancy_rate"] for record in records],
+        "occupancy_rate_by_type": {
+            key: [(record.get("occupancy_rate_by_type") or {}).get(key) for record in records]
+            for key in FACILITY_TYPES
+        },
     }
 
 
 def build_monthly_lodging(months: list[dict[str, Any]], lodging_source: dict[str, Any]) -> dict[str, Any]:
-    """年合計にする前の月別値（第2表・第8表）を、そのまま月の並びで公開用に残す。"""
+    """年合計にする前の月別値（第2表・第8表）を、そのまま月の並びで公開用に残す。施設タイプ別の稼働率も第8表から。"""
     periods = [item["period"] for item in months]
     basis = ["after" if period >= BASIS_CHANGE_PERIOD else "before" for period in periods]
     metadata = {
@@ -275,6 +307,7 @@ def build_monthly_lodging(months: list[dict[str, Any]], lodging_source: dict[str
         "source_url": lodging_source["source_url"],
         "retrieved_at": lodging_source.get("retrieved_at"),
         "unit": {"guest_nights": "人泊", "occupancy_rate": "%"},
+        "facility_types": FACILITY_TYPES,
         "domestic_guest_nights_definition": "延べ宿泊者数から外国人延べ宿泊者数（日本国内に住所を有しない人）を差し引いた値。日本に住む外国人を含みます。",
         "basis_change_period": BASIS_CHANGE_PERIOD,
         "basis_labels": BASIS_LABELS,
@@ -318,6 +351,14 @@ def validate_monthly_lodging(dataset: dict[str, Any]) -> None:
                     continue
                 if value < 0 or (key == "occupancy_rate" and value > 100):
                     raise ValueError(f"lodging-monthly.json: {code}.{key}が不正です。")
+        by_type = item.get("occupancy_rate_by_type")
+        if by_type is None:
+            continue
+        if set(by_type) != set(FACILITY_TYPES):
+            raise ValueError(f"lodging-monthly.json: {code}の施設タイプがそろっていません。")
+        for key, values in by_type.items():
+            if len(values) != len(periods) or any(value is not None and not 0 <= value <= 100 for value in values):
+                raise ValueError(f"lodging-monthly.json: {code}.{key}の稼働率が不正です。")
     ensure_finite(dataset)
 
 

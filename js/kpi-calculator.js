@@ -36,7 +36,7 @@
   }
 
   function readInput() {
-    const input = { month: monthInput.value, prefCode: form.elements.prefCode.value, mealsIncluded: form.elements.mealsIncluded.checked };
+    const input = { month: monthInput.value, prefCode: form.elements.prefCode.value, facilityType: form.elements.facilityType.value, mealsIncluded: form.elements.mealsIncluded.checked };
     fields.forEach((name) => { input[name] = model.parseNumber(form.elements[name].value); });
     return input;
   }
@@ -96,17 +96,25 @@
 
   function renderBenchmark(input, kpi) {
     if (!dataset) return '<p class="kpi-note">地域の統計を読み込めなかったため、比較は表示していません。計算結果には影響しません。</p>';
-    const bench = model.benchmark(dataset, input.month, input.prefCode);
+    const bench = model.benchmark(dataset, input.month, input.prefCode, input.facilityType);
     const gap = model.compare(kpi.occupancy, bench);
     if (!bench || !gap) return '';
     const direction = gap.gap > 0 ? '高い' : gap.gap < 0 ? '低い' : '同じ';
     const headline = gap.gap === 0
       ? gap.label + 'と同じ稼働率です'
       : gap.label + 'より ' + Math.abs(gap.gap) + 'ポイント' + direction + '稼働率です';
+    const type = bench.facilityLabel;
+    const allTypes = type ? '（全施設）' : '';
     const values = [];
-    if (bench.prefecture !== null) values.push(escapeHtml(bench.prefectureName) + ' <b>' + bench.prefecture.toFixed(1) + '%</b>');
-    if (bench.national !== null) values.push('全国 <b>' + bench.national.toFixed(1) + '%</b>');
-    const notes = ['統計は旅館・ホテル・簡易宿所などすべての施設タイプの平均です。旅館は全体より低い傾向があるため、目安として見てください。'];
+    if (bench.prefectureType !== null) values.push(escapeHtml(bench.prefectureName) + 'の' + type + ' <b>' + bench.prefectureType.toFixed(1) + '%</b>');
+    if (bench.nationalType !== null) values.push('全国の' + type + ' <b>' + bench.nationalType.toFixed(1) + '%</b>');
+    if (bench.prefecture !== null) values.push(escapeHtml(bench.prefectureName) + allTypes + ' <b>' + bench.prefecture.toFixed(1) + '%</b>');
+    if (bench.national !== null) values.push('全国' + allTypes + ' <b>' + bench.national.toFixed(1) + '%</b>');
+    const notes = [];
+    if (!type) notes.push('統計は旅館・ホテル・簡易宿所などすべての施設の平均です。施設タイプを選ぶと、同じタイプの稼働率と比べられます。');
+    else if (!gap.byType) notes.push('この月の' + type + 'の値がまだないため、すべての施設の平均と比べています。');
+    else if (bench.prefectureType !== null) notes.push('都道府県ごとのタイプ別の値は集計の対象施設が少なく、月によって大きく振れることがあります。');
+    else if (input.prefCode) notes.push(escapeHtml(bench.prefectureName) + 'の' + type + 'の値は公表されていないため、全国の' + type + 'と比べています。');
     if (!bench.exact) notes.unshift(monthLabel(input.month) + 'の統計はまだ公表されていないため、公表済みの同じ月（' + monthLabel(bench.period) + '）と比べています。');
     if (bench.basis === 'before') notes.push('2025年12月までの集計基準の値です。');
     return '<div class="kpi-bench"><p class="kpi-bench__label">地域の統計と比べると（' + monthLabel(bench.period) + '）</p>' +
@@ -163,7 +171,7 @@
   }
 
   function render(input, kpi) {
-    const scope = [monthInput.value ? monthLabel(monthInput.value) : '', input.prefCode ? form.elements.prefCode.selectedOptions[0].textContent : '', num(input.rooms) + '室'].filter(Boolean).join('・');
+    const scope = [monthInput.value ? monthLabel(monthInput.value) : '', input.prefCode ? form.elements.prefCode.selectedOptions[0].textContent : '', input.facilityType ? form.elements.facilityType.selectedOptions[0].textContent : '', num(input.rooms) + '室'].filter(Boolean).join('・');
     document.getElementById('kpi-result-scope').textContent = scope;
     body.innerHTML = renderCards(input, kpi) + renderBenchmark(input, kpi) + renderBreakEven(input, kpi) + renderLevers(input, kpi) + renderReverse(input);
     const targetInput = document.getElementById('kpi-target');
@@ -228,6 +236,7 @@
     const sample = model.sample;
     monthInput.value = sample.month;
     form.elements.prefCode.value = sample.prefCode;
+    form.elements.facilityType.value = sample.facilityType;
     form.elements.mealsIncluded.checked = sample.mealsIncluded;
     fields.forEach((name) => { form.elements[name].value = sample[name] === null ? '' : num(sample[name]); });
     // 例の営業日数はその月の日数と同じなので、月を変えたら日数もついてくるようにする
