@@ -20,6 +20,7 @@ TOOL_PAGES = [
     "dx-diagnosis.html", "inbound-analysis.html",
     "management-ai.html", "hotel-price-trends.html", "report.html",
     "business-hotel-price-trends.html", "kpi-calculator.html", "ota-fee-simulator.html", "security-check.html",
+    "ai-time-estimate.html",
 ]
 
 

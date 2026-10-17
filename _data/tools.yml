@@ -24,6 +24,12 @@
   group: facility
   tag: 無料チェック
   summary: 宿で実際に起きた被害から作った10問に答えると、今週やるべきセキュリティ対策3つが分かります。
+- id: ai-time-estimate
+  title: 生成AI時短みつもり
+  url: /ai-time-estimate.html
+  group: facility
+  tag: 計算ツール
+  summary: 口コミ返信や外国語のお問い合わせなど、生成AIに下書きを任せて浮く時間を業務ごとに見積もります。
 - id: ai-inn-sample
   title: AIに聞かれる宿 診断 サンプル
   url: /ai-inn-diagnosis/sample/
