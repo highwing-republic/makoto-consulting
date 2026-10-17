@@ -93,6 +93,28 @@
 .ait-note{margin:10px 0 0;color:var(--ink-soft);font-size:12px}
 .ait-result__tools{display:flex;flex-wrap:wrap;gap:10px;margin-top:28px}
 
+.ait-picks .ait-picks__prompt{margin-top:12px;color:var(--lab-navy);font-size:13px;font-weight:700;text-decoration:underline;text-underline-offset:3px}
+
+/* 業務ごとの指示文の例。見積もりの下に並べ、開いた業務だけ全文を見せる。 */
+.ait-prompts [hidden]{display:none!important}
+.ait-prompts__head{max-width:860px}
+.ait-prompts__head h2{margin:0;font-family:var(--sans);font-size:clamp(22px,2.4vw,28px);font-weight:700;line-height:1.45}
+.ait-prompts__head p{margin:12px 0 0;font-size:15px;line-height:1.9}
+.ait-prompts__warn{padding:14px 18px;border-left:3px solid #c06a45;background:#fbf3ef;font-size:14px!important}
+.ait-prompts__list{display:grid;gap:10px;margin-top:26px}
+.ait-prompt{border:1px solid var(--line);border-radius:12px;background:#fff;scroll-margin-top:96px}
+.ait-prompt summary{display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;padding:16px 20px;font-size:16px;font-weight:700;cursor:pointer}
+.ait-prompt summary:focus-visible{outline:2px solid var(--lab-focus);outline-offset:3px}
+.ait-prompt summary .ait-badge{margin-top:0}
+.ait-prompt[open] summary{border-bottom:1px solid var(--line)}
+.ait-prompt__body{padding:18px 20px 20px}
+.ait-prompt__text{margin:0;padding:16px 18px;border:1px solid #d7e2e8;border-radius:8px;background:#f7fafb;color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.9;white-space:pre-wrap;overflow-wrap:anywhere}
+.ait-prompt__tools{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;margin-top:14px}
+.ait-prompt__tools .ait-chip{display:inline-flex;align-items:center;min-height:44px;padding:0 18px;border:1px solid #b9c9d2;border-radius:999px;background:#fff;color:var(--lab-navy);font:inherit;font-size:14px;font-weight:700;cursor:pointer}
+.ait-prompt__tools .ait-chip:hover{border-color:var(--lab-teal)}
+.ait-prompt__tools .ait-chip:focus-visible{outline:2px solid var(--lab-focus);outline-offset:3px}
+.ait-prompt__status{color:var(--lab-teal);font-size:13px;font-weight:700}
+
 @media(max-width:900px){
   .ait-tasks__head{display:none}
   .ait-task{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 12px;padding:14px 16px}
@@ -113,7 +135,7 @@
   .ait-table th,.ait-table td{padding:10px 8px}
 }
 @media print{
-  .ait-panel,.ait-result__tools{display:none}
+  .ait-panel,.ait-result__tools,.ait-picks__prompt,.ait-prompts{display:none}
   .ait-metrics{background:#fff;color:#000;border:1px solid #999}
   .ait-metrics dt,.ait-metrics dd,.ait-metrics p{color:#000}
 }

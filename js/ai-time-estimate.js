@@ -85,7 +85,8 @@
     if (!estimate.firstPicks.length) return '<p class="ait-empty">浮く時間がある業務がありません。件数や時間を入れてください。</p>';
     return '<ol class="ait-picks">' + estimate.firstPicks.map((row) =>
       '<li><h5>' + escapeHtml(row.name) + '</h5><p class="ait-picks__hours">月 ' + range(Math.round(row.lowHours * 10) / 10, Math.round(row.highHours * 10) / 10, '時間') + '</p>' +
-      '<p>' + escapeHtml(row.tip) + '</p><span class="ait-badge ait-badge--' + row.risk + '">' + escapeHtml(row.riskLabel) + '</span></li>').join('') + '</ol>';
+      '<p>' + escapeHtml(row.tip) + '</p><span class="ait-badge ait-badge--' + row.risk + '">' + escapeHtml(row.riskLabel) + '</span>' +
+      '<a class="ait-picks__prompt" href="#prompt-' + row.id + '">指示文の例を見る <span aria-hidden="true">↓</span></a></li>').join('') + '</ol>';
   }
 
   function renderBreakdown(estimate) {
@@ -151,6 +152,61 @@
     note.textContent = 'DXかんたん診断で入れた人件費の目安（1時間' + num(saved.hourlyCost) + '円）を使います。「詳細設定」で変えられます。';
     note.hidden = false;
   }
+
+  // 指示文の例: 「最初に試す3つの業務」のリンクやURLの #prompt-… で開き、ボタンでコピーする
+  function openPrompt(hash) {
+    const target = /^#prompt-[a-z-]+$/.test(hash || '') ? document.getElementById(hash.slice(1)) : null;
+    if (!target || target.tagName !== 'DETAILS') return false;
+    target.open = true;
+    target.scrollIntoView({ block: 'start' });
+    target.querySelector('summary').focus({ preventScroll: true });
+    return true;
+  }
+
+  document.addEventListener('click', (event) => {
+    const link = event.target.closest('a[href^="#prompt-"]');
+    if (!link) return;
+    if (openPrompt(link.getAttribute('href'))) {
+      event.preventDefault();
+      history.replaceState(null, '', link.getAttribute('href'));
+    }
+  });
+  window.addEventListener('hashchange', () => openPrompt(location.hash));
+  openPrompt(location.hash);
+
+  function copyText(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText) return navigator.clipboard.writeText(text).then(() => true, () => copyBySelection(text));
+    return Promise.resolve(copyBySelection(text));
+  }
+
+  function copyBySelection(text) {
+    const area = document.createElement('textarea');
+    area.value = text;
+    area.setAttribute('readonly', '');
+    area.style.position = 'fixed';
+    area.style.opacity = '0';
+    document.body.appendChild(area);
+    area.select();
+    let copied = false;
+    try { copied = document.execCommand('copy'); } catch (error) { copied = false; }
+    area.remove();
+    return copied;
+  }
+
+  document.querySelectorAll('[data-copy-prompt]').forEach((button) => {
+    const text = document.getElementById(button.dataset.copyPrompt);
+    const status = button.parentElement.querySelector('.ait-prompt__status');
+    if (!text || !status) return;
+    let timer = 0;
+    button.addEventListener('click', () => {
+      copyText(text.textContent).then((copied) => {
+        status.textContent = copied ? 'コピーしました。（　）の中を書き換えてください。' : 'コピーできませんでした。文を選んでコピーしてください。';
+        clearTimeout(timer);
+        timer = setTimeout(() => { status.textContent = ''; }, 4000);
+        if (copied && globalThis.LabAnalytics) globalThis.LabAnalytics.track('result_export', { tool_id: 'ai-time-estimate', export_type: 'prompt_copy' });
+      });
+    });
+  });
 
   fillFromDiagnosis();
   run();

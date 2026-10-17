@@ -72,3 +72,22 @@ test("the page lists the same ten tasks in the same order", () => {
     });
   });
 });
+
+test("each task has a copyable prompt with blanks to fill and the same risk label", () => {
+  const html = require("node:fs").readFileSync(require("node:path").join(__dirname, "..", "ai-time-estimate.html"), "utf8");
+  const ids = [...html.matchAll(/<details class="ait-prompt" id="prompt-([^"]+)">/g)].map((m) => m[1]);
+  assert.deepEqual(ids, model.tasks.map((t) => t.id));
+  model.tasks.forEach((t) => {
+    const block = html.match(new RegExp('id="prompt-' + t.id + '">([\\s\\S]*?)</details>'))[1];
+    assert.ok(block.includes('<span class="ait-badge ait-badge--' + t.risk + '">' + model.riskLabel[t.risk] + "</span>"), t.id);
+    const text = block.match(/<pre class="ait-prompt__text" id="prompt-text-([^"]+)">([\s\S]*?)<\/pre>/);
+    assert.equal(text[1], t.id);
+    assert.match(text[2], /（[^）]+）/, t.id);
+    assert.ok(block.includes('data-copy-prompt="prompt-text-' + t.id + '"'), t.id);
+  });
+  // お客様の情報を貼らない注意を、個人情報に触れやすい業務の指示文の中にも入れる
+  ["review", "foreign-mail", "minutes"].forEach((id) => {
+    const text = html.match(new RegExp('id="prompt-text-' + id + '">([\\s\\S]*?)</pre>'))[1];
+    assert.match(text, /消して|置き換えて/, id);
+  });
+});
