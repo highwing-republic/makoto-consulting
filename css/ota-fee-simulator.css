@@ -1,0 +1,130 @@
+/* OTA手数料シミュレーター（ota-fee-simulator.html）。パネルと入力欄は宿KPI電卓・DXかんたん診断の見た目に揃える。 */
+.ota-app{color:var(--ink)}
+.ota-app [hidden]{display:none!important}
+#tool .visually-hidden{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
+.ota-app input,.ota-app select,.ota-app button{font:inherit}
+.ota-app input:focus-visible,.ota-app select:focus-visible,.ota-app button:focus-visible,.ota-app summary:focus-visible,.ota-app a:focus-visible{outline:2px solid var(--lab-focus);outline-offset:3px}
+.ota-panel{padding:clamp(26px,5vw,56px);border:1px solid var(--line);border-top:4px solid var(--lab-navy);border-radius:18px;background:#fff;box-shadow:0 14px 40px rgba(23,50,77,.07)}
+.ota-panel__heading h3{margin:0;font-family:var(--sans);font-size:clamp(20px,2.2vw,22px);font-weight:700;line-height:1.45}
+.ota-panel__heading p{margin:10px 0 0;color:var(--ink-soft);font-size:14px}
+.ota-privacy{display:flex;align-items:center;gap:14px;margin:22px 0 18px;padding:14px 18px;border:1px solid #c8dce5;border-radius:10px;background:#eef5f7;color:#4a6170;font-size:12px;line-height:1.7}
+.ota-privacy strong{flex:none;padding:3px 8px;border-radius:4px;background:var(--lab-teal);color:#fff;font-size:11px;letter-spacing:.04em}
+.ota-handoff{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;margin:0 0 18px;padding:12px 16px;border-left:3px solid var(--lab-teal);background:var(--lab-surface-soft);font-size:13px;line-height:1.7}
+.ota-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px 24px;margin-top:8px}
+.ota-grid--3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.ota-field{display:flex;min-width:0;flex-direction:column;gap:6px;color:#3d4a53;font-size:14px;font-weight:500}
+.ota-field>span:first-child{color:var(--ink);font-size:15px;font-weight:700}
+.ota-field small{color:var(--ink-soft);font-size:12px;font-weight:400;line-height:1.6}
+.ota-field input,.ota-field select{width:100%;min-width:0;height:50px;padding:0 14px;border:1px solid #b9c9d2;border-radius:9px;background:#fff;color:var(--ink);font-size:16px}
+.ota-app input[aria-invalid="true"]{border-color:#a53b35}
+.ota-unit{display:flex;align-items:center;gap:10px}
+.ota-unit input{text-align:right;font-variant-numeric:tabular-nums}
+.ota-unit b{flex:none;min-width:1.2em;font-weight:500}
+.ota-field-error{display:block;color:#9f302c;font-size:12px;font-weight:700}
+
+/* 予約経路の表。PC は1行に並べ、スマホでは1経路を1枚のカードにする。 */
+.ota-table{margin-top:28px;border:1px solid var(--line);border-radius:12px;background:#fbfcfc}
+.ota-table__head,.ota-row{display:grid;grid-template-columns:minmax(150px,1.6fr) repeat(3,minmax(84px,.9fr)) minmax(110px,1.1fr) minmax(70px,.7fr) 34px;gap:12px;align-items:start;padding:12px 16px}
+.ota-table__head{border-bottom:1px solid var(--line);color:var(--ink-soft);font-size:12px;font-weight:700}
+.ota-table__head span:nth-child(n+2){text-align:right}
+.ota-row{border-bottom:1px solid var(--line)}
+.ota-row input,.ota-row select{width:100%;min-width:0;height:42px;padding:0 10px;border:1px solid #b9c9d2;border-radius:8px;background:#fff;color:var(--ink);font-size:15px}
+.ota-row__name{display:flex;flex-direction:column;gap:6px}
+.ota-row__name select{height:34px;font-size:13px;color:var(--ink-soft)}
+.ota-row__cell{display:flex;flex-direction:column;gap:4px;min-width:0}
+.ota-row__label{display:none;color:var(--ink-soft);font-size:12px;font-weight:700}
+.ota-row .ota-unit{gap:6px}
+.ota-row .ota-unit b{font-size:13px}
+.ota-row__rate{padding-top:10px;color:var(--lab-navy);font-size:15px;font-weight:700;text-align:right;font-variant-numeric:tabular-nums}
+.ota-row__remove{width:34px;height:42px;border:0;border-radius:8px;background:transparent;color:var(--ink-soft);font-size:20px;cursor:pointer}
+.ota-row__remove:hover{background:#f1f4f6;color:#9f302c}
+.ota-row__remove[disabled]{visibility:hidden}
+.ota-table__foot{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 20px;padding:14px 16px;font-size:14px}
+.ota-total b{margin-left:6px;font-variant-numeric:tabular-nums}
+.ota-total.is-off b{color:#9f302c}
+.ota-add{min-height:38px;padding:0 14px;border:1px dashed #9fb5c1;border-radius:999px;background:#fff;color:var(--lab-navy);font-size:13px;font-weight:700;cursor:pointer}
+.ota-add[disabled]{opacity:.5;cursor:default}
+.ota-details{margin-top:20px;border:1px solid var(--line);border-radius:10px;background:#fbfcfc}
+.ota-details summary{padding:15px 18px;color:var(--lab-navy);font-size:15px;font-weight:700;cursor:pointer}
+.ota-details summary small{margin-left:10px;color:var(--ink-soft);font-size:12px;font-weight:400}
+.ota-details[open] summary{border-bottom:1px solid var(--line)}
+.ota-invoice{padding:18px}
+.ota-invoice>p:first-child{margin:0 0 4px;color:var(--ink-soft);font-size:13px;line-height:1.8}
+.ota-invoice .ota-callout{margin-top:18px}
+.ota-invoice .ota-chip{margin-top:12px}
+.ota-form-error{margin:16px 0 0;color:#9f302c;font-size:14px;font-weight:700}
+.ota-actions{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:30px}
+.ota-actions .button{min-width:180px;font-size:14px}
+.ota-chip{display:inline-flex;align-items:center;gap:6px;min-height:46px;padding:0 18px;border:1px solid #b9c9d2;border-radius:999px;background:#fff;color:var(--lab-navy);font-size:14px;font-weight:700;text-decoration:none;cursor:pointer}
+.ota-chip:hover{border-color:var(--lab-teal)}
+.ota-chip--quiet{border-color:transparent;background:transparent;color:var(--ink-soft);font-weight:500}
+.ota-handoff .ota-chip{min-height:36px;padding:0 14px;font-size:13px}
+
+.ota-result{margin-top:48px;scroll-margin-top:96px}
+.ota-result:focus{outline:0}
+.ota-result__head{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:6px 20px;margin-bottom:18px;padding-bottom:12px;border-bottom:1px solid var(--lab-navy)}
+.ota-result__head h3{margin:0;font-family:var(--sans);font-size:clamp(22px,2.4vw,28px);font-weight:700}
+.ota-result__head p{margin:0;color:var(--ink-soft);font-size:14px}
+.ota-summary{padding:26px 30px;border-radius:16px;background:var(--accent-deep);color:#d6e2e8;font-size:14px;line-height:1.9}
+.ota-summary p{margin:0}
+.ota-summary b{color:#fff}
+.ota-summary__label{color:#b9cbd5;font-size:13px;font-weight:700}
+.ota-summary__headline{margin:6px 0 8px!important;color:#fff;font-size:clamp(22px,2.6vw,30px);font-weight:700;line-height:1.45}
+.ota-bar{display:flex;height:16px;margin:18px 0 8px;overflow:hidden;border-radius:999px;background:#e4ebef}
+.ota-bar span{display:block;height:100%}
+.ota-legend{display:flex;flex-wrap:wrap;gap:4px 16px;margin:0;padding:0;list-style:none;color:var(--ink-soft);font-size:12px}
+.ota-legend i{display:inline-block;width:10px;height:10px;margin-right:5px;border-radius:2px;vertical-align:-1px}
+.ota-swatch-ota-0{background:#4f6f86}.ota-swatch-ota-1{background:#8aa4b5}.ota-swatch-ota-2{background:#b8c9d4}.ota-swatch-ota-3{background:#6b8798}
+.ota-swatch-ota-4{background:#a0b4c1}.ota-swatch-ota-5{background:#3e5a6e}.ota-swatch-ota-6{background:#c9d6de}.ota-swatch-ota-7{background:#7d97a8}
+.ota-swatch-web{background:#1f8a83}.ota-swatch-direct{background:#7cc4b5}
+.ota-table-result{width:100%;margin-top:18px;border-collapse:collapse;border:1px solid var(--line);background:#fff;font-size:14px}
+.ota-table-result th,.ota-table-result td{padding:12px 14px;border-bottom:1px solid var(--line);text-align:right;font-variant-numeric:tabular-nums}
+.ota-table-result th:first-child,.ota-table-result td:first-child{text-align:left}
+.ota-table-result thead th{background:#f4f8fa;color:var(--ink-soft);font-size:12px}
+.ota-table-result tbody tr.is-own td:first-child{color:var(--lab-teal);font-weight:700}
+.ota-table-result tfoot td{font-weight:700}
+.ota-block{margin-top:44px}
+.ota-block h4{margin:0 0 14px;font-family:var(--sans);font-size:clamp(19px,2vw,22px);font-weight:700;line-height:1.45}
+.ota-shift{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;align-items:start}
+.ota-shift__control{padding:18px 20px;border:1px solid var(--line);border-radius:12px;background:#fbfcfc}
+.ota-shift__control label{display:flex;align-items:baseline;justify-content:space-between;gap:10px;font-size:15px;font-weight:700}
+.ota-shift__control label b{color:var(--lab-teal);font-size:22px;font-variant-numeric:tabular-nums}
+.ota-shift__control input{width:100%;margin:14px 0 8px;accent-color:var(--lab-teal)}
+.ota-shift__control small{color:var(--ink-soft);font-size:12px}
+.ota-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:18px 0 0}
+.ota-card{padding:20px 20px 16px;border:1px solid var(--line);border-top:4px solid var(--lab-teal);border-radius:12px;background:#fbfcfc}
+.ota-card.is-main{border-top-color:var(--lab-navy);background:#f4f8fa}
+.ota-card.is-loss dd{color:#9f302c}
+.ota-card dt{font-size:14px;font-weight:700}
+.ota-card dd{margin:8px 0 0;color:var(--lab-navy);font-size:24px;font-weight:700;line-height:1.3;font-variant-numeric:tabular-nums}
+.ota-card p{margin:8px 0 0;color:var(--ink-soft);font-size:12px;line-height:1.7}
+.ota-note{margin:12px 0 0;color:var(--ink-soft);font-size:13px;line-height:1.85}
+.ota-note b{color:var(--ink)}
+.ota-callout{margin:24px 0 0;padding:16px 18px;border-left:3px solid var(--lab-teal);background:var(--lab-surface-soft);font-size:14px;line-height:1.85}
+.ota-callout--warn{border-left-color:#c06a45;background:#fbf3ef}
+.ota-result__tools{display:flex;flex-wrap:wrap;gap:10px;margin-top:28px}
+
+@media(max-width:900px){
+  .ota-table__head{display:none}
+  .ota-row{position:relative;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+  .ota-row__name{grid-column:1/-1;padding-right:40px}
+  .ota-row__remove{position:absolute;top:12px;right:10px}
+  .ota-row__label{display:block}
+  .ota-row__rate{grid-column:1/-1;padding-top:0;text-align:left}
+  .ota-row__rate::before{content:"実効の負担率 ";color:var(--ink-soft);font-size:12px;font-weight:700}
+  .ota-cards{grid-template-columns:1fr}
+}
+@media(max-width:620px){
+  .ota-grid,.ota-grid--3,.ota-shift{grid-template-columns:1fr}
+  .ota-privacy{align-items:flex-start;flex-direction:column;gap:8px}
+  .ota-actions .button{width:100%}
+  .ota-summary{padding:22px 18px}
+  .ota-table-result{font-size:12px}
+  .ota-table-result th,.ota-table-result td{padding:10px 6px}
+  .ota-table-result .ota-col-rate{display:none}
+}
+@media print{
+  .ota-panel,.ota-result__tools,.ota-shift__control input,#ota-acquisition{display:none}
+  .ota-summary{background:#fff;color:#000;border:1px solid #999}
+  .ota-summary b,.ota-summary__headline{color:#000}
+}
