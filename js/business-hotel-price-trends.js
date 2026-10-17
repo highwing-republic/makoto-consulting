@@ -4,11 +4,12 @@
   const M = globalThis.BusinessHotelPriceModel;
   const DATA = "data/business-hotel-price-trends/";
   const $ = (selector) => document.querySelector(selector);
-  const state = {cohort: null, manifest: null, latest: null, previous: null, events: null, eventView: null, market: null, nights: 30, rankTab: "volatileMarkets"};
+  const state = {cohort: null, manifest: null, latest: null, previous: null, events: null, images: null, eventView: null, market: null, nights: 30, rankTab: "volatileMarkets"};
 
   const escapeHtml = (value) => String(value ?? "").replace(/[&<>"']/g, (c) => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"})[c]);
   const yen = M.formatYen;
   const pct = M.formatPercent;
+  const PHOTO_HOSTS = ["img.travel.rakuten.co.jp", "trvimg.r10s.jp"];
   const compactYen = (value) => (value >= 10000 ? `${(value / 10000).toFixed(value % 10000 === 0 ? 0 : 1)}万` : value.toLocaleString("ja-JP"));
 
   // ---------------------------------------------------------------- 読み込み
@@ -30,13 +31,14 @@
       if (!manifest.latest_snapshot || !manifest.snapshots?.length) throw Object.assign(new Error("empty"), {status: 404});
       const latestEntry = manifest.snapshots.find((item) => item.date === manifest.latest_snapshot) || manifest.snapshots[0];
       const previousEntry = manifest.snapshots.find((item) => item.date === M.addDays(latestEntry.date, -7));
-      // 催しの候補（AI調べ）は無くても表示できるので、読めなければ黙って省く
-      const [latest, previous, events] = await Promise.all([
+      // 催しの候補（AI調べ）と施設写真は無くても表示できるので、読めなければ黙って省く
+      const [latest, previous, events, images] = await Promise.all([
         getJson(DATA + latestEntry.file),
         previousEntry ? getJson(DATA + previousEntry.file).catch(() => null) : null,
         getJson(`${DATA}events.json`).catch(() => null),
+        getJson(`${DATA}images.json`).catch(() => null),
       ]);
-      Object.assign(state, {manifest, cohort, latest, previous, events});
+      Object.assign(state, {manifest, cohort, latest, previous, events, images});
       readUrl();
       setupControls();
       show("dashboard");
@@ -529,17 +531,40 @@
       : `<p class="bht-empty">向こう2か月で、遠方から人が集まる大きな催しは見つかりませんでした。</p>`;
   }
 
+  // 楽天の画像サーバーの URL だけを使う（画像は保存・加工しない）
+  function photoUrl(value) {
+    try {
+      const url = new URL(value);
+      return url.protocol === "https:" && PHOTO_HOSTS.includes(url.hostname) ? url.href : null;
+    } catch {
+      return null;
+    }
+  }
+
+  function hotelPhoto(hotelNo) {
+    const image = state.images?.hotels?.[hotelNo]?.image;
+    const src = photoUrl(image?.thumbnail_url) || photoUrl(image?.url);
+    return src ? {src} : null;
+  }
+
   function renderHotels(view) {
+    const photos = new Map([...view.core, ...view.backup].map((hotel) => [hotel.hotel_no, hotelPhoto(hotel.hotel_no)]));
+    const withPhotos = [...photos.values()].some(Boolean);
     const row = (hotel) => {
       const s = M.hotelSummary(hotel);
       const url = `https://travel.rakuten.co.jp/HOTEL/${encodeURIComponent(hotel.hotel_no)}/`;
-      return `<tr><th scope="row"><a href="${url}" target="_blank" rel="noopener noreferrer">${escapeHtml(hotel.name)}</a><small>${escapeHtml(hotel.area)}・${escapeHtml(hotel.access)}・${hotel.rooms}室</small></th>
+      const image = photos.get(hotel.hotel_no);
+      const photo = !withPhotos ? ""
+        : image ? `<a class="bht-hotel__photo" href="${url}" target="_blank" rel="noopener noreferrer" aria-label="${escapeHtml(hotel.name)}を楽天トラベルで見る（新しいタブ）"><img src="${escapeHtml(image.src)}" alt="${escapeHtml(hotel.name)}の写真" loading="lazy" decoding="async" referrerpolicy="no-referrer"></a>`
+        : `<span class="bht-hotel__photo bht-hotel__photo--empty" aria-hidden="true">写真なし</span>`;
+      return `<tr><th scope="row"><div class="bht-hotel">${photo}<div><a href="${url}" target="_blank" rel="noopener noreferrer">${escapeHtml(hotel.name)}</a><small>${escapeHtml(hotel.area)}・${escapeHtml(hotel.access)}・${hotel.rooms}室</small></div></div></th>
         <td>${yen(s.median)}</td><td>${s.min ? `${yen(s.min)}〜${yen(s.max)}` : "—"}</td><td>${M.formatRatio(s.volatility)}</td>
         <td>${s.leadingMeal ? `${escapeHtml(s.leadingMeal.label)}<small>${s.leadingMeal.share.toFixed(0)}%</small>` : "—"}</td><td>${s.noPlanNights}泊</td></tr>`;
     };
     const head = `<thead><tr><th scope="col">施設</th><th scope="col">中央値</th><th scope="col">最安〜最高</th><th scope="col">値動きの大きさ</th><th scope="col">最安プランの食事</th><th scope="col">販売プランなし</th></tr></thead>`;
     $("#bht-hotels").innerHTML = `${head}<tbody><tr class="bht-group"><th colspan="6" scope="rowgroup">CORE（集計に使う${view.core.length}施設）</th></tr>${view.core.map(row).join("")}</tbody><tbody class="bht-backup"><tr class="bht-group"><th colspan="6" scope="rowgroup">BACKUP（観測のみ・集計には使わない）</th></tr>${view.backup.map(row).join("")}</tbody>`;
-    $("#bht-hotels-meta").textContent = `今日から${state.nights}泊の料金（大人1名・1室・1泊）。施設名は楽天トラベルの施設ページへのリンクです。`;
+    $("#bht-hotels-meta").textContent = `今日から${state.nights}泊の料金（大人1名・1室・1泊）。施設名${withPhotos ? "と写真" : ""}は楽天トラベルの施設ページへのリンクです。`;
+    $("#bht-photo-credit").hidden = !withPhotos;
   }
 
   // ---------------------------------------------------------------- 補助

@@ -53,6 +53,15 @@ jobs:
             python scripts/update_business_hotel_prices.py
           fi
 
+      # 施設写真の URL（画像そのものは保存しない）。施設ごとに月1回だけ取得し直す。
+      # 失敗しても料金の保存と公開は続ける。
+      - name: Fetch facility photo URLs from Rakuten Travel
+        continue-on-error: true
+        env:
+          RAKUTEN_APPLICATION_ID: ${{ secrets.RAKUTEN_APPLICATION_ID }}
+          RAKUTEN_ACCESS_KEY: ${{ secrets.RAKUTEN_ACCESS_KEY }}
+        run: python scripts/update_business_hotel_images.py
+
       - name: Run collector tests
         run: python -m pytest -q tests/test_business_hotel_prices.py
 
