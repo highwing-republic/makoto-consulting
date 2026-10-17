@@ -8,7 +8,7 @@
   const body = document.getElementById('kpi-result-body');
   if (!model || !form || !result || !body) return;
 
-  const fields = ['rooms', 'days', 'soldRooms', 'roomRevenue', 'guests', 'capacity', 'totalRevenue', 'closedRoomNights', 'fixedCost', 'variableCostPerRoom'];
+  const fields = ['rooms', 'days', 'soldRooms', 'roomRevenue', 'guests', 'capacity', 'totalRevenue', 'closedRoomNights', 'lySoldRooms', 'lyRoomRevenue', 'lyDays', 'fixedCost', 'variableCostPerRoom'];
   const monthInput = form.elements.month;
   const daysInput = form.elements.days;
   const formError = document.getElementById('kpi-form-error');
@@ -123,6 +123,36 @@
       notes.map((note) => '<p class="kpi-bench__note">' + note + '</p>').join('') + '</div>';
   }
 
+  function renderYearOverYear(input) {
+    const yoy = model.yearOverYear(input);
+    if (!yoy) return '<p class="kpi-note">「前年同月と比べる」に前年の販売客室数と客室売上を入れると、稼働率・ADR・RevPARの前年比を表示します。</p>';
+    const pct = (value) => signed(value, '%');
+    const rows = [
+      ['客室稼働率', yoy.occupancy.last + '%', yoy.occupancy.now + '%', signed(yoy.occupancy.diff, 'ポイント'), yoy.occupancy.diff],
+      ['平均客室単価（ADR）', yen(yoy.adr.last), yen(yoy.adr.now), pct(yoy.adr.change), yoy.adr.change],
+      ['RevPAR', yen(yoy.revpar.last), yen(yoy.revpar.now), pct(yoy.revpar.change), yoy.revpar.change],
+      ['客室売上', man(yoy.roomRevenue.last), man(yoy.roomRevenue.now), pct(yoy.roomRevenue.change), yoy.roomRevenue.change],
+      ['販売客室数', num(yoy.soldRooms.last) + '室', num(yoy.soldRooms.now) + '室', pct(yoy.soldRooms.change), yoy.soldRooms.change]
+    ].map((row) => '<tr' + (row[0] === 'RevPAR' ? ' class="is-main"' : '') + '><th scope="row">' + row[0] + '</th><td>' + row[1] + '</td><td>' + row[2] + '</td><td class="' + (row[4] > 0 ? 'is-up' : row[4] < 0 ? 'is-down' : '') + '">' + row[3] + '</td></tr>').join('');
+    const names = { occupancy: '稼働率', adr: '単価' };
+    const change = yoy.revpar.change;
+    let summary;
+    if (!yoy.driver) summary = 'RevPARは前年とほぼ同じです。';
+    else {
+      const d = yoy.driver;
+      const other = d.key === 'occupancy' ? 'adr' : 'occupancy';
+      summary = 'RevPARは前年より<b>' + Math.abs(change) + '%' + (change > 0 ? '上がりました' : '下がりました') + '</b>。' +
+        (d.both ? names.occupancy + 'と単価がどちらも' + (d.up ? '上がり' : '下がり') + '、変化が大きいのは' + names[d.key] + 'です。'
+          : '主に' + names[d.key] + 'の' + (d.up ? '上昇' : '低下') + 'によるもので、' + names[other] + 'は' + (d.up ? '下がって' : '上がって') + 'います。');
+    }
+    const notes = ['前年の販売できる室数は、今の客室数 × ' + num(yoy.availableRooms / input.rooms) + '日（' + num(yoy.availableRooms) + '室）で計算しています。'];
+    if (input.closedRoomNights) notes.push('使えなかった客室は今年の分だけ引いています。');
+    return '<section class="kpi-block"><h4>前年同月と比べると（' + monthLabel(yoy.period) + '）</h4>' +
+      '<p class="kpi-lead">' + summary + '</p>' +
+      '<table class="kpi-yoy"><thead><tr><th scope="col">指標</th><th scope="col">前年</th><th scope="col">今年</th><th scope="col">前年比</th></tr></thead><tbody>' + rows + '</tbody></table>' +
+      notes.map((note) => '<p class="kpi-note">' + note + '</p>').join('') + '</section>';
+  }
+
   function renderBreakEven(input, kpi) {
     const be = kpi.breakEven;
     if (!be) {
@@ -173,7 +203,7 @@
   function render(input, kpi) {
     const scope = [monthInput.value ? monthLabel(monthInput.value) : '', input.prefCode ? form.elements.prefCode.selectedOptions[0].textContent : '', input.facilityType ? form.elements.facilityType.selectedOptions[0].textContent : '', num(input.rooms) + '室'].filter(Boolean).join('・');
     document.getElementById('kpi-result-scope').textContent = scope;
-    body.innerHTML = renderCards(input, kpi) + renderBenchmark(input, kpi) + renderBreakEven(input, kpi) + renderLevers(input, kpi) + renderReverse(input);
+    body.innerHTML = renderCards(input, kpi) + renderBenchmark(input, kpi) + renderYearOverYear(input) + renderBreakEven(input, kpi) + renderLevers(input, kpi) + renderReverse(input);
     const targetInput = document.getElementById('kpi-target');
     targetInput.addEventListener('input', () => {
       target = targetInput.value;
@@ -264,6 +294,7 @@
     // 例の営業日数はその月の日数と同じなので、月を変えたら日数もついてくるようにする
     daysEdited = sample.days !== model.daysInMonth(sample.month);
     document.getElementById('kpi-more').open = true;
+    document.getElementById('kpi-lastyear').open = true;
     document.getElementById('kpi-cost').open = true;
     target = '12,000,000';
     if (run()) result.focus({ preventScroll: false });

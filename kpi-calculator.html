@@ -1,7 +1,7 @@
 ---
 # Built by Jekyll: the shared header and footer come from _includes/.
 tool: kpi-calculator
-tool_purpose: 1か月分の客室数・販売客室数・客室売上から、客室稼働率・ADR（平均客室単価）・RevPARなど宿泊業の主要な数字をまとめて計算します。固定費を入れると損益分岐の稼働率が分かり、同じ月の都道府県の客室稼働率（宿泊旅行統計調査）とも比べられます。
+tool_purpose: 1か月分の客室数・販売客室数・客室売上から、客室稼働率・ADR（平均客室単価）・RevPARなど宿泊業の主要な数字をまとめて計算します。固定費を入れると損益分岐の稼働率が分かり、同じ月の都道府県の客室稼働率（宿泊旅行統計調査）とも比べられます。前年同月の実績を入れると、稼働率・ADR・RevPARの前年比も出ます。
 tool_scope:
   - label: 対象
     text: 旅館・ホテルの自施設。1か月単位の実績値で計算します。
@@ -39,7 +39,7 @@ tool_guides:
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>宿KPI電卓｜稼働率・ADR・RevPARを無料で計算｜宿泊DXラボ</title>
-  <meta name="description" content="旅館・ホテルの1か月の実績から、客室稼働率・ADR（平均客室単価）・RevPAR・損益分岐の稼働率をまとめて計算できる無料ツール。都道府県の客室稼働率（宿泊旅行統計調査）とも比べられます。登録不要。">
+  <meta name="description" content="旅館・ホテルの1か月の実績から、客室稼働率・ADR（平均客室単価）・RevPAR・損益分岐の稼働率をまとめて計算できる無料ツール。都道府県の客室稼働率（宿泊旅行統計調査）や前年同月とも比べられます。登録不要。">
   <meta name="robots" content="index,follow,max-image-preview:large">
   <link rel="canonical" href="https://lab.ugatta-llc.com/kpi-calculator.html">
   <meta property="og:locale" content="ja_JP">
@@ -60,7 +60,7 @@ tool_guides:
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&amp;display=swap">
   <link rel="stylesheet" href="css/useful.css?v=20261012shell">
   <link rel="stylesheet" href="css/tool-standard.css?v=20261015guide">
-  <link rel="stylesheet" href="css/kpi-calculator.css?v=20261017d">
+  <link rel="stylesheet" href="css/kpi-calculator.css?v=20261017yoy">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -127,6 +127,14 @@ tool_guides:
               <label class="kpi-field"><span>使えなかった客室</span><span class="kpi-unit"><input id="kpi-closed" name="closedRoomNights" type="text" inputmode="numeric" autocomplete="off" aria-describedby="kpi-hint-closed"><b>室</b></span><small id="kpi-hint-closed">改装・故障・自社利用などで売らなかった延べ室数</small></label>
             </div>
           </details>
+          <details class="kpi-details" id="kpi-lastyear">
+            <summary>前年同月と比べる<small>任意</small></summary>
+            <div class="kpi-grid">
+              <label class="kpi-field"><span>前年の販売客室数</span><span class="kpi-unit"><input id="kpi-ly-sold" name="lySoldRooms" type="text" inputmode="numeric" autocomplete="off" aria-describedby="kpi-hint-ly-sold"><b>室</b></span><small id="kpi-hint-ly-sold">前年の同じ月に売れた延べ室数</small></label>
+              <label class="kpi-field"><span>前年の客室売上</span><span class="kpi-unit"><input id="kpi-ly-revenue" name="lyRoomRevenue" type="text" inputmode="numeric" autocomplete="off" aria-describedby="kpi-hint-ly-revenue"><b>円</b></span><small id="kpi-hint-ly-revenue">今年と同じ数え方（税抜き・食事代の扱い）で</small></label>
+              <label class="kpi-field"><span>前年の営業日数</span><span class="kpi-unit"><input id="kpi-ly-days" name="lyDays" type="text" inputmode="numeric" autocomplete="off" aria-describedby="kpi-hint-ly-days"><b>日</b></span><small id="kpi-hint-ly-days">空欄なら前年のその月の日数。客室数は今と同じとみなします</small></label>
+            </div>
+          </details>
           <details class="kpi-details" id="kpi-cost">
             <summary>利益の目安も見る<small>任意</small></summary>
             <div class="kpi-grid">
@@ -153,8 +161,8 @@ tool_guides:
     {% include tool-related.html %}
   </main>
   {% include site-footer.html %}
-<script defer src="js/kpi-calculator-model.js?v=20261017b"></script>
-<script defer src="js/kpi-calculator.js?v=20261017d"></script>
+<script defer src="js/kpi-calculator-model.js?v=20261017yoy"></script>
+<script defer src="js/kpi-calculator.js?v=20261017yoy"></script>
 <script defer src="js/site.js?v=20260909c"></script>
 </body>
 </html>
