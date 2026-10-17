@@ -51,6 +51,7 @@ def test_converted_pages_use_the_three_standard_blocks():
         "management-ai.html",
         "ota-fee-simulator.html",
         "report.html",
+        "security-check.html",
     ]
     registry = {tool["id"]: tool for tool in tools()}
     for path in pages:
@@ -102,6 +103,7 @@ PAGE_SCRIPTS = {
     "business-hotel-price-trends.html": ("business-hotel-price-trends", "BusinessHotelPriceModel"),
     "kpi-calculator.html": ("kpi-calculator", "KpiCalculatorModel"),
     "ota-fee-simulator.html": ("ota-fee-simulator", "OtaFeeModel"),
+    "security-check.html": ("security-check", "SecurityCheckModel"),
 }
 
 

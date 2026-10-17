@@ -1,5 +1,12 @@
 [
   {
+    "id": "security-check-2026-10-17",
+    "date": "2026-10-17",
+    "category": "new",
+    "title": "宿のセキュリティ10問チェックを公開しました",
+    "url": "/security-check.html"
+  },
+  {
     "id": "ota-fee-simulator-2026-10-17",
     "date": "2026-10-17",
     "category": "new",
