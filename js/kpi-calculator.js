@@ -207,6 +207,18 @@
     } catch (error) { /* 保存できない環境では引き継がないだけ */ }
   }
 
+  // DXかんたん診断で入れた客室数を、空欄のときだけ入れる（このタブの sessionStorage から読むだけ）
+  function fillFromDiagnosis() {
+    let saved = null;
+    try { saved = JSON.parse(sessionStorage.getItem('hoteldxlab:dx-diagnosis') || 'null'); } catch (error) { saved = null; }
+    const roomsInput = form.elements.rooms;
+    if (!saved || !(saved.rooms > 0) || roomsInput.value) return;
+    roomsInput.value = num(saved.rooms);
+    const note = document.getElementById('kpi-handoff');
+    note.textContent = 'DXかんたん診断で入れた客室数（' + num(saved.rooms) + '室）を入れました。販売客室数と客室売上は、PMSや月報の実績を入れてください。';
+    note.hidden = false;
+  }
+
   function setDaysFromMonth() {
     const days = model.daysInMonth(monthInput.value);
     if (days && !daysEdited) daysInput.value = String(days);
@@ -237,12 +249,14 @@
       showErrors({});
       result.hidden = true;
       body.innerHTML = '';
+      document.getElementById('kpi-handoff').hidden = true;
     });
   });
 
   form.querySelector('[data-kpi-sample]').addEventListener('click', () => {
     const sample = model.sample;
     monthInput.value = sample.month;
+    document.getElementById('kpi-handoff').hidden = true;
     form.elements.prefCode.value = sample.prefCode;
     form.elements.facilityType.value = sample.facilityType;
     form.elements.mealsIncluded.checked = sample.mealsIncluded;
@@ -257,6 +271,7 @@
 
   monthInput.value = previousMonth();
   setDaysFromMonth();
+  fillFromDiagnosis();
 
   fetch('data/analysis/lodging-monthly.json', { cache: 'no-store' })
     .then((response) => (response.ok ? response.json() : null))

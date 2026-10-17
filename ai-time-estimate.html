@@ -61,7 +61,7 @@ tool_related:
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&amp;display=swap">
   <link rel="stylesheet" href="css/useful.css?v=20261012shell">
   <link rel="stylesheet" href="css/tool-standard.css?v=20261015guide">
-  <link rel="stylesheet" href="css/ai-time-estimate.css?v=20261017a">
+  <link rel="stylesheet" href="css/ai-time-estimate.css?v=20261017b">
       <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -108,6 +108,7 @@ tool_related:
         <form class="ait-panel" id="ait-form" novalidate>
           <div class="ait-panel__heading"><h3>AIに下書きを任せたい業務を選び、月の件数と1件の時間を入れてください</h3><p>よくある10業務を並べています。初期値は架空の30室の宿の例です。時間はおおよそで大丈夫です。</p></div>
           <p class="ait-privacy"><strong>送信しません</strong>入力した数字はこのページの中だけで計算し、どこにも送りません。このページで生成AIは動きません。</p>
+          <p class="ait-handoff" id="ait-handoff" hidden></p>
           <div class="ait-tasks" id="ait-tasks" role="group" aria-labelledby="ait-tasks-title">
             <p class="visually-hidden" id="ait-tasks-title">業務の一覧</p>
             <div class="ait-tasks__head" aria-hidden="true"><span>業務</span><span>月の件数</span><span>1件の時間</span><span>確認の目安</span></div>
@@ -180,7 +181,7 @@ tool_related:
   </main>
   {% include site-footer.html %}
 <script defer src="js/ai-time-estimate-model.js?v=20261017a"></script>
-<script defer src="js/ai-time-estimate.js?v=20261017a"></script>
+<script defer src="js/ai-time-estimate.js?v=20261017b"></script>
 <script defer src="js/site.js?v=20260909c"></script>
 </body>
 </html>

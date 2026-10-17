@@ -72,3 +72,19 @@ test("numbers typed with commas, full-width digits or units are read", () => {
   assert.ok(Number.isNaN(model.parseNumber("-3")));
   assert.equal(model.MAX_CHANNELS, 8);
 });
+
+test("the diagnosis OTA ratio rescales the table, keeping each group's proportions", () => {
+  const next = model.applyOtaRatio(model.sample.channels, 80);
+  assert.deepEqual(next.map((c) => c.share), [46.7, 20, 13.3, 12.5, 7.5]);
+  assert.equal(Math.round(model.shareTotal(next) * 10) / 10, 100);
+  assert.equal(next[0].name, "国内OTA A");
+  const zeros = model.applyOtaRatio(model.sample.channels.map((c) => ({ ...c, share: 0 })), 60);
+  assert.deepEqual(zeros.map((c) => c.share), [20, 20, 20, 20, 20]);
+  assert.equal(model.applyOtaRatio(model.sample.channels.filter((c) => c.kind !== "ota"), 50), null);
+});
+
+test("annual revenue from the diagnosis needs rooms, ADR and occupancy", () => {
+  assert.equal(model.revenueFromDiagnosis({ rooms: 30, adr: 18000, occupancy: 65 }), 128120000);
+  assert.equal(model.revenueFromDiagnosis({ rooms: 30, adr: null, occupancy: 65 }), null);
+  assert.equal(model.revenueFromDiagnosis(null), null);
+});

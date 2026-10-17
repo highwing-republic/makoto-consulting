@@ -136,9 +136,22 @@
       shown = false;
       showErrors({});
       result.hidden = true;
+      document.getElementById('ait-handoff').hidden = true;
       run();
     });
   });
 
+  // DXかんたん診断で人件費の目安を入れていれば、それを使う（このタブの sessionStorage から読むだけ）
+  function fillFromDiagnosis() {
+    let saved = null;
+    try { saved = JSON.parse(sessionStorage.getItem('hoteldxlab:dx-diagnosis') || 'null'); } catch (error) { saved = null; }
+    if (!saved || !(saved.hourlyCost > 0) || saved.hourlyCost === model.defaults.hourlyCost) return;
+    form.elements.hourlyCost.value = String(saved.hourlyCost);
+    const note = document.getElementById('ait-handoff');
+    note.textContent = 'DXかんたん診断で入れた人件費の目安（1時間' + num(saved.hourlyCost) + '円）を使います。「詳細設定」で変えられます。';
+    note.hidden = false;
+  }
+
+  fillFromDiagnosis();
   run();
 })();
