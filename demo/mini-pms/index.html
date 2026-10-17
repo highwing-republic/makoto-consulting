@@ -108,6 +108,7 @@ table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}
 .arrival ol li.done{color:var(--fg);font-weight:600}
 .arrival ol li.done i{background:var(--accent);border-color:var(--accent);color:#fff}
 .arrival ol li.next{color:var(--fg);font-weight:700}
+.intro.from-web .steps{display:none} /* 公式サイトから来たときは上の案内の4段階に一本化 */
 .arrival ol li.next i{border:2px solid var(--accent);color:var(--accent)}
 .arrival .acts{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 .arrival .acts .note{font-size:12px;color:var(--muted)}
@@ -190,7 +191,40 @@ footer.note{max-width:1100px;margin:14px auto 0;color:var(--muted);font-size:11p
 .card.cannot .chips span{background:var(--warn-soft);border-color:transparent;color:var(--warn)}
 .resetrow{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:8px}
 .resetrow .note{font-size:12px;color:var(--muted)}
-@media (max-width:640px){ .res-table .hide-sm{display:none} }
+/* 予約タブ：PC は左にフォーム（細め）・右に一覧（広め）。スマホは一覧を先に */
+.restab{display:grid;grid-template-columns:minmax(240px,300px) minmax(0,1fr);gap:20px;align-items:start}
+.res-table td.c-act{white-space:nowrap;width:1%}
+.res-table td.c-act .btn{display:block;width:100%;margin:0 0 4px}
+.res-table .sub{display:block;font-size:11px;color:var(--muted)}
+.res-table .memo{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:11px;color:var(--muted);overflow-wrap:anywhere}
+.ledger .web{margin-right:4px}
+.roomcard.focus{box-shadow:0 0 0 2px var(--web)}
+@media (max-width:760px){
+  .restab{grid-template-columns:1fr}
+  .restab .reslist{order:-1}
+}
+/* スマホ：予約一覧と当日台帳は1件ずつのカード表示（横にはみ出さない） */
+@media (max-width:640px){
+  .res-table thead,.ledger thead{display:none}
+  .res-table,.res-table tbody,.ledger table,.ledger tbody{display:block}
+  .res-table tr,.ledger tr{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 10px;padding:10px 6px;border-bottom:1px solid var(--line)}
+  .res-table td,.ledger table td{border:none;padding:0}
+  .res-table td.c-name,.res-table td.c-date,.ledger td.c-name,.ledger td.c-date{grid-column:1}
+  .res-table td.c-room,.res-table td.c-state,.ledger td.c-room,.ledger td.c-state{grid-column:2;text-align:right}
+  .res-table td.c-name{grid-row:1}.res-table td.c-state{grid-row:1}
+  .res-table td.c-date{grid-row:2}.res-table td.c-room{grid-row:2}
+  .res-table td.c-act{grid-column:1/-1;width:auto;display:flex;flex-wrap:wrap;gap:6px}
+  .res-table td.c-act .btn{display:inline-block;width:auto;margin:0;padding:6px 12px;font-size:13px}
+  .res-table tr.focus td{background:none}
+  .res-table tr.focus{background:var(--web-soft);box-shadow:inset 4px 0 0 var(--web)}
+  .res-table tr.focus td:first-child{box-shadow:none}
+  .ledger td.c-room{grid-row:1;grid-column:1;text-align:left}
+  .ledger td.c-state{grid-row:1}
+  .ledger td.c-name{grid-row:2}
+  .ledger td.c-date{grid-row:2;grid-column:2;text-align:right;font-size:12px}
+  .ledger td.c-memo{grid-column:1/-1;font-size:12px}
+  .ledger td.c-memo:empty{display:none}
+}
 </style>
 </head>
 <body style="--lab-demo-bar-bleed:16px">
@@ -224,9 +258,9 @@ footer.note{max-width:1100px;margin:14px auto 0;color:var(--muted);font-size:11p
   </nav>
 
   <section class="panel" id="tab-res">
-    <div class="grid2">
+    <div class="restab">
       <div>
-        <h2>新規予約</h2>
+        <h2>電話・窓口の予約を登録</h2>
         <form id="resForm">
           <div class="row">
             <label>宿泊者名（必須）<input id="fName" required placeholder="例：田中物産 佐藤様"></label>
@@ -249,12 +283,12 @@ footer.note{max-width:1100px;margin:14px auto 0;color:var(--muted);font-size:11p
           <button class="btn primary" type="submit">予約を登録</button>
         </form>
       </div>
-      <div style="min-width:0">
+      <div class="reslist" style="min-width:0">
         <h2>予約一覧</h2>
         <label style="font-size:12px;color:var(--muted)"><input type="checkbox" id="showCxl" style="vertical-align:-2px"> キャンセルも表示</label>
-        <div style="overflow-x:auto;margin-top:6px">
+        <div style="margin-top:6px">
         <table class="res-table"><thead><tr>
-          <th>宿泊者</th><th>IN / OUT</th><th class="hide-sm">泊</th><th class="hide-sm">人数</th><th>部屋</th><th>状態</th><th></th>
+          <th>宿泊者</th><th>日程</th><th>部屋</th><th>状態</th><th>操作</th>
         </tr></thead><tbody id="resRows"></tbody></table>
         </div>
       </div>
@@ -389,7 +423,7 @@ function setStatus(r, status){
   lastAssign = null; // 状態が変わったら、直前の割当はもう取り消せない
   save(); renderAll();
   const room = r.room ? "（" + r.room + "号室）" : "";
-  toast(status === "in" ? r.name + " をチェックインしました" + room + "。部屋割り表の帯が濃い青（在室）に変わります。"
+  toast(status === "in" ? r.name + " をチェックインしました" + room + "。在室になりました。"
       : status === "out" ? r.name + " をチェックアウトしました" + room + "。"
       : r.name + " の予約をキャンセルしました。");
 }
@@ -451,7 +485,7 @@ function renderRes(){
   tb.textContent = "";
   const list = state.reservations.filter(r => showCxl || active(r))
     .slice().sort((a,b) => a.inDate < b.inDate ? -1 : 1);
-  if(!list.length){ tb.innerHTML = '<tr><td colspan="7" class="empty">予約はまだありません。左のフォームから登録してください。</td></tr>'; return; }
+  if(!list.length){ tb.innerHTML = '<tr><td colspan="5" class="empty">予約はまだありません。フォームから登録してください。</td></tr>'; return; }
   list.forEach(r => {
     const tr = document.createElement("tr");
     if(r.status === "cancelled") tr.className = "cxl";
@@ -459,17 +493,17 @@ function renderRes(){
     const roomCell = r.status === "cancelled" ? "—"
       : (r.room ? '<span class="pill ok">' + r.room + "</span>" : '<span class="pill todo">未割当</span>');
     tr.innerHTML =
-      "<td>" + (r.source === "web" ? '<span class="pill web">公式サイト予約</span><br>' : "") + esc(r.name) + (r.memo ? '<div style="font-size:11px;color:var(--muted)">' + esc(r.memo) + "</div>" : "") + "</td>" +
-      "<td>" + mdLabel(r.inDate) + " →<br>" + mdLabel(r.outDate) + "</td>" +
-      '<td class="hide-sm">' + nights(r) + "</td>" +
-      '<td class="hide-sm">' + r.pax + "名</td>" +
-      "<td>" + roomCell + (r.typePref ? '<div style="font-size:11px;color:var(--muted)">希望:' + esc(r.typePref) + "</div>" : "") + "</td>" +
-      '<td><span class="pill ' + ST_PILL[r.status] + '">' + ST_LABEL[r.status] + "</span></td>" +
-      "<td></td>";
+      '<td class="c-name">' + (r.source === "web" ? '<span class="pill web">公式サイト予約</span><br>' : "") + "<b>" + esc(r.name) + "</b>" +
+        (r.memo ? '<span class="memo" title="' + esc(r.memo) + '">' + esc(r.memo) + "</span>" : "") + "</td>" +
+      '<td class="c-date">' + mdLabel(r.inDate) + " → " + mdLabel(r.outDate) +
+        '<span class="sub">' + nights(r) + "泊・" + r.pax + "名</span></td>" +
+      '<td class="c-room">' + roomCell + (r.typePref ? '<span class="sub">希望:' + esc(r.typePref) + "</span>" : "") + "</td>" +
+      '<td class="c-state"><span class="pill ' + ST_PILL[r.status] + '">' + ST_LABEL[r.status] + "</span></td>" +
+      '<td class="c-act"></td>';
     const act = tr.lastElementChild;
     const mkBtn = (label, fn) => {
       const b = document.createElement("button");
-      b.className = "btn small"; b.textContent = label; b.style.margin = "0 4px 4px 0";
+      b.className = "btn small"; b.textContent = label;
       b.addEventListener("click", fn); act.appendChild(b);
     };
     if(r.status === "booked"){
@@ -677,7 +711,8 @@ function renderBoard(){
         if(cls === "vacant") cls = "arr";
         lines.push('<span class="pill todo">本日到着</span> <span class="guest">' + esc(arriving.name) + "</span>");
       }
-      card.className = "roomcard " + cls;
+      const isFocus = focusNo && [cur, arriving].some(x => x && x.bookingNo === focusNo);
+      card.className = "roomcard " + cls + (isFocus ? " focus" : "");
       card.innerHTML = '<div class="top"><span class="no">' + rm.no + '</span><span class="typ">' + rm.type + "・" + rm.cap + "名</span></div>" +
         (lines.length ? lines.map(l => "<div>" + l + "</div>").join("") : '<div class="guest" style="color:var(--muted)">空室</div>');
       grid.appendChild(card);
@@ -708,14 +743,15 @@ function renderLedger(){
     if(!rows.length){ div.innerHTML += '<div class="empty">該当なし</div>'; }
     else {
       const t = document.createElement("table");
-      t.innerHTML = "<thead><tr><th>部屋</th><th>宿泊者</th><th>状態</th><th>人数</th><th>IN→OUT</th><th>メモ</th></tr></thead>";
+      t.innerHTML = "<thead><tr><th>部屋</th><th>宿泊者</th><th>状態</th><th>IN→OUT</th><th>メモ</th></tr></thead>";
       const tb = document.createElement("tbody");
       rows.forEach(r => {
         const tr = document.createElement("tr");
-        tr.innerHTML = "<td>" + (r.room ? "<b>" + r.room + "</b>" : '<span class="pill todo">未割当</span>') + "</td>" +
-          "<td>" + esc(r.name) + "</td><td>" + stFn(r) + "</td><td>" + r.pax + "名</td>" +
-          "<td>" + mdLabel(r.inDate) + "→" + mdLabel(r.outDate) + "</td>" +
-          '<td style="color:var(--muted)">' + esc(r.memo || "") + "</td>";
+        tr.innerHTML = '<td class="c-room">' + (r.room ? "<b>" + r.room + "</b>" : '<span class="pill todo">未割当</span>') + "</td>" +
+          '<td class="c-name">' + (r.source === "web" ? '<span class="pill web">公式サイト予約</span>' : "") + esc(r.name) + "・" + r.pax + "名</td>" +
+          '<td class="c-state">' + stFn(r) + "</td>" +
+          '<td class="c-date">' + mdLabel(r.inDate) + "→" + mdLabel(r.outDate) + "</td>" +
+          '<td class="c-memo" style="color:var(--muted)">' + esc(r.memo || "") + "</td>";
         tb.appendChild(tr);
       });
       t.appendChild(tb); div.appendChild(t);
@@ -764,9 +800,18 @@ function renderArrival(){
   } else if(r.status === "booked"){
     mk("チェックインする", () => setStatus(r, "in"), true);
     note(r.inDate > T0 ? "到着日は " + mdLabel(r.inDate) + " ですが、デモでは今すぐ試せます。" : "到着したお客様をチェックインします。");
-  } else {
+  } else if(r.status === "cancelled"){
     const a = document.createElement("a"); a.href = "/demo/booking/"; a.textContent = "もう一度、公式サイトから予約する →"; acts.appendChild(a);
-    if(r.status !== "cancelled") note("客室状況表と当日台帳にも反映されています。");
+  } else {
+    // チェックイン後：その結果が表れる画面へ案内する（到着日が今日なら客室状況表、先の日なら当日台帳のその日）
+    const showLedger = () => { document.getElementById("ledgerDate").value = r.inDate; switchTab("ledger");
+      document.getElementById("tab-ledger").scrollIntoView({behavior:"smooth", block:"start"}); };
+    if(r.inDate === T0 && r.status === "in"){
+      mk("客室状況表で見る", () => { switchTab("board");
+        document.getElementById("tab-board").scrollIntoView({behavior:"smooth", block:"start"}); }, true);
+      mk("当日台帳で見る", showLedger);
+    } else mk(mdLabel(r.inDate) + " の当日台帳で見る", showLedger, true);
+    const a = document.createElement("a"); a.href = "/demo/booking/"; a.textContent = "もう一度、公式サイトから予約する →"; acts.appendChild(a);
   }
 }
 
@@ -790,6 +835,7 @@ document.getElementById("btnReset").addEventListener("click", () => {
 });
 
 state = load();
+if(focusNo) document.querySelector(".intro").classList.add("from-web");
 setDefaultDates();
 initBlockForm();
 document.getElementById("ledgerDate").value = T0;
