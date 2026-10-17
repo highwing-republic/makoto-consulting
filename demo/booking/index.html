@@ -214,7 +214,7 @@ footer.note a{color:var(--gold)}
   <section class="card" id="s4" hidden>
     <h2 data-t="h4">ご予約内容の確認</h2>
     <table class="sum" id="confirmTable"></table>
-    <p class="notice" data-t="ntPay">お支払い：現地精算（デモのためオンライン決済はありません）</p>
+    <p class="notice" data-t="ntPay">お支払い：現地精算（現金・クレジットカード）。入湯税（1名1泊150円）は別に現地でいただきます。デモのためオンライン決済はありません</p>
     <div class="row">
       <button class="btn" id="btnBack3" data-t="bBack2">戻る</button>
       <button class="btn primary" id="btnBook" data-t="bBook">予約を確定する</button>
@@ -254,7 +254,7 @@ footer.note a{color:var(--gold)}
   本ページは<a href="/">宿泊DXラボ</a>の体験デモです。空室は<a href="/demo/mini-pms/">簡易PMSデモ</a>と同じ部屋データ（全20室：ツイン8・シングル8・和室4）から判定し、確定した予約はPMSデモの予約一覧に連動します（お使いのブラウザ内のみ）。残室数は「割当済みの部屋・販売止め・未割当の同タイプ希望予約」を差し引いた概算です。料金・ホテル名は架空です。
 </footer>
 
-<script src="/js/suiren-demo-data.js?v=20261016"></script>
+<script src="/js/suiren-demo-data.js?v=20261017"></script>
 <script>
 "use strict";
 /* ---------- i18n (ja/en) ---------- */
@@ -275,7 +275,7 @@ phName:["例：宿泊 太郎","e.g. Taro Yamada"], phReq:["到着が遅くなる
 bBack:["戻る","Back"], bConfirm:["確認画面へ","Review booking"],
 ntPrivacy:["デモのため入力内容はお使いのブラウザ内にのみ保存され、どこにも送信されません。実在の個人情報は入力しないでください。","Demo only: your input is stored in this browser and sent nowhere. Please do not enter real personal information."],
 h4:["ご予約内容の確認","Review your booking"],
-ntPay:["お支払い：現地精算（デモのためオンライン決済はありません）","Payment: at the hotel (no online payment in this demo)"],
+ntPay:["お支払い：現地精算（現金・クレジットカード）。入湯税（1名1泊150円）は別に現地でいただきます。デモのためオンライン決済はありません","Payment: at the hotel (cash or credit card). The bathing tax (¥150 per person per night) is paid separately at the hotel. No online payment in this demo"],
 bBack2:["戻る","Back"], bBook:["予約を確定する","Confirm booking"],
 h5:["ご予約ありがとうございます","Thank you — booking confirmed"],
 doneLabel:["予約番号（照会・キャンセルに使います）","Booking number (for lookup & cancellation)"],
@@ -349,13 +349,9 @@ const mdLabel = s=>{const d=new Date(s+"T00:00:00");
 const yen = n => "¥" + n.toLocaleString("ja-JP");
 
 const ROOMS = SuirenDemo.ROOMS;
-// 1室1泊の料金（税・サービス料込み）。泊まる人数で変わる。公式サイト（scripts/build_demo_hotel.py）と同じ値
-const TYPES = [
-  {type:"シングル", cap:1, rates:{1:8000}},
-  {type:"ツイン",   cap:2, rates:{1:12000, 2:16000}},
-  {type:"和室",     cap:4, rates:{1:16000, 2:20000, 3:22000, 4:24000}}
-];
-const BF = 1500;
+// 1室1泊の料金（税・サービス料込み、人数で変わる）は /js/suiren-demo-data.js の料金表を PMS の精算と共用
+const TYPES = SuirenDemo.TYPES;
+const BF = SuirenDemo.BREAKFAST;
 const typeName = ty => L ? ROOM_I18N[ty].en : ty;
 
 const load = SuirenDemo.load;
@@ -494,6 +490,7 @@ document.getElementById("btnBook").addEventListener("click", () => {
     pax: q.pax, inDate: q.inD, outDate: q.outD, typePref: q.type,
     memo: "Web予約 " + no + (L ? "（英語サイト経由）" : "") + "／" + (q.plan === "bf" ? "朝食付き" : "素泊まり") + "／" + yen(c.total) +
           "／TEL:" + tel + (mail ? "／" + mail : "") + (req ? "／要望：" + req : ""),
+    plan: q.plan, roomTotal: c.roomTotal, // PMS の精算で使う（予約時に示した宿泊料金のまま請求する）
     room: null, status: "booked", bookingNo: no, source: "web", lang: L ? "en" : "ja"
   });
   if(!save(state)){ msg.textContent = t("errSave"); return; }

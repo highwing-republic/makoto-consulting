@@ -211,7 +211,10 @@ def test_after_site_states_the_facts_the_report_says_it_does() -> None:
     for name in (soup.title.get_text(), soup.h1.get_text()):
         assert "蓮池温泉" in name and "ホテル翠蓮" in name, name
     booking = read("demo/booking/index.html")
-    assert "const BF = 1500;" in booking and "現地精算" in booking
+    # 朝食料金は予約エンジンと PMS の精算で共用する js/suiren-demo-data.js にある
+    shared = read("js/suiren-demo-data.js")
+    assert "const BREAKFAST = 1500;" in shared and "const BF = SuirenDemo.BREAKFAST;" in booking
+    assert "const BATH_TAX = 150;" in shared and "現地精算" in booking
     assert "朝食付き" in booking and "夕食" not in booking
 
 
