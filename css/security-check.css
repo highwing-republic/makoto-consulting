@@ -66,7 +66,46 @@
 .sec-good{padding:20px 22px;border-left:4px solid var(--lab-teal);border-radius:12px;background:#fff;font-size:15px;line-height:1.85}
 .sec-result__tools{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px}
 
+/* 事故のときの連絡先シート。画面で書き込み、A4縦1枚に印刷する。 */
+.sec-sheet-section{scroll-margin-top:72px}
+.sec-sheet-head{max-width:860px}
+.sec-sheet-head h2{margin:0;font-family:var(--sans);font-size:clamp(22px,2.4vw,28px);font-weight:700;line-height:1.45}
+.sec-sheet-head p{margin:12px 0 0;font-size:15px;line-height:1.9}
+.sec-sheet-head .sec-sheet-privacy{display:flex;align-items:center;gap:14px;padding:14px 18px;border:1px solid #c8dce5;border-radius:10px;background:#eef5f7;color:#4a6170;font-size:12px;line-height:1.7}
+.sec-sheet-privacy strong{flex:none;padding:3px 8px;border-radius:4px;background:var(--lab-teal);color:#fff;font-size:11px;letter-spacing:.04em}
+.sec-sheet{margin-top:26px;padding:clamp(22px,4vw,40px);border:1px solid var(--line);border-top:4px solid #c06a45;border-radius:16px;background:#fff;color:var(--ink)}
+.sec-sheet input{width:100%;min-width:0;height:40px;padding:0 10px;border:1px solid #b9c9d2;border-radius:6px;background:#fff;color:var(--ink);font:inherit;font-size:15px}
+.sec-sheet input:focus-visible,.sec-sheet button:focus-visible{outline:2px solid var(--lab-focus);outline-offset:2px}
+.sec-sheet input::placeholder{color:#9aa8b0}
+.sec-sheet__top{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:14px 28px;padding-bottom:18px;border-bottom:2px solid var(--lab-navy)}
+.sec-sheet__top h3{margin:0;font-family:var(--sans);font-size:clamp(20px,2.2vw,24px);font-weight:700}
+.sec-sheet__meta{display:grid;grid-template-columns:1.6fr 1fr 1fr;gap:12px;flex:1 1 520px;max-width:640px}
+.sec-sheet__meta label{display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:700;color:var(--ink-soft)}
+.sec-sheet__first{margin-top:20px;padding:16px 20px;border-radius:10px;background:#fbf3ef}
+.sec-sheet__first h4{margin:0 0 6px;font-size:15px;font-weight:700}
+.sec-sheet__first ol{margin:0;padding-left:1.4em;font-size:14px;line-height:1.85}
+.sec-sheet__table{margin-top:20px}
+.sec-sheet table{width:100%;border-collapse:collapse;font-size:14px}
+.sec-sheet thead th{padding:9px 10px;border-bottom:1px solid var(--lab-navy);background:#f4f8fa;color:var(--ink-soft);font-size:12px;text-align:left}
+.sec-sheet tbody th,.sec-sheet tbody td{padding:9px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+.sec-sheet tbody th{width:19%;font-size:14px;line-height:1.6}
+.sec-sheet__when{width:20%;color:var(--ink-soft);font-size:13px;line-height:1.6}
+.sec-sheet__fixed span{display:block;margin-bottom:6px;font-size:13px;line-height:1.7}
+.sec-sheet__note{margin:14px 0 0;color:var(--ink-soft);font-size:12px}
+.sec-sheet__actions{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:22px}
+.sec-sheet__actions .button{min-width:200px;font-size:14px}
+
 @media(max-width:900px){.sec-areas{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media screen and (max-width:760px){
+  .sec-sheet__meta{grid-template-columns:1fr;flex-basis:100%}
+  .sec-sheet table,.sec-sheet tbody,.sec-sheet tr,.sec-sheet tbody th,.sec-sheet tbody td{display:block;width:auto}
+  .sec-sheet thead{display:none}
+  .sec-sheet tbody tr{padding:12px 0;border-bottom:1px solid var(--line)}
+  .sec-sheet tbody th,.sec-sheet tbody td{padding:4px 0;border:0}
+  .sec-sheet tbody td[data-label]:before{content:attr(data-label);display:block;margin-bottom:2px;color:var(--ink-soft);font-size:12px;font-weight:700}
+  .sec-sheet-head .sec-sheet-privacy{align-items:flex-start;flex-direction:column;gap:8px}
+  .sec-sheet__actions .button{width:100%}
+}
 @media(max-width:620px){
   .sec-head{align-items:flex-start;flex-direction:column;gap:6px}
   .sec-question{padding:18px 14px}
@@ -79,7 +118,24 @@
   .sec-todo li:before{left:14px}
 }
 @media print{
-  .sec-panel,.sec-result__tools{display:none}
+  .sec-panel,.sec-result__tools,.sec-item-link{display:none}
+  body:not(.sec-printing-sheet) .sec-sheet-section{display:none}
+  body.sec-printing-sheet .skip-link,body.sec-printing-sheet .site-header,body.sec-printing-sheet .site-footer,body.sec-printing-sheet main>:not(.sec-sheet-section){display:none!important}
+  body.sec-printing-sheet .sec-sheet-section{padding:0;background:#fff}
+  body.sec-printing-sheet .sec-sheet-head,.sec-sheet__actions,.sec-sheet__note{display:none}
+  .sec-sheet{margin:0;padding:0;border:0;font-size:12px}
+  .sec-sheet input{height:auto;padding:2px 0;border:0;border-bottom:1px solid #999;border-radius:0;font-size:12px}
+  .sec-sheet table{table-layout:fixed;font-size:10.5px}
+  .sec-sheet thead th{padding:5px 6px;background:#fff;font-size:10px}
+  .sec-sheet tbody th,.sec-sheet tbody td{padding:5px 6px;border-bottom:1px solid #999;line-height:1.45}
+  .sec-sheet tbody th{width:22%;font-size:11px}
+  .sec-sheet__when{width:22%;font-size:10px}
+  .sec-sheet__fixed span{margin-bottom:2px;font-size:10px;line-height:1.5}
+  .sec-sheet__top{padding-bottom:10px}
+  .sec-sheet__first{margin-top:12px}
+  .sec-sheet__table{margin-top:12px}
+  .sec-sheet__first{padding:10px 12px;border:1px solid #999;background:#fff}
+  .sec-sheet__first ol{font-size:11.5px;line-height:1.7}
   .sec-summary{background:#fff;color:#000;border:1px solid #999}
   .sec-summary b,.sec-summary__headline,.sec-areas strong,.sec-areas span{color:#000}
 }

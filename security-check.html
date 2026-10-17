@@ -1,7 +1,7 @@
 ---
 # Built by Jekyll: the shared header and footer come from _includes/.
 tool: security-check
-tool_purpose: 旅館・ホテルで実際に起きた被害（OTA管理画面の乗っ取り、予約者を装ったメール、ランサムウェアなど）をもとにした10問に答えると、今週やること3つと、次に見直すことが分かります。点数やランクは出しません。
+tool_purpose: 旅館・ホテルで実際に起きた被害（OTA管理画面の乗っ取り、予約者を装ったメール、ランサムウェアなど）をもとにした10問に答えると、今週やること3つと、次に見直すことが分かります。事故のときの連絡先をまとめて印刷できるシートも付いています。点数やランクは出しません。
 tool_scope:
   - label: 対象
     text: 情報システムの担当者がいない小規模な旅館・ホテル。フロント・事務所の運用を想定しています。
@@ -21,6 +21,12 @@ tool_sources:
   - name: 漏えい等の報告と本人への通知
     publisher: 個人情報保護委員会「漏えい等報告・本人への通知の義務化について」
     url: https://www.ppc.go.jp/news/kaiseihou_feature/roueitouhoukoku_gimuka/
+  - name: サイバー事案の相談窓口
+    publisher: 警察庁「サイバー事案に関する相談窓口」（都道府県警察の窓口とオンライン受付）
+    url: https://www.npa.go.jp/bureau/cyber/soudan.html
+  - name: 企業組織向けの相談窓口
+    publisher: IPA「企業組織向けサイバーセキュリティ相談窓口」
+    url: https://www.ipa.go.jp/security/support/soudan.html
   - name: 宿泊者名簿の保存
     publisher: 厚生労働省 旅館業法施行規則 第4条の2（作成の日から3年間保存）
     url: https://www.mhlw.go.jp/web/t_doc?dataId=79090000&dataType=0&pageNo=1
@@ -46,7 +52,7 @@ tool_guides:
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>宿のセキュリティ10問チェック｜旅館・ホテルの情報セキュリティ対策を無料で確認｜宿泊DXラボ</title>
-  <meta name="description" content="旅館・ホテル向けの情報セキュリティ10問チェック。OTA管理画面の乗っ取りや予約者を装ったメールなど、宿で実際に起きた被害から作った10問に答えると、今週やること3つが分かります。登録不要・無料。">
+  <meta name="description" content="旅館・ホテル向けの情報セキュリティ10問チェック。OTA管理画面の乗っ取りや予約者を装ったメールなど、宿で実際に起きた被害から作った10問に答えると、今週やること3つが分かります。事故のときの連絡先シートも印刷できます。登録不要・無料。">
   <meta name="robots" content="index,follow,max-image-preview:large">
   <link rel="canonical" href="https://lab.ugatta-llc.com/security-check.html">
   <meta property="og:locale" content="ja_JP">
@@ -67,7 +73,7 @@ tool_guides:
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&amp;display=swap">
   <link rel="stylesheet" href="css/useful.css?v=20261012shell">
   <link rel="stylesheet" href="css/tool-standard.css?v=20261015guide">
-  <link rel="stylesheet" href="css/security-check.css?v=20261017b">
+  <link rel="stylesheet" href="css/security-check.css?v=20261017sheet">
       <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -146,12 +152,58 @@ tool_guides:
       </div>
       <noscript><p class="tool-disclaimer">結果の表示にはJavaScriptを有効にしてください。質問はこのまま、セキュリティ対策の確認リストとしても使えます。</p></noscript>
     </div></section>
+    <section class="section sec-sheet-section" id="contact-sheet" aria-labelledby="sec-sheet-title"><div class="container">
+      <div class="sec-sheet-head"><h2 id="sec-sheet-title">事故のときの連絡先シート</h2>
+        <p>Q10の「連絡先を1枚にまとめ、フロントに置く」を、ここで終わらせられます。空欄を画面で埋めてから印刷するか、印刷してから手で書き込んでください。</p>
+        <p class="sec-sheet-privacy"><strong>送信しません</strong>入力した内容は送信も保存もしません。ページを閉じると消えるので、印刷してから閉じてください。パスワードは書かないでください。</p></div>
+      <form class="sec-sheet" id="sec-sheet" novalidate>
+        <div class="sec-sheet__top">
+          <h3>事故のときの連絡先</h3>
+          <div class="sec-sheet__meta">
+            <label><span>宿の名前</span><input type="text" autocomplete="off" name="inn"></label>
+            <label><span>記入日</span><input type="text" autocomplete="off" name="date" placeholder="2026年10月17日"></label>
+            <label><span>担当者</span><input type="text" autocomplete="off" name="person"></label>
+          </div>
+        </div>
+        <div class="sec-sheet__first">
+          <h4>最初にやること</h4>
+          <ol>
+            <li>あわてて消したり電源を切ったりせず、いつ・何が起きたかをメモする。おかしな画面は写真に撮る。</li>
+            <li>様子のおかしいパソコンは、LANケーブルを抜くかWi-Fiを切って、ネットワークから外す。</li>
+            <li>乗っ取られた管理画面は、別の端末からパスワードを変え、2段階認証を設定する。</li>
+            <li>下の連絡先に、社内の責任者から順に連絡する。</li>
+          </ol>
+        </div>
+        <div class="sec-sheet__table">
+          <table>
+            <thead><tr><th scope="col">連絡先</th><th scope="col">こんなとき</th><th scope="col">名前・窓口</th><th scope="col">電話・メール</th><th scope="col">契約番号・ID</th></tr></thead>
+            <tbody>
+              <tr data-sheet-row="owner"><th scope="row">社内の責任者</th><td class="sec-sheet__when">最初に連絡する</td><td data-label="名前・窓口"><input type="text" autocomplete="off" name="name:owner" aria-label="社内の責任者の名前・窓口"></td><td data-label="電話・メール"><input type="text" autocomplete="off" name="tel:owner" aria-label="社内の責任者の電話・メール"></td><td data-label="契約番号・ID"><input type="text" autocomplete="off" name="id:owner" aria-label="社内の責任者の契約番号・ID"></td></tr>
+              <tr data-sheet-row="ota1"><th scope="row">OTA（予約サイト）①</th><td class="sec-sheet__when">管理画面の乗っ取り、お客様への偽のメッセージ</td><td data-label="名前・窓口"><input type="text" autocomplete="off" name="name:ota1" aria-label="OTA（予約サイト）①の名前・窓口"></td><td data-label="電話・メール"><input type="text" autocomplete="off" name="tel:ota1" aria-label="OTA（予約サイト）①の電話・メール"></td><td data-label="契約番号・ID"><input type="text" autocomplete="off" name="id:ota1" aria-label="OTA（予約サイト）①の契約番号・ID"></td></tr>
+              <tr data-sheet-row="ota2"><th scope="row">OTA（予約サイト）②</th><td class="sec-sheet__when">同上</td><td data-label="名前・窓口"><input type="text" autocomplete="off" name="name:ota2" aria-label="OTA（予約サイト）②の名前・窓口"></td><td data-label="電話・メール"><input type="text" autocomplete="off" name="tel:ota2" aria-label="OTA（予約サイト）②の電話・メール"></td><td data-label="契約番号・ID"><input type="text" autocomplete="off" name="id:ota2" aria-label="OTA（予約サイト）②の契約番号・ID"></td></tr>
+              <tr data-sheet-row="pms"><th scope="row">サイトコントローラー・PMSの会社</th><td class="sec-sheet__when">ログインできない、予約や在庫がおかしい</td><td data-label="名前・窓口"><input type="text" autocomplete="off" name="name:pms" aria-label="サイトコントローラー・PMSの会社の名前・窓口"></td><td data-label="電話・メール"><input type="text" autocomplete="off" name="tel:pms" aria-label="サイトコントローラー・PMSの会社の電話・メール"></td><td data-label="契約番号・ID"><input type="text" autocomplete="off" name="id:pms" aria-label="サイトコントローラー・PMSの会社の契約番号・ID"></td></tr>
+              <tr data-sheet-row="site"><th scope="row">公式サイト・予約エンジンの会社</th><td class="sec-sheet__when">サイトの書き換え、予約フォームの異常</td><td data-label="名前・窓口"><input type="text" autocomplete="off" name="name:site" aria-label="公式サイト・予約エンジンの会社の名前・窓口"></td><td data-label="電話・メール"><input type="text" autocomplete="off" name="tel:site" aria-label="公式サイト・予約エンジンの会社の電話・メール"></td><td data-label="契約番号・ID"><input type="text" autocomplete="off" name="id:site" aria-label="公式サイト・予約エンジンの会社の契約番号・ID"></td></tr>
+              <tr data-sheet-row="card"><th scope="row">カード会社・決済代行会社</th><td class="sec-sheet__when">カード情報が漏れたおそれ</td><td data-label="名前・窓口"><input type="text" autocomplete="off" name="name:card" aria-label="カード会社・決済代行会社の名前・窓口"></td><td data-label="電話・メール"><input type="text" autocomplete="off" name="tel:card" aria-label="カード会社・決済代行会社の電話・メール"></td><td data-label="契約番号・ID"><input type="text" autocomplete="off" name="id:card" aria-label="カード会社・決済代行会社の契約番号・ID"></td></tr>
+              <tr data-sheet-row="insurance"><th scope="row">保険会社（サイバー保険）</th><td class="sec-sheet__when">加入している場合</td><td data-label="名前・窓口"><input type="text" autocomplete="off" name="name:insurance" aria-label="保険会社（サイバー保険）の名前・窓口"></td><td data-label="電話・メール"><input type="text" autocomplete="off" name="tel:insurance" aria-label="保険会社（サイバー保険）の電話・メール"></td><td data-label="契約番号・ID"><input type="text" autocomplete="off" name="id:insurance" aria-label="保険会社（サイバー保険）の契約番号・ID"></td></tr>
+              <tr data-sheet-row="police"><th scope="row">警察（都道府県警察のサイバー事案の相談窓口）</th><td class="sec-sheet__when">不正アクセス、ランサムウェア、金銭の要求、詐欺</td><td colspan="3" class="sec-sheet__fixed"><span>警察庁のサイトにオンラインの受付もあります。緊急でない相談は #9110、命に関わるときは110番。</span><input type="text" autocomplete="off" name="memo:police" aria-label="警察（都道府県警察のサイバー事案の相談窓口）の電話番号・メモ"></td></tr>
+              <tr data-sheet-row="ppc"><th scope="row">個人情報保護委員会</th><td class="sec-sheet__when">個人情報が漏れた、漏れたおそれがある</td><td colspan="3" class="sec-sheet__fixed"><span>漏えい等の報告は委員会のWebサイトで受け付けています（速報は概ね3〜5日以内）。相談は個人情報保護法相談ダイヤル 03-6457-9849（平日9:30〜17:30）。</span><input type="text" autocomplete="off" name="memo:ppc" aria-label="個人情報保護委員会の電話番号・メモ"></td></tr>
+              <tr data-sheet-row="ipa"><th scope="row">IPA（情報処理推進機構）</th><td class="sec-sheet__when">どう対応すればよいか迷ったとき</td><td colspan="3" class="sec-sheet__fixed"><span>企業組織向けサイバーセキュリティ相談窓口に、メールで相談できます（IPAのWebサイトから）。</span><input type="text" autocomplete="off" name="memo:ipa" aria-label="IPA（情報処理推進機構）の電話番号・メモ"></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="sec-sheet__note">公的な窓口の連絡先は2026年10月時点の公表情報です。番号が変わることがあるため、年に1回は見直してください。</p>
+        <div class="sec-sheet__actions">
+          <button class="button" type="button" data-print-sheet>このシートを印刷する</button>
+          <button class="sec-chip sec-chip--quiet" type="reset">空欄に戻す</button>
+        </div>
+      </form>
+    </div></section>
     {% include tool-sources.html %}
     {% include tool-related.html %}
   </main>
   {% include site-footer.html %}
 <script defer src="js/security-check-model.js?v=20261017a"></script>
-<script defer src="js/security-check.js?v=20261017b"></script>
+<script defer src="js/security-check.js?v=20261017sheet"></script>
 <script defer src="js/site.js?v=20260909c"></script>
 </body>
 </html>

@@ -37,7 +37,8 @@
 
   // 項目から続けて使えるラボのツール
   const itemLinks = {
-    'ai-rule': { href: '/ai-time-estimate.html', label: '生成AIに任せる業務と浮く時間を見積もる（生成AI時短みつもり）' }
+    'ai-rule': { href: '/ai-time-estimate.html', label: '生成AIに任せる業務と浮く時間を見積もる（生成AI時短みつもり）' },
+    incident: { href: '#contact-sheet', label: 'このページの「事故のときの連絡先シート」に書き込んで印刷する' }
   };
 
   function itemLink(item) {
@@ -114,4 +115,18 @@
   });
 
   updateProgress(readAnswers());
+
+  // 事故のときの連絡先シート: シートだけを印刷する。入力は保存しない。
+  const sheet = document.getElementById('sec-sheet');
+  const printSheet = sheet && sheet.querySelector('[data-print-sheet]');
+  if (printSheet) {
+    const done = () => document.body.classList.remove('sec-printing-sheet');
+    window.addEventListener('afterprint', done);
+    printSheet.addEventListener('click', () => {
+      document.body.classList.add('sec-printing-sheet');
+      if (globalThis.LabAnalytics) globalThis.LabAnalytics.track('result_export', { tool_id: 'security-check', export_type: 'contact_sheet' });
+      window.print();
+      setTimeout(done, 1000);
+    });
+  }
 })();
