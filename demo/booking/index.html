@@ -384,8 +384,9 @@ function setStep(n){
   document.querySelectorAll("#steps span").forEach(s => s.classList.toggle("on", +s.dataset.s === n));
   for(let i=1;i<=5;i++) document.getElementById("s"+i).hidden = (i !== n);
 }
-document.getElementById("qIn").value = addDays(T0,1);
-document.getElementById("qOut").value = addDays(T0,2);
+// 初期値は今日から1泊（PMS 側で、そのまま今日の到着として部屋割り・チェックインまで試せる）
+document.getElementById("qIn").value = T0;
+document.getElementById("qOut").value = addDays(T0,1);
 document.getElementById("qIn").min = T0;
 document.getElementById("qOut").min = addDays(T0,1);
 
