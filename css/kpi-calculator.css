@@ -28,7 +28,7 @@
 .kpi-form-error{margin:20px 0 0;color:#9f302c;font-size:14px;font-weight:700}
 .kpi-actions{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:30px}
 .kpi-actions .button{min-width:180px;font-size:14px}
-.kpi-chip{min-height:46px;padding:0 18px;border:1px solid #b9c9d2;border-radius:999px;background:#fff;color:var(--lab-navy);font-size:14px;font-weight:700;cursor:pointer}
+.kpi-chip{display:inline-flex;align-items:center;gap:6px;min-height:46px;text-decoration:none;padding:0 18px;border:1px solid #b9c9d2;border-radius:999px;background:#fff;color:var(--lab-navy);font-size:14px;font-weight:700;cursor:pointer}
 .kpi-chip:hover{border-color:var(--lab-teal)}
 .kpi-chip--quiet{border-color:transparent;background:transparent;color:var(--ink-soft);font-weight:500}
 

@@ -1,0 +1,171 @@
+---
+# Built by Jekyll: the shared header and footer come from _includes/.
+tool: ota-fee-simulator
+tool_purpose: 予約経路（OTA・自社サイト・電話など）ごとの売上の割合と手数料から、1年間に予約経路へ払っている費用をまとめて計算します。自社サイトの割合を上げたときに手元に残る額と、自社予約を増やすためにかけてよい広告費の上限も分かります。
+tool_scope:
+  - label: 対象
+    text: 旅館・ホテルの自施設。1年間の宿泊売上と予約経路ごとの割合で計算します。
+  - label: データ
+    text: 入力した売上・手数料率・固定費だけを使います。計算はこのページ内で行い、入力値は送信しません。
+  - label: 条件
+    text: 初期値の経路名と手数料率は計算の例で、実在のOTAの料率ではありません。契約書や請求書の数字に置き換えてください。
+tool_cta:
+  label: 計算を始める
+  href: "#tool"
+  tool_id: ota-fee-simulator-embed
+tool_sources:
+  - name: 手数料率
+    publisher: 入力値（各予約経路との契約書・請求書）
+    note: 国内のOTAの手数料は公開された一律の料率がなく、施設ごとの契約で決まります。このツールは実在のOTAの料率を持っていません。
+  - name: 計算方法
+    publisher: 宿泊DXラボ。費用 = 売上 ×（手数料率 × 消費税 ＋ ポイント・決済など）＋ 月額の固定費 × 12 で計算します。
+tool_notes:
+  - 計算結果は入力値から機械的に計算した目安です。経営判断の正解や特定の成果を示すものではありません。
+  - OTAは手数料の代わりに、新しいお客様に見つけてもらう場でもあります。OTAの割合を下げることを勧めるツールではありません。
+  - 自社サイトの割合を変えたときの計算は、増えた分が各OTAから今の割合に応じて移り、宿泊単価は変わらないと仮定しています。キャンセル率や経路ごとの単価の違いは含めていません。
+tool_related:
+  - kpi-calculator
+  - booking-engine-demo
+  - dx-diagnosis
+---
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-QS9HSHCY33"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-QS9HSHCY33');gtag('config','GT-M3S9S5D7');</script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OTA手数料シミュレーター｜予約経路別の手数料と自社予約の効果を計算｜宿泊DXラボ</title>
+  <meta name="description" content="旅館・ホテルの予約経路（OTA・自社サイト・電話）ごとの手数料を年間でまとめ、自社サイトの割合を上げたときに手元に残る額と、自社予約にかけてよい広告費の上限を計算できる無料ツール。登録不要。">
+  <meta name="robots" content="index,follow,max-image-preview:large">
+  <link rel="canonical" href="https://lab.ugatta-llc.com/ota-fee-simulator.html">
+  <meta property="og:locale" content="ja_JP">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="宿泊DXラボ">
+  <meta property="og:title" content="OTA手数料シミュレーター｜予約経路別の手数料と自社予約の効果を計算｜宿泊DXラボ">
+  <meta property="og:description" content="予約経路ごとの手数料を年間でまとめ、自社サイトの割合を上げたときの差し引きを計算できる無料ツールです。">
+  <meta property="og:url" content="https://lab.ugatta-llc.com/ota-fee-simulator.html">
+  <meta property="og:image" content="https://lab.ugatta-llc.com/images/og-lab.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="OTA手数料シミュレーター｜宿泊DXラボ">
+  <meta name="twitter:description" content="OTAにいくら払っているか、自社予約を増やすといくら残るかを計算できます。">
+  <meta name="twitter:image" content="https://lab.ugatta-llc.com/images/og-lab.jpg">
+  <meta name="theme-color" content="#17324d">
+  <link rel="icon" type="image/png" href="favicon.png?v=20261013">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&amp;display=swap">
+  <link rel="stylesheet" href="css/useful.css?v=20261012shell">
+  <link rel="stylesheet" href="css/tool-standard.css?v=20261015guide">
+  <link rel="stylesheet" href="css/ota-fee-simulator.css?v=20261017a">
+    <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {"@type": "ListItem", "position": 1, "name": "ホーム", "item": "https://lab.ugatta-llc.com/"},
+          {"@type": "ListItem", "position": 2, "name": "分析・ツール", "item": "https://lab.ugatta-llc.com/#analysis-tools"},
+          {"@type": "ListItem", "position": 3, "name": "OTA手数料シミュレーター", "item": "https://lab.ugatta-llc.com/ota-fee-simulator.html"}
+        ]
+      },
+      {
+        "@type": "WebApplication",
+        "name": "OTA手数料シミュレーター",
+        "url": "https://lab.ugatta-llc.com/ota-fee-simulator.html",
+        "applicationCategory": "BusinessApplication",
+        "operatingSystem": "Web",
+        "isAccessibleForFree": true,
+        "inLanguage": "ja-JP",
+        "description": "旅館・ホテルの予約経路ごとの手数料を年間でまとめ、自社サイトの割合を上げたときの差し引きと、自社予約にかけてよい広告費の上限を計算する無料ツール。",
+        "provider": {
+          "@type": "Organization",
+          "@id": "https://lab.ugatta-llc.com/#organization",
+          "name": "宿泊DXラボ",
+          "url": "https://lab.ugatta-llc.com/"
+        }
+      }
+    ]
+  }
+  </script>
+  <link rel="stylesheet" href="/css/site-shell.css?v=20261012shell">
+  <script src="/js/site-shell.js?v=20261012shell2" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">本文へ移動</a>
+  {% include site-header.html %}
+  <main id="main">
+    <nav class="breadcrumb container" aria-label="パンくずリスト"><ol><li><a href="/">ホーム</a></li><li><a href="/#analysis-tools">分析・ツール</a></li><li aria-current="page">OTA手数料シミュレーター</li></ol></nav>
+    <section class="page-hero tool-page-hero"><div class="container page-hero-grid"><div><span class="scope-badge scope-badge--facility">分析対象：自施設</span><h1>OTA手数料シミュレーター</h1></div><p>予約経路ごとの売上の割合と手数料を入れると、1年間にいくら払っているかと、自社サイトの割合を上げたときに手元に残る額を計算します。登録せずに無料で使えます。</p></div></section>
+    {% include tool-overview.html %}
+    <section class="section section--tint embedded-tool-section" id="tool"><div class="container"><h2 class="visually-hidden">OTA手数料シミュレーター</h2>
+      <div class="ota-app" id="ota-fee-simulator-app">
+        <form class="ota-panel" id="ota-form" novalidate>
+          <div class="ota-panel__heading"><h3>予約経路ごとの売上の割合と手数料を入れてください</h3><p>手数料は契約によって大きく違います。表の初期値は計算の例なので、契約書や請求書の数字に置き換えてください。</p></div>
+          <p class="ota-privacy"><strong>送信しません</strong>入力した数字はこのページの中だけで計算し、どこにも送りません。</p>
+          <p class="ota-handoff" id="ota-handoff" hidden></p>
+          <div class="ota-grid">
+            <label class="ota-field"><span>年間の宿泊売上</span><span class="ota-unit"><input id="ota-revenue" name="annualRevenue" type="text" inputmode="numeric" autocomplete="off" required aria-describedby="ota-hint-revenue"><b>円</b></span><small id="ota-hint-revenue">消費税・入湯税・宿泊税を除いた額。すべての予約経路の合計です</small></label>
+            <label class="ota-field"><span>手数料の消費税</span><select id="ota-tax" name="taxOnFee" aria-describedby="ota-hint-tax"><option value="1">手数料に消費税10%を加える</option><option value="0">加えない（税込みの率を入れる）</option></select><small id="ota-hint-tax">請求書の手数料が税込みなら「加える」のままにします</small></label>
+          </div>
+          <div class="ota-table" role="group" aria-labelledby="ota-table-title">
+            <p class="visually-hidden" id="ota-table-title">予約経路の一覧</p>
+            <div class="ota-table__head" aria-hidden="true"><span>予約経路</span><span>売上の割合</span><span>手数料率</span><span>ポイント・決済など</span><span>月額の固定費</span><span>実効の負担率</span><span></span></div>
+            <div id="ota-channels"></div>
+            <div class="ota-table__foot"><span class="ota-total">合計 <b id="ota-share-total">100%</b></span><button class="ota-add" type="button" id="ota-add">＋ 予約経路を追加</button><span class="ota-total ota-total--rate">全体の負担率 <b id="ota-total-rate">—</b></span></div>
+          </div>
+          <p class="ota-form-error" id="ota-share-error" role="alert" hidden></p>
+          <details class="ota-details" id="ota-invoice">
+            <summary>請求書の金額から手数料率を出す<small>率が分からないとき</small></summary>
+            <div class="ota-invoice">
+              <p>ある月の請求額を、その月のその経路の宿泊売上で割ると、実際に払っている率が分かります。ポイント原資なども請求書に含まれていれば、それも込みの率になります。</p>
+              <div class="ota-grid ota-grid--3">
+                <label class="ota-field"><span>予約経路</span><select id="ota-invoice-channel"></select></label>
+                <label class="ota-field"><span>ある月の請求額（税込み）</span><span class="ota-unit"><input id="ota-invoice-amount" type="text" inputmode="numeric" autocomplete="off"><b>円</b></span></label>
+                <label class="ota-field"><span>同じ月のその経路の宿泊売上</span><span class="ota-unit"><input id="ota-invoice-revenue" type="text" inputmode="numeric" autocomplete="off"><b>円</b></span></label>
+              </div>
+              <p class="ota-callout" id="ota-invoice-answer" aria-live="polite">請求額と売上を入れると、実効の負担率を表示します。</p>
+              <button class="ota-chip" type="button" id="ota-invoice-apply" hidden>この率を表に入れる</button>
+            </div>
+          </details>
+          <p class="ota-form-error" id="ota-form-error" role="alert" hidden></p>
+          <div class="ota-actions">
+            <button class="button" type="submit">計算する</button>
+            <button class="ota-chip" type="button" data-ota-sample>例の数字で試す</button>
+            <button class="ota-chip ota-chip--quiet" type="reset">表を初期値に戻す</button>
+          </div>
+        </form>
+        <section class="ota-result" id="ota-result" aria-labelledby="ota-result-title" tabindex="-1" hidden>
+          <div class="ota-result__head"><h3 id="ota-result-title">いまの手数料</h3><p id="ota-result-scope"></p></div>
+          <div id="ota-result-body" aria-live="polite"></div>
+          <section class="ota-block" aria-labelledby="ota-shift-title">
+            <h4 id="ota-shift-title">自社サイトの割合を変えてみる</h4>
+            <div class="ota-shift">
+              <div class="ota-shift__control">
+                <label for="ota-shift"><span>自社サイトの割合</span><b id="ota-shift-label"></b></label>
+                <input id="ota-shift" type="range" min="0" max="60" step="1" value="10" aria-describedby="ota-shift-hint">
+                <small id="ota-shift-hint">増えた分はOTAから、今の割合に応じて移る想定です</small>
+              </div>
+              <label class="ota-field"><span>自社予約を増やすための費用</span><span class="ota-unit"><input id="ota-acquisition" type="text" inputmode="decimal" autocomplete="off" value="5" aria-describedby="ota-hint-acquisition"><b>%</b></span><small id="ota-hint-acquisition">移ってきた予約の売上に対する広告費など（Googleのホテル広告・メタサーチなど）</small></label>
+            </div>
+            <div id="ota-shift-body" aria-live="polite"></div>
+          </section>
+          <p class="ota-callout ota-callout--warn">OTAは手数料の代わりに、新しいお客様に見つけてもらう場でもあります。OTAの割合を下げることを勧めるツールではありません。自社サイトの料金をOTAより下げる場合は、各OTAとの契約条件を確認してください。</p>
+          <div class="ota-result__tools">
+            <a class="ota-chip" href="/demo/booking/">自社予約の流れを体験する（予約エンジンデモ） <span aria-hidden="true">→</span></a>
+            <button class="ota-chip" type="button" data-print-result data-tool-id="ota-fee-simulator">結果を印刷する</button>
+          </div>
+        </section>
+      </div>
+      <noscript><p class="tool-disclaimer">計算にはJavaScriptを有効にしてください。予約経路ごとの費用は「売上 ×（手数料率 × 1.1 ＋ ポイント・決済などの率）＋ 月額の固定費 × 12」で計算できます。</p></noscript>
+    </div></section>
+    {% include tool-sources.html %}
+    {% include tool-related.html %}
+  </main>
+  {% include site-footer.html %}
+<script defer src="js/ota-fee-simulator-model.js?v=20261017a"></script>
+<script defer src="js/ota-fee-simulator.js?v=20261017a"></script>
+<script defer src="js/site.js?v=20260909c"></script>
+</body>
+</html>

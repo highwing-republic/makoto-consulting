@@ -58,7 +58,7 @@ tool_related:
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&amp;display=swap">
   <link rel="stylesheet" href="css/useful.css?v=20261012shell">
   <link rel="stylesheet" href="css/tool-standard.css?v=20261015guide">
-  <link rel="stylesheet" href="css/kpi-calculator.css?v=20261017b">
+  <link rel="stylesheet" href="css/kpi-calculator.css?v=20261017c">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -141,7 +141,7 @@ tool_related:
         <section class="kpi-result" id="kpi-result" aria-labelledby="kpi-result-title" tabindex="-1" hidden>
           <div class="kpi-result__head"><h3 id="kpi-result-title">計算結果</h3><p id="kpi-result-scope"></p></div>
           <div id="kpi-result-body" aria-live="polite"></div>
-          <div class="kpi-result__tools"><button class="kpi-chip" type="button" data-print-result data-tool-id="kpi-calculator">結果を印刷する</button></div>
+          <div class="kpi-result__tools"><a class="kpi-chip" href="/ota-fee-simulator.html">予約経路の手数料も計算する（OTA手数料シミュレーター） <span aria-hidden="true">→</span></a><button class="kpi-chip" type="button" data-print-result data-tool-id="kpi-calculator">結果を印刷する</button></div>
         </section>
       </div>
       <noscript><p class="tool-disclaimer">計算にはJavaScriptを有効にしてください。客室稼働率は「販売客室数 ÷（客室数 × 営業日数）」、ADRは「客室売上 ÷ 販売客室数」、RevPARは「客室売上 ÷（客室数 × 営業日数）」で計算できます。</p></noscript>
@@ -151,7 +151,7 @@ tool_related:
   </main>
   {% include site-footer.html %}
 <script defer src="js/kpi-calculator-model.js?v=20261017b"></script>
-<script defer src="js/kpi-calculator.js?v=20261017b"></script>
+<script defer src="js/kpi-calculator.js?v=20261017c"></script>
 <script defer src="js/site.js?v=20260909c"></script>
 </body>
 </html>

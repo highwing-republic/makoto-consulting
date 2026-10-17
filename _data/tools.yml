@@ -12,6 +12,12 @@
   group: facility
   tag: 計算ツール
   summary: 1か月の実績から、客室稼働率・ADR・RevPARと損益分岐の稼働率を計算し、都道府県の稼働率と比べます。
+- id: ota-fee-simulator
+  title: OTA手数料シミュレーター
+  url: /ota-fee-simulator.html
+  group: facility
+  tag: 計算ツール
+  summary: 予約経路ごとの手数料を年間でまとめ、自社サイトの割合を上げたときに手元に残る額を計算します。
 - id: ai-inn-sample
   title: AIに聞かれる宿 診断 サンプル
   url: /ai-inn-diagnosis/sample/

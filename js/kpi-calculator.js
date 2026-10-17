@@ -194,9 +194,17 @@
     }
     render(input, model.calculate(input));
     result.hidden = false;
+    remember(input);
     calculated = true;
     if (!tracked) { tracked = true; track('analysis_run'); }
     return true;
+  }
+
+  // OTA手数料シミュレーターで年間売上の目安に使えるよう、月と客室売上だけをこのタブの中に残す（URL には載せない）
+  function remember(input) {
+    try {
+      sessionStorage.setItem('hoteldxlab:kpi-calculator', JSON.stringify({ month: input.month, roomRevenue: input.roomRevenue }));
+    } catch (error) { /* 保存できない環境では引き継がないだけ */ }
   }
 
   function setDaysFromMonth() {
