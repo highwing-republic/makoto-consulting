@@ -58,6 +58,15 @@
 .kpi-block h4{margin:0 0 14px;font-family:var(--sans);font-size:clamp(19px,2vw,22px);font-weight:700;line-height:1.45}
 .kpi-lead{margin:-6px 0 14px;color:var(--ink-soft);font-size:14px}
 .kpi-note{margin:12px 0 0;color:var(--ink-soft);font-size:13px;line-height:1.85}
+.kpi-lead b{color:var(--lab-navy)}
+.kpi-yoy{width:100%;border-collapse:collapse;border:1px solid var(--line);background:#fff;font-size:14px}
+.kpi-yoy th,.kpi-yoy td{padding:11px 14px;border-bottom:1px solid var(--line);text-align:right;font-variant-numeric:tabular-nums}
+.kpi-yoy th:first-child{text-align:left;font-weight:700}
+.kpi-yoy thead th{background:#f4f8fa;color:var(--ink-soft);font-size:12px}
+.kpi-yoy tr.is-main th,.kpi-yoy tr.is-main td{background:#f4f8fa;font-weight:700}
+.kpi-yoy td:last-child{font-weight:700}
+.kpi-yoy .is-up{color:#1f6b52}
+.kpi-yoy .is-down{color:#9f302c}
 .kpi-breakeven{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));margin:0;border-top:1px solid #b8ced8;border-bottom:1px solid #b8ced8;background:var(--lab-surface-soft)}
 .kpi-breakeven>div{padding:18px 20px;border-right:1px solid #b8ced8}
 .kpi-breakeven>div:last-child{border-right:0}
@@ -78,6 +87,9 @@
   .kpi-cards{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 @media(max-width:620px){
+  .kpi-yoy{font-size:12px}
+  .kpi-yoy th,.kpi-yoy td{padding:10px 6px}
+  .kpi-yoy td{white-space:nowrap}
   .kpi-grid,.kpi-levers,.kpi-reverse{grid-template-columns:1fr}
   .kpi-details .kpi-grid{padding:16px 14px}
   .kpi-privacy{align-items:flex-start;flex-direction:column;gap:8px}

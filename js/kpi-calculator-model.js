@@ -9,14 +9,16 @@
   // 入力値は数値（未入力は null）。画面側で全角数字・カンマを取り除いてから渡す。
 
   const required = ["rooms", "days", "soldRooms", "roomRevenue"];
-  const optional = ["guests", "capacity", "totalRevenue", "closedRoomNights", "fixedCost", "variableCostPerRoom"];
+  const optional = ["guests", "capacity", "totalRevenue", "closedRoomNights", "fixedCost", "variableCostPerRoom", "lySoldRooms", "lyRoomRevenue", "lyDays"];
 
   // 「例を入れて試す」で入る架空の30室の宿（DXかんたん診断の初期値と同じ規模）
   const sample = {
     month: "2026-07", prefCode: "20", facilityType: "ryokan", mealsIncluded: false,
     rooms: 30, days: 31, soldRooms: 605, roomRevenue: 10890000,
     guests: 1210, capacity: 90, totalRevenue: 13600000, closedRoomNights: null,
-    fixedCost: 7000000, variableCostPerRoom: 2500
+    fixedCost: 7000000, variableCostPerRoom: 2500,
+    // 前年同月（2025年7月）の実績。客室数は今と同じとみなす
+    lySoldRooms: 570, lyRoomRevenue: 9690000, lyDays: null
   };
 
   // 宿泊旅行統計 第8表の宿泊施設タイプ（lodging-monthly.json の occupancy_rate_by_type のキー）
@@ -47,6 +49,17 @@
     return new Date(Date.UTC(Number(match[1]), Number(match[2]), 0)).getUTCDate();
   }
 
+  function lastYearMonth(month) {
+    const match = /^(\d{4})-(\d{2})$/.exec(month || "");
+    return match ? (Number(match[1]) - 1) + "-" + match[2] : null;
+  }
+
+  // 前年の営業日数。空欄なら前年のその月の日数（月がなければ今年と同じ）
+  function lastYearDays(input) {
+    if (present(input.lyDays)) return input.lyDays;
+    return daysInMonth(lastYearMonth(input.month)) || input.days;
+  }
+
   function availableRooms(input) {
     return input.rooms * input.days - (present(input.closedRoomNights) ? input.closedRoomNights : 0);
   }
@@ -69,6 +82,14 @@
     if (present(input.totalRevenue) && !errors.roomRevenue && input.totalRevenue < input.roomRevenue) errors.totalRevenue = "総売上は客室売上以上の額で入力してください。";
     if (present(input.fixedCost) && input.fixedCost < 0) errors.fixedCost = "0以上で入力してください。";
     if (present(input.variableCostPerRoom) && input.variableCostPerRoom < 0) errors.variableCostPerRoom = "0以上で入力してください。";
+    // 前年同月は、販売客室数と客室売上の両方があるときだけ比べる
+    const lyMaxDays = daysInMonth(lastYearMonth(input.month)) || 31;
+    if (present(input.lyDays) && (!isWhole(input.lyDays) || input.lyDays < 1 || input.lyDays > lyMaxDays)) errors.lyDays = "前年の営業日数は1〜" + lyMaxDays + "日の整数で入力してください。";
+    if (present(input.lySoldRooms) || present(input.lyRoomRevenue) || present(input.lyDays)) {
+      if (!present(input.lySoldRooms) || !isWhole(input.lySoldRooms) || input.lySoldRooms < 1) errors.lySoldRooms = "前年の販売客室数を1以上の整数で入力してください。";
+      else if (!errors.rooms && !errors.lyDays && input.lySoldRooms > input.rooms * lastYearDays(input)) errors.lySoldRooms = "客室数×前年の営業日数（" + (input.rooms * lastYearDays(input)).toLocaleString("ja-JP") + "室）を超えています。客室数が前年と違う場合は比べられません。";
+      if (!present(input.lyRoomRevenue) || input.lyRoomRevenue <= 0) errors.lyRoomRevenue = "前年の客室売上を入力してください。";
+    }
     return errors;
   }
 
@@ -123,6 +144,35 @@
       }
     };
     return result;
+  }
+
+  // 前年同月との比較。客室数は今と同じとみなし、使えなかった客室は前年には引かない。
+  // RevPAR の変化は 稼働率の伸び × 単価の伸び に分けられるので、伸び（対数）の大きいほうを主な要因とする。
+  function yearOverYear(input) {
+    if (!present(input.lySoldRooms) || !present(input.lyRoomRevenue)) return null;
+    const available = availableRooms(input);
+    const lyAvailable = input.rooms * lastYearDays(input);
+    const pct = function (now, last) { return round1((now / last - 1) * 100); };
+    const now = { occupancy: input.soldRooms / available, adr: input.roomRevenue / input.soldRooms, revpar: input.roomRevenue / available };
+    const last = { occupancy: input.lySoldRooms / lyAvailable, adr: input.lyRoomRevenue / input.lySoldRooms, revpar: input.lyRoomRevenue / lyAvailable };
+    const occLog = Math.log(now.occupancy / last.occupancy);
+    const adrLog = Math.log(now.adr / last.adr);
+    const revparChange = pct(now.revpar, last.revpar);
+    let driver = null;
+    if (Math.abs(revparChange) >= 0.5) {
+      const main = Math.abs(occLog) >= Math.abs(adrLog) ? "occupancy" : "adr";
+      driver = { key: main, up: (main === "occupancy" ? occLog : adrLog) > 0, both: occLog * adrLog > 0 };
+    }
+    return {
+      period: lastYearMonth(input.month),
+      availableRooms: lyAvailable,
+      occupancy: { last: round1(last.occupancy * 100), now: round1(now.occupancy * 100), diff: round1(now.occupancy * 100 - last.occupancy * 100) },
+      adr: { last: Math.round(last.adr), now: Math.round(now.adr), change: pct(now.adr, last.adr) },
+      revpar: { last: Math.round(last.revpar), now: Math.round(now.revpar), change: revparChange },
+      roomRevenue: { last: input.lyRoomRevenue, now: input.roomRevenue, change: pct(input.roomRevenue, input.lyRoomRevenue) },
+      soldRooms: { last: input.lySoldRooms, now: input.soldRooms, change: pct(input.soldRooms, input.lySoldRooms) },
+      driver: driver
+    };
   }
 
   // 目標の客室売上（月）から、今の単価・今の稼働率のままなら何が必要かを逆算する。
@@ -197,6 +247,6 @@
   return {
     required: required, optional: optional, sample: sample, facilityTypes: facilityTypes,
     parseNumber: parseNumber, daysInMonth: daysInMonth, availableRooms: availableRooms,
-    validate: validate, calculate: calculate, reverse: reverse, benchmark: benchmark, compare: compare
+    lastYearMonth: lastYearMonth, validate: validate, calculate: calculate, yearOverYear: yearOverYear, reverse: reverse, benchmark: benchmark, compare: compare
   };
 });

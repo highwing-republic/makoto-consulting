@@ -119,3 +119,28 @@ test("validation catches impossible combinations", () => {
   assert.ok(model.validate({ ...model.sample, rooms: null }).rooms);
   assert.ok(model.validate({ ...model.sample, roomRevenue: Number.NaN }).roomRevenue);
 });
+
+test("year over year compares the same month last year with the same room count", () => {
+  const yoy = model.yearOverYear(model.sample);
+  assert.equal(yoy.period, "2025-07");
+  assert.equal(yoy.availableRooms, 930);
+  assert.deepEqual(yoy.occupancy, { last: 61.3, now: 65.1, diff: 3.8 });
+  assert.deepEqual(yoy.adr, { last: 17000, now: 18000, change: 5.9 });
+  assert.deepEqual(yoy.revpar, { last: 10419, now: 11710, change: 12.4 });
+  assert.deepEqual(yoy.driver, { key: "occupancy", up: true, both: true });
+  // 単価だけ上げて室数が減った年は、単価が主な要因になる
+  const priced = model.yearOverYear({ ...model.sample, lySoldRooms: 700, lyRoomRevenue: 700 * 14000 });
+  assert.deepEqual(priced.driver, { key: "adr", up: true, both: false });
+  // 2月は前年の日数（うるう年でない年は28日）で数える
+  assert.equal(model.yearOverYear({ ...model.sample, month: "2028-02", days: 29 }).availableRooms, 30 * 28);
+  assert.equal(model.yearOverYear({ ...model.sample, lyDays: 25 }).availableRooms, 750);
+  assert.equal(model.yearOverYear({ ...model.sample, lySoldRooms: null }), null);
+});
+
+test("year over year needs both last-year numbers and checks them", () => {
+  assert.deepEqual(Object.keys(model.validate({ ...model.sample, lySoldRooms: null })), ["lySoldRooms"]);
+  assert.deepEqual(Object.keys(model.validate({ ...model.sample, lyRoomRevenue: null })), ["lyRoomRevenue"]);
+  assert.deepEqual(model.validate({ ...model.sample, lySoldRooms: null, lyRoomRevenue: null }), {});
+  assert.match(model.validate({ ...model.sample, lySoldRooms: 931 }).lySoldRooms, /930室/);
+  assert.match(model.validate({ ...model.sample, month: "2026-02", days: 28, soldRooms: 500, lyDays: 29 }).lyDays, /1〜28日/);
+});
