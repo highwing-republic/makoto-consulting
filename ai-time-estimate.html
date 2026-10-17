@@ -1,14 +1,14 @@
 ---
 # Built by Jekyll: the shared header and footer come from _includes/.
 tool: ai-time-estimate
-tool_purpose: 口コミへの返信や外国語のお問い合わせなど、宿のよくある10業務から選んで月の件数と1件の時間を入れると、生成AIに下書きを任せたときに浮く時間を「控えめ〜標準」の幅で見積もります。最初に試す3つの業務も分かります。
+tool_purpose: 口コミへの返信や外国語のお問い合わせなど、宿のよくある10業務から選んで月の件数と1件の時間を入れると、生成AIに下書きを任せたときに浮く時間を「控えめ〜標準」の幅で見積もります。最初に試す3つの業務と、業務ごとにそのまま使える指示文の例も載せています。
 tool_scope:
   - label: 対象
     text: 生成AIの有料プランを契約するか迷っている旅館・ホテルのオーナー・支配人。初期値は架空の30室の宿の想定です。
   - label: データ
     text: 入力した件数・時間と、業務ごとの削減率（宿泊DXラボの仮定）だけを使います。計算はこのページ内で行い、入力は送信しません。
   - label: 条件
-    text: 見積もりだけで、このページで生成AIは動きません。AIの下書きを人が確かめて直す時間を含めた見込みとして、削減率は研究の数字より控えめに置いています。
+    text: 見積もりだけで、このページで生成AIは動きません（指示文の例は、お使いの生成AIに貼って使います）。AIの下書きを人が確かめて直す時間を含めた見込みとして、削減率は研究の数字より控えめに置いています。
 tool_cta:
   label: 見積もりを始める
   href: "#tool"
@@ -42,7 +42,7 @@ tool_guides:
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>生成AI時短みつもり｜旅館・ホテルの業務で浮く時間を無料で試算｜宿泊DXラボ</title>
-  <meta name="description" content="旅館・ホテル向けの生成AI時短みつもり。口コミ返信・外国語のお問い合わせ・プラン紹介文など10業務から選んで件数と時間を入れると、生成AIで浮く時間と人件費換算を幅で見積もり、最初に試す3業務を示します。登録不要・無料。">
+  <meta name="description" content="旅館・ホテル向けの生成AI時短みつもり。口コミ返信・外国語のお問い合わせ・プラン紹介文など10業務から選んで件数と時間を入れると、生成AIで浮く時間と人件費換算を幅で見積もり、最初に試す3業務と、コピーして使える指示文の例を示します。登録不要・無料。">
   <meta name="robots" content="index,follow,max-image-preview:large">
   <link rel="canonical" href="https://lab.ugatta-llc.com/ai-time-estimate.html">
   <meta property="og:locale" content="ja_JP">
@@ -63,7 +63,7 @@ tool_guides:
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&amp;display=swap">
   <link rel="stylesheet" href="css/useful.css?v=20261012shell">
   <link rel="stylesheet" href="css/tool-standard.css?v=20261015guide">
-  <link rel="stylesheet" href="css/ai-time-estimate.css?v=20261017b">
+  <link rel="stylesheet" href="css/ai-time-estimate.css?v=20261017prompts">
       <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -178,12 +178,129 @@ tool_guides:
       </div>
       <noscript><p class="tool-disclaimer">計算にはJavaScriptを有効にしてください。浮く時間は「月の件数 × 1件の時間 × 削減率」を業務ごとに足して計算できます。</p></noscript>
     </div></section>
+    <section class="section ait-prompts" id="prompts" aria-labelledby="ait-prompts-title"><div class="container">
+      <div class="ait-prompts__head"><h2 id="ait-prompts-title">業務ごとの指示文の例</h2>
+        <p>チャット型の生成AIに貼って、（　）の中を自分の宿のことに書き換えて使います。指示文には「書いていないことは書かない」と入れてあり、AIが事実を作るのを防ぎます。</p>
+        <p class="ait-prompts__warn"><b>貼る前に：</b>お客様の氏名・連絡先・予約番号は消してください。料金・キャンセル規定・アレルギーは、AIの答えを必ず人が原文と照らし合わせてください。</p></div>
+      <div class="ait-prompts__list">
+        <details class="ait-prompt" id="prompt-review"><summary><span class="ait-prompt__name">口コミへの返信</span><span class="ait-badge ait-badge--mid">公開前に確認</span></summary>
+          <div class="ait-prompt__body"><pre class="ait-prompt__text" id="prompt-text-review">あなたは旅館・ホテルのフロント担当です。次の口コミへの返信文の下書きを、日本語で200字前後で作ってください。
+・お礼から始め、お客様が書いてくださった良い点に具体的に触れる
+・ご指摘には言い訳をせず、事実と、これからの対応を短く書く
+・宿のことは下の【宿のメモ】に書いたことだけを使い、書いていないことは書かない
+・お客様の名前や宿泊日は書かない
+
+【口コミ】
+（口コミの本文を貼る。投稿者名は消してから）
+
+【宿のメモ】
+（例：大浴場は2025年に改装、朝食は7時から9時、ご指摘を受けて○○を始めた）</pre>
+          <div class="ait-prompt__tools"><button class="ait-chip" type="button" data-copy-prompt="prompt-text-review">指示文をコピー</button><span class="ait-prompt__status" role="status"></span></div></div></details>
+        <details class="ait-prompt" id="prompt-foreign-mail"><summary><span class="ait-prompt__name">外国語のお問い合わせ返信</span><span class="ait-badge ait-badge--high">個人情報・安全に注意</span></summary>
+          <div class="ait-prompt__body"><pre class="ait-prompt__text" id="prompt-text-foreign-mail">次の外国語のお問い合わせに、宿として返信する文面の下書きを作ってください。
+1. まず、お問い合わせの内容を日本語で3行にまとめる
+2. 次に、下の【返信で伝えること】をもとに、お問い合わせと同じ言語で丁寧な返信文を書く
+3. 最後に、返信文の日本語訳を付ける
+・料金・キャンセル規定・アレルギーは【返信で伝えること】に書いたことだけを使い、推測で書かない
+
+【お問い合わせ】
+（本文を貼る。氏名・メールアドレス・電話番号・予約番号は消してから）
+
+【返信で伝えること】
+（例：駐車場は無料で10台、チェックインは15時から、駅からの送迎は前日までに予約）</pre>
+          <div class="ait-prompt__tools"><button class="ait-chip" type="button" data-copy-prompt="prompt-text-foreign-mail">指示文をコピー</button><span class="ait-prompt__status" role="status"></span></div></div></details>
+        <details class="ait-prompt" id="prompt-plan-copy"><summary><span class="ait-prompt__name">プラン・宿紹介文の作成</span><span class="ait-badge ait-badge--mid">公開前に確認</span></summary>
+          <div class="ait-prompt__body"><pre class="ait-prompt__text" id="prompt-text-plan-copy">宿泊プランの紹介文を作ってください。予約サイトに載せる文として、見出し（30字以内）と本文（250字前後）を、雰囲気の違う3案で。
+・下の【プランの事実】にないこと（料理の品数、設備、特典など）は書かない
+・「最高」「日本一」など、裏付けのない言い方は使わない
+
+【プランの事実】
+（例：夕食は地元の○○を使った会席8品、和室10畳、チェックアウト11時、2名1室から）
+
+【来てほしいお客様】
+（例：記念日の夫婦、静かに過ごしたい人）</pre>
+          <div class="ait-prompt__tools"><button class="ait-chip" type="button" data-copy-prompt="prompt-text-plan-copy">指示文をコピー</button><span class="ait-prompt__status" role="status"></span></div></div></details>
+        <details class="ait-prompt" id="prompt-sns"><summary><span class="ait-prompt__name">SNS・お知らせの投稿文</span><span class="ait-badge ait-badge--mid">公開前に確認</span></summary>
+          <div class="ait-prompt__body"><pre class="ait-prompt__text" id="prompt-text-sns">宿の公式SNSに載せる投稿文を3案作ってください。それぞれ120字以内、ハッシュタグは3つまで。
+・下の【伝えたいこと】と【写真の説明】にないことは書かない
+・絵文字は1案につき2つまで
+
+【伝えたいこと】
+（例：紅葉が見ごろ、11月の平日に空室あり）
+
+【写真の説明】
+（例：客室の窓から見た山の紅葉、朝7時ごろ）</pre>
+          <div class="ait-prompt__tools"><button class="ait-chip" type="button" data-copy-prompt="prompt-text-sns">指示文をコピー</button><span class="ait-prompt__status" role="status"></span></div></div></details>
+        <details class="ait-prompt" id="prompt-signage"><summary><span class="ait-prompt__name">館内案内の多言語化</span><span class="ait-badge ait-badge--mid">公開前に確認</span></summary>
+          <div class="ait-prompt__body"><pre class="ait-prompt__text" id="prompt-text-signage">次の館内案内を、英語・中国語（簡体字）・韓国語に訳してください。
+・掲示物なので、短くはっきりした文にする
+・時間、階、料金などの数字は原文と同じにする
+・最後に、それぞれの訳文を日本語に訳し戻したものを付ける（意味が変わっていないか確かめるため）
+
+【案内の原文】
+（例：大浴場のご利用時間 15:00〜24:00、6:00〜9:00。タオルはお部屋からお持ちください。）</pre>
+          <div class="ait-prompt__tools"><button class="ait-chip" type="button" data-copy-prompt="prompt-text-signage">指示文をコピー</button><span class="ait-prompt__status" role="status"></span></div></div></details>
+        <details class="ait-prompt" id="prompt-manual"><summary><span class="ait-prompt__name">マニュアル・手順書の作成</span><span class="ait-badge ait-badge--low">社内向け</span></summary>
+          <div class="ait-prompt__body"><pre class="ait-prompt__text" id="prompt-text-manual">次のメモをもとに、新人スタッフ向けの作業手順書を作ってください。
+・手順は番号付きで、1つの手順に1つの動作
+・注意点は、その手順のすぐ下に「注意：」として書く
+・メモから分からないことは推測で埋めず、「要確認」と書く
+
+【作業の名前】
+（例：チェックアウト後の客室点検）
+
+【メモ】
+（作業しながら話した録音の文字起こしや、手書きのメモを貼る）</pre>
+          <div class="ait-prompt__tools"><button class="ait-chip" type="button" data-copy-prompt="prompt-text-manual">指示文をコピー</button><span class="ait-prompt__status" role="status"></span></div></div></details>
+        <details class="ait-prompt" id="prompt-minutes"><summary><span class="ait-prompt__name">会議・申し送りのまとめ</span><span class="ait-badge ait-badge--low">社内向け</span></summary>
+          <div class="ait-prompt__body"><pre class="ait-prompt__text" id="prompt-text-minutes">次の会議（申し送り）のメモを整理してください。
+・「決まったこと」「担当と期限」「次までに確かめること」の3つに分けて箇条書きにする
+・メモに書かれていないことは足さない
+
+【メモ】
+（会議のメモを貼る。お客様の名前は「お客様A」などに置き換えてから）</pre>
+          <div class="ait-prompt__tools"><button class="ait-chip" type="button" data-copy-prompt="prompt-text-minutes">指示文をコピー</button><span class="ait-prompt__status" role="status"></span></div></div></details>
+        <details class="ait-prompt" id="prompt-recruit"><summary><span class="ait-prompt__name">求人票・採用の文面</span><span class="ait-badge ait-badge--mid">公開前に確認</span></summary>
+          <div class="ait-prompt__body"><pre class="ait-prompt__text" id="prompt-text-recruit">宿のスタッフ募集の求人文を作ってください。見出し（30字以内）と本文（400字前後）で。
+・応募する人が知りたいこと（1日の流れ、働く時間、休み、職場の雰囲気）を先に書く
+・下の【仕事の内容と条件】にない条件（給与、手当、休日数など）は書かない
+・性別や年齢を限る書き方はしない
+
+【仕事の内容と条件】
+（例：職種 フロント、勤務 7時〜16時のシフト制、月給○円、寮あり）
+
+【職場の様子】
+（例：スタッフ12名、20〜60代、外国人スタッフ2名）</pre>
+          <div class="ait-prompt__tools"><button class="ait-chip" type="button" data-copy-prompt="prompt-text-recruit">指示文をコピー</button><span class="ait-prompt__status" role="status"></span></div></div></details>
+        <details class="ait-prompt" id="prompt-faq"><summary><span class="ait-prompt__name">よくある質問（FAQ）の作成</span><span class="ait-badge ait-badge--mid">公開前に確認</span></summary>
+          <div class="ait-prompt__body"><pre class="ait-prompt__text" id="prompt-text-faq">宿の公式サイトに載せる「よくある質問」を作ってください。
+・下の【多い質問】それぞれに、【宿の情報】を使って2〜3文で答える
+・【宿の情報】にないことは答えを作らず、「要確認」と書く
+・質問は、お客様が実際に使う言い方に直す
+
+【多い質問】
+（例：駐車場はありますか／子ども用の浴衣はありますか／駅から歩けますか）
+
+【宿の情報】
+（例：駐車場 無料10台、子ども浴衣 100〜130cm、駅から徒歩20分・送迎は要予約）</pre>
+          <div class="ait-prompt__tools"><button class="ait-chip" type="button" data-copy-prompt="prompt-text-faq">指示文をコピー</button><span class="ait-prompt__status" role="status"></span></div></div></details>
+        <details class="ait-prompt" id="prompt-allergy"><summary><span class="ait-prompt__name">お品書き・アレルギー表記の翻訳</span><span class="ait-badge ait-badge--high">個人情報・安全に注意</span></summary>
+          <div class="ait-prompt__body"><pre class="ait-prompt__text" id="prompt-text-allergy">次のお品書きを英語に訳してください。
+・料理名は、ローマ字の名前と、どんな料理かが分かる短い英語の説明を並べる
+・アレルギーの原材料は、原文に書かれたものだけを訳し、足したり省いたりしない
+・最後に、原文と訳文のアレルギー表記を1行ずつ並べた表を付ける（人が照らし合わせるため）
+
+【お品書きの原文】
+（お品書きを貼る）</pre>
+          <div class="ait-prompt__tools"><button class="ait-chip" type="button" data-copy-prompt="prompt-text-allergy">指示文をコピー</button><span class="ait-prompt__status" role="status"></span></div></div></details>
+      </div>
+    </div></section>
     {% include tool-sources.html %}
     {% include tool-related.html %}
   </main>
   {% include site-footer.html %}
 <script defer src="js/ai-time-estimate-model.js?v=20261017a"></script>
-<script defer src="js/ai-time-estimate.js?v=20261017b"></script>
+<script defer src="js/ai-time-estimate.js?v=20261017prompts"></script>
 <script defer src="js/site.js?v=20260909c"></script>
 </body>
 </html>
