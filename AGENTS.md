@@ -1,5 +1,5 @@
 # 宿泊DXラボ
-- このリポジトリは宿泊DXラボ（https://lab.ugatta-llc.com/）です。ugatta-lab へ改名予定です。
+- このリポジトリは宿泊DXラボ（https://lab.ugatta-llc.com/）です。旧名は makoto-consulting です。
 - UGATTA公式サイト（https://ugatta-llc.com/）は別リポジトリ highwing-republic/ugatta-homepage です。こちらでは編集しません。
 - 公開方式：GitHub Pages（main ブランチ / root、Jekyll）。公開しないファイルは _config.yml の exclude で管理します。
 - main は自動ジョブが更新します（平日05:00〜11:00 JSTは20分ごと、毎日06:10、毎週火曜06:17）。push の前に git pull --rebase origin main を実行してください。
