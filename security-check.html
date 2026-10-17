@@ -1,0 +1,155 @@
+---
+# Built by Jekyll: the shared header and footer come from _includes/.
+tool: security-check
+tool_purpose: 旅館・ホテルで実際に起きた被害（OTA管理画面の乗っ取り、予約者を装ったメール、ランサムウェアなど）をもとにした10問に答えると、今週やること3つと、次に見直すことが分かります。点数やランクは出しません。
+tool_scope:
+  - label: 対象
+    text: 情報システムの担当者がいない小規模な旅館・ホテル。フロント・事務所の運用を想定しています。
+  - label: データ
+    text: 10問の回答だけを使います。判定はこのページ内で行い、回答は送信しません。
+  - label: 条件
+    text: 網羅的な診断ではありません。宿で被害が多い手口に絞った入口です。詳しくはIPA「5分でできる！情報セキュリティ自社診断」で確認してください。
+tool_cta:
+  label: チェックを始める
+  href: "#tool"
+  tool_id: security-check-embed
+tool_sources:
+  - name: 中小企業の情報セキュリティ
+    publisher: IPA（情報処理推進機構）「中小企業の情報セキュリティ対策ガイドライン」第4.0版・「5分でできる！情報セキュリティ自社診断」
+    url: https://www.ipa.go.jp/security/keihatsu/sme/guideline/5minutes.html
+    note: 10問は宿向けに独自に作ったもので、自社診断の設問の転載ではありません。
+  - name: 漏えい等の報告と本人への通知
+    publisher: 個人情報保護委員会「漏えい等報告・本人への通知の義務化について」
+    url: https://www.ppc.go.jp/news/kaiseihou_feature/roueitouhoukoku_gimuka/
+  - name: 宿泊者名簿の保存
+    publisher: 厚生労働省 旅館業法施行規則 第4条の2（作成の日から3年間保存）
+    url: https://www.mhlw.go.jp/web/t_doc?dataId=79090000&dataType=0&pageNo=1
+  - name: SECURITY ACTION と補助金
+    publisher: IPA「SECURITY ACTION とデジタル化・AI導入補助金」
+    url: https://www.ipa.go.jp/security/security-action/it-hojo.html
+tool_notes:
+  - 結果は回答から機械的に並べた目安です。安全を保証するものではありません。
+  - 「今週やること」は、宿泊施設で被害が出ている手口に関わる項目を優先して選んでいます。
+  - 法令の記述は2026年10月時点の公表資料によります。実際の対応は、各サービスの提供会社や専門家にも確認してください。
+tool_related:
+  - dx-diagnosis
+  - ota-fee-simulator
+  - kpi-calculator
+---
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-QS9HSHCY33"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-QS9HSHCY33');gtag('config','GT-M3S9S5D7');</script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>宿のセキュリティ10問チェック｜旅館・ホテルの情報セキュリティ対策を無料で確認｜宿泊DXラボ</title>
+  <meta name="description" content="旅館・ホテル向けの情報セキュリティ10問チェック。OTA管理画面の乗っ取りや予約者を装ったメールなど、宿で実際に起きた被害から作った10問に答えると、今週やること3つが分かります。登録不要・無料。">
+  <meta name="robots" content="index,follow,max-image-preview:large">
+  <link rel="canonical" href="https://lab.ugatta-llc.com/security-check.html">
+  <meta property="og:locale" content="ja_JP">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="宿泊DXラボ">
+  <meta property="og:title" content="宿のセキュリティ10問チェック｜旅館・ホテルの情報セキュリティ対策を無料で確認｜宿泊DXラボ">
+  <meta property="og:description" content="宿で実際に起きた被害から作った10問に答えると、今週やること3つが分かる無料チェックです。">
+  <meta property="og:url" content="https://lab.ugatta-llc.com/security-check.html">
+  <meta property="og:image" content="https://lab.ugatta-llc.com/images/og-lab.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="宿のセキュリティ10問チェック｜宿泊DXラボ">
+  <meta name="twitter:description" content="10問に答えると、今週やること3つが分かります。点数は出しません。">
+  <meta name="twitter:image" content="https://lab.ugatta-llc.com/images/og-lab.jpg">
+  <meta name="theme-color" content="#17324d">
+  <link rel="icon" type="image/png" href="favicon.png?v=20261013">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&amp;display=swap">
+  <link rel="stylesheet" href="css/useful.css?v=20261012shell">
+  <link rel="stylesheet" href="css/tool-standard.css?v=20261015guide">
+  <link rel="stylesheet" href="css/security-check.css?v=20261017a">
+      <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {"@type": "ListItem", "position": 1, "name": "ホーム", "item": "https://lab.ugatta-llc.com/"},
+          {"@type": "ListItem", "position": 2, "name": "分析・ツール", "item": "https://lab.ugatta-llc.com/#analysis-tools"},
+          {"@type": "ListItem", "position": 3, "name": "宿のセキュリティ10問チェック", "item": "https://lab.ugatta-llc.com/security-check.html"}
+        ]
+      },
+      {
+        "@type": "WebApplication",
+        "name": "宿のセキュリティ10問チェック",
+        "url": "https://lab.ugatta-llc.com/security-check.html",
+        "applicationCategory": "BusinessApplication",
+        "operatingSystem": "Web",
+        "isAccessibleForFree": true,
+        "inLanguage": "ja-JP",
+        "description": "旅館・ホテルで実際に起きた被害から作った10問に答えると、今週やるべき情報セキュリティ対策3つが分かる無料チェック。",
+        "provider": {
+          "@type": "Organization",
+          "@id": "https://lab.ugatta-llc.com/#organization",
+          "name": "宿泊DXラボ",
+          "url": "https://lab.ugatta-llc.com/"
+        }
+      }
+    ]
+  }
+  </script>
+  <link rel="stylesheet" href="/css/site-shell.css?v=20261012shell">
+  <script src="/js/site-shell.js?v=20261012shell2" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">本文へ移動</a>
+  {% include site-header.html %}
+  <main id="main">
+    <nav class="breadcrumb container" aria-label="パンくずリスト"><ol><li><a href="/">ホーム</a></li><li><a href="/#analysis-tools">分析・ツール</a></li><li aria-current="page">宿のセキュリティ10問チェック</li></ol></nav>
+    <section class="page-hero tool-page-hero"><div class="container page-hero-grid"><div><span class="scope-badge scope-badge--facility">分析対象：自施設</span><h1>宿のセキュリティ10問チェック</h1></div><p>宿で実際に起きた被害をもとにした10問に答えると、今週やること3つが分かります。点数は出しません。どれも費用をかけずに始められることから並べます。</p></div></section>
+    {% include tool-overview.html %}
+    <section class="section section--tint embedded-tool-section" id="tool"><div class="container"><h2 class="visually-hidden">宿のセキュリティ10問チェック</h2>
+      <div class="sec-app" id="security-check-app">
+        <form class="sec-panel" id="sec-form" novalidate>
+          <div class="sec-head"><div><p class="sec-eyebrow">アカウント・端末・データ・人・事故対応</p><h3>10の質問に答えてください</h3></div><p class="sec-count" aria-live="polite"><b id="sec-answered">0</b> / 10 回答済み</p></div>
+          <div class="sec-progress" aria-hidden="true"><span id="sec-progress"></span></div>
+          <p class="sec-privacy"><strong>送信しません</strong>回答はこのページの中だけで使い、どこにも送りません。分からないものは「できていない・わからない」を選んでください。</p>
+          <div class="sec-question-list">
+            <fieldset class="sec-question" id="sec-q-mfa" data-question="mfa"><legend><span>Q1</span>OTA・予約サイトの管理画面に、2段階認証を設定していますか？</legend><div class="sec-options"><label><input type="radio" name="mfa" value="2"><span>できている</span></label><label><input type="radio" name="mfa" value="1"><span>一部できている</span></label><label><input type="radio" name="mfa" value="0"><span>できていない・わからない</span></label></div></fieldset>
+            <fieldset class="sec-question" id="sec-q-account" data-question="account"><legend><span>Q2</span>管理画面やPMSのIDを、スタッフごとに分けていますか？</legend><div class="sec-options"><label><input type="radio" name="account" value="2"><span>できている</span></label><label><input type="radio" name="account" value="1"><span>一部できている</span></label><label><input type="radio" name="account" value="0"><span>できていない・わからない</span></label></div></fieldset>
+            <fieldset class="sec-question" id="sec-q-password" data-question="password"><legend><span>Q3</span>パスワードは管理画面ごとに別にし、人目につかない方法で管理していますか？</legend><div class="sec-options"><label><input type="radio" name="password" value="2"><span>できている</span></label><label><input type="radio" name="password" value="1"><span>一部できている</span></label><label><input type="radio" name="password" value="0"><span>できていない・わからない</span></label></div></fieldset>
+            <fieldset class="sec-question" id="sec-q-update" data-question="update"><legend><span>Q4</span>フロントや事務所のパソコン、公式サイトの更新を、自動または定期的に行っていますか？</legend><div class="sec-options"><label><input type="radio" name="update" value="2"><span>できている</span></label><label><input type="radio" name="update" value="1"><span>一部できている</span></label><label><input type="radio" name="update" value="0"><span>できていない・わからない</span></label></div></fieldset>
+            <fieldset class="sec-question" id="sec-q-backup" data-question="backup"><legend><span>Q5</span>予約・顧客・会計のデータを、別の場所にもバックアップしていますか？</legend><div class="sec-options"><label><input type="radio" name="backup" value="2"><span>できている</span></label><label><input type="radio" name="backup" value="1"><span>一部できている</span></label><label><input type="radio" name="backup" value="0"><span>できていない・わからない</span></label></div></fieldset>
+            <fieldset class="sec-question" id="sec-q-wifi" data-question="wifi"><legend><span>Q6</span>お客様用Wi-Fiと、事務用のネットワークを分けていますか？</legend><div class="sec-options"><label><input type="radio" name="wifi" value="2"><span>できている</span></label><label><input type="radio" name="wifi" value="1"><span>一部できている</span></label><label><input type="radio" name="wifi" value="0"><span>できていない・わからない</span></label></div></fieldset>
+            <fieldset class="sec-question" id="sec-q-guest-data" data-question="guest-data"><legend><span>Q7</span>宿泊者名簿・旅券の写し・カード情報の保管と廃棄のルールがありますか？</legend><div class="sec-options"><label><input type="radio" name="guest-data" value="2"><span>できている</span></label><label><input type="radio" name="guest-data" value="1"><span>一部できている</span></label><label><input type="radio" name="guest-data" value="0"><span>できていない・わからない</span></label></div></fieldset>
+            <fieldset class="sec-question" id="sec-q-phishing" data-question="phishing"><legend><span>Q8</span>予約者やOTAを名乗る不審なメール・メッセージへの対応を、スタッフと決めていますか？</legend><div class="sec-options"><label><input type="radio" name="phishing" value="2"><span>できている</span></label><label><input type="radio" name="phishing" value="1"><span>一部できている</span></label><label><input type="radio" name="phishing" value="0"><span>できていない・わからない</span></label></div></fieldset>
+            <fieldset class="sec-question" id="sec-q-ai-rule" data-question="ai-rule"><legend><span>Q9</span>生成AIや翻訳サービスに、お客様の個人情報を入れないルールがありますか？</legend><div class="sec-options"><label><input type="radio" name="ai-rule" value="2"><span>できている</span></label><label><input type="radio" name="ai-rule" value="1"><span>一部できている</span></label><label><input type="radio" name="ai-rule" value="0"><span>できていない・わからない</span></label></div></fieldset>
+            <fieldset class="sec-question" id="sec-q-incident" data-question="incident"><legend><span>Q10</span>情報漏えいや乗っ取りが起きたときの連絡先と手順を決めていますか？</legend><div class="sec-options"><label><input type="radio" name="incident" value="2"><span>できている</span></label><label><input type="radio" name="incident" value="1"><span>一部できている</span></label><label><input type="radio" name="incident" value="0"><span>できていない・わからない</span></label></div></fieldset>
+          </div>
+          <p class="sec-form-error" id="sec-form-error" role="alert" hidden></p>
+          <div class="sec-actions">
+            <button class="button" type="submit">結果を見る</button>
+            <button class="sec-chip sec-chip--quiet" type="reset">回答を消す</button>
+          </div>
+        </form>
+        <section class="sec-result" id="sec-result" aria-labelledby="sec-result-title" tabindex="-1" hidden>
+          <div class="sec-result__head"><h3 id="sec-result-title">結果</h3></div>
+          <div id="sec-result-body" aria-live="polite"></div>
+          <p class="sec-callout">もっと詳しく確かめるなら、IPAの「5分でできる！情報セキュリティ自社診断」へ。取り組みを宣言する「SECURITY ACTION」の一つ星・二つ星は、デジタル化・AI導入補助金（旧IT導入補助金）の申請要件です。2026年3月以前の宣言は申請に使えないため、宣言済みの場合も確認してください。</p>
+          <div class="sec-result__tools">
+            <button class="sec-chip" type="button" data-print-result data-tool-id="security-check">チェックリストを印刷する</button>
+            <a class="sec-chip" href="https://www.ipa.go.jp/security/keihatsu/sme/guideline/5minutes.html" target="_blank" rel="noopener">IPAの自社診断へ <span aria-hidden="true">↗</span></a>
+            <a class="sec-chip" href="https://www.ipa.go.jp/security/security-action/it-hojo.html" target="_blank" rel="noopener">SECURITY ACTION と補助金 <span aria-hidden="true">↗</span></a>
+          </div>
+        </section>
+      </div>
+      <noscript><p class="tool-disclaimer">結果の表示にはJavaScriptを有効にしてください。質問はこのまま、セキュリティ対策の確認リストとしても使えます。</p></noscript>
+    </div></section>
+    {% include tool-sources.html %}
+    {% include tool-related.html %}
+  </main>
+  {% include site-footer.html %}
+<script defer src="js/security-check-model.js?v=20261017a"></script>
+<script defer src="js/security-check.js?v=20261017a"></script>
+<script defer src="js/site.js?v=20260909c"></script>
+</body>
+</html>

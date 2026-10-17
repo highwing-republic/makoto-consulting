@@ -18,6 +18,12 @@
   group: facility
   tag: 計算ツール
   summary: 予約経路ごとの手数料を年間でまとめ、自社サイトの割合を上げたときに手元に残る額を計算します。
+- id: security-check
+  title: 宿のセキュリティ10問チェック
+  url: /security-check.html
+  group: facility
+  tag: 無料チェック
+  summary: 宿で実際に起きた被害から作った10問に答えると、今週やるべきセキュリティ対策3つが分かります。
 - id: ai-inn-sample
   title: AIに聞かれる宿 診断 サンプル
   url: /ai-inn-diagnosis/sample/
