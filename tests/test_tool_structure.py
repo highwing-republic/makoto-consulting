@@ -43,6 +43,7 @@ def test_registry_matches_the_home_page_cards():
 def test_converted_pages_use_the_three_standard_blocks():
     pages = converted_pages()
     assert [path.name for path in pages] == [
+        "ai-time-estimate.html",
         "business-hotel-price-trends.html",
         "dx-diagnosis.html",
         "hotel-price-trends.html",
@@ -104,6 +105,7 @@ PAGE_SCRIPTS = {
     "kpi-calculator.html": ("kpi-calculator", "KpiCalculatorModel"),
     "ota-fee-simulator.html": ("ota-fee-simulator", "OtaFeeModel"),
     "security-check.html": ("security-check", "SecurityCheckModel"),
+    "ai-time-estimate.html": ("ai-time-estimate", "AiTimeModel"),
 }
 
 
