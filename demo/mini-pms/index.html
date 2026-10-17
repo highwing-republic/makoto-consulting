@@ -160,6 +160,17 @@ footer.note{max-width:1100px;margin:14px auto 0;color:var(--muted);font-size:11p
 /* チェックイン・アウトなどの操作結果（どのタブにいても見える） */
 .toast{position:fixed;left:16px;right:16px;bottom:20px;margin-inline:auto;width:fit-content;max-width:560px;background:var(--fg);color:var(--bg);border-radius:8px;padding:10px 16px;font-size:13px;font-weight:600;box-shadow:0 4px 16px rgba(0,0,0,.25);z-index:20}
 .grid-legend{margin:0 0 8px}
+.nextbox{border:2px solid var(--accent);background:var(--accent-soft);border-radius:8px;padding:12px 14px;margin:0 0 12px;display:flex;flex-direction:column;gap:6px;scroll-margin-top:12px}
+.nextbox p{margin:0}
+.nextbox .done{font-weight:700;color:var(--accent)}
+.nextbox .done::before{content:"✓ "}
+.nextbox .next{font-size:13px}
+.nextbox .next b{font-size:14px}
+.nextbox .acts{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:2px}
+@media (max-width:640px){ .nextbox .acts .btn.primary{flex:1 1 100%} }
+.asgrid td.night .bar.just{outline:3px solid var(--accent);outline-offset:1px;z-index:2;animation:justpulse 1.2s ease-out 2}
+@keyframes justpulse{0%{outline-color:transparent}50%{outline-color:var(--accent)}100%{outline-color:var(--accent)}}
+@media (prefers-reduced-motion: reduce){ .asgrid td.night .bar.just{animation:none} }
 .grid-legend i.booked{background:var(--panel);border:1px dashed var(--stay);border-left:3px solid var(--stay)}
 .grid-legend i.in{background:var(--stay);border-color:var(--stay)}
 .grid-legend i.out{background:var(--block-soft);border-color:var(--block)}
@@ -297,6 +308,12 @@ footer.note{max-width:1100px;margin:14px auto 0;color:var(--muted);font-size:11p
 
   <section class="panel" id="tab-grid" hidden>
     <h2>部屋割り（今日から14日間）</h2>
+    <!-- 割当・チェックインの直後に「次にすること」を出す -->
+    <div class="nextbox" id="nextBox" role="status" aria-live="polite" hidden>
+      <p class="done" id="nextDone"></p>
+      <p class="next" id="nextText"></p>
+      <div class="acts" id="nextActs"></div>
+    </div>
     <div class="toolbar">
       <button class="btn primary" id="btnAuto">未割当を自動割当</button>
       <div class="selbox" id="selBox" hidden>
@@ -304,10 +321,7 @@ footer.note{max-width:1100px;margin:14px auto 0;color:var(--muted);font-size:11p
         <button class="btn small" id="btnUnassign">割当解除</button>
         <button class="btn small" id="btnClearSel">選択解除</button>
       </div>
-      <div class="selbox" id="undoBox" hidden>
-        <span id="undoLabel"></span>
-        <button class="btn small" id="btnUndo">この割り当てを取り消す</button>
-      </div>
+      <div class="selbox" id="selCheckin" hidden></div>
       <div class="selbox" id="blkSelBox" hidden>
         <span id="blkSelLabel"></span>
         <button class="btn small" id="btnBlockDel">ブロック解除</button>
@@ -404,6 +418,7 @@ let state = null;
 let selectedId = null;      // 選択中の予約
 let selectedBlockId = null; // 選択中のブロック
 let lastAssign = null;      // 直前の割当（取り消し用）：{label, changes:[{id, prev}]}
+let lastDone = null;        // 部屋割り表でチェックインした直後：{id}
 
 const seed = SuirenDemo.seed;
 const load = SuirenDemo.load;
@@ -421,7 +436,10 @@ function setStatus(r, status){
   r.status = status;
   if(status === "cancelled"){ r.room = null; if(selectedId === r.id) selectedId = null; }
   lastAssign = null; // 状態が変わったら、直前の割当はもう取り消せない
+  lastDone = status === "in" ? { id: r.id } : null;
   save(); renderAll();
+  // 部屋割り表の上に「次にすること」が出ているときは、同じ内容の知らせは出さない
+  if(!document.getElementById("tab-grid").hidden && !document.getElementById("nextBox").hidden) return;
   const room = r.room ? "（" + r.room + "号室）" : "";
   toast(status === "in" ? r.name + " をチェックインしました" + room + "。在室になりました。"
       : status === "out" ? r.name + " をチェックアウトしました" + room + "。"
@@ -470,8 +488,8 @@ function autoAssign(){
     if(c.length){ changes.push({id: r.id, prev: r.room}); r.room = c[0].no; done++; } else fail.push(r.name + "：" + whyNoRoom(r));
   });
   lastAssign = done ? { label: done + "件を自動割当しました。", changes } : null;
-  selectedId = null;
-  save(); renderAll();
+  selectedId = null; lastDone = null;
+  save(); renderAll(); showNext();
   document.getElementById("gridMsg").textContent =
     (done ? "" : "割り当てられる予約はありませんでした。") + (fail.length ? " 未割当 → " + fail.join(" ／ ") : "");
 }
@@ -587,9 +605,16 @@ function renderGrid(){
       "選択中：" + sel.name + "（" + mdLabel(sel.inDate) + "→" + mdLabel(sel.outDate) + "・" + sel.pax + "名" + (sel.room ? "・現在 " + sel.room : "") + "）";
     document.getElementById("btnUnassign").hidden = !sel.room;
   } else selBox.hidden = true;
-  const undoBox = document.getElementById("undoBox");
-  undoBox.hidden = !lastAssign || !!(sel && sel.status === "booked");
-  document.getElementById("undoLabel").textContent = lastAssign ? lastAssign.label : "";
+  // 部屋が決まっている予約を帯から選んだときは、その場でチェックインできる
+  const selCheckin = document.getElementById("selCheckin");
+  selCheckin.textContent = "";
+  selCheckin.hidden = !(sel && sel.status === "booked" && sel.room);
+  if(!selCheckin.hidden){
+    const b = document.createElement("button"); b.className = "btn small primary"; b.textContent = sel.name + " をチェックイン";
+    b.addEventListener("click", () => { selectedId = null; setStatus(sel, "in"); });
+    selCheckin.appendChild(b);
+  }
+  renderNext(sel);
 
   const selBlock = selectedBlockId ? state.blocks.find(b => b.id === selectedBlockId) : null;
   const blkBox = document.getElementById("blkSelBox");
@@ -599,6 +624,7 @@ function renderGrid(){
       "ブロック選択中：" + selBlock.room + "（" + mdLabel(selBlock.fromDate) + "→" + mdLabel(selBlock.toDate) + "・" + selBlock.reason + "）";
   } else blkBox.hidden = true;
 
+  const justId = lastDone ? lastDone.id : (lastAssign && lastAssign.changes.length === 1 ? lastAssign.changes[0].id : null);
   const dates = []; for(let i = 0; i < DAYS; i++) dates.push(addDays(T0, i));
   const assignable = sel && sel.status === "booked";
   const candSet = assignable ? new Set(candidateRooms(sel).map(rm => rm.no)) : new Set();
@@ -631,7 +657,7 @@ function renderGrid(){
         const blk = occ ? null : state.blocks.find(b => b.room === rm.no && b.fromDate <= d && d < b.toDate);
         if(occ){
           const bar = document.createElement("div");
-          bar.className = "bar " + occ.status + (occ.id === selectedId ? " sel" : "");
+          bar.className = "bar " + occ.status + (occ.id === selectedId ? " sel" : "") + (occ.id === justId ? " just" : "");
           bar.textContent = (occ.inDate === d || d === dates[0]) ? occ.name : "";
           bar.title = occ.name + " " + mdLabel(occ.inDate) + "→" + mdLabel(occ.outDate) + "（" + ST_LABEL[occ.status] + "）";
           bar.addEventListener("click", () => { selectedId = occ.id; selectedBlockId = null; renderGrid(); });
@@ -653,8 +679,8 @@ function renderGrid(){
                                        : sel.name + " を " + rm.no + " に割り当てました。",
                            changes: [{id: sel.id, prev}] };
             document.getElementById("gridMsg").textContent = "";
-            selectedId = null; renderAll();
-            if(focusNo && sel.bookingNo === focusNo) document.getElementById("arrival").scrollIntoView({behavior:"smooth", block:"start"});
+            selectedId = null; lastDone = null; renderAll();
+            showNext();
           });
         }
         tr.appendChild(td);
@@ -666,8 +692,45 @@ function renderGrid(){
 }
 document.getElementById("btnAuto").addEventListener("click", autoAssign);
 document.getElementById("btnClearSel").addEventListener("click", () => { selectedId = null; renderGrid(); });
+/* 割当・チェックインの直後に「やったこと」と「次にすること」を部屋割り表の上に出す */
+function renderNext(sel){
+  const box = document.getElementById("nextBox"), acts = document.getElementById("nextActs");
+  acts.textContent = "";
+  const mk = (label, fn, primary) => { const b = document.createElement("button");
+    b.type = "button"; b.className = "btn" + (primary ? " primary" : ""); b.textContent = label;
+    b.addEventListener("click", fn); acts.appendChild(b); };
+  const setText = (done, next) => { document.getElementById("nextDone").textContent = done;
+    document.getElementById("nextText").innerHTML = next; };
+  const one = lastAssign && lastAssign.changes.length === 1 ? state.reservations.find(r => r.id === lastAssign.changes[0].id) : null;
+  if(sel && sel.status === "booked"){ box.hidden = true; return; } // 部屋を選び直している最中は出さない
+  if(lastDone){
+    const r = state.reservations.find(x => x.id === lastDone.id);
+    if(!r || r.status !== "in"){ box.hidden = true; return; }
+    setText(r.name + " をチェックインしました（" + r.room + "号室）。帯が濃い青（在室）になりました。",
+      "次は<b>今日の部屋の様子を確認</b>しましょう。客室状況表で在室に、当日台帳でチェックイン済になっています。");
+    mk("客室状況表で見る", () => { switchTab("board"); document.getElementById("tab-board").scrollIntoView({behavior:"smooth", block:"start"}); }, true);
+    mk("当日台帳で見る", () => { document.getElementById("ledgerDate").value = r.inDate; switchTab("ledger");
+      document.getElementById("tab-ledger").scrollIntoView({behavior:"smooth", block:"start"}); });
+  } else if(one && one.status === "booked" && one.room){
+    setText(lastAssign.label,
+      "次は<b>チェックイン</b>です。お客様が到着したら、下のボタンを押します" +
+      (one.inDate > T0 ? "（到着日は " + mdLabel(one.inDate) + " ですが、デモでは今すぐ試せます）" : "") + "。");
+    mk("チェックインする", () => setStatus(one, "in"), true);
+    mk("この割り当てを取り消す", undoLast);
+  } else if(lastAssign){
+    setText(lastAssign.label, "次は<b>チェックイン</b>です。到着したお客様を、予約一覧の「チェックイン」で受け付けます。");
+    mk("予約一覧でチェックインする", () => { switchTab("res"); document.getElementById("tab-res").scrollIntoView({behavior:"smooth", block:"start"}); }, true);
+    mk("この割り当てを取り消す", undoLast);
+  } else { box.hidden = true; return; }
+  box.hidden = false;
+}
+function showNext(){
+  const box = document.getElementById("nextBox");
+  if(!box.hidden) box.scrollIntoView({behavior:"smooth", block:"nearest"});
+}
+
 /* 直前の割当を取り消す（チェックイン済みなど、もう「予約」状態でない予約には触れない） */
-document.getElementById("btnUndo").addEventListener("click", () => {
+function undoLast(){
   if(!lastAssign) return;
   const undone = [];
   lastAssign.changes.forEach(c => {
@@ -681,7 +744,7 @@ document.getElementById("btnUndo").addEventListener("click", () => {
   document.getElementById("gridMsg").textContent = undone.length
     ? "割り当てを取り消しました。" + (undone.length === 1 ? "緑に光る部屋から選び直せます。" : "")
     : "チェックイン済みなどのため、取り消せませんでした。";
-});
+}
 document.getElementById("btnUnassign").addEventListener("click", () => {
   const sel = state.reservations.find(r => r.id === selectedId);
   if(sel){ sel.room = null; lastAssign = null; save(); renderAll(); }
@@ -818,6 +881,7 @@ function renderArrival(){
 /* ---------- タブ・初期化 ---------- */
 function switchTab(id){
   if(id === "grid") lastAssign = null;
+  lastDone = null;
   document.querySelectorAll("nav.tabs button").forEach(b => b.setAttribute("aria-selected", String(b.dataset.tab === id)));
   ["res","grid","board","ledger"].forEach(t => { document.getElementById("tab-"+t).hidden = (t !== id); });
   renderAll();
@@ -829,7 +893,7 @@ function renderAll(){ renderArrival(); renderRes(); renderGrid(); renderBoard();
 document.getElementById("btnReset").addEventListener("click", () => {
   if(!confirm("入力した予約・ブロックをすべて消して、サンプルデータに戻しますか？")) return;
   try{ localStorage.removeItem(SuirenDemo.KEY); }catch(e){}
-  state = seed(); selectedId = null; selectedBlockId = null; lastAssign = null;
+  state = seed(); selectedId = null; selectedBlockId = null; lastAssign = null; lastDone = null;
   document.getElementById("gridMsg").textContent = "";
   save(); renderAll();
 });
