@@ -1,4 +1,5 @@
 /* ホテル翠蓮デモの共有データ（簡易PMSデモ /demo/mini-pms/ と予約エンジンデモ /demo/booking/ で共用）。
+   部屋マスタ・料金表・精算の計算・サンプル予約・保存の読み込みをここにまとめる。
    ブラウザの localStorage に1つの状態として保存し、両ページで同じ予約・ブロックを読み書きする。
 
    サンプルの予約とブロックは「開いた日」を基準に作る。日付が変わってから開くと、サンプルだけを
@@ -23,12 +24,51 @@
     addRooms(f+"階", [f+"05"], "和室", 4);
   });
 
+  /* 料金（1室1泊・税とサービス料込み）。泊まる人数で変わる。公式サイト（scripts/build_demo_hotel.py）と同じ値 */
+  const TYPES = [
+    {type:"シングル", cap:1, rates:{1:8000}},
+    {type:"ツイン",   cap:2, rates:{1:12000, 2:16000}},
+    {type:"和室",     cap:4, rates:{1:16000, 2:20000, 3:22000, 4:24000}}
+  ];
+  const BREAKFAST = 1500; // 朝食 1名1泊（税込）
+  const BATH_TAX = 150;   // 入湯税 1名1泊（消費税の対象外）
+  /* 精算で足せる追加料金（公式サイトの案内と同じ値・税込）。price が null のものは金額を入力する */
+  const EXTRAS = [
+    {key:"dinner", label:"夕食（季節の会席）", price:7700, unit:"名"},
+    {key:"bath",   label:"貸切風呂「蓮」",     price:2200, unit:"回"},
+    {key:"kidsbf", label:"お子さま朝食",       price:800,  unit:"名"},
+    {key:"shop",   label:"売店・お飲み物",     price:null, unit:"点"}
+  ];
+  const nightsOf = r => Math.round((new Date(r.outDate+"T00:00:00") - new Date(r.inDate+"T00:00:00"))/86400000);
+  function nightRate(type, pax){
+    const tp = TYPES.find(x => x.type === type);
+    if(!tp) return 0;
+    return tp.rates[Math.min(Math.max(pax, 1), tp.cap)] || 0;
+  }
+  /* 精算の明細。公式サイト予約は予約時に示した宿泊料金（roomTotal）をそのまま使う */
+  function folio(r){
+    const n = nightsOf(r);
+    const room = r.room ? ROOMS.find(x => x.no === r.room) : null;
+    const type = room ? room.type : (r.typePref || "");
+    const rate = nightRate(type, r.pax);
+    const lines = [];
+    const roomTotal = typeof r.roomTotal === "number" ? r.roomTotal : rate * n;
+    lines.push({kind:"room", label:"宿泊料金（" + (type || "部屋未定") + "・" + r.pax + "名）", unit: n ? Math.round(roomTotal / n) : rate, qty:n, qtyLabel:n + "泊", amount:roomTotal, taxable:true});
+    if(r.plan === "bf") lines.push({kind:"bf", label:"朝食", unit:BREAKFAST, qty:r.pax * n, qtyLabel:r.pax + "名×" + n + "泊", amount:BREAKFAST * r.pax * n, taxable:true});
+    (r.extras || []).forEach(x => lines.push({kind:"extra", id:x.id, label:x.label, unit:x.price, qty:x.qty, qtyLabel:x.qty + (x.unit || ""), amount:x.price * x.qty, taxable:true}));
+    lines.push({kind:"bathtax", label:"入湯税", unit:BATH_TAX, qty:r.pax * n, qtyLabel:r.pax + "名×" + n + "泊", amount:BATH_TAX * r.pax * n, taxable:false});
+    const total = lines.reduce((s, l) => s + l.amount, 0);
+    const taxableTotal = lines.filter(l => l.taxable).reduce((s, l) => s + l.amount, 0);
+    return { lines, total, taxableTotal, consumptionTax: Math.floor(taxableTotal * 10 / 110), nights:n, type };
+  }
+
   function seed(){
     const T0 = today();
     return { seedDate: T0, nextId: 9, nextBlockId: 2,
       reservations: [
         { id:1, name:"田中物産 佐藤様", pax:1, inDate:addDays(T0,-3), outDate:addDays(T0,25), typePref:"シングル", memo:"長期法人。請求書は月末まとめ（サンプル）", room:"303", status:"in" },
-        { id:2, name:"高橋様", pax:2, inDate:addDays(T0,-1), outDate:addDays(T0,1), typePref:"ツイン", memo:"レンタカー21時返却予定（サンプル）", room:"501", status:"in" },
+        { id:2, name:"高橋様", pax:2, inDate:addDays(T0,-2), outDate:T0, typePref:"ツイン", memo:"本日出発。朝食付き・夕食会席を追加（サンプル）", room:"501", status:"in",
+          plan:"bf", extras:[{ id:1, label:"夕食（季節の会席）", price:7700, unit:"名", qty:2 }] },
         { id:3, name:"Smith様", pax:1, inDate:T0, outDate:addDays(T0,1), typePref:"シングル", memo:"英語対応（サンプル）", room:"204", status:"booked" },
         { id:4, name:"山田様", pax:2, inDate:T0, outDate:addDays(T0,2), typePref:"ツイン", memo:"記念日。眺望良い部屋希望（サンプル）", room:null, status:"booked" },
         { id:5, name:"鈴木様ご家族", pax:4, inDate:addDays(T0,1), outDate:addDays(T0,3), typePref:"和室", memo:"お子様2名添い寝（サンプル）", room:null, status:"booked" },
@@ -79,5 +119,5 @@
     return s.seedDate === today() ? s : refreshSamples(s);
   }
 
-  window.SuirenDemo = { KEY, ROOMS, seed, load };
+  window.SuirenDemo = { KEY, ROOMS, TYPES, BREAKFAST, BATH_TAX, EXTRAS, nightRate, folio, seed, load };
 })();

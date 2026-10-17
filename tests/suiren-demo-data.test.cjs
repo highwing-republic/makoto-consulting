@@ -64,3 +64,22 @@ test("利用者の予約と部屋がぶつかるサンプルは、同じタイ�
     && r.inDate < sato.outDate && sato.inDate < r.outDate);
   assert.equal(busy(sato.room).length, 1);
 });
+
+test("精算の明細：宿泊料金は部屋タイプと人数、朝食・追加料金・入湯税を足す", () => {
+  const demo = demoOn("2026-10-16");
+  const takahashi = demo.load().reservations.find((r) => r.id === 2);
+  const f = demo.folio(takahashi);
+  // ツイン2名 16,000×2泊、朝食 1,500×2名×2泊、夕食 7,700×2名、入湯税 150×2名×2泊
+  assert.equal(f.lines.map((l) => l.amount).join(","), "32000,6000,15400,600");
+  assert.equal(f.total, 54000);
+  assert.equal(f.taxableTotal, 53400);
+  assert.equal(f.consumptionTax, 4854);
+});
+
+test("精算の明細：公式サイト予約は予約時の宿泊料金を使い、1名でも部屋の料金表どおり", () => {
+  const demo = demoOn("2026-10-16");
+  const web = { pax: 1, inDate: "2026-10-16", outDate: "2026-10-17", room: "502", plan: "room", roomTotal: 12000 };
+  assert.equal(demo.folio(web).total, 12000 + 150);
+  assert.equal(demo.nightRate("和室", 3), 22000);
+  assert.equal(demo.nightRate("ツイン", 4), 16000);
+});
