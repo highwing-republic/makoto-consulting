@@ -47,6 +47,7 @@ def test_converted_pages_use_the_three_standard_blocks():
         "dx-diagnosis.html",
         "hotel-price-trends.html",
         "inbound-analysis.html",
+        "kpi-calculator.html",
         "management-ai.html",
         "report.html",
     ]
@@ -98,6 +99,7 @@ def test_converted_pages_use_the_three_standard_blocks():
 PAGE_SCRIPTS = {
     "inbound-analysis.html": ("inbound-analysis", "InboundAnalysisModel"),
     "business-hotel-price-trends.html": ("business-hotel-price-trends", "BusinessHotelPriceModel"),
+    "kpi-calculator.html": ("kpi-calculator", "KpiCalculatorModel"),
 }
 
 
