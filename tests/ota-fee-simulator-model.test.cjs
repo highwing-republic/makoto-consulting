@@ -88,3 +88,13 @@ test("annual revenue from the diagnosis needs rooms, ADR and occupancy", () => {
   assert.equal(model.revenueFromDiagnosis({ rooms: 30, adr: null, occupancy: 65 }), null);
   assert.equal(model.revenueFromDiagnosis(null), null);
 });
+
+test("amounts read as 万円 with 億 above one hundred million", () => {
+  assert.equal(model.formatMan(5915000), "591.5万円");
+  assert.equal(model.formatMan(648333), "64.8万円");
+  assert.equal(model.formatMan(12125000), "1,213万円");
+  assert.equal(model.formatMan(130680000), "1億3,068万円");
+  assert.equal(model.formatMan(130000000), "1億3,000万円");
+  assert.equal(model.formatMan(200000000), "2億円");
+  assert.equal(model.formatMan(-648333), "-64.8万円");
+});

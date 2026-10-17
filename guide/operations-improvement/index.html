@@ -3,7 +3,7 @@
 # 解説ページ。出典と関連ツールは、ツールページと同じ標準ブロック（tool-sources / tool-related）で表示する。
 # 8つの業務の名前と「診断で対応する質問」は js/dx-diagnosis-model.js と同じ（tests/test_guides.py で確認）。
 guide: operations-improvement
-tool_updated: 2026-10-16
+tool_updated: 2026-10-17
 tool_updated_label: 更新日
 tool_notes:
   - 各業務の内容は、DXかんたん診断の16問と改善施策の例（2026年10月時点）に合わせています。
@@ -66,7 +66,7 @@ tool_guides:
         "mainEntityOfPage": "https://lab.ugatta-llc.com/guide/operations-improvement/",
         "image": "https://lab.ugatta-llc.com/images/og-lab.jpg",
         "datePublished": "2026-10-15",
-        "dateModified": "2026-10-16",
+        "dateModified": "2026-10-17",
         "inLanguage": "ja-JP",
         "isPartOf": {"@id": "https://lab.ugatta-llc.com/#website"},
         "author": {"@type": "Organization", "@id": "https://lab.ugatta-llc.com/#organization", "name": "宿泊DXラボ", "url": "https://lab.ugatta-llc.com/"},
@@ -115,6 +115,7 @@ tool_guides:
             <div><dt>確認する数字</dt><dd><p>毎週見る数字を3〜5個に絞ります。例として、稼働率、ADR、RevPAR、予約ペースがあります。</p><ul><li>ADR：客室売上 ÷ 販売した客室数</li><li>RevPAR：客室売上 ÷ 販売できる客室数</li></ul></dd></div>
             <div><dt>診断で対応する質問</dt><dd><ul><li>主要な経営指標をどの頻度で確認していますか？</li><li>部門別・施設別の収益性を把握できますか？</li></ul></dd></div>
           </dl>
+          <p>1か月の実績から稼働率・ADR・RevPARと損益分岐の稼働率をまとめて出すには、「<a href="/kpi-calculator.html">宿KPI電卓</a>」が使えます。</p>
         </section>
 
         <section aria-labelledby="sales" data-category="予約・販売">
@@ -125,6 +126,7 @@ tool_guides:
             <div><dt>確認する数字</dt><dd>自社予約の比率と、OTA手数料の合計を一度見える化します。</dd></div>
             <div><dt>診断で対応する質問</dt><dd><ul><li>PMS・サイトコントローラー・OTAの在庫／料金連携は？</li><li>自社予約を増やすための施策を継続的に行っていますか？</li></ul></dd></div>
           </dl>
+          <p>自社予約の比率を上げたときに手数料がどれだけ減るかは、「<a href="/ota-fee-simulator.html">OTA手数料シミュレーター</a>」で計算できます。</p>
           <p>公式サイトでの予約から、フロントの管理画面に予約が届くまでの流れは、ラボの「<a href="/demo/booking/">予約エンジンデモ</a>」で体験できます。</p>
         </section>
 
@@ -146,6 +148,7 @@ tool_guides:
             <div><dt>確認する数字</dt><dd>紙・口頭で行っている業務を3つ書き出し、それぞれにかかる時間を測ります。</dd></div>
             <div><dt>診断で対応する質問</dt><dd><ul><li>客室清掃の指示・進捗確認は？</li><li>チェックイン前後の定型業務は？</li></ul></dd></div>
           </dl>
+          <p>口コミへの返信や外国語のお問い合わせなど、文章を書く業務に生成AIを使うとどれくらい時間が浮くかは、「<a href="/ai-time-estimate.html">生成AI時短みつもり</a>」で見積もれます。</p>
           <p>予約から部屋割り、客室状況表までのつながりは、ラボの「<a href="/demo/mini-pms/">簡易PMSデモ</a>」で試せます。</p>
         </section>
 
@@ -168,6 +171,7 @@ tool_guides:
             <div><dt>確認する数字</dt><dd>使っている仕組みのつながりを1枚の図にし、二重入力が起きている箇所に印を付けます。</dd></div>
             <div><dt>診断で対応する質問</dt><dd><ul><li>同じ情報を複数システムへ二重入力することは？</li><li>主要システムのAPI／CSV連携可否を把握していますか？</li></ul></dd></div>
           </dl>
+          <p>システムが増えるほど、管理画面のIDやパスワードの管理も増えます。宿で実際に起きた被害をもとにした「<a href="/security-check.html">宿のセキュリティ10問チェック</a>」で、今週やることを確かめられます。</p>
         </section>
 
         <section aria-labelledby="marketing" data-category="集客">
@@ -178,6 +182,7 @@ tool_guides:
             <div><dt>確認する数字</dt><dd>予約経路ごとの売上と手数料を並べます。</dd></div>
             <div><dt>診断で対応する質問</dt><dd><ul><li>OTA・自社・Google・SNSの成果を比較していますか？</li><li>チャネル別の獲得コストや手数料を把握していますか？</li></ul></dd></div>
           </dl>
+          <p>予約経路ごとの売上と手数料は、「<a href="/ota-fee-simulator.html">OTA手数料シミュレーター</a>」で1つの表に並べられます。</p>
           <p>海外からのお客様について、地域でどの国・地域の宿泊が多いかは「<a href="/inbound-analysis.html">インバウンド宿泊者分析</a>」で確認できます。</p>
         </section>
 
@@ -189,6 +194,7 @@ tool_guides:
             <div><dt>確認する数字</dt><dd>ADR、稼働率、RevPARを毎週確認します。</dd></div>
             <div><dt>診断で対応する質問</dt><dd><ul><li>ADR・稼働率・RevPAR・予約ペースを一画面で見られますか？</li><li>データを使って具体的な意思決定をしていますか？</li></ul></dd></div>
           </dl>
+          <p>ADR・稼働率・RevPARは、「<a href="/kpi-calculator.html">宿KPI電卓</a>」に1か月の実績を入れると計算でき、同じ月の都道府県の稼働率とも比べられます。</p>
           <p>地域の料金の動きは、「<a href="/hotel-price-trends.html">宿泊料金トレンド</a>」で、同じ宿泊条件の比較施設群の値動きとして確認できます。</p>
         </section>
 

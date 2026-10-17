@@ -24,7 +24,7 @@
   let calculated = false;
   let tracked = false;
 
-  const man = (value) => '約' + (Math.round(value / 1000) / 10).toLocaleString('ja-JP', { maximumFractionDigits: 1 }) + '万円';
+  const man = (value) => '約' + model.formatMan(value);
   const num = (value) => Number(value).toLocaleString('ja-JP', { maximumFractionDigits: 1 });
   const pct = (value) => (value === null ? '—' : num(value) + '%');
   const monthLabel = (period) => period.slice(0, 4) + '年' + Number(period.slice(5)) + '月';
