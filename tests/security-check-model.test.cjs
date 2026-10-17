@@ -54,3 +54,18 @@ test("the page lists the same ten questions in the same order", () => {
     assert.equal([...html.matchAll(new RegExp('name="' + q.id + '" value="([012])"', "g"))].map((m) => m[1]).join(), "2,1,0");
   });
 });
+
+test("the contact sheet covers every contact the incident todo names, with the date and the person in charge", () => {
+  const html = require("node:fs").readFileSync(require("node:path").join(__dirname, "..", "security-check.html"), "utf8");
+  const sheet = html.slice(html.indexOf('id="contact-sheet"'), html.indexOf("{% include tool-sources.html %}"));
+  assert.ok(sheet.length > 0);
+  const rows = [...sheet.matchAll(/<tr data-sheet-row="([^"]+)"><th scope="row">([^<]+)<\/th>/g)].map((m) => m[2]);
+  ["OTA", "PMS", "カード会社", "警察", "個人情報保護委員会"].forEach((name) => {
+    assert.ok(model.questions.find((q) => q.id === "incident").todo.includes(name), name);
+    assert.ok(rows.some((row) => row.includes(name)), name);
+  });
+  assert.ok(sheet.includes('name="date"') && sheet.includes('name="person"'));
+  // 公的窓口の番号は確かめた値のまま
+  assert.ok(sheet.includes("03-6457-9849") && sheet.includes("#9110"));
+  assert.ok(!/type="password"|name="pass/.test(sheet));
+});
