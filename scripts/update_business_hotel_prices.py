@@ -165,7 +165,7 @@ class RakutenClient:
     request_count: int = 0
     _last: float = -1e9
 
-    def search(self, params: dict) -> dict:
+    def search(self, params: dict, endpoint: str = ENDPOINT) -> dict:
         """1回の検索。該当なし（404）は空の結果として返す。"""
         query = {"applicationId": self.application_id, "format": "json", **params}
         headers = {"accessKey": self.access_key, "Referer": self.referer, "Origin": self.referer.rstrip("/"), "User-Agent": "HOTEL-DX-Lab business-hotel-price-trends"}
@@ -176,7 +176,7 @@ class RakutenClient:
             self._last = self.clock()
             self.request_count += 1
             try:
-                response = self.session.get(ENDPOINT, params=query, headers=headers, timeout=30)
+                response = self.session.get(endpoint, params=query, headers=headers, timeout=30)
             except requests.RequestException as exc:
                 error = f"network error: {type(exc).__name__}"
             else:
