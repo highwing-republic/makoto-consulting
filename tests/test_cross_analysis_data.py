@@ -216,8 +216,9 @@ def test_source_metadata_has_official_ids_and_periods():
 def test_monthly_lodging_keeps_each_month_and_marks_the_basis_change():
     from scripts.update_cross_analysis_data import build_monthly_lodging, validate_monthly_lodging
 
-    def record(total, foreign, occupancy):
-        return {"total_guest_nights": total, "foreign_guest_nights": foreign, "used_rooms": 1, "occupancy_rate": occupancy}
+    def record(total, foreign, occupancy, ryokan=None):
+        by_type = {"ryokan": ryokan, "resort_hotel": None, "business_hotel": None, "city_hotel": None, "simple_lodging": None}
+        return {"total_guest_nights": total, "foreign_guest_nights": foreign, "used_rooms": 1, "occupancy_rate": occupancy, "occupancy_rate_by_type": by_type}
 
     months = []
     for index in range(24):
@@ -225,8 +226,8 @@ def test_monthly_lodging_keeps_each_month_and_marks_the_basis_change():
         months.append({
             "period": f"{year:04d}-{month + 1:02d}",
             "source_url": f"https://example.invalid/{index}.xlsx",
-            "national": record(1000 + index, 100, 50.0),
-            "prefectures": {code: record(100 + index, 10 if code != "15" else None, 40.5) for code in PREFECTURE_BY_CODE},
+            "national": record(1000 + index, 100, 50.0, 40.0 + index / 10),
+            "prefectures": {code: record(100 + index, 10 if code != "15" else None, 40.5, 34.0 if code == "20" else None) for code in PREFECTURE_BY_CODE},
         })
     source = {
         "source_name": "観光庁「宿泊旅行統計調査」",
@@ -249,6 +250,41 @@ def test_monthly_lodging_keeps_each_month_and_marks_the_basis_change():
     # 外国人が欠けている月は差し引きを作らない
     assert set(dataset["prefectures"]["15"]["domestic_guest_nights"]) == {None}
     assert dataset["metadata"]["basis_change_period"] == "2026-01"
+    # 施設タイプ別の稼働率も月の並びで残す（表にない値は null）
+    assert dataset["metadata"]["facility_types"]["ryokan"] == "旅館"
+    assert dataset["national"]["occupancy_rate_by_type"]["ryokan"][-1] == 42.3
+    assert set(dataset["prefectures"]["20"]["occupancy_rate_by_type"]["ryokan"]) == {34.0}
+    assert set(dataset["prefectures"]["13"]["occupancy_rate_by_type"]["city_hotel"]) == {None}
+    dataset["prefectures"]["20"]["occupancy_rate_by_type"]["ryokan"][0] = 120
+    with pytest.raises(ValueError):
+        validate_monthly_lodging(dataset)
+
+
+def test_occupancy_by_facility_type_is_read_from_table_8():
+    from openpyxl import Workbook
+    from scripts.update_cross_analysis_data import extract_prefecture_rows, find_facility_type_columns
+
+    # 2026年7月分 第2次速報 第8表の見出しと同じ並び（左は客室区分別、右端が宿泊施設タイプ別）
+    sheet = Workbook().active
+    sheet["A1"] = "第８表　施設所在地(47区分及び運輸局等)、客室区分(5区分)、宿泊目的割合(2区分)別客室稼働率"
+    sheet["B4"] = "客室稼働率\n1)、2)"
+    sheet["T4"] = "宿泊施設タイプ（6区分）"
+    for column, label in zip("TUVWXY", ("旅館", "リゾート\nホテル", "ビジネス\nホテル", "シティ\nホテル", "簡易宿所", "会社・団体の宿泊所")):
+        sheet[f"{column}5"] = label
+    sheet.append(["令和8年7月", 61] + [None] * 17 + [40.2, 59, 74.6, 71.9, 30, 32])
+    for code, identity in PREFECTURE_BY_CODE.items():
+        values = [34, 50.7, 79.1, 75.6, 17.9, 23.1] if code == "20" else [45.4, 29.8, 82.1, 74.5, 39.9, "-"]
+        sheet.append([f"　{code}{identity['name']}", 50] + [None] * 17 + values)
+
+    columns = find_facility_type_columns(sheet)
+    assert columns == {"ryokan": 20, "resort_hotel": 21, "business_hotel": 22, "city_hotel": 23, "simple_lodging": 24}
+    national, prefectures = extract_prefecture_rows(sheet, tuple(columns.values()))
+    assert national == [40.2, 59, 74.6, 71.9, 30]
+    assert prefectures["20"] == [34, 50.7, 79.1, 75.6, 17.9]
+
+    # タイプ別の列がない表は欠損として扱い、更新を止めない
+    del sheet["T5"]
+    assert find_facility_type_columns(sheet) is None
 
 
 RETIRED_PAGES = {

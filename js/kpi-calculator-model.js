@@ -13,10 +13,16 @@
 
   // 「例を入れて試す」で入る架空の30室の宿（DXかんたん診断の初期値と同じ規模）
   const sample = {
-    month: "2026-07", prefCode: "20", mealsIncluded: false,
+    month: "2026-07", prefCode: "20", facilityType: "ryokan", mealsIncluded: false,
     rooms: 30, days: 31, soldRooms: 605, roomRevenue: 10890000,
     guests: 1210, capacity: 90, totalRevenue: 13600000, closedRoomNights: null,
     fixedCost: 7000000, variableCostPerRoom: 2500
+  };
+
+  // 宿泊旅行統計 第8表の宿泊施設タイプ（lodging-monthly.json の occupancy_rate_by_type のキー）
+  const facilityTypes = {
+    ryokan: "旅館", resort_hotel: "リゾートホテル", business_hotel: "ビジネスホテル",
+    city_hotel: "シティホテル", simple_lodging: "簡易宿所"
   };
 
   const OCC_STEP = 5;
@@ -135,7 +141,8 @@
 
   // 宿泊旅行統計（lodging-monthly.json）から、同じ月の都道府県と全国の客室稼働率を取り出す。
   // 選んだ月がまだ公表されていなければ、同じ暦月のうち最新の月を使う（exact: false）。
-  function benchmark(dataset, month, prefCode) {
+  // 施設タイプを選んだときは、そのタイプの稼働率（第8表の右側）も取り出す。
+  function benchmark(dataset, month, prefCode, facilityType) {
     if (!dataset || !Array.isArray(dataset.periods) || !/^\d{4}-\d{2}$/.test(month || "")) return null;
     let index = dataset.periods.indexOf(month);
     const exact = index !== -1;
@@ -146,30 +153,49 @@
       }
     }
     if (index === -1) return null;
+    const type = facilityTypes[facilityType] ? facilityType : null;
+    const pick = function (record) {
+      return record && record.occupancy_rate_by_type && record.occupancy_rate_by_type[type] ? record.occupancy_rate_by_type[type][index] : null;
+    };
     const national = dataset.national && dataset.national.occupancy_rate ? dataset.national.occupancy_rate[index] : null;
     const prefecture = prefCode && dataset.prefectures && dataset.prefectures[prefCode] ? dataset.prefectures[prefCode] : null;
     const regional = prefecture && prefecture.occupancy_rate ? prefecture.occupancy_rate[index] : null;
     if (!present(national) && !present(regional)) return null;
+    const nationalType = type ? pick(dataset.national) : null;
+    const prefectureType = type ? pick(prefecture) : null;
     return {
       period: dataset.periods[index],
       exact: exact,
       basis: dataset.basis ? dataset.basis[index] : null,
       prefectureName: prefecture ? prefecture.prefecture_name : null,
       prefecture: present(regional) ? regional : null,
-      national: present(national) ? national : null
+      national: present(national) ? national : null,
+      facilityType: type,
+      facilityLabel: type ? facilityTypes[type] : null,
+      prefectureType: present(prefectureType) ? prefectureType : null,
+      nationalType: present(nationalType) ? nationalType : null
     };
   }
 
+  // 比べる相手は、県のそのタイプ → 全国のそのタイプ → 県の全体 → 全国の全体 の順で、値がある最初のもの。
   function compare(occupancy, bench) {
     if (!bench) return null;
-    const reference = bench.prefecture !== null ? bench.prefecture : bench.national;
-    if (reference === null) return null;
-    const gap = round1(occupancy - reference);
-    return { reference: reference, label: bench.prefecture !== null ? bench.prefectureName : "全国", gap: gap };
+    const candidates = [
+      [bench.prefectureType, bench.prefectureName + "の" + bench.facilityLabel, true],
+      [bench.nationalType, "全国の" + bench.facilityLabel, true],
+      [bench.prefecture, bench.prefectureName, false],
+      [bench.national, "全国", false]
+    ];
+    for (let i = 0; i < candidates.length; i += 1) {
+      const reference = candidates[i][0];
+      if (reference === null || reference === undefined) continue;
+      return { reference: reference, label: candidates[i][1], byType: candidates[i][2], gap: round1(occupancy - reference) };
+    }
+    return null;
   }
 
   return {
-    required: required, optional: optional, sample: sample,
+    required: required, optional: optional, sample: sample, facilityTypes: facilityTypes,
     parseNumber: parseNumber, daysInMonth: daysInMonth, availableRooms: availableRooms,
     validate: validate, calculate: calculate, reverse: reverse, benchmark: benchmark, compare: compare
   };
