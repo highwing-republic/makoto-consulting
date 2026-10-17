@@ -137,6 +137,19 @@
     return round1(invoiceRate / (taxOnFee ? TAX : 1));
   }
 
+  // 金額を万円・億円で読みやすく。1,000万円未満は小数1桁、1億円未満は万円の整数、1億円以上は「1億3,068万円」。
+  function formatMan(yen) {
+    const sign = yen < 0 ? "-" : "";
+    const man = Math.abs(yen) / 10000;
+    const comma = function (value, digits) { return value.toLocaleString("ja-JP", { maximumFractionDigits: digits }); };
+    if (man < 1000) return sign + comma(Math.round(man * 10) / 10, 1) + "万円";
+    const rounded = Math.round(man);
+    if (rounded < 10000) return sign + comma(rounded, 0) + "万円";
+    const oku = Math.floor(rounded / 10000);
+    const rest = rounded % 10000;
+    return sign + oku + "億" + (rest ? comma(rest, 0) + "万" : "") + "円";
+  }
+
   // DXかんたん診断のOTA比率を表に入れる。OTAの行どうし・それ以外の行どうしの比は保ち、端数は各グループの最大の行で吸収する。
   function applyOtaRatio(channels, otaRatio) {
     const isOta = function (channel) { return channel.kind === "ota"; };
@@ -164,7 +177,7 @@
 
   return {
     MAX_CHANNELS: MAX_CHANNELS, kinds: kinds, sample: sample,
-    applyOtaRatio: applyOtaRatio, revenueFromDiagnosis: revenueFromDiagnosis,
+    applyOtaRatio: applyOtaRatio, revenueFromDiagnosis: revenueFromDiagnosis, formatMan: formatMan,
     parseNumber: parseNumber, variableRate: variableRate, validate: validate, errorCount: errorCount,
     shareTotal: shareTotal, summarize: summarize, scenario: scenario,
     rateFromInvoice: rateFromInvoice, feeRateForRow: feeRateForRow

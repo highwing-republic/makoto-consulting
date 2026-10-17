@@ -57,6 +57,8 @@
 .sec-todo p{margin:8px 0 0;color:var(--ink-soft);font-size:13px;line-height:1.8}
 .sec-todo p b{color:var(--ink)}
 .sec-tag{display:inline-block;margin-left:8px;padding:1px 8px;border-radius:999px;background:#fbf3ef;color:#9a4b2a;font-size:11px;font-weight:700;vertical-align:2px}
+.sec-item-link{display:inline-block;margin-top:8px;color:var(--lab-teal);font-size:13px;font-weight:700;text-underline-offset:4px}
+.sec-later .sec-item-link{display:block;margin-top:2px}
 .sec-later{margin:0;padding-left:1.3em;font-size:14px;line-height:1.9}
 .sec-later li+li{margin-top:4px}
 .sec-later small{color:var(--ink-soft)}

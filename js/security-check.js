@@ -35,9 +35,19 @@
     formError.textContent = ids.length ? 'まだ答えていない質問が' + ids.length + 'つあります。分からないものは「できていない・わからない」を選んでください。' : '';
   }
 
+  // 項目から続けて使えるラボのツール
+  const itemLinks = {
+    'ai-rule': { href: '/ai-time-estimate.html', label: '生成AIに任せる業務と浮く時間を見積もる（生成AI時短みつもり）' }
+  };
+
+  function itemLink(item) {
+    const link = itemLinks[item.id];
+    return link ? '<a class="sec-item-link" href="' + link.href + '">' + escapeHtml(link.label) + ' <span aria-hidden="true">→</span></a>' : '';
+  }
+
   function todoItem(item) {
     return '<li><strong>' + escapeHtml(item.todo) + (item.partial ? '<span class="sec-tag">一部できている</span>' : '') + '</strong>' +
-      '<p><b>なぜ：</b>' + escapeHtml(item.why) + '</p><p><b>費用：</b>' + escapeHtml(item.cost) + '</p></li>';
+      '<p><b>なぜ：</b>' + escapeHtml(item.why) + '</p><p><b>費用：</b>' + escapeHtml(item.cost) + '</p>' + itemLink(item) + '</li>';
   }
 
   function render(evaluation) {
@@ -53,7 +63,7 @@
     }
     if (evaluation.later.length) {
       html += '<section class="sec-block"><h4>次に見直すこと</h4><ul class="sec-later">' +
-        evaluation.later.map((item) => '<li>' + escapeHtml(item.todo) + ' <small>（' + escapeHtml(item.area) + (item.partial ? '・一部できている' : '') + '）</small></li>').join('') +
+        evaluation.later.map((item) => '<li>' + escapeHtml(item.todo) + ' <small>（' + escapeHtml(item.area) + (item.partial ? '・一部できている' : '') + '）</small>' + itemLink(item) + '</li>').join('') +
         '</ul></section>';
     }
     body.innerHTML = html;
