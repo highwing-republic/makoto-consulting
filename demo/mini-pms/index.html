@@ -160,6 +160,55 @@ footer.note{max-width:1100px;margin:14px auto 0;color:var(--muted);font-size:11p
 /* チェックイン・アウトなどの操作結果（どのタブにいても見える） */
 .toast{position:fixed;left:16px;right:16px;bottom:20px;margin-inline:auto;width:fit-content;max-width:560px;background:var(--fg);color:var(--bg);border-radius:8px;padding:10px 16px;font-size:13px;font-weight:600;box-shadow:0 4px 16px rgba(0,0,0,.25);z-index:20}
 .grid-legend{margin:0 0 8px}
+/* 精算・チェックアウト */
+.paytab{display:grid;grid-template-columns:minmax(220px,300px) minmax(0,1fr);gap:20px;align-items:start}
+.paytab h3{font-size:13px;margin:0 0 6px;color:var(--muted)}
+.paylist{display:flex;flex-direction:column;gap:6px}
+.payitem{appearance:none;text-align:left;font:inherit;color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px 10px;cursor:pointer;display:flex;flex-direction:column;gap:2px}
+.payitem .top{display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.payitem .meta{font-size:12px;color:var(--muted)}
+.payitem[aria-current="true"]{border:2px solid var(--accent);background:var(--accent-soft)}
+.payitem:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.folio{border:1px solid var(--line);border-radius:8px;padding:14px 16px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.paytab .folio h3{font-size:16px;margin:0;color:var(--fg)}
+.folio .detail{margin:0;font-size:12px;color:var(--muted)}
+.folio table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+.folio th,.folio td{border-bottom:1px solid var(--line);padding:6px 6px;font-size:13px;text-align:left;vertical-align:middle}
+.folio th{font-size:11px;color:var(--muted);font-weight:600}
+.folio td.num,.folio th.num{text-align:right;white-space:nowrap}
+.folio tr.total td{font-weight:700;font-size:16px;border-bottom:2px solid var(--fg)}
+.folio tr.taxnote td{font-size:12px;color:var(--muted);border-bottom:none}
+.folio .addrow{display:flex;flex-wrap:wrap;gap:8px;align-items:end;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px}
+.folio .addrow label{display:flex;flex-direction:column;gap:3px;font-size:11px;color:var(--muted)}
+.folio .paybox{display:flex;flex-direction:column;gap:8px}
+.folio .methods{display:flex;flex-wrap:wrap;gap:8px}
+.folio .methods label{display:flex;gap:6px;align-items:center;border:1px solid var(--line);border-radius:999px;padding:6px 14px;cursor:pointer;font-size:13px}
+.folio .methods label:has(input:checked){border-color:var(--accent);background:var(--accent-soft);font-weight:600}
+.folio .cashrow{display:flex;flex-wrap:wrap;gap:12px;align-items:center;font-size:13px}
+.folio .cashrow input{width:140px}
+.folio .change{font-weight:700;font-variant-numeric:tabular-nums}
+.folio .settle{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.folio .settle .note{font-size:12px;color:var(--muted)}
+.folio .empty{padding:24px 4px}
+/* 領収書（デモ） */
+.receipt{background:#fff;color:#1b1f23;border:1px solid #c9ced3;border-radius:6px;padding:20px 22px;max-width:520px;display:flex;flex-direction:column;gap:10px;font-variant-numeric:tabular-nums}
+.receipt .rhead{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.receipt .rhead h4{font-size:22px;letter-spacing:.4em;margin:0}
+.receipt .rhead span{font-size:11px;color:#5b6570}
+.receipt .to{font-size:16px;border-bottom:1px solid #1b1f23;padding-bottom:4px;margin:0}
+.receipt .amount{font-size:26px;font-weight:700;text-align:center;border:2px solid #1b1f23;padding:8px;margin:0}
+.receipt p{margin:0;font-size:13px}
+.receipt table td{border-bottom:1px solid #e3e6e9;padding:4px 2px;font-size:12px}
+.receipt table td.num{text-align:right}
+.receipt .issuer{font-size:12px;text-align:right}
+.receipt .demo{font-size:11px;color:#a33;border-top:1px dashed #c9ced3;padding-top:6px}
+@media (max-width:760px){ .paytab{grid-template-columns:1fr} }
+@media (max-width:640px){ .folio .c-unit{display:none} .folio{padding:12px 10px} }
+@media print{
+  body *{visibility:hidden}
+  #receipt,#receipt *{visibility:visible}
+  #receipt{position:absolute;left:0;top:0;border:none;max-width:none;width:100%}
+}
 .nextbox{border:2px solid var(--accent);background:var(--accent-soft);border-radius:8px;padding:12px 14px;margin:0 0 12px;display:flex;flex-direction:column;gap:6px;scroll-margin-top:12px}
 .nextbox p{margin:0}
 .nextbox .done{font-weight:700;color:var(--accent)}
@@ -244,7 +293,7 @@ footer.note{max-width:1100px;margin:14px auto 0;color:var(--muted);font-size:11p
 
 <header class="app">
   <h1>簡易PMSデモ</h1>
-  <span class="sub">予約 → 部屋割り → 状況表 → 当日台帳のデモ（架空ホテル・データはサンプル、このブラウザ内のみ）</span>
+  <span class="sub">予約 → 部屋割り → チェックイン → 精算・チェックアウトのデモ（架空ホテル・データはサンプル、このブラウザ内のみ）</span>
   <span class="sub" style="margin-left:auto"><a href="/demo/hotel/" style="color:var(--accent)">旅館サイトデモ →</a>　<a href="/demo/booking/" style="color:var(--accent)">予約サイトデモ →</a>　<a href="/" style="color:var(--accent)">← 宿泊DXラボ</a></span>
 </header>
 
@@ -252,12 +301,13 @@ footer.note{max-width:1100px;margin:14px auto 0;color:var(--muted);font-size:11p
   <section class="arrival" id="arrival" aria-live="polite" hidden></section>
 
   <section class="panel intro" aria-label="このデモについて">
-    <p class="lead">架空ホテル（全20室）で、予約から部屋割り・チェックイン・チェックアウトまでを試せます。サンプルの予約が入っているので、そのまま触ってみてください。<a href="#howto">詳しい説明は下へ ↓</a></p>
+    <p class="lead">架空ホテル（全20室）で、予約から部屋割り・チェックイン・精算・チェックアウトまでを試せます。サンプルの予約が入っているので、そのまま触ってみてください。<a href="#howto">詳しい説明は下へ ↓</a></p>
     <ol class="steps">
       <li><i>1</i>予約を登録</li>
       <li><i>2</i>「割当」で部屋を決める</li>
       <li><i>3</i>チェックイン</li>
       <li><i>4</i>状況表・台帳で確認</li>
+      <li><i>5</i>精算・チェックアウト</li>
     </ol>
   </section>
 
@@ -266,6 +316,7 @@ footer.note{max-width:1100px;margin:14px auto 0;color:var(--muted);font-size:11p
     <button role="tab" aria-selected="false" data-tab="grid">部屋割り</button>
     <button role="tab" aria-selected="false" data-tab="board">客室状況表</button>
     <button role="tab" aria-selected="false" data-tab="ledger">当日台帳</button>
+    <button role="tab" aria-selected="false" data-tab="pay">精算・チェックアウト</button>
   </nav>
 
   <section class="panel" id="tab-res">
@@ -364,6 +415,19 @@ footer.note{max-width:1100px;margin:14px auto 0;color:var(--muted);font-size:11p
     </div>
     <div class="ledger" id="ledgerBody"></div>
   </section>
+
+  <section class="panel" id="tab-pay" hidden>
+    <h2>精算・チェックアウト</h2>
+    <div class="paytab">
+      <div>
+        <h3>精算待ち（チェックイン済み）</h3>
+        <div class="paylist" id="payList"></div>
+        <h3 style="margin-top:14px">精算済み（領収書）</h3>
+        <div class="paylist" id="paidList"></div>
+      </div>
+      <div class="folio" id="folio"></div>
+    </div>
+  </section>
 </main>
 
 <section class="howto" id="howto" aria-labelledby="howtoTitle">
@@ -376,12 +440,13 @@ footer.note{max-width:1100px;margin:14px auto 0;color:var(--muted);font-size:11p
     <div class="card"><h3><span class="tag">部屋割り</span>部屋を止める</h3><p>故障などで売れない部屋は「部屋ブロック」で期間を決めて止めます。斜線の帯がブロックで、帯を押すと解除できます。</p></div>
     <div class="card"><h3><span class="tag">客室状況表</span>今日の部屋を見る</h3><p>全20室を階ごとにカードで表示。在室・本日到着・本日出発・ブロック・空室が色で分かります。</p></div>
     <div class="card"><h3><span class="tag">当日台帳</span>その日の一覧</h3><p>選んだ日の「本日到着」「滞在中」「本日出発」を部屋番号順に表示。日付を変えると先の日も見られます。</p></div>
+    <div class="card"><h3><span class="tag">精算</span>精算してチェックアウト</h3><p>宿泊料金・朝食・入湯税（1名1泊150円）が明細に入ります。夕食や貸切風呂などを足し、現金かクレジットカードで精算すると、チェックアウトと領収書（デモ）まで進みます。</p></div>
     <div class="card"><h3><span class="tag">自動割当</span>割当のルール</h3><ul><li>到着日の早い予約から順に</li><li>人数が定員を超える部屋は外す</li><li>滞在中にふさがる日がある部屋は外す</li><li>希望タイプがあればそのタイプだけ</li><li>7泊以上はシングル → ツインを優先</li></ul></div>
   </div>
 
   <div class="cards">
-    <div class="card can"><h3>できること</h3><div class="chips"><span>予約の登録・キャンセル</span><span>手動／自動の部屋割り</span><span>部屋変更・割当解除</span><span>チェックイン／アウト</span><span>部屋ブロック</span><span>空き判定（先の日程も含む）</span><span>今日の客室状況表</span><span>日付を選べる当日台帳</span><span>スマホ・タブレット表示</span></div></div>
-    <div class="card cannot"><h3>できないこと</h3><div class="chips"><span>料金・精算・領収書</span><span>予約サイト（OTA）連携</span><span>登録後の予約の修正</span><span>チェックイン／アウトの取り消し</span><span>清掃管理</span><span>顧客台帳</span><span>売上・稼働率の集計</span><span>印刷・CSV出力</span><span>複数人でのデータ共有</span><span>部屋数・タイプの変更</span></div></div>
+    <div class="card can"><h3>できること</h3><div class="chips"><span>予約の登録・キャンセル</span><span>手動／自動の部屋割り</span><span>部屋変更・割当解除</span><span>チェックイン</span><span>精算・チェックアウト</span><span>追加料金（夕食・貸切風呂など）</span><span>領収書の表示・印刷（デモ）</span><span>部屋ブロック</span><span>空き判定（先の日程も含む）</span><span>今日の客室状況表</span><span>日付を選べる当日台帳</span><span>スマホ・タブレット表示</span></div></div>
+    <div class="card cannot"><h3>できないこと</h3><div class="chips"><span>実際の会計・インボイス（登録番号）</span><span>カード決済端末との連携</span><span>予約サイト（OTA）連携</span><span>登録後の予約の修正</span><span>チェックイン／精算の取り消し</span><span>清掃管理</span><span>顧客台帳</span><span>売上・稼働率の集計</span><span>台帳の印刷・CSV出力</span><span>複数人でのデータ共有</span><span>部屋数・タイプの変更</span></div></div>
   </div>
 
   <div class="cards">
@@ -390,11 +455,11 @@ footer.note{max-width:1100px;margin:14px auto 0;color:var(--muted);font-size:11p
   </div>
 </section>
 
-<footer class="note">架空ホテル（2〜5階・各階5室＝ツイン2／シングル2／和室1、全20室）のデモです。表示順は 5階→4階→3階→2階。料金・精算・OTA連携は含みません。</footer>
+<footer class="note">架空ホテル（2〜5階・各階5室＝ツイン2／シングル2／和室1、全20室）のデモです。表示順は 5階→4階→3階→2階。料金は1室1泊・税とサービス料込み（人数で変わる）、入湯税は別。精算はデモ用の簡易計算で、OTA連携は含みません。</footer>
 
 <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 
-<script src="/js/suiren-demo-data.js?v=20261016"></script>
+<script src="/js/suiren-demo-data.js?v=20261017"></script>
 <script>
 "use strict";
 /* ---------- 基礎 ---------- */
@@ -529,7 +594,9 @@ function renderRes(){
       if(r.room) mkBtn("チェックイン", () => setStatus(r, "in"));
       mkBtn("キャンセル", () => setStatus(r, "cancelled"));
     } else if(r.status === "in"){
-      mkBtn("チェックアウト", () => setStatus(r, "out"));
+      mkBtn("精算・チェックアウト", () => openPay(r.id));
+    } else if(r.status === "out" && r.paid){
+      mkBtn("領収書", () => openPay(r.id));
     } else if(r.status === "cancelled"){
       mkBtn("削除", () => { state.reservations = state.reservations.filter(x => x.id !== r.id); save(); renderAll(); });
     }
@@ -711,6 +778,7 @@ function renderNext(sel){
     mk("客室状況表で見る", () => { switchTab("board"); document.getElementById("tab-board").scrollIntoView({behavior:"smooth", block:"start"}); }, true);
     mk("当日台帳で見る", () => { document.getElementById("ledgerDate").value = r.inDate; switchTab("ledger");
       document.getElementById("tab-ledger").scrollIntoView({behavior:"smooth", block:"start"}); });
+    mk("精算・チェックアウトへ", () => openPay(r.id));
   } else if(one && one.status === "booked" && one.room){
     setText(lastAssign.label,
       "次は<b>チェックイン</b>です。お客様が到着したら、下のボタンを押します" +
@@ -839,10 +907,12 @@ function renderArrival(){
     return;
   }
   const steps = [["公式サイトで予約", true], ["フロントで受信", true],
-    ["部屋割り", !!r.room && r.status !== "cancelled"], ["チェックイン", r.status === "in" || r.status === "out"]];
+    ["部屋割り", !!r.room && r.status !== "cancelled"], ["チェックイン", r.status === "in" || r.status === "out"],
+    ["精算・チェックアウト", r.status === "out"]];
   const nextIdx = steps.findIndex(s => !s[1]);
   const head = r.status === "cancelled" ? "この公式サイト予約はキャンセルされています"
-    : nextIdx === -1 ? "公式サイトの予約から、チェックインまで完了しました"
+    : nextIdx === -1 ? "公式サイトの予約から、精算・チェックアウトまで完了しました"
+    : r.status === "in" ? "チェックインが完了しました（" + esc(r.room) + "号室）"
     : r.room ? "部屋割りが完了しました（" + esc(r.room) + "号室）"
     : "公式サイトから予約が届きました";
   box.innerHTML = "<h2>" + head + "</h2>" +
@@ -865,17 +935,140 @@ function renderArrival(){
     note(r.inDate > T0 ? "到着日は " + mdLabel(r.inDate) + " ですが、デモでは今すぐ試せます。" : "到着したお客様をチェックインします。");
   } else if(r.status === "cancelled"){
     const a = document.createElement("a"); a.href = "/demo/booking/"; a.textContent = "もう一度、公式サイトから予約する →"; acts.appendChild(a);
-  } else {
-    // チェックイン後：その結果が表れる画面へ案内する（到着日が今日なら客室状況表、先の日なら当日台帳のその日）
+  } else if(r.status === "in"){
+    // チェックイン後：精算へ。結果が表れる画面（客室状況表・当日台帳）も見られる
+    mk("精算・チェックアウトへ", () => openPay(r.id), true);
     const showLedger = () => { document.getElementById("ledgerDate").value = r.inDate; switchTab("ledger");
       document.getElementById("tab-ledger").scrollIntoView({behavior:"smooth", block:"start"}); };
-    if(r.inDate === T0 && r.status === "in"){
-      mk("客室状況表で見る", () => { switchTab("board");
-        document.getElementById("tab-board").scrollIntoView({behavior:"smooth", block:"start"}); }, true);
-      mk("当日台帳で見る", showLedger);
-    } else mk(mdLabel(r.inDate) + " の当日台帳で見る", showLedger, true);
+    if(r.inDate === T0) mk("客室状況表で見る", () => { switchTab("board");
+        document.getElementById("tab-board").scrollIntoView({behavior:"smooth", block:"start"}); });
+    mk((r.inDate === T0 ? "" : mdLabel(r.inDate) + " の") + "当日台帳で見る", showLedger);
+  } else {
+    if(r.paid) mk("領収書を見る", () => openPay(r.id), true);
     const a = document.createElement("a"); a.href = "/demo/booking/"; a.textContent = "もう一度、公式サイトから予約する →"; acts.appendChild(a);
   }
+}
+
+/* ---------- 精算・チェックアウト ---------- */
+let payId = null;           // 精算画面で選んでいる予約
+let payMethod = "cash";
+const yen = n => "¥" + Number(n).toLocaleString("ja-JP");
+function openPay(id){
+  payId = id; payMethod = "cash"; switchTab("pay");
+  document.getElementById("tab-pay").scrollIntoView({behavior:"smooth", block:"start"});
+}
+function payItem(r, meta){
+  const b = document.createElement("button");
+  b.type = "button"; b.className = "payitem"; b.setAttribute("aria-current", String(r.id === payId));
+  b.innerHTML = '<span class="top"><b>' + esc(r.name) + "</b><span>" + esc(r.room || "") + "</span></span>" +
+    '<span class="meta">' + meta + "</span>";
+  b.addEventListener("click", () => { payId = r.id; payMethod = "cash"; renderPay();
+    // スマホでは一覧の下に明細が出るので、明細まで送る
+    if(window.matchMedia("(max-width:760px)").matches) document.getElementById("folio").scrollIntoView({behavior:"smooth", block:"start"}); });
+  return b;
+}
+function renderPay(){
+  const list = document.getElementById("payList"), paid = document.getElementById("paidList");
+  list.textContent = ""; paid.textContent = "";
+  const inHouse = state.reservations.filter(r => r.status === "in")
+    .sort((a,b) => a.outDate < b.outDate ? -1 : a.outDate > b.outDate ? 1 : (a.room||"") < (b.room||"") ? -1 : 1);
+  inHouse.forEach(r => list.appendChild(payItem(r,
+    (r.outDate <= T0 ? '<span class="pill out">本日出発</span> ' : "出発 " + mdLabel(r.outDate) + " ・ ") +
+    (r.source === "web" ? '<span class="pill web">公式サイト予約</span> ' : "") + yen(SuirenDemo.folio(r).total))));
+  if(!inHouse.length) list.innerHTML = '<div class="empty">チェックイン済みのお客様はいません。</div>';
+  const done = state.reservations.filter(r => r.status === "out" && r.paid)
+    .sort((a,b) => (b.paid.receiptNo || "") < (a.paid.receiptNo || "") ? -1 : 1);
+  done.forEach(r => paid.appendChild(payItem(r, "精算 " + mdLabel(r.paid.at) + " ・ " + yen(r.paid.total))));
+  if(!done.length) paid.innerHTML = '<div class="empty">まだありません。</div>';
+  if(!state.reservations.some(r => r.id === payId && (r.status === "in" || (r.status === "out" && r.paid))))
+    payId = inHouse.length ? inHouse[0].id : null;
+  renderFolio();
+}
+function folioTable(f, editable){
+  return "<table><thead><tr><th>内容</th><th class=\"num c-unit\">単価</th><th class=\"num\">数量</th><th class=\"num\">金額</th>" + (editable ? "<th></th>" : "") + "</tr></thead><tbody>" +
+    f.lines.map(l => "<tr><td>" + esc(l.label) + (l.taxable ? "" : '<br><span style="font-size:11px;color:var(--muted)">消費税の対象外</span>') + "</td>" +
+      '<td class="num c-unit">' + yen(l.unit) + '</td><td class="num">' + esc(l.qtyLabel) + '</td><td class="num">' + yen(l.amount) + "</td>" +
+      (editable ? "<td>" + (l.kind === "extra" ? '<button type="button" class="btn small" data-del="' + l.id + '">削除</button>' : "") + "</td>" : "") + "</tr>").join("") +
+    "</tbody><tfoot>" +
+    '<tr class="total"><td>合計</td><td class="c-unit"></td><td></td><td class="num">' + yen(f.total) + "</td>" + (editable ? "<td></td>" : "") + "</tr>" +
+    '<tr class="taxnote"><td colspan="' + (editable ? 5 : 4) + '">うち消費税（10%） ' + yen(f.consumptionTax) + "（10%対象 " + yen(f.taxableTotal) + "）。料金は税・サービス料込みです。</td></tr>" +
+    "</tfoot></table>";
+}
+function renderFolio(){
+  const box = document.getElementById("folio");
+  const r = state.reservations.find(x => x.id === payId);
+  if(!r){ box.innerHTML = '<div class="empty">チェックイン済みのお客様を選ぶと、ここに明細が出ます。予約一覧で「チェックイン」してから試してください。</div>'; return; }
+  const head = "<h3>" + esc(r.name) + (r.room ? " ・ " + esc(r.room) + "号室" : "") + "</h3>" +
+    '<p class="detail">' + mdLabel(r.inDate) + "→" + mdLabel(r.outDate) + "（" + nights(r) + "泊）・ " + r.pax + "名 ・ " +
+    (r.plan === "bf" ? "朝食付き" : "素泊まり") + (r.source === "web" ? " ・ 公式サイト予約（予約時の宿泊料金で精算）" : "") + "</p>";
+  if(r.status === "out" && r.paid){ renderReceipt(box, r, head); return; }
+  const f = SuirenDemo.folio(r);
+  box.innerHTML = head + folioTable(f, true) +
+    '<div class="addrow"><label>追加料金<select id="xKind">' +
+      SuirenDemo.EXTRAS.map(x => '<option value="' + x.key + '">' + esc(x.label) + (x.price ? "（" + yen(x.price) + "/" + x.unit + "）" : "（金額を入力）") + "</option>").join("") +
+    '</select></label><label>数量<input id="xQty" type="number" min="1" max="20" value="1" style="width:70px"></label>' +
+    '<label>単価（円）<input id="xPrice" type="number" min="1" step="1" style="width:110px"></label>' +
+    '<button type="button" class="btn small" id="xAdd">明細に追加</button></div>' +
+    '<div class="paybox"><strong style="font-size:13px">お支払い方法</strong>' +
+      '<div class="methods"><label><input type="radio" name="payMethod" value="cash"' + (payMethod === "cash" ? " checked" : "") + '>現金</label>' +
+      '<label><input type="radio" name="payMethod" value="card"' + (payMethod === "card" ? " checked" : "") + '>クレジットカード</label></div>' +
+      (payMethod === "cash" ? '<div class="cashrow"><label>お預かり（円）　<input id="tendered" type="number" min="0" step="1" value="' + f.total + '"></label>' +
+        '<span>おつり <span class="change" id="changeOut">' + yen(0) + "</span></span></div>"
+        : '<p class="detail">デモのため、カード決済端末とはつながっていません。押すと決済済みとして扱います。</p>') +
+    '</div><div class="msg" id="payMsg"></div>' +
+    '<div class="settle"><button type="button" class="btn primary" id="btnSettle">' + yen(f.total) + " を精算してチェックアウト</button>" +
+      (r.outDate > T0 ? '<span class="note">出発日は ' + mdLabel(r.outDate) + " ですが、デモでは今すぐ精算できます（宿泊料金は予約どおり）。</span>" : "") + "</div>";
+  // 追加料金
+  const kind = box.querySelector("#xKind"), price = box.querySelector("#xPrice");
+  const syncPrice = () => { const x = SuirenDemo.EXTRAS.find(e => e.key === kind.value);
+    price.value = x.price || ""; price.disabled = !!x.price; };
+  kind.addEventListener("change", syncPrice); syncPrice();
+  box.querySelector("#xAdd").addEventListener("click", () => {
+    const x = SuirenDemo.EXTRAS.find(e => e.key === kind.value);
+    const qty = parseInt(box.querySelector("#xQty").value, 10), unit = x.price || parseInt(price.value, 10);
+    if(!(qty >= 1) || !(unit >= 1)){ document.getElementById("payMsg").textContent = "数量と単価を入れてください。"; return; }
+    r.extras = r.extras || [];
+    r.extras.push({ id: r.extras.reduce((m, e) => Math.max(m, e.id), 0) + 1, label: x.label, price: unit, unit: x.unit, qty });
+    save(); renderPay();
+  });
+  box.querySelectorAll("[data-del]").forEach(b => b.addEventListener("click", () => {
+    r.extras = (r.extras || []).filter(e => e.id !== +b.dataset.del); save(); renderPay(); }));
+  box.querySelectorAll('input[name="payMethod"]').forEach(i => i.addEventListener("change", () => { payMethod = i.value; renderFolio(); }));
+  const tendered = box.querySelector("#tendered");
+  const syncChange = () => { const v = parseInt(tendered.value, 10) || 0;
+    box.querySelector("#changeOut").textContent = v >= f.total ? yen(v - f.total) : "不足 " + yen(f.total - v); };
+  if(tendered){ tendered.addEventListener("input", syncChange); syncChange(); }
+  box.querySelector("#btnSettle").addEventListener("click", () => {
+    const given = tendered ? (parseInt(tendered.value, 10) || 0) : f.total;
+    if(given < f.total){ document.getElementById("payMsg").textContent = "お預かりが合計に足りません。"; return; }
+    const seq = state.reservations.filter(x => x.paid).length + 1;
+    r.paid = { method: payMethod, total: f.total, tendered: given, change: given - f.total, at: T0,
+      receiptNo: "R" + T0.replace(/-/g, "").slice(2) + "-" + String(seq).padStart(3, "0"), lines: f.lines,
+      consumptionTax: f.consumptionTax, taxableTotal: f.taxableTotal };
+    setStatus(r, "out");
+  });
+}
+function renderReceipt(box, r, head){
+  const p = r.paid;
+  const bath = p.lines.filter(l => !l.taxable).reduce((s, l) => s + l.amount, 0);
+  box.innerHTML = head +
+    '<p style="margin:0;font-weight:700;color:var(--accent)">✓ 精算してチェックアウトしました。お部屋は空室に戻りました。</p>' +
+    '<div class="receipt" id="receipt">' +
+      '<div class="rhead"><h4>領収書</h4><span>No. ' + esc(p.receiptNo) + "<br>発行日 " + esc(p.at.replace(/-/g, "/")) + "</span></div>" +
+      '<p class="to">' + esc(r.name) + "</p>" +
+      '<p class="amount">' + yen(p.total) + "－</p>" +
+      "<p>但し 宿泊代として（" + mdLabel(r.inDate) + "〜" + mdLabel(r.outDate) + "・" + nights(r) + "泊・" + r.pax + "名）</p>" +
+      "<table>" + p.lines.map(l => "<tr><td>" + esc(l.label) + "　" + esc(l.qtyLabel) + '</td><td class="num">' + yen(l.amount) + "</td></tr>").join("") + "</table>" +
+      "<p>うち消費税（10%） " + yen(p.consumptionTax) + "（10%対象 " + yen(p.taxableTotal) + "）／入湯税 " + yen(bath) + "（消費税の対象外）</p>" +
+      "<p>お支払い：" + (p.method === "cash" ? "現金（お預かり " + yen(p.tendered) + "・おつり " + yen(p.change) + "）" : "クレジットカード") + "</p>" +
+      '<p class="issuer">蓮池温泉 ホテル翠蓮<br>架空県蓮池市翠蓮1-2-3（実在しません）</p>' +
+      '<p class="demo">これはデモの画面です。実在のホテルではなく、領収書としては使えません（適格請求書の登録番号もありません）。</p>' +
+    "</div>" +
+    '<div class="settle"><button type="button" class="btn primary" id="btnPrint">領収書を印刷する</button>' +
+    '<button type="button" class="btn" id="btnPayBoard">客室状況表で見る</button></div>';
+  box.querySelector("#btnPrint").addEventListener("click", () => window.print());
+  box.querySelector("#btnPayBoard").addEventListener("click", () => { switchTab("board");
+    document.getElementById("tab-board").scrollIntoView({behavior:"smooth", block:"start"}); });
 }
 
 /* ---------- タブ・初期化 ---------- */
@@ -883,12 +1076,12 @@ function switchTab(id){
   if(id === "grid") lastAssign = null;
   lastDone = null;
   document.querySelectorAll("nav.tabs button").forEach(b => b.setAttribute("aria-selected", String(b.dataset.tab === id)));
-  ["res","grid","board","ledger"].forEach(t => { document.getElementById("tab-"+t).hidden = (t !== id); });
+  ["res","grid","board","ledger","pay"].forEach(t => { document.getElementById("tab-"+t).hidden = (t !== id); });
   renderAll();
 }
 document.querySelectorAll("nav.tabs button").forEach(b =>
   b.addEventListener("click", () => switchTab(b.dataset.tab)));
-function renderAll(){ renderArrival(); renderRes(); renderGrid(); renderBoard(); renderLedger(); }
+function renderAll(){ renderArrival(); renderRes(); renderGrid(); renderBoard(); renderLedger(); renderPay(); }
 
 document.getElementById("btnReset").addEventListener("click", () => {
   if(!confirm("入力した予約・ブロックをすべて消して、サンプルデータに戻しますか？")) return;
