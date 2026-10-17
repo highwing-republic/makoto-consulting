@@ -1,0 +1,6 @@
+<section class="tool-faq" id="faq" aria-labelledby="tool-faq-title"><div class="container tool-faq__grid">
+  <div><h2 id="tool-faq-title">よくある質問</h2></div>
+  <div class="tool-faq__list">{% for item in page.tool_faq %}
+    <details class="tool-faq__item"{% if forloop.first %} open{% endif %}><summary>{{ item.q }}</summary><div class="tool-faq__answer">{% for paragraph in item.a %}<p>{{ paragraph }}</p>{% endfor %}</div></details>{% endfor %}
+  </div>
+</div></section>

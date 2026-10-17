@@ -12,6 +12,21 @@
 .tool-overview__scope dt{color:var(--lab-ink-soft);font-size:12px;font-weight:700;letter-spacing:.04em;line-height:1.9}
 .tool-overview__scope dd{margin:0;color:var(--lab-ink);font-size:13px;line-height:1.9}
 
+/* よくある質問（_includes/tool-faq.html、出典の直前） */
+.tool-faq{padding:64px 0 0}
+.tool-faq__grid{display:grid;grid-template-columns:.65fr 1.35fr;gap:24px 55px;padding:46px 0 0;border-top:1px solid var(--lab-ink)}
+.tool-faq h2{margin:0;font-family:var(--lab-font-sans);font-size:clamp(22px,2.4vw,30px);font-weight:700;line-height:1.4;color:var(--lab-navy)}
+.tool-faq__list{border-top:1px solid var(--lab-border)}
+.tool-faq__item{border-bottom:1px solid var(--lab-border)}
+.tool-faq__item summary{position:relative;padding:16px 36px 16px 0;font-size:16px;font-weight:700;line-height:1.6;cursor:pointer;list-style:none}
+.tool-faq__item summary::-webkit-details-marker{display:none}
+.tool-faq__item summary:after{content:"+";position:absolute;top:13px;right:6px;color:var(--lab-navy);font-size:22px;font-weight:400;line-height:1}
+.tool-faq__item[open] summary:after{content:"−"}
+.tool-faq__item summary:focus-visible{outline:2px solid var(--lab-focus);outline-offset:3px}
+.tool-faq__answer{padding:0 0 18px}
+.tool-faq__answer p{margin:0;color:var(--lab-ink);font-size:14px;line-height:1.95}
+.tool-faq__answer p+p{margin-top:8px}
+.tool-faq+.tool-sources{padding-top:48px}
 .tool-sources{padding:64px 0 0}
 .tool-sources__grid{display:grid;grid-template-columns:.65fr 1.35fr;gap:40px 55px;padding:46px 0;border-top:1px solid var(--lab-ink);border-bottom:1px solid var(--lab-ink)}
 .tool-sources h2{margin:0;font-family:var(--lab-font-sans);font-size:clamp(22px,2.4vw,30px);font-weight:700;line-height:1.4;color:var(--lab-navy)}
@@ -41,12 +56,14 @@
 @media(max-width:900px){
   .tool-overview__grid{grid-template-columns:1fr;padding:24px}
   .tool-sources__grid{grid-template-columns:1fr;gap:20px}
+  .tool-faq__grid{grid-template-columns:1fr;gap:16px}
 }
 @media(max-width:620px){
   .tool-overview{padding-top:24px}
   .tool-overview__scope>div{grid-template-columns:1fr;gap:2px}
+  .tool-faq{padding-top:48px}
   .tool-sources{padding-top:48px}
   .tool-related{padding:48px 0 64px}
   .tool-related__heading{flex-direction:column;gap:6px}
 }
-@media print{.tool-related{display:none}}
+@media print{.tool-related,.tool-faq{display:none}}

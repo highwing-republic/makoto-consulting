@@ -1,4 +1,5 @@
-<section class="tool-sources" aria-labelledby="tool-sources-title"><div class="container tool-sources__grid">
+{% comment %}よくある質問（page.tool_faq）があれば、出典の直前に出す。{% endcomment %}{% if page.tool_faq %}{% include tool-faq.html %}
+{% endif %}<section class="tool-sources" aria-labelledby="tool-sources-title"><div class="container tool-sources__grid">
   <div><h2 id="tool-sources-title">出典・更新日・注意事項</h2></div>
   <div>
     <dl class="tool-sources__list" id="source-list">{% for source in page.tool_sources %}

@@ -121,3 +121,21 @@ def test_tool_pages_load_a_pure_model_before_the_view():
         body = model_source.split("'use strict';", 1)[1]
         assert "document" not in body and "fetch(" not in body and "window" not in body, script
         assert f"globalThis.{global_name}" in view_source, script
+
+
+def test_faq_sits_before_the_sources_as_body_text():
+    faq_pages = ["ai-time-estimate.html", "kpi-calculator.html", "ota-fee-simulator.html", "security-check.html"]
+    for path in converted_pages():
+        page = front_matter(path)
+        html = BeautifulSoup(rendered(path), "html.parser")
+        faq = html.select_one(".tool-faq")
+        if path.name not in faq_pages:
+            assert "tool_faq" not in page and faq is None, path
+            continue
+        assert 3 <= len(page["tool_faq"]) <= 4, path
+        items = faq.select(".tool-faq__item")
+        assert [item.summary.get_text(strip=True) for item in items] == [entry["q"] for entry in page["tool_faq"]], path
+        assert all(entry["q"].endswith("？") and entry["a"] for entry in page["tool_faq"]), path
+        # 出典の直前に置き、Google の FAQ リッチリザルト向けの構造化データは付けない
+        assert faq.find_next_sibling("section") is html.select_one(".tool-sources"), path
+        assert "FAQPage" not in rendered(path), path
